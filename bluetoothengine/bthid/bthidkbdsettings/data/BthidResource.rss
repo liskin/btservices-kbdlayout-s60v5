@@ -1,0 +1,450 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+
+NAME    HSTR // 4 letter ID
+
+//  INCLUDES
+#include <appinfo.rh>
+#include <data_caging_paths_strings.hrh>
+
+#include <eikon.rh>
+#include "btkeyboard.hrh"
+#include <btkeyboard.loc>
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.mbg>
+#include <avkon.loc>
+#include <btkeyboard.mbg>
+
+//  RESOURCE DEFINITIONS 
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf="BTHidKBDSettings"; }
+
+RESOURCE EIK_APP_INFO
+{
+}
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_softkeys_options_back__change
+//
+//----------------------------------------------------
+//
+
+RESOURCE CBA r_btkeyboard_softkeys_options_back__change
+    {
+    buttons =
+        {
+        CBA_BUTTON {id=EAknSoftkeyOptions; txt = qtn_hid_options;},
+        CBA_BUTTON {id=EAknSoftkeyBack; txt = qtn_hid_back;},
+        CBA_BUTTON {id=EAknSoftkeyChange; txt = qtn_options_change;}
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_setting_view
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_btkeyboard_setting_view
+    {
+    menubar = r_btkeyboard_menubar_setting_view;
+    cba     = r_btkeyboard_softkeys_options_back__change;
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_menubar_setting_view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_btkeyboard_menubar_setting_view
+    {
+    titles=
+        {
+        MENU_TITLE { menu_pane=r_btkeyboard_setting_menu; txt=""; }
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_setting_menu
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_btkeyboard_setting_menu
+    {
+    items=
+        {
+        MENU_ITEM 
+            { 
+            command=EBTKeyCmdAppChange;
+            txt = qtn_hid_change;
+            },
+        MENU_ITEM 
+            { 
+            command=EBTKeyCmdAppHelp;
+            txt = qtn_hid_help;
+            },
+        MENU_ITEM 
+            {
+            command=EEikCmdExit; 
+            txt = qtn_options_exit;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_nokia_layout_item_array
+//
+//----------------------------------------------------
+//  
+RESOURCE TBUF r_string_connected{ buf=qtn_hid_connected; }
+RESOURCE ARRAY r_btkeyboard_nokia_layout_item_array
+    {
+    items =
+        {
+        LBUF
+            {
+            txt = qtn_hid_layout_english_su8;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_finnish_swedish;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_german;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_norwegian_danish_su8;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_russian;
+            }
+    
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_nokia_layout_page_list
+//
+//----------------------------------------------------
+//  
+// Ensure these values match the current Enum in layoutmgr.h
+RESOURCE ARRAY r_btkeyboard_nokia_layout_page_list
+    {
+    items =
+        {
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 1;
+            text = qtn_hid_layout_english_su8;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 3;
+            text = qtn_hid_layout_finnish_swedish;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 2;
+            text = qtn_hid_layout_german;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 4;
+            text = qtn_hid_layout_norwegian_danish_su8;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 5;
+            text = qtn_hid_layout_russian;
+            }
+            
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_nokia_layout_popup_setting_list
+//
+//----------------------------------------------------
+//  
+RESOURCE AVKON_POPUP_SETTING_TEXTS r_btkeyboard_nokia_layout_popup_setting_list
+    {
+    setting_texts_resource = r_btkeyboard_nokia_layout_page_list;
+    popped_up_texts_resource = r_btkeyboard_nokia_layout_item_array;
+    }
+
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_layout_popup_setting_list_new_entry
+//
+//----------------------------------------------------
+//  
+RESOURCE POPUP_SETTING_LIST r_btkeyboard_layout_popup_setting_list_new_entry
+    {
+    flags = EAknPopupSettingListFlagInitialised;
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_layout_setting_page
+//
+//----------------------------------------------------
+//  
+RESOURCE AVKON_SETTING_PAGE r_btkeyboard_layout_setting_page
+    {   
+    number = EAknSettingPageNoOrdinalDisplayed;
+    label= qtn_hid_layout;
+    type = EAknCtPopupSettingList;
+    editor_resource_id = r_btkeyboard_layout_popup_setting_list_new_entry;
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_nokia_setting_list
+//
+//----------------------------------------------------
+//  
+RESOURCE AVKON_SETTING_ITEM_LIST r_btkeyboard_nokia_setting_list
+    {
+    flags= EAknSettingItemIncludeHiddenInOrdinal;
+    title = qtn_hid_settings;
+    initial_number = 1;
+    items =
+        {
+            AVKON_SETTING_ITEM
+                {
+                identifier = EBTKeySettingLayout;
+                setting_page_resource = r_btkeyboard_layout_setting_page;
+                associated_resource = r_btkeyboard_nokia_layout_popup_setting_list;
+                name = qtn_hid_layout;
+                }
+        };
+    } 
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_standard_layout_page_list
+//
+//----------------------------------------------------
+//  
+RESOURCE AVKON_POPUP_SETTING_TEXTS r_btkeyboard_standard_layout_popup_setting_list
+    {
+    setting_texts_resource = r_btkeyboard_standard_layout_page_list;
+    popped_up_texts_resource = r_btkeyboard_standard_layout_item_array;
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_standard_layout_page_list
+//
+//----------------------------------------------------
+// 
+// Ensure these values match the current Enum in layoutmgr.h 
+RESOURCE ARRAY r_btkeyboard_standard_layout_page_list
+    {
+    items =
+        {
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 6;
+            text = qtn_hid_layout_uk;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 7;
+            text = qtn_hid_layout_us;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 8;
+            text = qtn_hid_layout_us_int;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 9;
+            text = qtn_hid_layout_belgian;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 10;
+            text = qtn_hid_layout_danish;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 11;
+            text = qtn_hid_layout_dutch;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 12;
+            text = qtn_hid_layout_finnish_swedish;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 13;
+            text = qtn_hid_layout_french;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 14;
+            text = qtn_hid_layout_german;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 15;
+            text = qtn_hid_layout_italian;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 16;
+            text = qtn_hid_layout_norwegian;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 17;
+            text = qtn_hid_layout_portuguese;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 18;
+            text = qtn_hid_layout_spanish;
+            },
+        AVKON_ENUMERATED_TEXT
+            {
+            value = 19;
+            text = qtn_hid_layout_us_dvorak;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_standard_layout_item_array
+//
+//----------------------------------------------------
+//  
+RESOURCE ARRAY r_btkeyboard_standard_layout_item_array
+    {
+    items =
+        {
+        LBUF
+            {
+            txt = qtn_hid_layout_uk;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_us;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_us_int;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_belgian;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_danish;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_dutch;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_finnish_swedish;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_french;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_german;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_italian;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_norwegian;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_portuguese;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_spanish;
+            },
+        LBUF
+            {
+            txt = qtn_hid_layout_us_dvorak;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//   
+//    r_btkeyboard_nokia_setting_list
+//
+//----------------------------------------------------
+//  
+RESOURCE AVKON_SETTING_ITEM_LIST r_btkeyboard_standard_setting_list
+    {
+    flags= EAknSettingItemIncludeHiddenInOrdinal;
+    title = qtn_hid_settings;
+    initial_number = 1;
+    items =
+        {
+            AVKON_SETTING_ITEM
+                {
+                identifier = EBTKeySettingLayout;
+                setting_page_resource = r_btkeyboard_layout_setting_page;
+                associated_resource = r_btkeyboard_standard_layout_popup_setting_list;
+                name = qtn_hid_layout;
+                }
+        };
+    } 
+
+RESOURCE TBUF256 r_btkeyboard_settings_status_pane_title
+    {
+    buf = qtn_hid_settings;
+    }
+
+RESOURCE CONTEXT_PANE r_statusapp_context_pane_image
+    {
+    bmpfile = "z:\\resource\\apps\\btkeyboard_aif.mif";
+    bmpid = EMbmBtkeyboardQgn_wka_cxt; 
+    bmpmask = EMbmBtkeyboardQgn_wka_cxt_mask;
+    }
+
+// End of File

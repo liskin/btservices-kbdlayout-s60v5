@@ -1,0 +1,10 @@
+EXPORTS
+	?AddDevice@CBTEngDevMan@@QAEHABVCBTDevice@@@Z @ 1 NONAME ; int CBTEngDevMan::AddDevice(class CBTDevice const &)
+	?DeleteDevices@CBTEngDevMan@@QAEHABVTBTRegistrySearch@@@Z @ 2 NONAME ; int CBTEngDevMan::DeleteDevices(class TBTRegistrySearch const &)
+	?GetDevices@CBTEngDevMan@@QAEHABVTBTRegistrySearch@@PAV?$CArrayPtrFlat@VCBTDevice@@@@@Z @ 3 NONAME ; int CBTEngDevMan::GetDevices(class TBTRegistrySearch const &, class CArrayPtrFlat<class CBTDevice> *)
+	?HandleDevManComplete@MBTEngDevManObserver@@UAEXH@Z @ 4 NONAME ; void MBTEngDevManObserver::HandleDevManComplete(int)
+	?HandleGetDevicesComplete@MBTEngDevManObserver@@UAEXHPAV?$CArrayPtrFlat@VCBTDevice@@@@@Z @ 5 NONAME ; void MBTEngDevManObserver::HandleGetDevicesComplete(int, class CArrayPtrFlat<class CBTDevice> *)
+	?ModifyDevice@CBTEngDevMan@@QAEHABVCBTDevice@@@Z @ 6 NONAME ; int CBTEngDevMan::ModifyDevice(class CBTDevice const &)
+	?NewL@CBTEngDevMan@@SAPAV1@PAVMBTEngDevManObserver@@@Z @ 7 NONAME ; class CBTEngDevMan * CBTEngDevMan::NewL(class MBTEngDevManObserver *)
+	?NewLC@CBTEngDevMan@@SAPAV1@PAVMBTEngDevManObserver@@@Z @ 8 NONAME ; class CBTEngDevMan * CBTEngDevMan::NewLC(class MBTEngDevManObserver *)
+

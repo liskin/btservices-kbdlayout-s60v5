@@ -1,0 +1,7 @@
+EXPORTS
+	??1CRemConStatusApiController@@UAE@XZ @ 1 NONAME ; CRemConStatusApiController::~CRemConStatusApiController(void)
+	?Mrcsaco_ExtensionInterfaceL@MRemConStatusApiControllerObserver@@UAEXVTUid@@AAPAX@Z @ 2 NONAME ; void MRemConStatusApiControllerObserver::Mrcsaco_ExtensionInterfaceL(class TUid, void * &)
+	?NewL@CRemConStatusApiController@@SAPAV1@AAVCRemConInterfaceSelector@@AAVMRemConStatusApiControllerObserver@@@Z @ 3 NONAME ; class CRemConStatusApiController * CRemConStatusApiController::NewL(class CRemConInterfaceSelector &, class MRemConStatusApiControllerObserver &)
+	?SubunitInfo@CRemConStatusApiController@@QAEXAAVTRequestStatus@@AAI@Z @ 4 NONAME ; void CRemConStatusApiController::SubunitInfo(class TRequestStatus &, unsigned int &)
+	?UnitInfo@CRemConStatusApiController@@QAEXAAVTRequestStatus@@AAI@Z @ 5 NONAME ; void CRemConStatusApiController::UnitInfo(class TRequestStatus &, unsigned int &)
+

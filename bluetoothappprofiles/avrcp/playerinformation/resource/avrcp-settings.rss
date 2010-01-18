@@ -1,0 +1,124 @@
+// Copyright (c) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+//
+
+#include "settings.rh"
+#include "avrcp-settings.rls"
+
+UID2 KUidAVRCPResourceFile
+
+// Test setting matching rules
+RESOURCE SETTINGS avrcpsettings
+	{
+	settings =
+		{
+		SETTING
+			{ // Equalizer mode
+			attribute = KEqualizerMode;
+			initialValue = KOff;
+			description = STRING_EqualizerMode;
+			definedValues =
+				{
+				VALUE
+					{
+					valueId = KOff;
+					description = STRING_EqualizerOff;
+					},
+				VALUE
+					{
+					valueId = KOn;
+					description = STRING_EqualizerOn;
+					}
+				};
+			},
+		SETTING
+			{ // Repeat mode
+			attribute = KRepeatMode;
+			initialValue = KAllTracksRepeat;
+			description = STRING_RepeatMode;
+			definedValues =
+				{
+				VALUE
+					{
+					valueId = KOff;
+					description = STRING_RepeatOff;
+					},
+				VALUE
+					{
+					valueId = KSingleTrackRepeat;
+					description = STRING_RepeatSingle;
+					},
+				VALUE
+					{
+					valueId = KAllTracksRepeat;
+					description = STRING_RepeatAll;
+					},
+				VALUE
+					{
+					valueId = KGroupRepeat;
+					description = STRING_RepeatGroup;
+					}
+				};
+			},
+		SETTING
+			{ // Shuffle mode
+			attribute = KShuffleMode;
+			initialValue = KAllTracksShuffle;
+			description = STRING_ShuffleMode;
+			definedValues =
+				{
+				VALUE
+					{
+					valueId = KOff;
+					description = STRING_ShuffleOff;
+					},
+				VALUE
+					{
+					valueId = KAllTracksShuffle;
+					description = STRING_ShuffleAll;
+					},
+				VALUE
+					{
+					valueId = KGroupShuffle;
+					description = STRING_ShuffleGroup;
+					}
+				};
+			},
+		SETTING
+			{ // Scan mode
+			attribute = KScanMode;
+			initialValue = KAllTracksScan;
+			description = STRING_ScanMode;
+			definedValues =
+				{
+				VALUE
+					{
+					valueId = KOff;
+					description = STRING_ScanOff;
+					},
+				VALUE
+					{
+					valueId = KAllTracksScan;
+					description = STRING_ScanAll;
+					},
+				VALUE
+					{
+					valueId = KGroupScan;
+					description = STRING_ScanGroup;
+					}
+				};
+			}			
+		};
+	}
+

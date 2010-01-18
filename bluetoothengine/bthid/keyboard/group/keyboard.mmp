@@ -1,0 +1,63 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  BTHid keyboard driver
+*
+*/
+
+#include <platform_paths.hrh>
+#include "../../inc/hiduids.h"
+
+TARGET        hidkeyboard.dll
+TARGETTYPE    PLUGIN
+UID           ECOM_UID KEYBOARD_UID
+
+CAPABILITY    CAP_APPLICATION
+VENDORID      VID_DEFAULT
+
+USERINCLUDE   ../inc
+USERINCLUDE   ../../inc
+USERINCLUDE   ../../common/inc
+USERINCLUDE   ../../manager/inc
+USERINCLUDE   ../../mouse/Sesame_client/inc
+USERINCLUDE   ../../bthidkbdsettings/inc
+
+SOURCEPATH    ../src
+SOURCE        keyboard.cpp
+SOURCE        finder.cpp
+SOURCE        hidkeyboarddriverproxy.cpp
+
+SOURCEPATH    ../../common/src
+SOURCE        timeouttimer.cpp
+SOURCE        layoututils.cpp
+
+
+MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE ../../../../inc
+
+SOURCEPATH		../data 
+START RESOURCE          hidkeyboard.rss 
+#ifdef SYMBIAN_SECURE_ECOM
+TARGET                  hidkeyboard.rsc
+#endif
+END // ECOM resource definition
+
+LIBRARY       kbdclient.lib
+LIBRARY       euser.lib
+LIBRARY       ecom.lib
+LIBRARY       ws32.lib 
+LIBRARY       generichid.lib
+LIBRARY       apgrfx.lib
+LIBRARY       apparc.lib 
+LIBRARY       bthidsettings.lib
+DEBUGLIBRARY       flogger.lib

@@ -1,0 +1,105 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  BTHid settings plugin project definition
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include <defaultcaps.hrh>
+#include <data_caging_paths.hrh>
+
+TARGET          bthidkbdsettings.dll
+TARGETTYPE 		PLUGIN
+UID 0x10009D8D 0x2001E30B
+CAPABILITY      CAP_ECOM_PLUGIN
+VENDORID        VID_DEFAULT
+
+//********* UIDs *************
+//0x10201D2C 	//DLL UID
+//0x10201D2D 	//Impl1. UID
+//0x10201D2E	//impl2. UID
+//0x10201D2F	//impl3. UID 
+//****************************'
+
+USERINCLUDE 	../inc
+USERINCLUDE     ../../inc
+USERINCLUDE 	../../common/inc
+USERINCLUDE 	../../manager/inc
+USERINCLUDE     ../../loc
+
+SOURCEPATH      ../../common/src
+SOURCE  bthidcenrepwatcher.cpp
+SOURCE  layoututils.cpp
+
+SOURCEPATH 		../src
+SOURCE          bthidsettingcontainer.cpp
+SOURCE          bthidsettingview.cpp
+SOURCE          bthidpluginimplementationtable.cpp btkeysettinglist.cpp btkeyenumtextsettingitem.cpp
+
+APP_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE ../../../../inc ../../../inc
+
+//***********ECOM resource definition******************
+//--Ecom resource TARGET name must be same as DLL name,
+//--otherwise Ecom won't recognise it. 
+//*****************************************************
+START RESOURCE          ../data/bthidkbdsettings.rss
+HEADER
+TARGET                  bthidkbdsettings.rsc
+END // RESOURCE
+
+//plugin resource definition
+START RESOURCE  ../data/BthidResource.rss
+HEADER
+TARGETPATH 		RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END  
+
+LIBRARY	aknlayout.lib
+LIBRARY aknskins.lib
+LIBRARY avkon.lib 
+LIBRARY bafl.lib
+LIBRARY bluetooth.lib
+LIBRARY btdevice.lib
+
+LIBRARY cone.lib 
+LIBRARY ecom.lib
+LIBRARY efsrv.lib 
+LIBRARY egul.lib // CGulIcon
+LIBRARY etext.lib
+LIBRARY eikdlg.lib
+LIBRARY eikcore.lib
+LIBRARY eikcoctl.lib 
+LIBRARY eikctl.lib
+LIBRARY estor.lib
+LIBRARY euser.lib
+LIBRARY commonengine.lib
+
+LIBRARY gdi.lib
+LIBRARY gsframework.lib
+LIBRARY gsecomplugin.lib
+LIBRARY ws32.lib
+LIBRARY bthidsettings.lib
+LIBRARY kbdclient.lib
+LIBRARY       centralrepository.lib
+LIBRARY       cenrepnotifhandler.lib
+DEBUGLIBRARY    flogger.lib
+
+#ifdef __SERIES60_HELP
+LIBRARY         hlplch.lib                          // Help library
+#endif
+
+// End of file
+

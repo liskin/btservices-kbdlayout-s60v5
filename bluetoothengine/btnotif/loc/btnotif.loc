@@ -1,0 +1,432 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is a localisation file for btnotif. 
+*
+*/
+
+
+// LOCALISATION STRINGS
+
+// *** TITLES (FOR POPUP WINDOWS) ***
+
+// d: Header text of the popup window for already found Bluetooth devices
+// d: while searching is still in progress. (List query)
+// d: Note! There is also an icon at right edge of the title.
+// l: heading_pane_t1/opt2
+//
+#define qtn_bt_searching_found "Searching"
+
+// d: Header text of the popup window for already found Bluetooth devices.
+// d: while searching has been completed. (List query)
+// l: heading_pane_t1
+//
+#define qtn_bt_devices_found "Devices found:"
+
+// d: Header text of the popup window for "last seen bluetooth devices". (List query)
+// l: heading_pane_t1
+//
+#define qtn_bt_last_seen_devices "Last seen devices"
+
+// d: Header text of the popup window for last used bluetooth devices. (List query)
+// l: heading_pane_t1
+//
+#define qtn_bt_last_used_devices "Bluetooth devices:"
+
+// d: List item text (with icon at left) of the popup window
+// d: for "last seen bluetooth devices". (List query)
+// l: list_single_graphic_pane_t1_cp2
+//
+#define qtn_bt_more_devices "More devices"
+
+// Generic_BTUI
+// d: Header text of the search device filer
+// l: heading_pane_t1
+// r: 5.1
+#define qtn_bt_search_for "Search for:"
+
+// d: list item text for different class of devices in search filter
+// l: list_single_graphic_pane_t1_cp2
+// r: 5.1
+#define qtn_bt_search_for_all "All devices"
+
+// d: list item text for different class of devices in search filter
+// l: list_single_graphic_pane_t1_cp2
+// r: 5.1
+#define qtn_bt_search_for_audio "Audio devices"
+
+// d: list item text for different class of devices in search filter
+// l: list_single_graphic_pane_t1_cp2
+// r: 5.1
+#define qtn_bt_search_for_phone "Phones"
+
+// d: list item text for different class of devices in search filter
+// l: list_single_graphic_pane_t1_cp2
+// r: 5.1
+#define qtn_bt_search_for_computer "Computers"
+
+// d: list item text for different class of devices in search filter
+// l: list_single_graphic_pane_t1_cp2
+// r: 5.1
+#define qtn_bt_search_for_input "Input devices"
+//End Generic_BTUI
+
+// *** SOFTKEYS ***
+
+// d: Right softkey for device search popup menu list while searching is still in progress.
+// l: control_pane_t1/opt7
+//
+#define qtn_bt_softkey_stop "Stop"
+
+
+// *** QUERIES ***
+
+// d: Confirmation query when Bluetooth needs to be activated.
+// l: popup_note_window
+//
+#define qtn_bt_is_off "Bluetooth is currently switched off. Switch on?"
+
+// d: Confirmation query when Bluetooth needs to be activated in off-line mode.
+// l: popup_note_window
+//
+#define qtn_bt_activate_in_offline "Do you want to activate bluetooth in off-line mode?"
+
+// d: Confirmation query when Bluetooth device search has met timeout and no devices has been found.
+// l: popup_note_window
+//
+#define qtn_bt_no_devices_found "No Bluetooth devices found. Try again?" 
+
+// d: Data query when pairing procedure is needed. Bluetooth passkey is entered.
+// l: popup_query_data_window
+//
+#define qtn_bt_enter_pk_for_conn "Enter passkey for: %U"
+
+// d: Heading text for qtn_bt_enter_pk_for_conn -query
+// l: popup_info_list_pane_t2/opt1
+//
+#define qtn_bt_passkey_heading "Bluetooth"
+
+// d: Confirmation query when remote Bluetooth device want's connect to us.
+// l: popup_note_window
+//
+#define qtn_bt_accept_conn_request "Accept connection request from:\n%U"
+
+// d: Confirmation query when remote Bluetooth (unpaired) device want's to send obex message to us.
+// l: popup_note_window
+//
+#define qtn_bt_receive_message "Receive Bluetooth message from: %U"
+
+// d: Confirmation query when remote Bluetooth (paired) device want's to send obex message to us.
+// l: popup_note_window
+//
+#define qtn_bt_receive_message_paired "Receive message via Bluetooth from paired device %U?"
+
+// d: Data query when obex file transfer needs it. OBEX passkey is entered.
+// l: popup_query_data_window
+//
+#define qtn_bt_enter_obex_pcode "Passcode for data transfer:"
+
+// d: This is default prompt extension for queries, notes and lists that contain Bluetooth device name.
+// d: The %U in queries are replaced with this text if no other Bluetooth device name is available.
+// l: list_single_graphic_pane_t1_cp2
+//
+#define qtn_bt_dialog_def_name "Bluetooth Device"
+
+// *** NOTES ***
+
+// d: Wait note while phone is performing Bluetooth device search/inquiry.
+// l: popup_note_wait_window
+//
+#define qtn_bt_searching "Searching for devices"
+
+// d: Information note if there is maximum number of connections and new one could not be created.
+// l: popup_note_window
+//
+#define qtn_bt_busy "Maximum amount of Bluetooth connections in use. Can't establish a new one."
+
+// d: Confirmation query when Bluetooth needs to be turned off when there os active BT connection.
+// l: popup_note_window
+//
+#define qtn_bt_switch_off_anyway "Active Bluetooth connection.\nSwitch off anyway?"
+
+
+// *** GLOBAL NOTES ***
+
+// d: Global Information note telling audio is routed to BT handsfree.
+// l: popup_note_window
+//
+#define qtn_bt_audio_accessory "Audio routed to BT handsfree"
+
+// d: Global Information note telling audio is routed to handset.
+// l: popup_note_window
+//
+#define qtn_bt_audio_handset "Audio routed to handset"
+
+// d: Global Information note for successful connection establishment.
+// l: popup_note_window
+//
+#define qtn_bt_conf_connected "Connected to %U"
+
+// d: Global Information note for successful connection close.
+// l: popup_note_window
+//
+#define qtn_bt_conf_disconnected "Disconnected from %U"
+
+// d: Global Information note telling BT connection was closed outside the phones menu.
+// l: popup_note_window
+//
+#define qtn_bt_conn_closed "Bluetooth connection to %U closed"
+
+// d: An information note when Bluetooth needs to be activated and it's disallowed in off-line mode.
+// l: popup_note_window
+//
+#define qtn_bt_offline_disabled "Bluetooth can't activated in off-line mode"
+
+// d: Global information note telling phone is entering SIM access profile mode
+// l: popup_note_window
+//
+#define qtn_bt_wait_sap_entering "Phone entering SIM access profile mode"
+
+// d: Global information note telling phone entering SIM access profile mode is succeeded
+// l: popup_note_window
+//
+#define qtn_bt_sap_entering_succeeded "Phone in SIM access profile mode"
+
+// d: Global information note telling phone entering SIM access profile mode is failed
+// l: popup_note_window
+//
+#define qtn_bt_sap_entering_failed "Unable to enter SIM access profile mode"
+
+// d: Global information note telling phone has no sim card
+// l: popup_note_window
+//
+#define qtn_bt_sap_no_sim "No SIM card in phone" 
+
+// d: Global information note telling phone bt stays switched on
+// l: popup_note_window
+//
+#define qtn_bt_permanently_on "Bluetooth switched permanently on"
+// d: Global information note telling phone bt is switched on
+// l: popup_note_window
+//
+#define qtn_bt_switched_on "Bluetooth switched on"
+
+// d: Global information note telling phone bt is switched off
+// l: popup_note_window
+//
+#define qtn_bt_switched_off "Bluetooth switched off"
+
+// *** DEFAULT BLUETOOTH DEVICE CLASS NAMES ***
+
+// The icon of each Bluetooth device shown in the UI is based on
+// Class of Device (CoD). These are defined in the "Bluetooth" UI specification.
+// Device classes and their default names are:
+
+// d: Class of Device = Computer
+// l: list_single_graphic_pane_t1_cp2
+//
+#define qtn_bt_computer "Computer"
+
+// d: Class of Device = Phone
+// l: list_single_graphic_pane_t1_cp2
+//
+#define qtn_bt_phone "Phone"
+
+// d: Class of Device = Audio/Video
+// l: list_single_graphic_pane_t1_cp2
+//
+#define qtn_bt_audio "Audio/Video"
+
+// d: Class of Device = Audio
+// l: list_single_graphic_pane_t1_cp2
+// r: 5.1
+#define qtn_bt_gen_audio "Audio"
+
+// d: Class of Device = Keyboard
+// l: list_single_graphic_pane_t1_cp2
+// r: 5.1
+#define qtn_bt_keyboard "Keyboard"
+
+// d: Class of Device = Mouse
+// l: list_single_graphic_pane_t1_cp2
+// r: 5.1
+#define qtn_bt_mouse "Mouse"
+
+// d: Class of Device = Printer
+// l: list_single_graphic_pane_t1_cp2
+// r: 5.1
+#define qtn_bt_printer "Printer"
+
+// d: Class of Device = Car kit
+// l: list_single_graphic_pane_t1_cp2
+// r: 5.1
+#define qtn_bt_carkit "Car kit"
+// d: Data query when pairing procedure is needed. Bluetooth passkey is entered.
+// l: popup_query_data_window
+// w:
+// r: 3.0
+#define qtn_bt_enter_pk_sap "Enter %0N digit passkey for %1U"
+
+// d: Data query when user has try to turn BT on  for the first time and
+// d: there is no local Bluetooth name defined yet (empty name).
+// l: popup_query_data_window
+//
+#define qtn_enter_bt_name "My Bluetooth name:"
+
+// d: Information note shows the phone's visibility has changed to hidden.
+// l: popup_note_window
+// w:
+// r: 3.1
+//
+#define qtn_bt_hidden_from_others "Phone is not detectable in searches made by other devices" 
+
+// d: Confirmation query when use refuse the incoming connection request and want to block connection
+// l: popup_note_window
+// w: 
+// r: 3.1
+#define qtn_bt_block_conn_request "Block connection request from %U?"
+
+// d: query if the bluetooth is off, when java needs it.
+// l: popup_info_list_pane_t1
+// w:
+// r: 3.2
+#define qtn_bt_is_off_java "The application you are using will not be fully functional while Bluetooth is off. \n\nDo you want to turn Bluetooth on?"
+
+// d: query if the bluetooth is off, when java needs it.
+// l: heading_pane_t1
+// w:
+// r: 3.2
+#define qtn_bt_is_off_java_header "Turn Bluetooth on?"
+
+// d: query if the bluetooth is hidden, when discoverabiliti is needed.
+// l: popup_info_list_pane_t1
+// w:
+// r: 3.2
+#define qtn_bt_is_hidden_java "Do you want to change your Bluetooth visibility setting value to 'Shown to all'? \n\nThe application you are using will not be fully functional while your Bluetooth visibility is set as 'Hidden'."
+
+// d: query header if the bluetooth is hidden, when discoverabiliti is needed.
+// l: heading_pane_t1
+// w:
+// r: 3.2
+#define qtn_bt_is_hidden_java_header "Change discoverability?"
+
+// d: When the Infrared feature is disabled in runtime, a global information note is shown to the user when Infrared reception is tried to be activated..
+// l: popup_note_window
+// w:
+// r: 3.2
+#define qtn_ir_not_supported  "Infrared not supported"
+
+// d: Confirmation query when use refuse the incoming connection request and want to block connection  >>> Isn't this a heading?
+// l: heading_pane_t1
+// w: 
+// r: 3.2
+#define qtn_bt_block_device_header "Block device?"
+
+// d: Confirmation query when use refuse the incoming connection request and want to block connection
+// l: popup_info_list_pane_t1
+// w: 
+// r: 3.2
+#define qtn_bt_block_all_conn_attempts "Do you want to block all future connection attempts from device %U?"
+
+// d: the link key to help in confirmation query when use refuse the incoming connection request and want to block connection from paired device
+// l: popup_info_list_pane_t1
+// w: 
+// r: 3.2
+#define qtn_bt_block_paired_device "Do you want to block all future connection attempts from paired device %U? \nThis will delete your pairing with the device."
+
+// d: Confirmation query when pairing is requested by the remote device
+// l: popup_note_window
+// w:
+// r: 3.2
+#define qtn_bt_accept_pairing_request "Device '%U' is trying to pair with you. Allow pairing?"
+
+// d: When VoIP call is on going over WLAN, BT device search is not allowed, a global information note is shown to the user.
+// l: popup_note_window
+// w:
+// r: 3.1
+#define qtn_bt_no_device_discovery_voip "While a VOIP call over WLAN is on-going, Bluetooth device discovery is not possible."
+
+// d: Query if the bluetooth is off, when java needs it. In this query %U will be substituted with requiring Java application's name.
+// l: popup_info_list_pane_t1
+// w:
+// r: 5.0
+#define qtn_bt_is_off_java_appname "The %U application you are using will not be fully functional while Bluetooth is off.\n\nDo you want to turn Bluetooth on?"
+
+// d: Query if the bluetooth is hidden, when discoverabiliti is needed. In this query %U will be substituted with requiring Java application's name.
+// l: popup_info_list_pane_t1
+// w:
+// r: 5.0
+#define qtn_bt_is_hidden_java_appname "The %U application you are using will not be fully functional when your visibility is set as ’Hidden? Do you want to change your Bluetooth visibility to ’Shown to all?"
+
+// d: If DOS attacked is detected, user is asked if bluetooth should be swtiched off.
+// l: popup_note_window
+// r: 5.0
+#define qtn_bt_dos_query "Switch Bluetooth off?"
+
+// d: If a blocked device is selected after searching devices starts, user is asked whether to unblock it.
+// l: popup_note_window
+// r: 5.0
+#define qtn_bt_unblock_device "%U is blocked. Do you want to unblock it?"
+
+// *** Information Notes for AVRCP1.3 *** 
+
+// d: the battery level of AVRCP1.3-supported accessory drops below "low" treshold
+// l: popup_note_window
+// r: 5.1
+#define qtn_bt_accessory_low "%U battery level low"
+
+// d: the battery level of AVRCP1.3-supported accessory drops below "critical" treshold
+// l: popup_note_window
+// r: 5.1
+#define qtn_bt_accessory_critical "%U battery level critical"
+
+// *** Query for Simple Pairing ***
+
+// d: Confirmation query when simple pairing procedure is needed. Check if Bluetooth passkeys shown in two devices match.
+// l: popup_note_window
+// d: %U contains device name, %U1 contains passkey.
+// r: 5.1
+#define qtn_bt_simple_passkey_comparison "Does this code match the one on %0U?\n\n%1U"
+
+// d: Query askes user to type the passkey code from remote input device.
+// d: %U contains device name %U1 contains passkey.
+// l: popup_note_window
+// r: 5.1
+#define qtn_bt_simple_passkey_entry "Enter on %0U:\n\n%1U"
+
+// *** Error notes for SSP ***
+
+// d: Error note if a timeout is exceeded before the user accepts or denies the query.
+// d: %U contains device name.
+// l: popup_note_window
+// r: 5.1
+#define qtn_bt_pairing_failed "Unable to pair with %U"
+
+// d: Warning note If the remote device is already in the process of pairing with another device.
+// l: popup_note_window
+// r: 5.1
+#define qtn_bt_simple_busy "Pairing failed. Remote device is pairing with another device." 
+
+// *** Notes and query for incoming authorization ***
+// d: Confirmation note shows pairing succeeded.
+// d: %U contains device name.
+// l: popup_note_window
+// r: 5.1
+#define qtn_bt_succesfully_paired "Pairing with %U complete" 
+
+// d: Confirmation query to set a Bluetooth device authorised after user has succesfully paired with the device.
+// l: popup_note_window
+//
+#define qtn_bt_authorisation_query "Authorise this device to make connections automatically?"
+
+//End

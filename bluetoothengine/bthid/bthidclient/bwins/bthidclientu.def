@@ -1,0 +1,12 @@
+EXPORTS
+	?CancelConnectDevice@RBTHidClient@@QBEXXZ @ 1 NONAME ; void RBTHidClient::CancelConnectDevice(void) const
+	?CancelNotifyStatusChange@RBTHidClient@@QBEXXZ @ 2 NONAME ; void RBTHidClient::CancelNotifyStatusChange(void) const
+	?Connect@RBTHidClient@@QAEHXZ @ 3 NONAME ; int RBTHidClient::Connect(void)
+	?ConnectDevice@RBTHidClient@@QAEXABV?$TPckgBuf@VTBTDevAddr@@@@AAVTDes8@@AAVTRequestStatus@@@Z @ 4 NONAME ; void RBTHidClient::ConnectDevice(class TPckgBuf<class TBTDevAddr> const &, class TDes8 &, class TRequestStatus &)
+	?DisconnectAllGracefully@RBTHidClient@@QAEXAAVTRequestStatus@@@Z @ 5 NONAME ; void RBTHidClient::DisconnectAllGracefully(class TRequestStatus &)
+	?DisconnectDevice@RBTHidClient@@QAEXABV?$TPckgBuf@VTBTDevAddr@@@@W4TBTDisconnectType@@AAVTRequestStatus@@@Z @ 6 NONAME ; void RBTHidClient::DisconnectDevice(class TPckgBuf<class TBTDevAddr> const &, enum TBTDisconnectType, class TRequestStatus &)
+	?GetConnections@RBTHidClient@@QAEXAAVTDes8@@H@Z @ 7 NONAME ; void RBTHidClient::GetConnections(class TDes8 &, int)
+	?IsConnected@RBTHidClient@@QAEHABVTBTDevAddr@@@Z @ 8 NONAME ; int RBTHidClient::IsConnected(class TBTDevAddr const &)
+	?NotifyStatusChange@RBTHidClient@@QAEXAAV?$TPckgBuf@VTHIDStateUpdate@@@@AAVTDes8@@AAVTRequestStatus@@@Z @ 9 NONAME ; void RBTHidClient::NotifyStatusChange(class TPckgBuf<class THIDStateUpdate> &, class TDes8 &, class TRequestStatus &)
+	?Version@RBTHidClient@@QBE?AVTVersion@@XZ @ 10 NONAME ; class TVersion RBTHidClient::Version(void) const
+

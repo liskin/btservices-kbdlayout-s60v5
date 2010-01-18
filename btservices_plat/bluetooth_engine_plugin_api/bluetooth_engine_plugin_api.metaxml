@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<api id="b3380dcc5aa13137dab3a65b94758a28" dataversion="2.0">
+  <name>Bluetooth Engine Plugin API</name>
+  <description>ECOM interface for managing connections to BT accessory</description>
+  <type>c++</type>
+  <collection>bluetoothengine</collection>
+  <libs>
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

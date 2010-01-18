@@ -1,0 +1,8 @@
+EXPORTS
+	_ZN16CBTAudioStreamer17SetNewFrameLengthEjj @ 1 NONAME
+	_ZN16CBTAudioStreamer4NewLEv @ 2 NONAME
+	_ZN16CBTAudioStreamer4StopEv @ 3 NONAME
+	_ZN16CBTAudioStreamer6StartLER7RSocketjP23CBTAudioStreamInputBasej @ 4 NONAME
+	_ZTI16CBTAudioStreamer @ 5 NONAME ; #<TI>#
+	_ZTV16CBTAudioStreamer @ 6 NONAME ; #<VT>#
+

@@ -1,0 +1,83 @@
+/*
+* Copyright (c) 2005-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for BTMonoCmdHandler
+*
+*/
+
+
+
+#include <platform_paths.hrh>
+#include "../inc/btmonocmdhandler/prjconfig.h"
+
+VENDORID VID_DEFAULT
+CAPABILITY  CAP_GENERAL_DLL
+
+TARGET        BTMonoCmdHandler.dll
+TARGETTYPE    dll
+UID           0x1000008d 0x1020897E
+
+SOURCEPATH    ../src/BTMonoCmdHandler
+SOURCE        btmchandlerapi.cpp
+SOURCE        btmcprotocol.cpp
+SOURCE        btmcprotdatabuf.cpp
+SOURCE        btmcphonestatus.cpp
+SOURCE        btmccallstatus.cpp
+SOURCE        btmcvolume.cpp
+SOURCE        HfpAtCmdhandler.cpp
+SOURCE        HFPAtEcomListen.cpp
+SOURCE        HFPAtUrcHandler.cpp
+
+#ifdef __PROTOCOL_CDMA
+SOURCE        BTMonoMobileLineCdma.cpp
+SOURCE        BTMonoCdmaIncomingFlash.cpp
+#else
+SOURCE        btmcmobileline.cpp
+#endif
+SOURCE        btmccallactive.cpp
+SOURCE        btmcactive.cpp
+SOURCE        btmcnumber.cpp
+SOURCE	      btmcsignal.cpp
+SOURCE	      btmcbattery.cpp
+SOURCE	      btmcoperator.cpp
+SOURCE	      btmccallinghandler.cpp
+
+USERINCLUDE   ../inc/btmonocmdhandler 
+USERINCLUDE   ../common
+USERINCLUDE   ../../inc 
+USERINCLUDE   ../../../inc
+
+APP_LAYER_SYSTEMINCLUDE
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY euser.lib
+LIBRARY etel.lib
+LIBRARY etelmm.lib
+LIBRARY ATCodec.lib
+LIBRARY	customapi.lib
+LIBRARY bluetooth.lib
+LIBRARY atextclient.lib
+
+LIBRARY mmfdevsound.lib 
+LIBRARY telephonyservice.lib
+#ifdef __PROTOCOL_CDMA
+LIBRARY etelcdma.lib
+#endif
+LIBRARY BAFL.lib
+LIBRARY btengdiscovery.lib
+#ifdef PRJ_FILE_TRACE
+LIBRARY flogger.lib
+#endif
+
+SOURCEPATH ../src/BTMonoCmdHandler
+SOURCE btmcvoipline.cpp

@@ -1,0 +1,8 @@
+<?xml version="1.0" standalone="yes"?>
+<backup_registration>
+    <passive_backup>
+    <proxy_data_manager SID="0x10202BE9" />
+    </passive_backup>
+  <system_backup/>
+  <restore requires_reboot = "no"/>
+</backup_registration>

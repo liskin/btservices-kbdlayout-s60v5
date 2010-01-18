@@ -1,0 +1,42 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  build file for btaudioman.
+*
+*/
+
+
+#include <platform_paths.hrh>
+
+PRJ_EXPORTS
+
+../expinc/BTAccPlugin.h	    |../../inc/btaccPlugin.h
+../expinc/BTAccPlugin.inl	|../../inc/btaccPlugin.inl
+
+../expinc/BTAccParams.h		|../../inc/btaccParams.h
+../expinc/BTAccParams.inl	|../../inc/btaccParams.inl
+
+../expinc/BTAccObserver.h	|../../inc/btaccObserver.h
+
+../expinc/BTAccTypes.h		|../../inc/btaccTypes.h	
+
+../expinc/BTAccPluginUid.h  |../../inc/btaccPluginUid.h			
+
+../rom/btaudioman.iby  CORE_MW_LAYER_IBY_EXPORT_PATH(btaudioman.iby)
+
+
+PRJ_MMPFILES
+
+btaudiomanclient.mmp
+btaudioman.mmp
+

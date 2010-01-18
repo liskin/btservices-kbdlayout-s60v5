@@ -1,0 +1,7 @@
+EXPORTS
+	_Z15CreateCAnimDllLv @ 1 NONAME
+	_ZTI15CMouseCursorSrv @ 2 NONAME ; #<TI>#
+	_ZTI6CImage @ 3 NONAME ; #<TI>#
+	_ZTV15CMouseCursorSrv @ 4 NONAME ; #<VT>#
+	_ZTV6CImage @ 5 NONAME ; #<VT>#
+

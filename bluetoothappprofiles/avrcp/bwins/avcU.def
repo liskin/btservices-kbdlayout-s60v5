@@ -1,0 +1,24 @@
+EXPORTS
+	??1CAVCFrame@@UAE@XZ @ 1 NONAME ; CAVCFrame::~CAVCFrame(void)
+	??ACAVCFrame@@QBEABEH@Z @ 2 NONAME ; unsigned char const & CAVCFrame::operator[](int) const
+	?Append@CAVCFrame@@QAEXABVTDesC8@@@Z @ 3 NONAME ; void CAVCFrame::Append(class TDesC8 const &)
+	?Append@CAVCFrame@@QAEXVTChar@@@Z @ 4 NONAME ; void CAVCFrame::Append(class TChar)
+	?ButtonAct@CAVCFrame@@QBEHAAW4TButtonAction@AVCPanel@@@Z @ 5 NONAME ; int CAVCFrame::ButtonAct(enum AVCPanel::TButtonAction &) const
+	?Data@CAVCFrame@@QBEABVTDesC8@@XZ @ 6 NONAME ; class TDesC8 const & CAVCFrame::Data(void) const
+	?FrameType@CAVCFrame@@QBE?AW4TFrameType@AVC@@XZ @ 7 NONAME ; enum AVC::TFrameType CAVCFrame::FrameType(void) const
+	?FrameType@CAVCFrame@@SA?AW4TFrameType@AVC@@ABVTDesC8@@@Z @ 8 NONAME ; enum AVC::TFrameType CAVCFrame::FrameType(class TDesC8 const &)
+	?NewL@CAVCFrame@@SAPAV1@ABVTDesC8@@W4TFrameType@AVC@@@Z @ 9 NONAME ; class CAVCFrame * CAVCFrame::NewL(class TDesC8 const &, enum AVC::TFrameType)
+	?NewL@CAVCFrame@@SAPAV1@W4TFrameType@AVC@@W4TCType@3@W4TSubunitType@3@W4TSubunitID@3@@Z @ 10 NONAME ; class CAVCFrame * CAVCFrame::NewL(enum AVC::TFrameType, enum AVC::TCType, enum AVC::TSubunitType, enum AVC::TSubunitID)
+	?Opcode@CAVCFrame@@QBEEXZ @ 11 NONAME ; unsigned char CAVCFrame::Opcode(void) const
+	?OperationId@CAVCFrame@@QBEHAAE@Z @ 12 NONAME ; int CAVCFrame::OperationId(unsigned char &) const
+	?SetFrameType@CAVCFrame@@QAEXW4TFrameType@AVC@@@Z @ 13 NONAME ; void CAVCFrame::SetFrameType(enum AVC::TFrameType)
+	?SetType@CAVCFrame@@QAEXW4TCType@AVC@@@Z @ 14 NONAME ; void CAVCFrame::SetType(enum AVC::TCType)
+	?SubunitID@CAVCFrame@@QBE?AW4TSubunitID@AVC@@XZ @ 15 NONAME ; enum AVC::TSubunitID CAVCFrame::SubunitID(void) const
+	?SubunitType@CAVCFrame@@QBE?AW4TSubunitType@AVC@@XZ @ 16 NONAME ; enum AVC::TSubunitType CAVCFrame::SubunitType(void) const
+	?Type@CAVCFrame@@QBE?AW4TCType@AVC@@XZ @ 17 NONAME ; enum AVC::TCType CAVCFrame::Type(void) const
+	?DataLength@CAVCFrame@@QBEHXZ @ 18 NONAME ; int CAVCFrame::DataLength(void) const
+	?GetPayloadAndVID@CAVCVendorDependentCommand@@SA?AVTPtrC8@@ABVCAVCFrame@@AAI@Z @19
+	?GetPayloadAndVID@CAVCVendorUniquePassthroughCommand@@SA?AVTPtrC8@@ABVCAVCFrame@@AAI@Z @20
+	?NewL@CAVCPassthroughResponse@@SAPAVCAVCFrame@@XZ @21 ABSENT
+	?NewL@CAVCVendorDependentResponse@@SAPAVCAVCFrame@@I@Z @22
+	?OpcodeL@CAVCFrame@@SA?AW4TOpcode@AVC@@ABVTDesC8@@@Z @ 23 NONAME ; enum AVC::TOpcode CAVCFrame::OpcodeL(class TDesC8 const &)

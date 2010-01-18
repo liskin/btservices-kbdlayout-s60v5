@@ -1,0 +1,6 @@
+EXPORTS
+	??1CRemConGroupNavigationApiTarget@@UAE@XZ @ 1  NONAME ; CRemConGroupNavigationApiTarget::~CRemConGroupNavigationApiTarget(void)
+	?NewL@CRemConGroupNavigationApiTarget@@SAPAV1@AAVCRemConInterfaceSelector@@AAVMRemConGroupNavigationTargetObserver@@@Z @ 2  NONAME ; class CRemConGroupNavigationApiTarget * CRemConGroupNavigationApiTarget::NewL(class CRemConInterfaceSelector &, class MRemConGroupNavigationTargetObserver &)
+	?NextGroupResponse@CRemConGroupNavigationApiTarget@@QAEXAAPAVTRequestStatus@@H@Z @ 3  NONAME ; void CRemConGroupNavigationApiTarget::NextGroupResponse(class TRequestStatus * &, int)
+	?PreviousGroupResponse@CRemConGroupNavigationApiTarget@@QAEXAAPAVTRequestStatus@@H@Z @ 4  NONAME ; void CRemConGroupNavigationApiTarget::PreviousGroupResponse(class TRequestStatus * &, int)
+	?NewL@CRemConGroupNavigationApiTarget@@SAPAV1@AAVCRemConInterfaceSelector@@AAVMRemConGroupNavigationTargetObserver@@HH@Z @ 5 NONAME ; class CRemConGroupNavigationApiTarget * CRemConGroupNavigationApiTarget::NewL(class CRemConInterfaceSelector &, class MRemConGroupNavigationTargetObserver &, int, int)

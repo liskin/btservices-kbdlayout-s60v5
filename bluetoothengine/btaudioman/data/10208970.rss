@@ -1,0 +1,76 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  ECom resource definition Declares
+*
+*/
+
+
+
+// INCLUDES
+#include <ecom/registryinfov2.rh>
+#include <AsyServiceUids.h>
+
+RESOURCE REGISTRY_INFO BTAudioManPluginResource
+    {
+    resource_format_version = RESOURCE_FORMAT_VERSION_2;
+    dll_uid = 0x10208970;
+    interfaces = 
+        {
+         INTERFACE_INFO
+            {
+            // ASY plugin interface
+            interface_uid = KACCESSORYPLUGINAPIUID;
+            implementations = 
+                {
+                IMPLEMENTATION_INFO
+                    {
+                    implementation_uid = 0x1020897C;
+                    version_no         = 1;
+                    display_name       = "0x1020897B";
+                    default_data       = KACCESSORYPLUGINAPIMAINSERVICE;      
+                    opaque_data        = "Heap=0x1000|Stack=0x1000";
+                    rom_only           = 1;      
+                    },
+                IMPLEMENTATION_INFO
+                    {
+                    implementation_uid = 0x1020897D;
+                    version_no         = 1;
+                    display_name       = "0x1020897B";
+                    default_data       = KACCESSORYPLUGINAPIHANDLER;      
+                    opaque_data        = "";
+                    rom_only           = 1;
+                    }
+                };
+            },
+        INTERFACE_INFO
+            {
+            // BTEng plugin interface
+            interface_uid = 0x2000277B;
+            implementations = 
+                {
+                IMPLEMENTATION_INFO
+                    {
+                    implementation_uid = 0x1020897B;
+                    version_no         = 1;
+                    display_name       = "btaudioman";
+                    default_data       = "1108";
+                    opaque_data        = "";
+                    rom_only           = 1;    
+                    }
+                };
+            }
+       };
+    }
+
+// End of File

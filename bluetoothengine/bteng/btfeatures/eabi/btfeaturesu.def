@@ -1,0 +1,4 @@
+EXPORTS
+	_ZN17BluetoothFeatures21EnterpriseEnablementLEv @ 1 NONAME
+	_ZN17BluetoothFeatures24SetEnterpriseEnablementLENS_25TEnterpriseEnablementModeE @ 2 NONAME
+

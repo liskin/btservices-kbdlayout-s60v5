@@ -1,0 +1,49 @@
+/*
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  
+*
+*/
+
+#include <platform_paths.hrh>
+
+CAPABILITY 	CAP_ECOM_PLUGIN
+
+VENDORID VID_DEFAULT
+
+TARGET      atextpluginstub.dll
+TARGETTYPE	PLUGIN
+UID         0x10009D8D 0xE000B183 
+
+SOURCEPATH  ../src
+SOURCE      pluginproxy.cpp
+SOURCE      pluginstub.cpp
+SOURCE      genericactive.cpp
+
+USERINCLUDE ../inc
+
+SYSTEMINCLUDE /epoc32/include/ecom 
+
+MW_LAYER_SYSTEMINCLUDE
+
+START RESOURCE  ../src/E000B183.RSS
+TARGET atextpluginstub.rsc
+END
+
+LIBRARY	ECom.lib
+LIBRARY euser.lib
+LIBRARY atextpluginbase.lib
+
+
+
+// End of File

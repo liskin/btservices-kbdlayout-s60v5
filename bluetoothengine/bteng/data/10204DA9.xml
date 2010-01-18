@@ -1,0 +1,8 @@
+<PowerSaveModeConfig>
+    <Setting mode="0">
+        <SetItem key="1" type="0" value="0" block="0"/>
+    </Setting>
+    <Setting mode="1">
+        <SetItem key="1" type="0" value="0" block="1"/>
+    </Setting>
+</PowerSaveModeConfig>

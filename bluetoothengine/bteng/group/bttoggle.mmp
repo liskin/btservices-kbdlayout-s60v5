@@ -1,0 +1,50 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project ?myapp
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+
+TARGET		  	bttoggle.exe
+TARGETTYPE	  	exe
+UID				0x100039CE 0x2001FD3D
+
+CAPABILITY 		CAP_APPLICATION WriteDeviceData LocalServices NetworkControl
+VENDORID        VID_DEFAULT
+
+SOURCEPATH	  ../bttoggle/src
+SOURCE 			bttoggle.cpp
+
+START RESOURCE ../../data/bttoggle_reg.rss
+TARGETPATH /private/10003a3f/apps
+END
+
+USERINCLUDE	 ../bttoggle/inc
+USERINCLUDE	 ../inc
+
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY		 euser.lib					// Base library
+LIBRARY 	 btengsettings.lib			// Bluetooth Settings
+LIBRARY 	 centralrepository.lib		// CenRep  
+LIBRARY      bluetooth.lib           	// Bluetooth Sockets
+LIBRARY 	 avkon.lib					// AVKON 
+
+DEBUGLIBRARY flogger.lib
+
+
+                      

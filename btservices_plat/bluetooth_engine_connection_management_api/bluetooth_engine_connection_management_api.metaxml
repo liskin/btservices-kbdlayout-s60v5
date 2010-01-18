@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<api id="c96b171f87c2854bb9fb956ee63cc207" dataversion="2.0">
+  <name>Bluetooth Engine Connection Management API</name>
+  <description>for managing connections with remote BT devices</description>
+  <type>c++</type>
+  <collection>bluetoothengine</collection>
+  <libs>
+    <lib name="btengconnman.lib" />
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

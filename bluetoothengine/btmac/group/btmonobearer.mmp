@@ -1,0 +1,53 @@
+/*
+* Copyright (c) 2005-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for BTMonoBearer
+*
+*/
+
+
+#include <remcon/remconservercaps.mmh>
+#include <platform_paths.hrh>
+#include "../inc/btmonobearer/prjconfig.h"
+
+TARGET      btmonobearer.dll
+TARGETTYPE		PLUGIN
+UID  0x10009d8d 0x10204DB2
+
+VENDORID VID_DEFAULT
+
+START RESOURCE ../data/10204DB2.rss
+target btmonobearer.rsc
+END
+
+SOURCEPATH  ../src/btmonobearer
+
+SOURCE      bmbplugin.cpp
+SOURCE      bmbmain.cpp
+SOURCE		bmbcmdlistener.cpp
+SOURCE		playercontrolistener.cpp
+
+USERINCLUDE ../inc/btmonobearer ../common
+SYSTEMINCLUDE ../../inc ../../../inc  /epoc32/include/ecom
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY         euser.lib 
+LIBRARY         bluetooth.lib
+LIBRARY			remconbearerplugin.lib 
+LIBRARY			remcontypes.lib
+LIBRARY			ATCodec.lib
+
+#ifdef PRJ_FILE_TRACE
+LIBRARY flogger.lib
+#endif
+

@@ -1,0 +1,11 @@
+EXPORTS
+	??0RLayoutManager@@QAE@XZ @ 1 NONAME ; RLayoutManager::RLayoutManager(void)
+	?Connect@RLayoutManager@@QAEHXZ @ 2 NONAME ; int RLayoutManager::Connect(void)
+	?GetDeviceInfo@RLayoutManager@@QBEHAAH0@Z @ 3 NONAME ; int RLayoutManager::GetDeviceInfo(int &, int &) const
+	?GetInitialLayout@RLayoutManager@@QBEHAAH@Z @ 4 NONAME ; int RLayoutManager::GetInitialLayout(int &) const
+	?GetLayout@RLayoutManager@@QBEHAAH@Z @ 5 NONAME ; int RLayoutManager::GetLayout(int &) const
+	?KeyEvent@RLayoutManager@@QBEHHHHHABVTLockKeys@@AAVTDecodedKeyInfo@@@Z @ 6 NONAME ; int RLayoutManager::KeyEvent(int, int, int, int, class TLockKeys const &, class TDecodedKeyInfo &) const
+	?Reset@RLayoutManager@@QBEHXZ @ 7 NONAME ; int RLayoutManager::Reset(void) const
+	?SetInitialLayout@RLayoutManager@@QBEHHHH@Z @ 8 NONAME ; int RLayoutManager::SetInitialLayout(int, int, int) const
+	?SetLayout@RLayoutManager@@QBEHH@Z @ 9 NONAME ; int RLayoutManager::SetLayout(int) const
+

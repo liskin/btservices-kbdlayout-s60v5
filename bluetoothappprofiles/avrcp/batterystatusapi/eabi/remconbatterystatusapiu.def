@@ -1,0 +1,5 @@
+EXPORTS
+	_ZN23CRemConBatteryApiTarget4NewLER24CRemConInterfaceSelectorR28MRemConBatteryTargetObserver @1 NONAME
+	_ZN23CRemConBatteryApiTargetD0Ev @2 NONAME
+	_ZN23CRemConBatteryApiTargetD1Ev @3 NONAME
+	_ZN23CRemConBatteryApiTargetD2Ev @4 NONAME

@@ -1,0 +1,59 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include "../../../inc/hiduids.h"
+
+TARGET        hidmouse.dll
+TARGETTYPE    PLUGIN
+UID           ECOM_UID MOUSE_UID
+
+CAPABILITY    CAP_APPLICATION
+VENDORID      VID_DEFAULT
+
+
+USERINCLUDE   ../inc
+USERINCLUDE   ../../../inc
+USERINCLUDE   ../../../common/inc
+USERINCLUDE   ../../Sesame_client/inc
+
+SOURCEPATH    ../src
+SOURCE        mouse.cpp
+SOURCE        finder.cpp
+SOURCE        hidmousedriverproxy.cpp
+
+
+MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE  ../../../../../inc
+
+SOURCEPATH		../data 
+START RESOURCE          hidmouse.rss 
+#ifdef SYMBIAN_SECURE_ECOM
+TARGET                  hidmouse.rsc
+#endif
+END // ECOM resource definition
+
+LIBRARY       apgrfx.lib
+LIBRARY       euser.lib
+LIBRARY       ecom.lib
+LIBRARY       ws32.lib 
+LIBRARY       kbdclient.lib
+LIBRARY       generichid.lib
+LIBRARY       apparc.lib 
+DEBUGLIBRARY       flogger.lib
+

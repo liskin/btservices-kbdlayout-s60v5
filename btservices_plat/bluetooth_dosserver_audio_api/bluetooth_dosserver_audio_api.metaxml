@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<api id="5bf9c546f5f02a41bf068f08728638f9" dataversion="2.0">
+  <name>Bluetooth DosServer Audio API</name>
+  <description>Used for Bluetooth audio routing via the DosServer. The API is deprecated wherever the Accessory Framework is in place.</description>
+  <type>c++</type>
+  <collection>bluetoothengine</collection>
+  <libs>
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

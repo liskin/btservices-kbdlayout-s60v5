@@ -1,0 +1,4 @@
+EXPORTS
+	?SetEnterpriseEnablementL@BluetoothFeatures@@YAXW4TEnterpriseEnablementMode@1@@Z @ 1 NONAME ; void BluetoothFeatures::SetEnterpriseEnablementL(enum BluetoothFeatures::TEnterpriseEnablementMode)
+	?EnterpriseEnablementL@BluetoothFeatures@@YA?AW4TEnterpriseEnablementMode@1@XZ @ 2 NONAME ; enum BluetoothFeatures::TEnterpriseEnablementMode BluetoothFeatures::EnterpriseEnablementL(void)
+

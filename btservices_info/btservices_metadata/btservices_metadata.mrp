@@ -1,0 +1,6 @@
+component           btservices_metadata
+source   \sf\mw\btservices\btservices_info\btservices_metadata 
+source   \sf\mw\btservices\package_definition.xml
+source   \sf\mw\btservices\distribution.policy.s60
+notes_source      \component_defs\release.src
+ipr T 

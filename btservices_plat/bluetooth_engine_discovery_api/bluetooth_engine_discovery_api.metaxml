@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<api id="1ebb98f1c1afb455e0aaa341376b3874" dataversion="2.0">
+  <name>Bluetooth Engine Discovery API</name>
+  <description>for searching remote devices and discovering their services.</description>
+  <type>c++</type>
+  <collection>bluetoothengine</collection>
+  <libs>
+    <lib name="btengdiscovery.lib" />
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

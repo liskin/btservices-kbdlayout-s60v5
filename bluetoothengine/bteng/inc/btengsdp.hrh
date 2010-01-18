@@ -1,0 +1,120 @@
+/*
+* Copyright (c) 2002-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource headers for Bluetooth Engine SDP attribute 
+*                definitions and values.
+*
+*/
+
+
+
+#ifndef BTENGSDP_HRH
+#define BTENGSDP_HRH
+
+
+/** SDP assigned numbers and implementation specific definitions. 
+ *  These constants are according to specifications of Bluetooth 
+ *  profiles. Attribute definitions can be found from the SDP 
+ *  specification in BT 2.0 Core specification.
+ */
+
+/** SDP attribute identifier codes */
+enum TSdpAttributeId
+    {
+    EServiceRecordHandle            = 0x0000,
+    EServiceClassIDList             = 0x0001,
+    EServiceRecordState             = 0x0002,
+    EServiceID                      = 0x0003,
+    EProtocolDescriptorList         = 0x0004,
+    EBrowseGroupList                = 0x0005,
+    ELanguageBaseAttributeIDList    = 0x0006,
+    EServiceInfoTimeToLive          = 0x0007,
+    EServiceAvailability            = 0x0008,
+    EProfileDescriptorList          = 0x0009,
+    EDocumentationURL               = 0x000A,
+    EClientExecutableURL            = 0x000B,
+    EIconURL                        = 0x000C,
+    EAdditionalProtocolDescLists    = 0x000D,
+    EDefaultNameOffset              = 0x0100,
+    EVersionNumberList              = 0x0200,
+    EServiceVersion                 = 0x0300,
+    EHFNetwork                      = 0x0301,
+    ERemoteVolumeControl            = 0x0302,
+    ESupportedFormatsList           = 0x0303,
+    EAudioFeedbackSupport           = 0x0305,
+    ESecurityDescription            = 0x030A,
+    ENetAccessType                  = 0x030B,
+    ESupportedCapabilities          = 0x0310,
+    ESupportedFeatures              = 0x0311,
+    ESupportedFunctions             = 0x0312,
+    ETotalImagingDataCapacity       = 0x0313,
+    ESupportedRepositories          = 0x0314
+    };
+
+/** Protocol UUIDs */
+enum TSdpProtocolDescriptor
+    {
+    EProtocolSDP                    = 0x0001,
+    EProtocolRFCOMM                 = 0x0003,
+    EProtocolOBEX                   = 0x0008,
+    EProtocolBNEP                   = 0x000F,
+    EProtocolHIDP                   = 0x0011,
+    EProtocolAVCTP                  = 0x0017,
+    EProtocolAVDTP                  = 0x0019,
+    EProtocol2CAP                   = 0x0100
+    };
+
+/** Default Language Attributes */
+enum TSdpLanguageBase
+    {
+    ELangValue                      = 0x454e,   // "EN"
+    ECharacterSetValue              = 0x006a,   // UTF-8
+    ELangBaseIDValue                = 0x0100
+    };
+
+/** Public browse group UUID */
+enum TSdpBrowseGroup
+    {
+    EPublicBrowseGroup = 0x1002
+    };
+
+/** Attribute IDs for the Device Identification profile */
+enum TDIAttributeId
+    {
+    ESpecificationID                = 0x0200,
+    EVendorID                       = 0x0201,
+    EProductID                      = 0x0202,
+    EVersion                        = 0x0203,
+    EPrimaryRecord                  = 0x0204,
+    EVendorIDSource                 = 0x0205
+    };
+
+/** Date element types */
+enum TResourceElementType
+    {
+    EElemTypeWord                   = 1,
+    EElemTypeLong                   = 2,
+    EElemTypeUUID                   = 3,
+    EElemTypeText                   = 4,
+    EElemTypeByte                   = 5,
+    EElemTypeList                   = 6,
+    EElemTypeUUID128                = 7,
+    EElemTypeLink                   = 8,
+    EElemTypeLong64                 = 9,
+    EElemTypeBool                   = 10
+    };
+
+/** Maximum string length */
+#define TEXT_LEN_MAX 34
+
+#endif // BTENGSDP_HRH

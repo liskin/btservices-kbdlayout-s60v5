@@ -1,0 +1,54 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition
+*
+*/
+
+
+#include <platform_paths.hrh>
+
+VENDORID VID_DEFAULT
+
+CAPABILITY      CAP_ECOM_PLUGIN
+
+TARGET        bthidengplugin.dll
+TARGETTYPE    PLUGIN
+
+UID 0x10009d8d 0x2001E308
+
+USERINCLUDE     ../inc  
+USERINCLUDE     ../../inc 
+USERINCLUDE     ../../common/inc  
+USERINCLUDE     ../../bthidclient/inc 
+USERINCLUDE     ../../bthidserver/inc
+
+MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE   ../../../../inc 
+
+START RESOURCE ../data/2001E308.rss
+	TARGET bthidengplugin.rsc
+END
+
+LIBRARY     ecom.lib
+LIBRARY     euser.lib               // Kernel API
+LIBRARY     esock.lib               // socket API
+LIBRARY     bluetooth.lib           // BTDevAddr, BTSockAddr
+LIBRARY     bthidclient.lib
+
+LIBRARY     flogger.lib
+
+SOURCEPATH ../src
+SOURCE bthidengplugin.cpp bthidproxy.cpp genericactive.cpp 
+
+//End of File

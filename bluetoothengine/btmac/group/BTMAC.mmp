@@ -1,0 +1,82 @@
+/*
+* Copyright (c) 2005-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for BTMAC
+*
+*/
+
+#include <platform_paths.hrh>
+#include "../inc/btmac/prjconfig.h"
+
+TARGET      btmac.dll
+TARGETTYPE	PLUGIN			
+UID         0x10009D8D 0x101F4689 
+
+CAPABILITY 	CAP_ECOM_PLUGIN
+VENDORID VID_DEFAULT
+
+START RESOURCE  ../data/101f4689.rss
+TARGET btmac.rsc
+END
+
+
+SOURCEPATH  ../src/btmac
+SOURCE      btmproxy.cpp
+SOURCE      btmman.cpp
+SOURCE      btmrfcommsock.cpp
+SOURCE      btmsyncsock.cpp
+SOURCE      btmsockobserver.cpp
+SOURCE      btmactive.cpp
+SOURCE      btmstate.cpp
+SOURCE      btmsidle.cpp
+SOURCE      btmsconnect.cpp
+SOURCE      btmslisten.cpp
+SOURCE      btmsinuse.cpp
+SOURCE      btmsrfcomm.cpp
+SOURCE      btmsctrl.cpp
+SOURCE      btmssniffm.cpp
+SOURCE      btmsopenaudio.cpp
+SOURCE      btmscloseaudio.cpp
+SOURCE      btmsaudio.cpp
+SOURCE      btmstempd.cpp
+SOURCE      btmsreconnect.cpp
+SOURCE      btmsdisconnect.cpp
+
+USERINCLUDE ../inc/btmac ../common
+SYSTEMINCLUDE ../../inc ../../../inc /epoc32/include/ecom
+MW_LAYER_SYSTEMINCLUDE
+LIBRARY	ecom.lib
+LIBRARY euser.lib
+LIBRARY esock.lib
+LIBRARY centralrepository.lib
+
+#ifdef PRJ_USE_STUB
+LIBRARY bluetooth_stub.lib
+LIBRARY BTMonoCmdHandler_stub.lib
+LIBRARY bteng_stub.lib
+#else
+LIBRARY bluetooth.lib
+LIBRARY BTMonoCmdHandler.lib
+#endif
+LIBRARY atcodec.lib
+
+LIBRARY btdevice.lib    // BT Device
+LIBRARY BAFL.lib        // Des array
+LIBRARY btengdiscovery.lib
+
+#ifdef PRJ_FILE_TRACE
+LIBRARY flogger.lib
+#endif
+
+
+// End of File

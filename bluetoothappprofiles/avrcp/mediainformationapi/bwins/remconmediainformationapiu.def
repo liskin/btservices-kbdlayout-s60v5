@@ -1,0 +1,9 @@
+EXPORTS
+	??1CRemConMediaInformationTarget@@UAE@XZ @ 1 NONAME ; CRemConMediaInformationTarget::~CRemConMediaInformationTarget(void)
+	?AttributeValue@CRemConMediaInformationTarget@@QAEHW4TMediaAttributeId@@AAVTDesC8@@@Z @ 2 NONAME ; void CRemConMediaInformationTarget::AttributeValue(enum TMediaAttributeID, class TDesC8 &)
+	?Completed@CRemConMediaInformationTarget@@QAEXXZ @ 3 NONAME ; void CRemConMediaInformationTarget::Completed(void)
+	?NewL@CRemConMediaInformationTarget@@SAPAV1@AAVCRemConInterfaceSelector@@AAVMRemConMediaInformationTargetObserver@@@Z @ 4 NONAME ; class CRemConMediaInformationTarget * CRemConMediaInformationTarget::NewL(class CRemConInterfaceSelector &, class MRemConMediaInformationTargetObserver &)
+	?Next@TMediaAttributeIter@@QAEHAAW4TMediaAttributeId@@@Z @ 5 NONAME
+	?Start@TMediaAttributeIter@@QAEXXZ @ 6 NONAME
+	??0TMediaAttributeIter@@QAE@AAV?$RArray@W4TMediaAttributeId@@@@@Z @ 7 NONAME ; TMediaAttributeIter::TMediaAttributeIter(class RArray<enum TMediaAttributeId> &)
+

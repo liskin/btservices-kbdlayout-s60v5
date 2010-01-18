@@ -1,0 +1,8 @@
+EXPORTS
+	??1CRemConNowPlayingTargetBase@@MAE@XZ @ 1 NONAME ; CRemConNowPlayingTargetBase::~CRemConNowPlayingTargetBase(void)
+	?NowPlayingContentChanged@CRemConNowPlayingTargetBase@@QAEXXZ @ 2 NONAME ; void CRemConNowPlayingTargetBase::NowPlayingContentChanged(void)
+	?NewL@CRemConDatabaseAwareNowPlayingTarget@@SAPAV1@AAVCRemConInterfaceSelector@@AAVMRemConDatabaseAwareNowPlayingTargetObserver@@@Z @ 3 NONAME ; class CRemConDatabaseAwareNowPlayingTarget * CRemConDatabaseAwareNowPlayingTarget::NewL(class CRemConInterfaceSelector &, class MRemConDatabaseAwareNowPlayingTargetObserver &)
+	?AddToNowPlayingResponse@CRemConNowPlayingTargetBase@@QAEXH@Z @ 4 NONAME ; void CRemConNowPlayingTargetBase::AddToNowPlayingResponse(int)
+	?NewL@CRemConDatabaseUnawareNowPlayingTarget@@SAPAV1@AAVCRemConInterfaceSelector@@AAVMRemConDatabaseUnawareNowPlayingTargetObserver@@@Z @ 5 NONAME ; class CRemConDatabaseUnawareNowPlayingTarget * CRemConDatabaseUnawareNowPlayingTarget::NewL(class CRemConInterfaceSelector &, class MRemConDatabaseUnawareNowPlayingTargetObserver &)
+	?PlayItemResponse@CRemConNowPlayingTargetBase@@QAEXH@Z @ 6 NONAME ; void CRemConNowPlayingTargetBase::PlayItemResponse(int)
+

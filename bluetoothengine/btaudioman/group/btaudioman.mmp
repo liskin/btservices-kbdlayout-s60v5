@@ -1,0 +1,83 @@
+/*
+* Copyright (c) 2005-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is project specification file for the btaudioman.
+*	             Lists information necessary to compile and link the component.
+*
+*/
+
+#include <platform_paths.hrh>
+#include <bldvariant.hrh>
+#include "../inc/prjconfig.h"
+
+VENDORID VID_DEFAULT
+
+CAPABILITY  CAP_SERVER NetworkControl SurroundingsDD 
+
+TARGET        btaudioman.exe
+TARGETTYPE    exe
+
+UID           0x1000008d 0x10208971
+
+SOURCEPATH    ../src
+SOURCE        basrvmain.cpp
+SOURCE        BTAccServer.cpp
+SOURCE        basrvactive.cpp
+SOURCE        basrvpluginman.cpp
+SOURCE        basrvacc.cpp
+SOURCE        basrvaccstate.cpp
+SOURCE        basrvaccstatequery.cpp
+SOURCE        basrvaccstateconnect.cpp
+SOURCE        basrvaccstateattach.cpp
+SOURCE        basrvaccstateattached.cpp
+SOURCE        basrvaccstatedisconnect.cpp
+SOURCE        basrvaccstatedetach.cpp
+SOURCE        basrvactivenotifier.cpp
+SOURCE        basrvsdpquery.cpp
+SOURCE        BTAccInfo.cpp
+SOURCE        basrvaccman.cpp
+SOURCE        BTAccSession.cpp
+SOURCE		  basrvpowercontrolagent.cpp
+SOURCE        basrvrvc.cpp
+SOURCE        BTAccSession_accfw_var.cpp
+SOURCE        basrvaccman_accfw_var.cpp
+SOURCE        basrvaccfwconn.cpp
+
+USERINCLUDE     ../inc
+SYSTEMINCLUDE   ../../inc ../../../inc
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY			euser.lib
+LIBRARY         esock.lib 
+LIBRARY			ecom.lib
+LIBRARY			bluetooth.lib
+LIBRARY 		btdevice.lib
+LIBRARY         sdpdatabase.lib
+LIBRARY 		btmanclient.lib
+LIBRARY 		btengdevman.lib
+LIBRARY         centralrepository.lib
+LIBRARY 		AccPolicy.lib
+
+#ifdef PRJ_USE_STUB
+LIBRARY         sdpagent_stub.lib
+LIBRARY 		accclient_stub.lib
+LIBRARY 		accbtcontrol_stub.lib
+#else
+LIBRARY         sdpagent.lib
+LIBRARY 		accclient.lib
+LIBRARY 		accbtcontrol.lib
+#endif
+
+#ifdef PRJ_FILE_TRACE
+LIBRARY			flogger.lib
+#endif

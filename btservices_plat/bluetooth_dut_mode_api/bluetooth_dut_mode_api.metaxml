@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<api id="5c86c3f417ab0a336afc7cc8b9b79795" dataversion="2.0">
+  <name>Bluetooth DUT Mode API</name>
+  <description>defines a P&amp;S key for setting Device Under Test mode, and a P&amp;S key for setting Secure Simple Pairing debug mode</description>
+  <type>c++</type>
+  <collection>bluetoothengine</collection>
+  <libs>
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

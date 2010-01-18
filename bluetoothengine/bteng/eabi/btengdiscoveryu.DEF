@@ -1,0 +1,26 @@
+EXPORTS
+	_ZN15CBTEngDiscovery11SetNotifierEP23MBTEngSdpResultReceiver @ 1 NONAME
+	_ZN15CBTEngDiscovery14RemoteSdpQueryERK10TBTDevAddrRK5TUUID @ 2 NONAME
+	_ZN15CBTEngDiscovery14RemoteSdpQueryERK10TBTDevAddrRK5TUUIDt @ 3 NONAME
+	_ZN15CBTEngDiscovery14RemoteSdpQueryERK10TBTDevAddrmt @ 4 NONAME
+	_ZN15CBTEngDiscovery15DeleteSdpRecordEm @ 5 NONAME
+	_ZN15CBTEngDiscovery17RegisterSdpRecordERK5TUUIDjRm @ 6 NONAME
+	_ZN15CBTEngDiscovery18ParseRfcommChannelER6RArrayI18TBTEngSdpAttrValueERi @ 7 NONAME
+	_ZN15CBTEngDiscovery18SearchRemoteDeviceEP9CBTDevicej @ 8 NONAME
+	_ZN15CBTEngDiscovery20CancelRemoteSdpQueryEv @ 9 NONAME
+	_ZN15CBTEngDiscovery24CancelSearchRemoteDeviceEv @ 10 NONAME
+	_ZN15CBTEngDiscovery25ParseNextSdpAttrValueTypeER6RArrayI18TBTEngSdpAttrValueEiR15TSdpElementType @ 11 NONAME
+	_ZN15CBTEngDiscovery26RemoteProtocolChannelQueryERK10TBTDevAddrRK5TUUID @ 12 NONAME
+	_ZN15CBTEngDiscovery4NewLEP23MBTEngSdpResultReceiver @ 13 NONAME
+	_ZN15CBTEngDiscovery5NewLCEP23MBTEngSdpResultReceiver @ 14 NONAME
+	_ZTI15CBTEngDiscovery @ 15 NONAME ; #<TI>#
+	_ZTV15CBTEngDiscovery @ 16 NONAME ; #<VT>#
+	_ZN15CBTEngDiscovery24CloseRemoteSdpConnectionEv @ 17 NONAME
+	_ZN15CBTEngDiscovery18GetEirServiceUUIDsERK10TBTDevAddrP8TPckgBufI11TNameRecordE @ 18 NONAME
+	_ZN15CBTEngDiscovery18SearchRemoteDeviceEP9CBTDeviceP8TPckgBufI11TNameRecordEj @ 19 NONAME
+	_ZN15CBTEngDiscovery24CancelGetEirServiceUUIDsEv @ 20 NONAME
+	_ZN23MBTEngSdpResultReceiver20DeviceSearchCompleteEP9CBTDeviceP8TPckgBufI11TNameRecordEi @ 21 NONAME
+	_ZN23MBTEngSdpResultReceiver26GetEirServiceUUIDsCompleteEP8TPckgBufI11TNameRecordEi @ 22 NONAME
+	_ZTI23MBTEngSdpResultReceiver @ 23 NONAME ; #<TI>#
+	_ZTV23MBTEngSdpResultReceiver @ 24 NONAME ; #<VT>#
+

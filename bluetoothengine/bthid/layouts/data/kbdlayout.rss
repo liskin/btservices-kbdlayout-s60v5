@@ -1,0 +1,148 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  ECOM plugin resource file for keyboard layouts.
+*
+*/
+
+#include <ecom/registryinfo.rh>
+#include "hiduids.h"
+
+RESOURCE REGISTRY_INFO theInfo
+	{
+	dll_uid     = LAYOUT_PLUGIN_UID; 
+	interfaces  = 
+		{
+		INTERFACE_INFO
+			{
+			interface_uid   = LAYOUT_PLUGIN_IF;  // HID driver interface UID
+			implementations = 
+				{
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = BELGIAN_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "Belgian Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = DANISH_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "Danish Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = DUTCH_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "Dutch Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = FINSWE_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "FinnishSwedish Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = FRENCH_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "French Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = GERMAN_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "German Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = ITALIAN_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "Italian Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = NORWEGIAN_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "Norwegian Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = PORTUGUESE_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "Portuguese Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = SPANISH_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "Spanish Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = SU8DANNOR_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "SU-8 DanishNorwegian Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = SU8FINSWE_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "SU-8 FinnishSwedish Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = SU8GERMAN_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "SU-8 German Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = SU8INTUSENGLISH_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "SU-8 US International Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = SU8RUSSIANINT_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "SU-8 Russian International Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = UK_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "United Kingdom Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = US_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "United States Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = USDVORAK_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "Unoted States Dvorak Keyboard Layout Plugin"; 
+					},
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = USINT_LAYOUT_IMP; 
+					version_no          = 1;
+					display_name        = "United States International Keyboard Layout Plugin"; 
+					}
+				};
+			}
+		};
+	}

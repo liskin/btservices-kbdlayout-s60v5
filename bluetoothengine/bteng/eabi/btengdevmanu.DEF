@@ -1,0 +1,14 @@
+EXPORTS
+	_ZN12CBTEngDevMan10GetDevicesERK17TBTRegistrySearchP13CArrayPtrFlatI9CBTDeviceE @ 1 NONAME
+	_ZN12CBTEngDevMan12ModifyDeviceERK9CBTDevice @ 2 NONAME
+	_ZN12CBTEngDevMan13DeleteDevicesERK17TBTRegistrySearch @ 3 NONAME
+	_ZN12CBTEngDevMan4NewLEP20MBTEngDevManObserver @ 4 NONAME
+	_ZN12CBTEngDevMan5NewLCEP20MBTEngDevManObserver @ 5 NONAME
+	_ZN12CBTEngDevMan9AddDeviceERK9CBTDevice @ 6 NONAME
+	_ZN20MBTEngDevManObserver20HandleDevManCompleteEi @ 7 NONAME
+	_ZN20MBTEngDevManObserver24HandleGetDevicesCompleteEiP13CArrayPtrFlatI9CBTDeviceE @ 8 NONAME
+	_ZTI12CBTEngDevMan @ 9 NONAME ; #<TI>#
+	_ZTI20MBTEngDevManObserver @ 10 NONAME ; #<TI>#
+	_ZTV12CBTEngDevMan @ 11 NONAME ; #<VT>#
+	_ZTV20MBTEngDevManObserver @ 12 NONAME ; #<VT>#
+

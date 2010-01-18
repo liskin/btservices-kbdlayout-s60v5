@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<test>
+    <id>1</id> 
+    <name> Local Connectivity API test</name>
+    <target>
+        <device rank="none" alias="DEFAULT">
+            <property name="HOST" value="4FID03666.NOE.Nokia.com" />
+            <property name="HARNESS" value="STIF" />
+        </device>
+    </target>
+    <plan id="1.1" name="LC API Test Plan" harness="STIF" enabled="true" passrate="100">
+        <session id="1.1.1" name="session" harness="STIF" enabled="true" passrate="100">
+            <set id="1.1.1.1" name="set" harness="STIF" enabled="true" passrate="100">
+                <target>
+                    <device rank="master" alias="DEFAULT"/>
+                </target>
+                <case id="1.1.1.1.1" name="LC API test" harness="STIF" enabled="true" passrate="100">
+        						<flash target-alias="DEFAULT" images="LCDo_APITestDrop/images/LCDo_test_API_rnd.fpsx" />
+        						<flash target-alias="DEFAULT" images="LCDo_APITestDrop/images/LCDo_test_API_rnd_erase.fpsx" />
+                   <step id="1.1.1.1.1.1" name="Install bteng test module" harness="STIF" significant="false">
+                        <command>install</command>
+                        <params>
+                            <param type="binary"/>
+                            <param src="btengapitest.dll"/>
+                            <param dst="c:\sys\bin\btengapitest.dll"/>
+                            <param component-path="LCDo_APITestDrop/components"/>
+                        </params>
+                    </step> 
+                    <step id="1.1.1.1.1.2" name="Install bteng test script" harness="STIF" enabled="true" passrate="100" significant="false">
+                        <command>install</command>
+                        <params>
+                            <param src="btengapi_scripter.cfg"/>
+                            <param dst="e:\testing\btengapi_scripter.cfg"/>
+                            <param component-path="LCDo_APITestDrop/general"/>
+                        </params>
+                    </step>
+                    <step id="1.1.1.1.1.3" name="Install obex service test module" harness="STIF" significant="false">
+                        <command>install</command>
+                        <params>
+                            <param type="binary"/>
+                            <param src="obexservapitest.dll"/>
+                            <param dst="c:\sys\bin\obexservapitest.dll"/>
+                            <param component-path="LCDo_APITestDrop/components"/>
+                        </params>
+                    </step> 
+                    <step id="1.1.1.1.1.4" name="Install obex service test script" harness="STIF" enabled="true" passrate="100" significant="false">
+                        <command>install</command>
+                        <params>
+                            <param src="obexservapitest.cfg"/>
+                            <param dst="e:\testing\obexservapitest.cfg"/>
+                            <param component-path="LCDo_APITestDrop/general"/>
+                        </params>
+                    </step>
+                    <step id="1.1.1.1.1.5" name="Install AT EXT plugin API test module" harness="STIF" significant="false">
+                        <command>install</command>
+                        <params>
+                            <param type="binary"/>
+                            <param src="atextpluginapitest.dll"/>
+                            <param dst="c:\sys\bin\atextpluginapitest.dll"/>
+                            <param component-path="LCDo_APITestDrop/components"/>
+                        </params>
+                    </step> 
+                    
+                    <step id="1.1.1.1.1.6" name="Install AT EXT plugin API test script" harness="STIF" enabled="true" passrate="100" significant="false">
+                        <command>install</command>
+                        <params>
+                            <param src="atextpluginapi_scripter.cfg"/>
+                            <param dst="e:\testing\atextpluginapi_scripter.cfg"/>
+                            <param component-path="LCDo_APITestDrop/general"/>
+                        </params>
+                    </step>   
+                    
+                    <step id="1.1.1.1.1.7" name="Install AT EXT plugin STUB" harness="STIF" significant="false">
+                        <command>install</command>
+                        <params>
+                            <param type="binary"/>
+                            <param src="atextpluginstub.dll"/>
+                            <param dst="c:\sys\bin\atextpluginstub.dll"/>
+                            <param component-path="LCDo_APITestDrop/components"/>
+                        </params>
+                    </step>
+                    <step id="1.1.1.1.1.8" name="Install AT EXT plugin STUB rsc" harness="STIF" significant="false">
+                        <command>install</command>
+                        <params>
+                            <param src="atextpluginstub.rsc"/>
+                            <param dst="c:\resource\plugins\atextpluginstub.rsc"/>
+                            <param component-path="LCDo_APITestDrop/general"/>
+                        </params>
+                    </step>                    
+                    
+                                        
+										<step id="1.1.1.1.1.9" name="Create CTC log dir" harness="STIF" enabled="true" passrate="100" significant="false">
+												<command>makedir</command>
+														<params>
+																<param dir="c:\data\ctc\"/>
+														</params>
+										</step>
+                		<step id="1.1.1.1.1.10" name="Make logging dir" harness="STIF" enabled="true" passrate="100" significant="false">
+                    		<command>makedir</command>
+                    		<params>
+                        		<param dir="e:\logs\btengapitest"/>
+                    		</params>
+                		</step>
+                		<step id="1.1.1.1.1.11" name="Make logging dir" harness="STIF" enabled="true" passrate="100" significant="false">
+                    		<command>makedir</command>
+                    		<params>
+                        		<param dir="e:\logs\ObexServAPItest"/>
+                    		</params>
+                		</step>         
+                		<step id="1.1.1.1.1.12" name="Make logging dir" harness="STIF" enabled="true" passrate="100" significant="false">
+                    		<command>makedir</command>
+                    		<params>
+                        		<param dir="e:\logs\atextpluginapitest"/>
+                    		</params>
+                		</step>                    		       		
+		                <step id="1.1.1.1.1.101" name="Test obex service APIs" harness="STIF" enabled="true" passrate="100" significant="true">
+		                    <command>run-cases</command>
+		                    <params>
+		        							<param module="TestScripter"/>
+		        							<param testcase-file="e:\testing\obexservapitest.cfg"/>
+		        							<param timeout="6000"/>
+		                    </params>
+		                </step>	
+		                <step id="1.1.1.1.1.102" name="Test bteng APIs" harness="STIF" enabled="true" passrate="100" significant="true">
+		                    <command>run-cases</command>
+		                    <params>
+		        							<param module="TestScripter"/>
+		        							<param testcase-file="e:\testing\btengapi_scripter.cfg"/>
+		        							<param timeout="6000"/>		        							
+		                    </params>
+		                </step>
+		                <step id="1.1.1.1.1.103" name="Test AT EXT Plugin APIs" harness="STIF" enabled="true" passrate="100" significant="true">
+		                    <command>run-cases</command>
+		                    <params>
+		        							<param module="TestScripter"/>
+		        							<param testcase-file="e:\testing\atextpluginapi_scripter.cfg"/>
+		        							<param timeout="6000"/>		        							
+		                    </params>
+		                </step>		                
+										<step id="1.1.1.1.1.200" name="Save CTC data" harness="STIF" enabled="true" passrate="100" significant="false">
+											<command>execute</command>
+											<params>
+												<param parameters="writefile"/>
+												<param file="z:\sys\bin\ctcman.exe"/>
+											</params>
+										</step>
+                    <step id="1.1.1.1.1.201" name="Fetch test results" harness="STIF" enabled="true" passrate="100" significant="false">
+                        <command>fetch-log</command>
+                            <params>
+				  							        <param type="text"/>
+				  							        <param delete="true"/>
+				  							        <param path="C:\logs\TestFramework\*"/>
+                            </params>
+                   </step>                    
+                    <step id="1.1.1.1.1.202" name="Fetch test results" harness="STIF" enabled="true" passrate="100" significant="false">
+                       <command>fetch-log</command>
+                           <params>
+                               <param path="e:\logs\btengapitest\*"/>
+                               <param delete="true"/>
+                           </params>                             
+                   </step>                                    
+                    <step id="1.1.1.1.1.203" name="Fetch test results" harness="STIF" enabled="true" passrate="100" significant="false">
+                       <command>fetch-log</command>
+                           <params>
+                               <param path="e:\logs\ObexServAPItest\*"/>
+                               <param delete="true"/>
+                           </params>                                                 
+                   </step>
+                    <step id="1.1.1.1.1.204" name="Fetch test results" harness="STIF" enabled="true" passrate="100" significant="false">
+                       <command>fetch-log</command>
+                           <params>
+                               <param path="e:\logs\atextpluginapitest\*"/>
+                               <param delete="true"/>
+                           </params>                                                     
+                   </step>          
+                    <step id="1.1.1.1.1.205" name="Fetch test results" harness="STIF" enabled="true" passrate="100" significant="false">
+                       <command>fetch-log</command>
+                           <params>
+                               <param path="c:\data\ctc\ctcdata.txt"/>
+                               <param delete="false"/>
+                           </params>                                                     
+                   </step>                                                                                                     
+                </case>
+            </set>
+        </session>
+    </plan>
+    <files>
+    		<file>LCDo_APITestDrop/images/LCDo_test_API_rnd.fpsx</file>
+        <file>LCDo_APITestDrop/images/LCDo_test_API_rnd_erase.fpsx</file>
+        <file>LCDo_APITestDrop/components/armv5_urel/btengapitest.dll</file>
+        <file>LCDo_APITestDrop/components/armv5_urel/obexservapitest.dll</file>
+        <file>LCDo_APITestDrop/components/armv5_urel/atextpluginapitest.dll</file>
+        <file>LCDo_APITestDrop/components/armv5_urel/atextpluginstub.dll</file>        
+        <file>LCDo_APITestDrop/general/atextpluginstub.rsc</file>
+        <file>LCDo_APITestDrop/general/btengapi_scripter.cfg</file>
+        <file>LCDo_APITestDrop/general/obexservapitest.cfg</file>
+        <file>LCDo_APITestDrop/general/atextpluginapi_scripter.cfg</file>
+    </files>
+
+ 		<postAction>
+        <type>FileStoreAction</type>
+        <params>
+            <param name="to-folder" value="\\jamppa\ATS\filestore\test_result_50"/>            
+        </params>
+    </postAction>
+
+</test>
+<!--
+		<report media="email">
+  			<type>ATS3_REPORT</type>
+  			<to>andreas.bjorklund@nokia.com;ext-aminul.2.islam@nokia.com;yongjiang.yu@nokia.com;jani.tikka@nokia.com;teemu.turkki@nokia.com</to>
+		</report>
+NOTE: Sending email reports requires following things to be defined from ATS3WebUI: 
+Administration->AUTOMATIC_EMAIL_REPORT:
+email.from (must contain domain)
+email.subject (subject of the sent email)
+Administration->SHARED:
+smtp.host
+smtp.port 
+-->

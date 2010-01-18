@@ -1,0 +1,47 @@
+/*
+* Copyright (c) 2004 - 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*
+*/
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+TARGET          BTcursor_server.dll
+TARGETTYPE      ani
+
+// The second one is the UID of the server, different than main program's UID
+UID 0x10003b22 0x2001FE5A
+
+CAPABILITY      CAP_CLIENT_DLL
+VENDORID        VID_DEFAULT
+
+DEFFILE btcursor_server.def
+
+SECUREID	    0xA000022E
+EPOCSTACKSIZE	0x5000
+
+USERINCLUDE     ../../Sesame_client/inc
+USERINCLUDE     ../inc
+SYSTEMINCLUDE   /epoc32/include
+APP_LAYER_SYSTEMINCLUDE
+
+SOURCEPATH      ../src
+SOURCE          mousecursorsrv.cpp mousecursorimage.cpp
+
+
+LIBRARY         euser.lib
+LIBRARY         fbscli.lib
+LIBRARY         bitgdi.lib
+// End of File
+

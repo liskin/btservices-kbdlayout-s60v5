@@ -1,0 +1,66 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+
+//  RESOURCE IDENTIFIER
+NAME    PACU // 4 letter ID
+
+#include <appinfo.rh>
+#include <data_caging_paths_strings.hrh>
+#include <eikon.rh>
+#include "paintcursor.loc"
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.hrh>
+#include <avkon.mbg>
+#include <avkon.loc>
+#include <paintcursor.mbg>
+
+
+//  RESOURCE DEFINITIONS 
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf="paintcursor"; }
+
+RESOURCE EIK_APP_INFO
+{
+    cba = r_hidmouse_softkeys_exit_hide;
+}
+
+
+RESOURCE CBA r_hidmouse_softkeys_exit_hide
+    {
+    buttons =
+        {
+        CBA_BUTTON {id=EAknSoftkeyExit; txt = qtn_options_exit;},
+        CBA_BUTTON {id=EAknSoftkeyBack; txt = qtn_softkey_hide;}
+        };
+    }
+
+RESOURCE LOCALISABLE_APP_INFO r_paintcursor_localisable_app_info
+	{
+	short_caption = qtn_app_short_caption_string;
+	caption_and_icon =
+	CAPTION_AND_ICON_INFO
+		{
+		caption = qtn_app_caption_string;
+		number_of_icons = 1;
+		icon_file = APP_BITMAP_DIR"\\paintcursor_aif.mif";
+		};
+	}
+
+// End of File

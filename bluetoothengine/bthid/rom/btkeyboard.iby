@@ -1,0 +1,49 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  
+ *
+*/
+
+#ifdef __BT
+
+#ifndef BTKeyboard_IBY
+#define BTKeyboard_IBY
+
+#include <bldvariant.hrh>
+
+//paintcursor Application(EXE)
+S60_APP_EXE(paintcursor)
+SCALABLE_IMAGE(APP_BITMAP_DIR,APP_BITMAP_DIR,paintcursor)
+S60_APP_AIF_ICONS(paintcursor)
+S60_APP_AIF_RSC(paintcursor)
+
+file=ABI_DIR\BUILD_DIR\bthidsettings.dll    SHARED_LIB_DIR\bthidsettings.dll
+file=ABI_DIR\BUILD_DIR\layoutmgr.exe        PROGRAMS_DIR\layoutmgr.exe
+file=ABI_DIR\BUILD_DIR\kbdclient.dll        SHARED_LIB_DIR\kbdclient.dll
+file=ABI_DIR\BUILD_DIR\bthidserver.exe      PROGRAMS_DIR\bthidserver.exe
+file=ABI_DIR\BUILD_DIR\bthidclient.dll      SHARED_LIB_DIR\bthidclient.dll
+file=ABI_DIR\BUILD_DIR\BTMouse_Animation_client.dll  SHARED_LIB_DIR\BTMouse_Animation_client.dll
+file=ABI_DIR\BUILD_DIR\BTcursor_server.dll           SHARED_LIB_DIR\BTcursor_server.dll
+ECOM_PLUGIN(hidkeyboard.dll, hidkeyboard.rsc)
+ECOM_PLUGIN(hidmouse.dll, hidmouse.rsc)
+ECOM_PLUGIN(kbdlayout.dll, kbdlayout.rsc)
+ECOM_PLUGIN(bthidkbdsettings.dll, bthidkbdsettings.rsc)
+ECOM_PLUGIN(bthidengplugin.dll, bthidengplugin.rsc)
+
+data=DATAZ_\APP_BITMAP_DIR\BTMouseBitMaps.mbm     APP_BITMAP_DIR\BTMouseBitMaps.mbm
+
+#endif //BTKeyboard_IBY
+
+#endif // __BT
+// End of File

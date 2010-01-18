@@ -1,0 +1,146 @@
+/*
+* Copyright (c) 2002-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Resource headers for Bluetooth Engine SDP record definitions.
+*
+*/
+
+
+
+#ifndef BTENGSDP_RH
+#define BTENGSDP_RH
+
+
+#include "btengsdp.hrh"
+
+
+// ---------------------------------------------------------------------------
+// Structure for mapping of service class UUIDs to service record resources.
+// ---------------------------------------------------------------------------
+//
+STRUCT SERVICE_RECORD_LIST
+    {
+    LTEXT8 service_ids[];
+    LINK service_records[];
+    }
+
+// ---------------------------------------------------------------------------
+// Service record.
+// ---------------------------------------------------------------------------
+//
+STRUCT SERVICE_RECORD
+    {
+    STRUCT attribute_list[];
+    }
+
+// ---------------------------------------------------------------------------
+// Service record attribute.
+// ---------------------------------------------------------------------------
+//
+STRUCT ATTRIBUTE
+    {
+    WORD id;
+    STRUCT element;
+    }
+
+// ---------------------------------------------------------------------------
+// Universal unique identifier (short form).
+// ---------------------------------------------------------------------------
+//
+STRUCT ELEMENT_UUID
+    {
+    BYTE type = EElemTypeUUID;
+    LONG uuid;
+    }
+
+// ---------------------------------------------------------------------------
+// Universal unique identifier (long form).
+// ---------------------------------------------------------------------------
+//
+STRUCT ELEMENT_UUID_128
+    {
+    BYTE type = EElemTypeUUID128;
+    LEN BYTE BYTE uuid_128[];
+    }
+
+// ---------------------------------------------------------------------------
+// Numeric data element type (8-bit).
+// ---------------------------------------------------------------------------
+//
+STRUCT ELEMENT_BYTE
+    {
+    BYTE type = EElemTypeByte;
+    BYTE value = 1;
+    }
+
+// ---------------------------------------------------------------------------
+// Numeric data element type (16-bit).
+// ---------------------------------------------------------------------------
+//
+STRUCT ELEMENT_WORD
+    {
+    BYTE type = EElemTypeWord;
+    WORD value = 0;
+    }
+
+// ---------------------------------------------------------------------------
+// Numeric data element type (32-bit).
+// ---------------------------------------------------------------------------
+//
+STRUCT ELEMENT_LONG
+    {
+    BYTE type = EElemTypeLong;
+    LONG value = 0;
+    }
+
+// ---------------------------------------------------------------------------
+// Numeric data element type (64-bit).
+// ---------------------------------------------------------------------------
+//
+STRUCT ELEMENT_LONG_64
+    {
+    BYTE type = EElemTypeLong64;
+    LEN BYTE BYTE long_64[];
+    }
+
+// ---------------------------------------------------------------------------
+// String data element type.
+// ---------------------------------------------------------------------------
+//
+STRUCT ELEMENT_TEXT
+    {
+    BYTE type = EElemTypeText;
+    LTEXT8 text( TEXT_LEN_MAX );
+    }
+
+// ---------------------------------------------------------------------------
+// Data element sequence data element type.
+// ---------------------------------------------------------------------------
+//
+STRUCT ELEMENT_DES
+    {
+    BYTE type = EElemTypeList;
+    STRUCT elements[];
+    }
+
+// ---------------------------------------------------------------------------
+// Boolean data element type (8-bit).
+// ---------------------------------------------------------------------------
+//
+STRUCT ELEMENT_BOOL
+    {
+    BYTE type = EElemTypeBool;
+    BYTE value = 0;
+    }
+
+#endif // BTENGSDP_RH

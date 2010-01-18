@@ -1,0 +1,175 @@
+/*
+* Copyright (c) 2002-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Localisation file for Wireless Keyboard Application, v3.2
+*  8
+*
+*/
+
+
+// LOCALISATION STRINGS
+
+//
+// Softkey labels
+//
+//d:Command text associated to a softkey in the control pane.
+//d:Opens options menu.
+//d:Same as text_softkey_option from avkon.loc
+//l:control_pane_t1/opt7
+//
+#define qtn_hid_options "Options"
+
+//d:Command text associated to a softkey in the control pane.
+//d:Back functionality.
+//d:Same as text_softkey_back from avkon.loc//l:control_pane_t2/opt7
+//
+#define qtn_hid_back "Back"
+
+// d: Command in Options list.
+// d: Show help content.
+// l: list_single_pane_t1_cp2
+//
+#define qtn_hid_help "Help"
+
+// d: Command in Options list of setting view.
+// d: Opens setting change dialog.
+// l: list_single_pane_t1_cp2
+//
+#define qtn_hid_change "Change"
+
+//
+// Settings List Item Names
+//
+
+// d: Settings list item static text.
+// d: Selected keyboard layout.
+// d: This item is visible only when the keyboard is connected and layout is selected.
+// d: Dynamic string for this item is qtn_hid_layout_xxx
+// l: list_setting_pane_t1
+//
+#define qtn_hid_layout "Keyboard layout"
+
+//
+// Country Strings for the Nokia Su8 Layout Override Settings Page
+//
+
+// d: Nokia SU-8W Keyboard layout setting radio button text
+// d: Select this to use English keyboard layout
+// d: Dynamic part for static text qtn_hid_layout and qtn_hid_select_layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_english_su8 "English"
+
+// d: Nokia SU-8W Keyboard layout setting radio button text
+// d: Select this to use Norwegian/Danish keyboard layout
+// d: Dynamic part for static text qtn_hid_layout and qtn_hid_select_layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_norwegian_danish_su8 "Norwegian/Danish"
+
+//
+// Country Strings for the Standard Layout Override Settings Page
+//
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use UK keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_uk "UK"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use US keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_us "US"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use International US keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_us_int "Int. US"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use Belgian keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_belgian "Belgian"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use Danish keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_danish "Danish"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use Dutch keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_dutch "Dutch"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use Finnish/Swedish keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_finnish_swedish "Finnish/Swedish"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use French keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_french "French"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use German keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_german "German"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use Italian keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_italian "Italian"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use Norwegian keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_norwegian "Norwegian"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use Portuguese keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_portuguese "Portuguese"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use Spanish keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_spanish "Spanish"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use US Dvorak keyboard layout
+// d: "Dvorak" is an official name of the layout.
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_us_dvorak "US Dvorak"
+
+// d: Standard keyboard layout setting radio button text
+// d: Select this to use Russian keyboard layout
+// l: list_set_graphic_pane_t1
+//
+#define qtn_hid_layout_russian "Russian"
+
+// End of File

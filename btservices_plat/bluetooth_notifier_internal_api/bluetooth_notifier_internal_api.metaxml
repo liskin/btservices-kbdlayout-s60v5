@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<api id="451311a27c81ccea7ad9e0d294846cf3" dataversion="2.0">
+  <name>Bluetooth Notifier internal API</name>
+  <description>Contains domain notifier UIDs</description>
+  <type>c++</type>
+  <collection>bluetoothengine</collection>
+  <libs>
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

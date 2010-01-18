@@ -1,0 +1,134 @@
+/*
+* Copyright (c) 2002-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This module contains the views of BTUI.
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+#include <bldvariant.hrh>
+
+
+CAPABILITY          CAP_ECOM_PLUGIN NetworkControl
+TARGET              BtuiPlugin.dll 
+TARGETTYPE          PLUGIN
+UID                 0x10009D8D 0x1020742B // UPDATE THIS
+VENDORID            VID_DEFAULT
+
+//********* UIDs *************
+//0x1020742B 	//DLL UID
+//0x1020742C 	//Impl1. UID
+//0x1020745C	//impl2. UID
+//0x1020745D	//impl3. UID 
+//****************************
+
+SOURCEPATH      ../src
+SOURCE          BTUIMainContainer.cpp
+SOURCE          BTUIMainView.cpp
+SOURCE          BTUIViewsCommonUtils.cpp
+SOURCE          BTUIKeyWatcher.cpp
+SOURCE          BTUIActive.cpp
+
+#ifdef __BT_SAP
+SOURCE          BTUISap.cpp
+#else
+SOURCE          BTUINonSap.cpp
+#endif
+
+SOURCE          BTUIBlockedDevicesView.cpp
+SOURCE          BTUIPairedDevicesView.cpp
+SOURCE          BTUIDeviceContainer.cpp
+SOURCE          BtuiPluginImplementationTable.cpp
+SOURCE          btuipluginman.cpp
+
+//BTUI plugin resource definition
+START RESOURCE  ../data/BtuiViewResources.rss
+HEADER
+TARGETPATH 		RESOURCE_FILES_DIR
+LANGUAGE_IDS
+END  
+
+
+//***********ECOM resource definition******************
+//--Ecom resource TARGET name must be same as DLL name,
+//--otherwise Ecom won't recognise it. 
+//*****************************************************
+START RESOURCE      ../data/1020742B.rss
+TARGET              BtuiPlugin.rsc   
+END 
+
+
+USERINCLUDE     ../inc	
+USERINCLUDE     ../../inc	
+USERINCLUDE	../data //for documents
+
+
+SYSTEMINCLUDE   ../../inc   	//for private API headers (BluetoothEngine subsystem)
+SYSTEMINCLUDE   ../../../inc    //for internal API headers (localconnectivity)
+APP_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE   /epoc32/include/ecom
+
+#ifdef __SERIES60_HELP
+SYSTEMINCLUDE   /epoc32/include/cshelp
+#endif
+LIBRARY         btdevmodel.lib	// Model of BTUI 
+LIBRARY         btengdiscovery.lib	// device search
+LIBRARY         btengsettings.lib	// main settings view
+LIBRARY			btengdevman.lib		// sap name,PairedDevicesView,Blocked devices view
+LIBRARY			btengconnman.lib	// sap address, connect/disconnect device
+LIBRARY			btmanclient.lib		// TBTRegistrySearch for sap address
+LIBRARY         euser.lib apparc.lib cone.lib       // Symbian OS framework libraries
+LIBRARY         eikcore.lib eikcoctl.lib eikctl.lib // UIKON libraries
+LIBRARY         avkon.lib                           // Series 60 UI library
+LIBRARY         bafl.lib                            // Basic Application Framework Library
+LIBRARY         btdevice.lib                        // Bluetooth device handling routines
+LIBRARY         bluetooth.lib                       // Bluetooth device address handling routines
+LIBRARY         commonengine.lib                    // Series 60 common components library publish & subsribe and string loader
+LIBRARY         aknnotify.lib                       // Avkon global notes
+LIBRARY         AknSkins.lib                        // Skinned icons
+LIBRARY         aknicon.lib
+LIBRARY         centralrepository.lib               // Central Repository
+LIBRARY         FeatMgr.lib
+LIBRARY         ecom.lib
+LIBRARY         charconv.lib
+LIBRARY         esock.lib
+
+LIBRARY     	GSEcomPlugin.lib
+LIBRARY         GSFramework.lib
+
+// For cover display support:
+LIBRARY         eikdlg.lib
+LIBRARY         estor.lib
+
+
+#ifdef __BT_SAP
+//LIBRARY         BTSap.lib
+#endif
+                
+DEBUGLIBRARY    flogger.lib                         // File logging services
+
+#ifdef __SERIES60_HELP
+LIBRARY         hlplch.lib                          // Help library
+#endif
+
+LIBRARY         egul.lib 
+LIBRARY         btfeatures.lib
+
+// This is optional - used only by Codewarrior IDE for .RSS file editing.
+//DOCUMENT            ../data/1020742B.rss 
+//DOCUMENT            ../data/BtuiViewResources.rss
+
+//**** End of .mmp *****

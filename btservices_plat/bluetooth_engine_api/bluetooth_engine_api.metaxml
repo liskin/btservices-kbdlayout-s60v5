@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<api id="f6e1fc9b9ca93ec0db44fd48f04588d3" dataversion="2.0">
+  <name>Bluetooth Engine API</name>
+  <description>High level Bluetooth API on top of Symbian BT APIs</description>
+  <type>c++</type>
+  <collection>bluetoothengine</collection>
+  <libs>
+    <lib name="btengconnman.lib" />
+    <lib name="btengdevman.lib" />
+    <lib name="btengdiscovery.lib" />
+    <lib name="btengsettings.lib" />
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

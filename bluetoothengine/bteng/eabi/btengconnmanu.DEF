@@ -1,0 +1,25 @@
+EXPORTS
+	_ZN13CBTEngConnMan10DisconnectERK10TBTDevAddr17TBTDisconnectType @ 1 NONAME
+	_ZN13CBTEngConnMan10PairDeviceERK10TBTDevAddr @ 2 NONAME
+	_ZN13CBTEngConnMan11IsConnectedERK10TBTDevAddrR22TBTEngConnectionStatus @ 3 NONAME
+	_ZN13CBTEngConnMan11SetObserverEP18MBTEngConnObserver @ 4 NONAME
+	_ZN13CBTEngConnMan13CancelConnectERK10TBTDevAddr @ 5 NONAME
+	_ZN13CBTEngConnMan13IsConnectableERK14TBTDeviceClassRi @ 6 NONAME
+	_ZN13CBTEngConnMan16CancelPairDeviceEv @ 7 NONAME
+	_ZN13CBTEngConnMan20StartPairingObserverERK10TBTDevAddr @ 8 NONAME
+	_ZN13CBTEngConnMan21GetConnectedAddressesER6RArrayI10TBTDevAddrE @ 9 NONAME
+	_ZN13CBTEngConnMan21GetConnectedAddressesER6RArrayI10TBTDevAddrE10TBTProfile @ 10 NONAME
+	_ZN13CBTEngConnMan4NewLEP18MBTEngConnObserver @ 11 NONAME
+	_ZN13CBTEngConnMan5NewLCEP18MBTEngConnObserver @ 12 NONAME
+	_ZN13CBTEngConnMan7ConnectERK10TBTDevAddrRK14TBTDeviceClass @ 13 NONAME
+	_ZN18MBTEngConnObserver15PairingCompleteER10TBTDevAddri @ 14 NONAME
+	_ZTI13CBTEngConnMan @ 15 NONAME ; #<TI>#
+	_ZTI18MBTEngConnObserver @ 16 NONAME ; #<TI>#
+	_ZTV13CBTEngConnMan @ 17 NONAME ; #<VT>#
+	_ZTV18MBTEngConnObserver @ 18 NONAME ; #<VT>#
+	_ZN13CBTEngConnMan14RemoveObserverEv @ 19 NONAME
+	_ZN13CBTEngConnMan16PrepareDiscoveryEv @ 20 NONAME
+	_ZN13CBTEngConnMan10PairDeviceERK10TBTDevAddr14TBTDeviceClass @ 21 NONAME
+	_ZN13CBTEngConnMan13IsConnectableERK10TBTDevAddrRK14TBTDeviceClassRi @ 22 NONAME
+	_ZN13CBTEngConnMan19StopPairingObserverERK10TBTDevAddr @ 23 NONAME
+

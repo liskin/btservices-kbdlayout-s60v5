@@ -1,0 +1,144 @@
+// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+// @localize yes
+// @description Text that will be displayed on the UI of a remote controller to duplicate
+// the UI of the local media player. This text represents Equalizer Mode
+// @uicontext notvisible
+// 
+//
+
+rls_string8<255> STRING_EqualizerMode	"Equalizer Mode"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Equalizer Mode Off
+@uicontext notvisible
+*/
+rls_string8<255> STRING_EqualizerOff		"Off"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Equalizer Mode On
+@uicontext notvisible
+*/
+rls_string8<255> STRING_EqualizerOn		"On"
+
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Repeat Mode
+@uicontext notvisible
+*/
+rls_string8<255> STRING_RepeatMode		"Repeat Mode"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Repeat Mode Off
+@uicontext notvisible
+*/
+rls_string8<255> STRING_RepeatOff		"Off"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Single Track Repeat
+@uicontext notvisible
+*/
+rls_string8<255> STRING_RepeatSingle		"Single Track Repeat"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents All Tracks Repeat
+@uicontext notvisible
+*/
+rls_string8<255> STRING_RepeatAll		"All Tracks Repeat"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Group Repeat
+@uicontext notvisible
+*/
+rls_string8<255> STRING_RepeatGroup		"Group Repeat"
+
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Shuffle Mode
+@uicontext notvisible
+*/
+rls_string8<255> STRING_ShuffleMode		"Shuffle Mode"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Shuffle Mode Off
+@uicontext notvisible
+*/
+rls_string8<255> STRING_ShuffleOff		"Off"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents All Tracks Shuffle
+@uicontext notvisible
+*/
+rls_string8<255> STRING_ShuffleAll		"All Tracks Shuffle"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Group Shuffle
+@uicontext notvisible
+*/
+rls_string8<255> STRING_ShuffleGroup		"Group Shuffle"
+
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Scan Mode
+@uicontext notvisible
+*/
+rls_string8<255> STRING_ScanMode			"Scan Mode"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Scan Mode Off
+@uicontext notvisible
+*/
+rls_string8<255> STRING_ScanOff			"Off"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents All Tracks Scan
+@uicontext notvisible
+*/
+rls_string8<255> STRING_ScanAll			"All Tracks Scan"
+
+/*&
+@localize yes
+@description Text that will be displayed on the UI of a remote controller to duplicate
+the UI of the local media player. This text represents Group Scan
+@uicontext notvisible
+*/
+rls_string8<255> STRING_ScanGroup		"Group Scan"

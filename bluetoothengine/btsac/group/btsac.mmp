@@ -1,0 +1,79 @@
+/*
+* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Lists information necessary to compile and link the component
+*
+*/
+
+#include <platform_paths.hrh>
+
+// Defines the capability which process would require to load the DLL
+// i.e., a process with less capability cannot load this DLL
+// Look at defaultcaps.hrh for a list of capabilities
+CAPABILITY 	CAP_ECOM_PLUGIN
+
+// Manufacturer or platform specific Vender ID (VID). A VID to be granted to 
+// all software from the same manufacturer.
+VENDORID 	VID_DEFAULT
+
+TARGET      btsac.dll
+TARGETTYPE	PLUGIN			
+
+
+// UID2 = 0x10009d8d for ECOM plugins.
+// UID3 = the 'DLL UID' (see resource file)
+// ECom Dll recognition UID followed by the unique UID for this dll
+UID 0x10009D8D 0x10208973
+
+SOURCEPATH	../src
+SOURCE			Proxy.cpp
+SOURCE			btsacGavdp.cpp
+SOURCE			btsacactive.cpp
+SOURCE			btsaController.cpp
+SOURCE			btsacStreamerController.cpp
+SOURCE			btsacStreamEndPoint.cpp
+SOURCE			btsacSEPManager.cpp
+SOURCE			btsacState.cpp
+SOURCE			btsacStateIdle.cpp
+SOURCE 			btsacStateListening.cpp
+SOURCE			btsacStateConnecting.cpp
+SOURCE     		btsacStateConfiguring.cpp
+SOURCE			btsacStateConnected.cpp
+SOURCE			btsacStateConfigured.cpp
+SOURCE			btsacStateStreaming.cpp
+SOURCE			btsacStateSuspended.cpp
+SOURCE          btsacStateAborting.cpp
+SOURCE 			btsacActivePacketDropIoctl.cpp
+
+START RESOURCE  ../data/10208973.rss
+TARGET btsac.rsc
+END
+
+USERINCLUDE     ../inc ../common
+SYSTEMINCLUDE   ../../inc ../../../inc /epoc32/include/ecom
+MW_LAYER_SYSTEMINCLUDE
+
+
+LIBRARY			euser.lib		// Kernel API includes symbian basic class and type definitions and error codes
+LIBRARY			esock.lib		// RSocketServ is used to open Gavdp 
+LIBRARY			bluetooth.lib		// Bluetooth library is used to access bluetooth types and API's
+LIBRARY			bluetoothAV.lib		// A2DP type definitions are needed to use Gavdp
+LIBRARY			gavdp.lib		// Bluetooth Generic Audio/Video Distribution Profile (GAVDP) API 
+LIBRARY			ECom.lib		// Symbian E-Com Plugin definitions and types
+LIBRARY			sdpdatabase.lib		// SDP registeration for Advanced Audio Distribution Profile (A2DP)
+LIBRARY			btaudiostreamer.lib	// Series 60 Bluetooth Audio Streamer component's API 
+LIBRARY			btengdiscovery.lib		// Register A2DP SDP service record
+DEBUGLIBRARY	flogger.lib		// File logging services in debug.h			
+
+
+// end of file

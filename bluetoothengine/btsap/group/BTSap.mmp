@@ -1,0 +1,92 @@
+/*
+* Copyright (c) 2004-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*     Bluetooth SIM Access Profile project file.
+*
+*/
+
+
+#include <platform_paths.hrh>
+
+//#define _DUMMY_CUSTOM_API
+#ifdef _DUMMY_CUSTOM_API
+MACRO "_DUMMY_CUSTOM_API"
+#endif
+
+//#define _BTSAP_MT
+#ifdef _BTSAP_MT
+MACRO "_BTSAP_MT"
+#endif
+
+TARGET          BTSap.dll
+TARGETTYPE      PLUGIN
+VENDORID        VID_DEFAULT
+CAPABILITY      CAP_ECOM_PLUGIN
+UID             0x10009D8D 0x101FFE46
+
+SOURCEPATH  ../src
+SOURCE      BTSapPlugin.cpp
+SOURCE      BTSapServerState.cpp
+SOURCE      BTSapState.cpp
+SOURCE      BTSapStateInit.cpp
+SOURCE      BTSapStateNotConnected.cpp
+SOURCE      BTSapStateConnect.cpp
+SOURCE      BTSapStateDisconnect.cpp
+SOURCE      BTSapStateIdle.cpp
+SOURCE      BTSapStateAPDU.cpp
+SOURCE      BTSapStateATR.cpp
+SOURCE      BTSapStatePowerOff.cpp
+SOURCE      BTSapStatePowerOn.cpp
+SOURCE      BTSapStateReset.cpp
+SOURCE      BTSapStateCardReaderStatus.cpp
+SOURCE      BTSapSocketHandler.cpp
+SOURCE      BTSapSocketStateListen.cpp
+SOURCE      BTSapSocketStateSend.cpp
+SOURCE      BTSapSocketStateRecv.cpp
+SOURCE      BTSapSocketStateCheckSecurity.cpp
+SOURCE      BTSapSecurityHandler.cpp
+SOURCE      BTSapRequestHandler.cpp
+SOURCE      BTSapSimCardStatusNotifier.cpp
+SOURCE      BTSapMessage.cpp
+SOURCE      BTSapSniffHandler.cpp
+SOURCE      BTSapHciExtensionMan.cpp
+
+USERINCLUDE     ../inc
+MW_LAYER_SYSTEMINCLUDE
+
+START RESOURCE 101FFE46.RSS
+TARGET         BTSap
+END
+
+LIBRARY     euser.lib               // Kernel API
+LIBRARY     esock.lib               // socket API
+LIBRARY     bluetooth.lib           // BTDevAddr, BTSockAddr
+LIBRARY     CommonEngine.lib        // Shared data settings
+LIBRARY     btengdiscovery.lib      // Register SDP settings
+LIBRARY     btengdevman.lib
+LIBRARY     btmanclient.lib
+LIBRARY     etel.lib
+LIBRARY     etelmm.lib
+LIBRARY     ecom.lib
+LIBRARY     btdevice.lib            // for getting passkey length
+LIBRARY     hciproxy.lib            // for getting encryption key length
+
+#ifdef _DUMMY_CUSTOM_API
+LIBRARY     DummyCustomAPI.lib      // Dummy Custom API
+#else
+LIBRARY     CustomAPI.lib           // Custom API
+#endif
+
+DEBUGLIBRARY     flogger.lib        // File logging
+// End of File

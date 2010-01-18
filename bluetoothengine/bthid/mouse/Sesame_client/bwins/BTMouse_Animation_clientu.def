@@ -1,0 +1,7 @@
+EXPORTS
+	?ImageConstructL@RImageCommander@@QAEXAAVRWindowGroup@@VTSize@@@Z @ 1 NONAME ; void RImageCommander::ImageConstructL(class RWindowGroup &, class TSize)
+	??0RMouseCursorDll@@QAE@AAVRWsSession@@@Z @ 2 NONAME ; RMouseCursorDll::RMouseCursorDll(class RWsSession &)
+	??0RImageCommander@@QAE@AAVRAnimDll@@AAVRWsSession@@@Z @ 3 NONAME ; RImageCommander::RImageCommander(class RAnimDll &, class RWsSession &)
+	??1RImageCommander@@UAE@XZ @ 4 NONAME ; RImageCommander::~RImageCommander(void)
+	?ImageCommand@RImageCommander@@QAEXH@Z @ 5 NONAME ; void RImageCommander::ImageCommand(int)
+

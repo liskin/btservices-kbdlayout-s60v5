@@ -1,0 +1,54 @@
+/*
+* Copyright (c) 2004 - 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*
+*/
+
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+TARGET            BTMouse_Animation_client.dll
+TARGETTYPE        dll
+
+// The second one is the UID of the client, different than main program's UID
+UID 0x100039ce 0x2001FE5B
+
+CAPABILITY      CAP_CLIENT_DLL
+
+VENDORID        VID_DEFAULT
+SECUREID	    0xA000022D
+EPOCSTACKSIZE	0x5000
+
+USERINCLUDE       ../inc
+SYSTEMINCLUDE     /epoc32/include
+APP_LAYER_SYSTEMINCLUDE
+
+SOURCEPATH        ../src
+SOURCE            mousecursordll.cpp clientimagecommander.cpp
+
+START BITMAP      BTMouseBitMaps.mbm
+HEADER
+TARGETPATH        APP_BITMAP_DIR
+SOURCEPATH        ../data
+SOURCE            c8  cursor.bmp
+SOURCE            c8  cursormask.bmp
+END
+
+LIBRARY           euser.lib 
+LIBRARY           ws32.lib
+LIBRARY           cone.lib
+LIBRARY           fbscli.lib
+LIBRARY           eikcore.lib
+
+// End of File

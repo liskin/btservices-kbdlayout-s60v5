@@ -1,0 +1,6 @@
+EXPORTS
+	?NewL@CBTAudioStreamer@@SAPAV1@XZ @ 1 NONAME ; class CBTAudioStreamer * CBTAudioStreamer::NewL(void)
+	?SetNewFrameLength@CBTAudioStreamer@@QAEHII@Z @ 2 NONAME ; int CBTAudioStreamer::SetNewFrameLength(unsigned int, unsigned int)
+	?StartL@CBTAudioStreamer@@QAEXAAVRSocket@@IPAVCBTAudioStreamInputBase@@I@Z @ 3 NONAME ; void CBTAudioStreamer::StartL(class RSocket &, unsigned int, class CBTAudioStreamInputBase *, unsigned int)
+	?Stop@CBTAudioStreamer@@QAEXXZ @ 4 NONAME ; void CBTAudioStreamer::Stop(void)
+

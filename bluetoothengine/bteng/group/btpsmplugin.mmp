@@ -1,0 +1,59 @@
+/*
+* Copyright (c) 2007-2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project btpsmplugin
+*                This module supports Bluetooth power state handling 
+*                for power save mode.
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+#include <bldvariant.hrh>
+
+
+TARGET              btpsmplugin.dll 
+TARGETTYPE          PLUGIN
+UID                 0x10009D8D  0x200100C4// UPDATE THIS
+
+CAPABILITY          CAP_ECOM_PLUGIN
+VENDORID            VID_DEFAULT
+
+SOURCEPATH      ../src
+
+
+START RESOURCE      ../data/200100C4.rss
+TARGET              btpsmplugin.rsc   
+END 
+
+
+
+
+SYSTEMINCLUDE   ../../inc   	//for private API headers (BluetoothEngine subsystem)
+SYSTEMINCLUDE   ../../../inc    //for internal API headers (localconnectivity)
+SYSTEMINCLUDE   /epoc32/include/ecom
+MW_LAYER_SYSTEMINCLUDE
+
+
+LIBRARY         btengsettings.lib	// main settings view
+LIBRARY         euser.lib apparc.lib cone.lib       // Symbian OS framework libraries
+LIBRARY         bluetooth.lib                       // Bluetooth device address handling routines
+LIBRARY         ecom.lib
+DEBUGLIBRARY    flogger.lib                         // File logging services
+
+//**** End of .mmp *****
+SOURCEPATH ../btpsmplugin/src
+SOURCE btpsmplugin.cpp btpsmpluginimpltable.cpp
+
+USERINCLUDE ../btpsmplugin/inc ../inc

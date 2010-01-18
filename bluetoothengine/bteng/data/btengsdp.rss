@@ -1,0 +1,2246 @@
+/*
+* Copyright (c) 2002-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  SDP Service Record definitions of Bluetooth profiles. These 
+*                are used by Bluetooth Engine to register SDP service records.
+*
+*/
+
+
+
+#include "btengsdp.rh"
+
+
+#define SERVICE_ID_DUN                          "0x1103"
+#define SERVICE_ID_OPP                          "0x1105"
+#define SERVICE_ID_FTP                          "0x1106"
+#define SERVICE_ID_AUDIOSOURCE                  "0x110a"
+#define SERVICE_ID_FAX                          "0x1111"
+#define SERVICE_ID_HS_GW                        "0x1112"
+#define SERVICE_ID_BIP                          "0x111b"
+#define SERVICE_ID_HF_GW                        "0x111f"
+#define SERVICE_ID_BPP                          "0x1120"
+#define SERVICE_ID_SAP                          "0x112d"
+#define SERVICE_ID_DI                           "0x1200"
+#define SERVICE_ID_NOKIA_PC_SUITE               "0x000050050000100080000002EE000001"
+#define SERVICE_ID_NOKIA_SYNCML_SERVER          "0x000056010000100080000002EE000001"
+#define SERVICE_ID_SYNCML_CLIENT                "0x000000020000100080000002EE000002"
+#define SERVICE_ID_SYNCML_DM_SERVER             "0x000000030000100080000002EE000002"
+#define SERVICE_ID_SYNCML_DM_CLIENT             "0x000000040000100080000002EE000002"
+
+#define SERVICE_CLASS_ID_DUN                    0x1103
+#define SERVICE_CLASS_ID_OPP                    0x1105
+#define SERVICE_CLASS_ID_FTP                    0x1106
+#define SERVICE_CLASS_ID_HEADSET                0x1108
+#define SERVICE_CLASS_ID_A2DP                   0x110D
+#define SERVICE_CLASS_ID_FAX                    0x1111
+#define SERVICE_CLASS_ID_HS_GW                  0x1112
+#define SERVICE_CLASS_ID_IMAGING                0x111A
+#define SERVICE_CLASS_ID_IMAGING_RESPONDER      0x111B
+#define SERVICE_CLASS_ID_HF                     0x111E
+#define SERVICE_CLASS_ID_HF_GW                  0x111F
+#define SERVICE_CLASS_ID_DIRECT_PR_REF_OBJECTS  0x1120
+#define SERVICE_CLASS_ID_BASIC_PRINTING         0x1122
+#define SERVICE_CLASS_ID_SAP                    0x112D
+#define SERVICE_CLASS_ID_DI                     0x1200
+#define SERVICE_CLASS_ID_GENERIC_NETWORKING     0x1201
+#define SERVICE_CLASS_ID_GENERIC_AUDIO          0x1203
+#define SERVICE_CLASS_ID_GENERIC_TELEPHONEY     0x1204
+#define SERVICE_CLASS_ID_AUDIOSOURCE            0x110A
+
+#define SERVICE_NAME_DUN                        "Dial-Up Networking"
+#define SERVICE_NAME_OPP                        "OBEX Object Push"
+#define SERVICE_NAME_FTP                        "OBEX File Transfer"
+#define SERVICE_NAME_FAX                        "Fax"
+#define SERVICE_NAME_HF_GW                      "Hands-Free Audio Gateway"
+#define SERVICE_NAME_HS_GW                      "Headset Audio Gateway"
+#define SERVICE_NAME_AUDIOSOURCE                "Audio Source"
+#define SERVICE_NAME_BIP                        "Imaging"
+#define SERVICE_NAME_BPP                        "Basic Printing"
+#define SERVICE_NAME_SAP                        "SIM Access"
+#define SERVICE_NAME_DI                         "PnP Information"
+#define SERVICE_NAME_NOKIA_PC_SUITE             "Nokia OBEX PC Suite Services"
+#define SERVICE_NAME_NOKIA_SYNCML_SERVER        "Nokia SyncML Server"
+#define SERVICE_NAME_SYNCML_CLIENT              "SyncMLClient"
+#define SERVICE_NAME_SYNCML_DM_SERVER           "SyncML DM Server"
+#define SERVICE_NAME_SYNCML_DM_CLIENT           "SyncML DM Client"
+
+
+// ---------------------------------------------------------------------------
+// r_service_record_list
+// Mapping of service class UUIDs to service record definitions
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD_LIST r_service_record_list
+    {
+    service_ids = 
+        {
+        SERVICE_ID_DUN,
+        SERVICE_ID_OPP,
+        SERVICE_ID_FTP,
+        SERVICE_ID_FAX,
+        SERVICE_ID_HF_GW,
+        SERVICE_ID_HS_GW,
+        SERVICE_ID_AUDIOSOURCE,
+        SERVICE_ID_BIP,
+        SERVICE_ID_BPP,
+        SERVICE_ID_SAP,
+        SERVICE_ID_DI,
+        SERVICE_ID_NOKIA_PC_SUITE,
+        SERVICE_ID_NOKIA_SYNCML_SERVER,
+        SERVICE_ID_SYNCML_CLIENT,
+        SERVICE_ID_SYNCML_DM_SERVER,
+        SERVICE_ID_SYNCML_DM_CLIENT
+        };
+
+    service_records = 
+        {
+        r_service_record_dun,
+        r_service_record_opp,
+        r_service_record_ftp,
+        r_service_record_fax,
+        r_service_record_hf_gw,
+        r_service_record_hs_gw,
+        r_service_record_audiosource,
+        r_service_record_bip,
+        r_service_record_bpp,
+        r_service_record_sap,
+        r_service_record_di,
+        r_service_record_nokia_pc_suite,
+        r_service_record_nokia_syncml_server,
+        r_service_record_syncml_client,
+        r_service_record_syncml_dm_server,
+        r_service_record_syncml_dm_client
+        };
+    }
+
+
+// ---------------------------------------------------------------------------
+// r_service_record_dun
+// Dial-up networking profile service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_dun
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element =
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_DUN; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = SERVICE_CLASS_ID_DUN; },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_DUN; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_opp
+// OBEX push profile service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_opp
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_OPP; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolOBEX; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = SERVICE_CLASS_ID_OPP; },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_OPP; } };
+            },
+
+        ATTRIBUTE
+            {
+            id = ESupportedFormatsList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_BYTE { value = 0xff; }
+                        };
+                    }
+                };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_ftp
+// File Transfer Profile service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_ftp
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_FTP; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolOBEX; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = SERVICE_CLASS_ID_FTP; },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_FTP; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_fax
+// Fax profile service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_fax
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_FAX; },
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_GENERIC_TELEPHONEY; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 0; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = SERVICE_CLASS_ID_FAX; },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_FAX; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_hf_gw
+// Handsfree profile (Gateway role) service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_hf_gw
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_HF_GW; },
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_GENERIC_AUDIO; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+            {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element =
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = SERVICE_CLASS_ID_HF; },
+                                ELEMENT_WORD { value = 0x0105; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_HF_GW; } };
+            },
+
+        ATTRIBUTE
+            {
+            id = ESupportedFeatures;
+            element = { ELEMENT_WORD { value = 0x00ef;} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EHFNetwork;
+            element = { ELEMENT_BYTE { value = 0x01; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_hs_gw
+// Headset profile (Gateway role) service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_hs_gw
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_HS_GW; },
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_GENERIC_AUDIO; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                            ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = SERVICE_CLASS_ID_HEADSET; },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_HS_GW; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_audiosource
+// A2DP (Audiosource role) service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_audiosource
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_AUDIOSOURCE; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; },
+                                ELEMENT_WORD { value = 0x0019; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolAVDTP; },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = SERVICE_CLASS_ID_A2DP; },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_AUDIOSOURCE; } };
+            },
+
+        ATTRIBUTE
+            {
+            id = ESupportedFeatures;
+            element = { ELEMENT_WORD { value = 0x0001; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_bip
+// Basic Imaging Profile service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_bip
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_IMAGING_RESPONDER; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolOBEX; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = SERVICE_CLASS_ID_IMAGING; },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ESupportedCapabilities;
+            element = { ELEMENT_BYTE { value = 0x01; } };
+            },
+
+        ATTRIBUTE
+            {
+            id = ESupportedFeatures;
+            element = { ELEMENT_WORD { value = 0x01; } };
+            },
+
+        ATTRIBUTE
+            {
+            id = ESupportedFunctions;
+            element = { ELEMENT_LONG { value = 0x03; } };
+            },
+
+        ATTRIBUTE
+            {
+            id = ETotalImagingDataCapacity;
+            element = 
+                {
+                ELEMENT_LONG_64
+                    {
+                    long_64 = { 0x04, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00 };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_BIP; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_bpp
+// Basic Printing Profile service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_bpp
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_DIRECT_PR_REF_OBJECTS; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolOBEX; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = SERVICE_CLASS_ID_BASIC_PRINTING; },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_BPP; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_sap
+// SIM Access Profile service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_sap
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_SAP; },
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_GENERIC_TELEPHONEY; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 0; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = SERVICE_CLASS_ID_SAP; },
+                                ELEMENT_WORD { value = 0x0101; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_SAP; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_nokia_pc_suite
+// PC Suite service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_nokia_pc_suite
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID_128
+                            {
+                            uuid_128 = 
+                                { 
+                                0x00, 0x00, 0x50, 0x05, 0x00, 0x00, 0x10, 0x00, 
+                                0x80, 0x00, 0x00, 0x02, 0xee, 0x00, 0x00, 0x01
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolOBEX; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID_128
+                                    {
+                                    uuid_128 = 
+                                        {
+                                        0x00, 0x00, 0x50, 0x05, 0x00, 0x00, 0x10, 0x00, 
+                                        0x80, 0x00, 0x00, 0x02, 0xee, 0x00, 0x00, 0x01
+                                        };
+                                    },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_NOKIA_PC_SUITE; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_nokia_syncml_server
+// SyncML server service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_nokia_syncml_server
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID_128
+                            {
+                            uuid_128 = 
+                                {
+                                0x00, 0x00, 0x56, 0x01, 0x00, 0x00, 0x10, 0x00, 
+                                0x80, 0x00, 0x00, 0x02, 0xee, 0x00, 0x00, 0x01
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolOBEX; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID_128
+                                    {
+                                    uuid_128 = 
+                                        {
+                                        0x00, 0x00, 0x56, 0x01, 0x00, 0x00, 0x10, 0x00, 
+                                        0x80, 0x00, 0x00, 0x02, 0xee, 0x00, 0x00, 0x01
+                                        };
+                                    },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_NOKIA_SYNCML_SERVER; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_syncml_client
+// SyncML client service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_syncml_client
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID_128
+                            {
+                            uuid_128 = 
+                                {
+                                0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x10, 0x00, 
+                                0x80, 0x00, 0x00, 0x02, 0xee, 0x00, 0x00, 0x02
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolOBEX; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID_128
+                                    {
+                                    uuid_128 = 
+                                        {
+                                        0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x10, 0x00, 
+                                        0x80, 0x00, 0x00, 0x02, 0xee, 0x00, 0x00, 0x02
+                                        };
+                                    },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_SYNCML_CLIENT; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_syncml_dm_server
+// Device management server service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_syncml_dm_server
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID_128
+                            {
+                            uuid_128 = 
+                                {
+                                0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x10, 0x00, 
+                                0x80, 0x00, 0x00, 0x02, 0xee, 0x00, 0x00, 0x02
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolOBEX; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID_128
+                                    {
+                                    uuid_128 = 
+                                        {
+                                        0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x10, 0x00, 
+                                        0x80, 0x00, 0x00, 0x02, 0xee, 0x00, 0x00, 0x02
+                                        };
+                                    },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_SYNCML_DM_SERVER; } };
+            }
+        };
+    }
+
+// ---------------------------------------------------------------------------
+// r_service_record_syncml_dm_client
+// Device management client service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_syncml_dm_client
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID_128
+                            {
+                            uuid_128 = 
+                                {
+                                0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x10, 0x00, 
+                                0x80, 0x00, 0x00, 0x02, 0xee, 0x00, 0x00, 0x02
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceRecordState;
+            element = { ELEMENT_LONG{} };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProtocolDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocol2CAP; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolRFCOMM; },
+                                ELEMENT_BYTE { value = 1; }
+                                };
+                            },
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID { uuid = EProtocolOBEX; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EProfileDescriptorList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_DES
+                            {
+                            elements = 
+                                {
+                                ELEMENT_UUID_128
+                                    {
+                                    uuid_128 = 
+                                        {
+                                        0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x10, 0x00, 
+                                        0x80, 0x00, 0x00, 0x02, 0xee, 0x00, 0x00, 0x02
+                                        };
+                                    },
+                                ELEMENT_WORD { value = 0x0100; }
+                                };
+                            }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_SYNCML_DM_CLIENT; } };
+            }
+        };
+    }
+
+
+// ---------------------------------------------------------------------------
+// r_service_record_di
+// Device Identification profile service record
+// ---------------------------------------------------------------------------
+//
+RESOURCE SERVICE_RECORD r_service_record_di
+    {
+    attribute_list = 
+        {
+        ATTRIBUTE
+            {
+            id = ESpecificationID;
+            element = { ELEMENT_WORD { value = 0x0102; } };
+            },
+
+        ATTRIBUTE
+            {   // Product ID is assigned by the Bluetooth SIG
+            id = EVendorID;
+                // To be overwritten by product-defined value.
+            element = { ELEMENT_WORD { value = 0x0001; } };
+            },
+
+        ATTRIBUTE
+            {   // Product ID is unique for each product 
+                // (assignments managed by the vendor).
+            id = EProductID;
+                // S60 RnD platform value, to be overwritten.
+            element = { ELEMENT_WORD { value = 0x001e; } };
+            },
+
+        ATTRIBUTE
+            {
+            id = EVersion;
+            element = { ELEMENT_WORD { value = 0x0; } };
+            },
+
+        ATTRIBUTE
+            {
+            id = EPrimaryRecord;
+            element = { ELEMENT_BOOL { value = 0x01; } };
+            },
+
+        ATTRIBUTE
+            {
+            id = EVendorIDSource;
+            element = { ELEMENT_WORD { value = 0x0001; } };
+            },
+
+        ATTRIBUTE
+            {
+            id = EServiceClassIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = SERVICE_CLASS_ID_DI; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EBrowseGroupList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_UUID { uuid = EPublicBrowseGroup; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = ELanguageBaseAttributeIDList;
+            element = 
+                {
+                ELEMENT_DES
+                    {
+                    elements = 
+                        {
+                        ELEMENT_WORD { value = ELangValue; },
+                        ELEMENT_WORD { value = ECharacterSetValue; },
+                        ELEMENT_WORD { value = ELangBaseIDValue; }
+                        };
+                    }
+                };
+            },
+
+        ATTRIBUTE
+            {
+            id = EDefaultNameOffset;
+            element = { ELEMENT_TEXT { text = SERVICE_NAME_DI; } };
+            }
+        };
+    }

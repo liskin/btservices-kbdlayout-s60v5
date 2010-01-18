@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SystemDefinition schema="3.0.0">
+  <package id="btservices" name="Bluetooth Services" levels="framework server generic specific plugin">
+    <collection id="bluetoothengine" name="Bluetooth Engine" level="framework">
+      <component id="bteng" filter="s60" name="Bluetooth Engine">
+        <unit bldFile="bluetoothengine/bteng/group"/>
+      </component>
+      <component id="btnotif" filter="s60" name="Bluetooth Notifier">
+        <unit bldFile="bluetoothengine/btnotif/group"/>
+          <!-- is this test needed as unit? -->
+        <!-- <unit bldFile="bluetoothengine/btnotif/tsrc/btnotifapitest/group"/> -->
+      </component>
+      <component id="btaudioman" filter="s60" name="Bluetooth Audio Manager">
+        <unit bldFile="bluetoothengine/btaudioman/group"/>
+      </component>
+      <component id="btmac" filter="s60" name="Bluetooth Mono Audio Controller" class="plugin">
+        <unit bldFile="bluetoothengine/btmac/group"/>
+      </component>
+      <component id="btsac" filter="s60" name="Bluetooth Stereo Audio Controller" class="plugin">
+        <unit bldFile="bluetoothengine/btsac/group"/>
+      </component>
+      <component id="btaudiostreamer" filter="s60" name="Bluetooth Audio Streamer">
+        <unit bldFile="bluetoothengine/btaudiostreamer/group"/>
+        <!-- <unit bldFile="bluetoothengine/btaudiostreamer/tsrc/btaudiostreamerapitest/group"/> -->
+      </component>
+      <component id="btsap" filter="s60" name="Bluetooth SIM Access Profile" class="plugin">
+        <unit bldFile="bluetoothengine/btsap/group"/>
+      </component>
+      <component id="btui" filter="s60" name="Bluetooth UI">
+        <!-- <unit bldFile="bluetoothengine/btui/ecom/group"/> -->
+        <unit bldFile="bluetoothengine/btui/group"/>
+      </component>
+      <component id="btpbap" filter="s60" name="Bluetooth Phonebook Access Profile" class="plugin">
+        <unit bldFile="bluetoothengine/btpbap/group"/>
+      </component>
+      <component id="bthid" filter="s60" name="Bluetooth HID">
+        <unit bldFile="bluetoothengine/bthid/group"/>
+      </component>
+    </collection>
+    <collection id="bluetoothappprofiles" name="Bluetooth Application Profiles" level="plugin">
+      <component id="avrcp" name="Bluetooth AVRCP" introduced="9.1" purpose="optional">
+        <unit bldFile="bluetoothappprofiles/avrcp" mrp="bluetoothappprofiles/avrcp/bluetooth_avrcp.mrp"/>
+      </component>
+    </collection>
+    <collection id="btservices_info" name="BT Services Info" level="plugin">
+      <component id="btservices_metadata" name="BT Services Metadata" class="config" introduced="^3" purpose="development" target="desktop">
+        <unit mrp="btservices_info/btservices_metadata/btservices_metadata.mrp"/>
+      </component>
+    </collection>
+  </package>
+</SystemDefinition>

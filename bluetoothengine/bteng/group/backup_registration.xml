@@ -1,0 +1,7 @@
+<?xml version="1.0" standalone="yes"?>
+<backup_registration>
+    <proxy_data_manager sid = "0x10202BE9" />
+    <dbms_backup policy="0x100069CC" /> 
+    <restore requires_reboot = "no"/>
+</backup_registration>
+  

@@ -1,0 +1,46 @@
+/*
+ * ==============================================================================
+ * Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies). 
+ * All rights reserved.
+ * This component and the accompanying materials are made available
+ * under the terms of "Eclipse Public License v1.0"
+ * which accompanies this distribution, and is available
+ * at the URL "http://www.eclipse.org/legal/epl-v10.html".
+ *
+ * Initial Contributors:
+ * Nokia Corporation - initial contribution.
+ *
+ * Contributors:
+ * 
+ * Description:
+ * 
+ * ==============================================================================
+ */
+
+#include <platform_paths.hrh>
+
+CAPABILITY  	CAP_ECOM_PLUGIN
+TARGET 			btctrldcmoadapter.dll
+TARGETTYPE 		PLUGIN
+UID 0x10009D8D 0x20028777
+VENDORID 		VID_DEFAULT
+
+MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE /epoc32/include/ecom
+
+USERINCLUDE 	../inc 
+
+SOURCEPATH	../data
+START RESOURCE btctrldcmoadapter.rss
+TARGET btctrldcmoadapter.rsc
+END
+
+SOURCEPATH ../src
+SOURCE btctrldcmoadapterproxy.cpp
+SOURCE btctrldcmoadapter.cpp
+
+LIBRARY euser.lib 
+LIBRARY	ecom.lib 
+LIBRARY	efsrv.lib
+LIBRARY commonengine.lib
+LIBRARY btfeatures.lib

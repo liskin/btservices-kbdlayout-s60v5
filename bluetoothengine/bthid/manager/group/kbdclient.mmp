@@ -1,0 +1,45 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include "../../inc/hiduids.h"
+
+TARGET	      kbdclient.dll
+TARGETTYPE    dll
+UID           0x1000008d KBDCLIENT_UID
+CAPABILITY    CAP_CLIENT_DLL 
+VENDORID      VID_DEFAULT
+
+
+USERINCLUDE   ../inc
+USERINCLUDE   ../../inc
+USERINCLUDE   ../../layouts/inc
+USERINCLUDE   ../../common/inc
+
+SOURCEPATH    ../src
+SOURCE	      ../../common/src/genericclient.cpp client.cpp
+
+
+
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY       euser.lib 
+LIBRARY       ecom.lib
+DEBUGLIBRARY  flogger.lib
+
+

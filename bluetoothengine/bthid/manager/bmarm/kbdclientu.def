@@ -1,0 +1,12 @@
+EXPORTS
+	__14RLayoutManager @ 1 NONAME R3UNUSED ; RLayoutManager::RLayoutManager(void)
+	E32Dll__F10TDllReason @ 2 NONAME R3UNUSED ; E32Dll(TDllReason)
+	GetDeviceInfo__C14RLayoutManagerRiT1 @ 3 NONAME R3UNUSED ; RLayoutManager::GetDeviceInfo(int &, int &) const
+	GetInitialLayout__C14RLayoutManagerRi @ 4 NONAME R3UNUSED ; RLayoutManager::GetInitialLayout(int &) const
+	GetLayout__C14RLayoutManagerRi @ 5 NONAME R3UNUSED ; RLayoutManager::GetLayout(int &) const
+	KeyEvent__C14RLayoutManageriiiiRC9TLockKeysR15TDecodedKeyInfo @ 6 NONAME ; RLayoutManager::KeyEvent(int, int, int, int, TLockKeys const &, TDecodedKeyInfo &) const
+	Reset__C14RLayoutManager @ 7 NONAME R3UNUSED ; RLayoutManager::Reset(void) const
+	SetInitialLayout__C14RLayoutManageriii @ 8 NONAME ; RLayoutManager::SetInitialLayout(int, int, int) const
+	SetLayout__C14RLayoutManageri @ 9 NONAME R3UNUSED ; RLayoutManager::SetLayout(int) const
+	Connect__14RLayoutManager @ 10 NONAME R3UNUSED ; RLayoutManager::Connect(void)
+

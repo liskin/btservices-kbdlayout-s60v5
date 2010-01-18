@@ -1,0 +1,34 @@
+;
+; Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+; All rights reserved.
+; This component and the accompanying materials are made available
+; under the terms of "Eclipse Public License v1.0"
+; which accompanies this distribution, and is available
+; at the URL "http://www.eclipse.org/legal/epl-v10.html".
+;
+; Initial Contributors:
+; Nokia Corporation - initial contribution.
+;
+; Contributors:
+;
+; Description:
+;
+;Languages
+&EN
+
+;Header
+#{"BtEngAPiTest"},(0x0782023A),1,0,0
+
+;Localised Vendor name
+%{"Nokia"}
+
+;Unique Vendor name
+:"Nokia"
+
+;Product ID for S60 3.0
+[0x101F7961], 0, 0, 0, {"S60ProductID"}
+
+;Files to install
+"\epoc32\release\armv5\urel\btengapitest.dll"-"!:\sys\bin\btengapitest.dll"
+"\epoc32\winscw\c\testframework\btengapi_scripter.cfg"-"!:\testframework\btengapi_scripter.cfg"
+"\epoc32\winscw\c\testframework\testframework.ini"-"!:\testframework\testframework.ini"

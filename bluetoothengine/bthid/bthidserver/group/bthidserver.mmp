@@ -1,0 +1,79 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include "../../inc/hiduids.h"
+
+TARGET        bthidserver.exe
+TARGETTYPE    exe
+UID 0x1000008d 0x2001E301
+
+CAPABILITY		CAP_APPLICATION
+VENDORID VID_DEFAULT	//=0x101FB657
+
+USERINCLUDE   ../inc
+USERINCLUDE   ../../inc
+USERINCLUDE   ../../common/inc 
+USERINCLUDE   ../../bthidclient/inc
+USERINCLUDE   ../../mouse/Sesame_client/inc
+USERINCLUDE   ../../bthidkbdsettings/inc
+
+MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE ../../../../inc 
+
+SOURCEPATH    ../../common/src
+SOURCE        genericserver.cpp
+SOURCE        timeouttimer.cpp
+SOURCE		  genericclient.cpp 
+
+SOURCEPATH    ../src
+SOURCE        socketinitiator.cpp
+SOURCE        hidsdpclient.cpp
+SOURCE        bthidsession.cpp
+SOURCE        bthidserver.cpp
+SOURCE        bthiddevice.cpp
+SOURCE        socketlistener.cpp
+SOURCE        socketreader.cpp
+SOURCE        socketwriter.cpp
+SOURCE        bthidconnection.cpp
+SOURCE        descriptorlistparser.cpp
+SOURCE        hiddescriptor.cpp
+SOURCE        hiddescriptorlist.cpp
+SOURCE        datasegmenter.cpp
+SOURCE        genericactive.cpp
+
+
+LIBRARY       ecom.lib
+LIBRARY       euser.lib			//All
+LIBRARY       esock.lib			//??
+LIBRARY       bluetooth.lib		//All -Tcb
+//LIBRARY       btmanclient.lib	//All -Tcb
+LIBRARY       estor.lib
+LIBRARY       efsrv.lib
+LIBRARY       sdpagent.lib		//All -Tcb 
+LIBRARY       sdpdatabase.lib 	//All -Tcb
+LIBRARY       btdevice.lib		//All -Tcb
+LIBRARY       sysutil.lib		//??
+LIBRARY       generichid.lib	//CAP_GENERAL_DLL -AllFiles
+//LIBRARY		  hal.lib			//ALL
+LIBRARY		  flogger.lib		//??
+LIBRARY       kbdclient.lib
+LIBRARY       bthidsettings.lib
+
+// End of File
+

@@ -1,0 +1,52 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project btdevmodel
+*
+*/
+
+
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+
+TARGET                  btdevmodel.dll
+TARGETTYPE              DLL
+UID                     0x10009D8D 0x1020745E
+
+CAPABILITY          CAP_GENERAL_DLL NetworkControl
+VENDORID                VID_DEFAULT
+
+SOURCEPATH              ../src
+SOURCE                  btdevmodel.cpp
+SOURCE                  btdevmodelbase.cpp
+SOURCE                  btpairedmodel.cpp
+SOURCE                  btblockedmodel.cpp
+SOURCE                  btregistryobserver.cpp
+SOURCE			btdevice.cpp
+
+USERINCLUDE             ../inc
+USERINCLUDE             ../../inc
+SYSTEMINCLUDE           ../../../inc
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY                 euser.lib //CActive, TDes
+LIBRARY         		btengsettings.lib
+LIBRARY                 btengdevman.lib
+LIBRARY                 btengconnman.lib
+LIBRARY                 btmanclient.lib //TBTRegistrySearch,CBluetoothPhysicalLinks
+LIBRARY                 bluetooth.lib //TBTDevAddr
+LIBRARY                 btdevice.lib
+LIBRARY                 centralrepository.lib
+LIBRARY					esock.lib //btpairedmodel
+DEBUGLIBRARY            flogger.lib

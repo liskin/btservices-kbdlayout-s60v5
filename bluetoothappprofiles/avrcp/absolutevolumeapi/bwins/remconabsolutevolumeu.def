@@ -1,0 +1,17 @@
+EXPORTS
+	?SetAbsoluteVolume@CRemConAbsoluteVolumeController@@QAEXAAVTRequestStatus@@KAAI@Z @ 1 NONAME ; void CRemConAbsoluteVolumeController::SetAbsoluteVolume(class TRequestStatus &, unsigned long, unsigned int &)
+	?RegisterAbsoluteVolumeNotification@CRemConAbsoluteVolumeController@@QAEXXZ @ 2 NONAME ; void CRemConAbsoluteVolumeController::RegisterAbsoluteVolumeNotification(void)
+	?NewL@CRemConAbsoluteVolumeTarget@@SAPAV1@AAVCRemConInterfaceSelector@@AAVMRemConAbsoluteVolumeTargetObserver@@KK@Z @ 3 NONAME ; class CRemConAbsoluteVolumeTarget * CRemConAbsoluteVolumeTarget::NewL(class CRemConInterfaceSelector &, class MRemConAbsoluteVolumeTargetObserver &, unsigned long, unsigned long)
+	??1CRemConAbsoluteVolumeTarget@@UAE@XZ @ 4 NONAME ; CRemConAbsoluteVolumeTarget::~CRemConAbsoluteVolumeTarget(void)
+	?WriteL@RRemConAbsoluteVolumeResponse@@UAEXAAVTDes8@@@Z @ 5 NONAME ; void RRemConAbsoluteVolumeResponse::WriteL(class TDes8 &)
+	?AbsoluteVolumeChanged@CRemConAbsoluteVolumeTarget@@QAEXK@Z @ 6 NONAME ; void CRemConAbsoluteVolumeTarget::AbsoluteVolumeChanged(unsigned long)
+	?SetAbsoluteVolumeResponse@CRemConAbsoluteVolumeTarget@@QAEXKH@Z @ 7 NONAME ; void CRemConAbsoluteVolumeTarget::SetAbsoluteVolumeResponse(unsigned long, int)
+	?ReadL@RRemConAbsoluteVolumeRequest@@UAEXABVTDesC8@@@Z @ 8 NONAME ; void RRemConAbsoluteVolumeRequest::ReadL(class TDesC8 const &)
+	?WriteL@RRemConAbsoluteVolumeRequest@@UAEXAAVTDes8@@@Z @ 9 NONAME ; void RRemConAbsoluteVolumeRequest::WriteL(class TDes8 &)
+	?ReadL@RRemConAbsoluteVolumeResponse@@UAEXABVTDesC8@@@Z @ 10 NONAME ; void RRemConAbsoluteVolumeResponse::ReadL(class TDesC8 const &)
+	??1CRemConAbsoluteVolumeController@@UAE@XZ @ 11 NONAME ; CRemConAbsoluteVolumeController::~CRemConAbsoluteVolumeController(void)
+	?CancelAbsoluteVolumeNotification@CRemConAbsoluteVolumeController@@QAEXXZ @ 12 NONAME ; void CRemConAbsoluteVolumeController::CancelAbsoluteVolumeNotification(void)
+	?Close@RRemConAbsoluteVolume@@QAEXXZ @ 13 NONAME ; void RRemConAbsoluteVolume::Close(void)
+	?NewL@CRemConAbsoluteVolumeController@@SAPAV1@AAVCRemConInterfaceSelector@@AAVMRemConAbsoluteVolumeControllerObserver@@K@Z @ 14 NONAME ; class CRemConAbsoluteVolumeController * CRemConAbsoluteVolumeController::NewL(class CRemConInterfaceSelector &, class MRemConAbsoluteVolumeControllerObserver &, unsigned long)
+	?CancelSetAbsoluteVolume@CRemConAbsoluteVolumeController@@QAEXXZ @ 15 NONAME ; void CRemConAbsoluteVolumeController::CancelSetAbsoluteVolume(void)
+

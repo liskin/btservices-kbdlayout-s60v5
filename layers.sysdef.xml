@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE SystemDefinition SYSTEM "sysdef_1_4_0.dtd" [
+  <!ENTITY layer_real_source_path "sf/mw/btservices" >
+]>
+
+<SystemDefinition name="btservices" schema="1.4.0">
+  <systemModel>
+    <layer name="mw_layer">
+      <module name="btservices">
+        <unit unitID="lcdo.btservices" mrp="" bldFile="&layer_real_source_path;/group" name="btservices" />
+      </module>
+    </layer>
+    <layer name="api_test_layer">
+      <module name="btservices_test">
+        <unit unitID="lcdo.btservices_test" mrp="" bldFile="&layer_real_source_path;/tsrc/group" name="btservices_test" />
+      </module>
+    </layer>
+  </systemModel>
+</SystemDefinition>

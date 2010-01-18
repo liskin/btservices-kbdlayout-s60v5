@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<api id="5e4b68e13f2970e7c2c1e1d3e0735eeb" dataversion="1.0">
+  <name>Bluetooth Engine Features API</name>
+  <description>Utility library for determining supported/enabled BT features.</description>
+  <type>C++</type>
+  <collection>bluetoothengine</collection>
+  <libs>
+    <lib name="btfeatures.lib" />
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

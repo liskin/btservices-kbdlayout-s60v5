@@ -1,0 +1,44 @@
+// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+//
+
+
+
+/**
+ @file
+ @internalComponent
+*/
+
+PRJ_MMPFILES
+remconmediabrowseapi.mmp
+
+PRJ_EXPORTS
+../public/remcondatabaseawaremediabrowsetarget.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remcondatabaseawaremediabrowsetarget.h)
+../public/remcondatabaseawaremedialibrarybrowse.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remcondatabaseawaremedialibrarybrowse.h)
+../public/remcondatabaseawaremedialibrarybrowseobserver.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remcondatabaseawaremedialibrarybrowseobserver.h)
+../public/remcondatabaseawarenowplayingbrowse.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remcondatabaseawarenowplayingbrowse.h)
+../public/remcondatabaseawarenowplayingbrowseobserver.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remcondatabaseawarenowplayingbrowseobserver.h)
+
+../public/remcondatabaseunawaremediabrowsetarget.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remcondatabaseunawaremediabrowsetarget.h)
+../public/remcondatabaseunawaremedialibrarybrowse.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remcondatabaseunawaremedialibrarybrowse.h)
+../public/remcondatabaseunawaremedialibrarybrowseobserver.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remcondatabaseunawaremedialibrarybrowseobserver.h)
+../public/remcondatabaseunawarenowplayingbrowse.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remcondatabaseunawarenowplayingbrowse.h)
+../public/remcondatabaseunawarenowplayingbrowseobserver.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remcondatabaseunawarenowplayingbrowseobserver.h)
+
+../public/remconmediaerror.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remconmediaerror.h)
+../public/remconmediabrowsetypes.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remconmediabrowsetypes.h)
+../public/remconmediabrowsepanic.h SYMBIAN_MW_LAYER_PUBLIC_EXPORT_PATH(remconmediabrowsepanic.h)
+
+../public/remconmediabrowsetargetbase.h	SYMBIAN_MW_LAYER_PLATFORM_EXPORT_PATH(remcon/remconmediabrowsetargetbase.h)
+

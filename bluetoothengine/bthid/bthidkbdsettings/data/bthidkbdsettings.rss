@@ -1,0 +1,41 @@
+/*
+* Copyright (c) 2003-2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  ECOM plugin resource file for BTHid plugin.
+*
+*/
+
+#include <ecom/registryinfo.rh>
+#include "hiduids.h"
+
+RESOURCE REGISTRY_INFO theInfo
+	{
+	dll_uid     = KBDSETTINGS_UIPLUGIN_UID; 
+	interfaces  = 
+		{
+		INTERFACE_INFO
+			{
+			interface_uid   = 0x1020745F; //UID for CBtuiPluginInterface 
+			implementations = 
+				{
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid  = KBDSETTINGS_UIPLUGIN_IMP; 
+					version_no          = 1;
+					display_name        = "BTHid Btui-plugin"; 
+					default_data        = "5  10"; // MajorDeviceClass  MinorDeviceClass defined in btdevice.h
+					}
+				};
+			}
+		};
+	}

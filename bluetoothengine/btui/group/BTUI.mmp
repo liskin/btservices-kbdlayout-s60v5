@@ -1,0 +1,88 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is project specification file for the BTUI.
+*
+*/
+
+#include <bldvariant.hrh>
+#include <data_caging_paths.hrh>
+#include <platform_paths.hrh>
+
+VENDORID	VID_DEFAULT
+
+CAPABILITY		CAP_APPLICATION NetworkServices NetworkControl
+
+TARGET          BTUI.exe
+TARGETTYPE      exe
+EPOCSTACKSIZE	0x5000
+UID             0x100039CE 0x10005951
+
+SOURCEPATH      ../src
+SOURCE          BTUIApp.cpp
+SOURCE          BTUIAppUi.cpp
+SOURCE          BTUIDocument.cpp
+
+
+// Application Resource
+//
+START RESOURCE  ../data/BTUI.rss
+HEADER
+TARGETPATH APP_RESOURCE_DIR
+LANGUAGE_IDS
+END 
+
+
+// Application Registeration Resource
+//
+START RESOURCE ../data/Btui_reg.rss
+DEPENDS btui.rsg
+
+// Do not change the UID below.
+TARGETPATH /private/10003a3f/apps
+END
+
+USERINCLUDE     ../inc 			
+USERINCLUDE		../devmodel/inc
+USERINCLUDE		../Ecom/inc
+USERINCLUDE		../data
+
+SYSTEMINCLUDE   ../../inc   	//for private API headers (BluetoothEngine subsystem)
+SYSTEMINCLUDE   ../../../inc    //for internal API headers (localconnectivity)
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY         euser.lib apparc.lib cone.lib       // Symbian OS framework libraries
+LIBRARY         eikcore.lib eikcoctl.lib eikctl.lib // UIKON libraries
+LIBRARY         avkon.lib                           // Series 60 UI library
+LIBRARY         bafl.lib                            // Basic Application Framework 
+LIBRARY         AknSkins.lib                        // Skinned icons
+LIBRARY         aknicon.lib
+LIBRARY         BtdevModel.lib
+LIBRARY         ecom.lib
+           
+LIBRARY         GSEcomPlugin.lib
+LIBRARY         GSFramework.lib
+
+#ifdef __SERIES60_HELP
+LIBRARY         hlplch.lib                          // Help library
+#endif
+
+DEBUGLIBRARY    flogger.lib                         // File logging services
+
+// This is optional - used only by Codewarrior IDE for .RSS file editing.
+//
+//Document		../data/Btui_reg.rss
+//Document		../data/BTUI.rss
+//Document		../inc/btui.loc
+
+// End of File

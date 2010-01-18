@@ -1,0 +1,71 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project BTEng
+*
+*/
+
+
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+
+TARGET                  btengsrv.exe
+TARGETTYPE              exe
+UID                     0x1000008d 0x10005950
+
+CAPABILITY              CAP_SERVER NetworkControl PowerMgmt CommDD
+VENDORID                VID_DEFAULT
+
+SOURCEPATH              ../src
+SOURCE                  btengserver.cpp
+SOURCE                  btengsrvsession.cpp
+SOURCE                  btengsrvstate.cpp
+SOURCE                  btengsrvpluginmgr.cpp
+SOURCE                  btengsrvbbconnectionmgr.cpp
+SOURCE                  btengsdpdbhandler.cpp
+SOURCE                  btengsrvkeywatcher.cpp
+SOURCE                  btengactive.cpp
+SOURCE                  btengpairman.cpp
+SOURCE                  btengpairbase.cpp
+SOURCE                  btengincpair.cpp 
+SOURCE                  btengotgpair.cpp
+START RESOURCE          ../data/btengsdp.rss
+HEADER
+TARGETPATH              RESOURCE_FILES_DIR
+END // RESOURCE
+
+USERINCLUDE             ../inc  
+SYSTEMINCLUDE           ../../inc
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY                 euser.lib
+LIBRARY                 ecom.lib
+LIBRARY                 btmanclient.lib
+LIBRARY                 sdpdatabase.lib
+LIBRARY                 esock.lib
+LIBRARY                 btdevice.lib
+LIBRARY                 bluetooth.lib
+LIBRARY                 centralrepository.lib
+LIBRARY                 charconv.lib
+LIBRARY                 bafl.lib
+LIBRARY                 efsrv.lib
+LIBRARY                 featmgr.lib
+LIBRARY                 aknnotify.lib
+LIBRARY                 btfeatures.lib
+
+LIBRARY                 btpowercontrol.lib
+#ifndef __WINS__
+LIBRARY                 dutmode.lib
+#endif  //__WINS__  
+DEBUGLIBRARY            flogger.lib

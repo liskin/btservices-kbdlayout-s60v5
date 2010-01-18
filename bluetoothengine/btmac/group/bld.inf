@@ -1,0 +1,33 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Provides information for building BTMAC.
+*
+*/
+
+
+#include <platform_paths.hrh>
+
+PRJ_PLATFORMS
+WINSCW ARMV5
+
+PRJ_EXPORTS
+../rom/Btmac.iby  CORE_MW_LAYER_IBY_EXPORT_PATH(btmac.iby)
+
+PRJ_MMPFILES
+../group/ATCodec.mmp
+../group/btmonobearer.mmp
+../group/BTMonoCmdHandler.mmp
+../group/BTMAC.mmp
+
+//  End of File

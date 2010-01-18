@@ -1,0 +1,11 @@
+EXPORTS
+	_ZN26CRemConStatusApiController11SubunitInfoER14TRequestStatusRj @ 1 NONAME
+	_ZN26CRemConStatusApiController4NewLER24CRemConInterfaceSelectorR34MRemConStatusApiControllerObserver @ 2 NONAME
+	_ZN26CRemConStatusApiController8UnitInfoER14TRequestStatusRj @ 3 NONAME
+	_ZN26CRemConStatusApiControllerD0Ev @ 4 NONAME
+	_ZN26CRemConStatusApiControllerD1Ev @ 5 NONAME
+	_ZN26CRemConStatusApiControllerD2Ev @ 6 NONAME
+	_ZN34MRemConStatusApiControllerObserver27Mrcsaco_ExtensionInterfaceLE4TUidRPv @ 7 NONAME
+	_ZTI34MRemConStatusApiControllerObserver @ 8 NONAME ; #<TI>#
+	_ZTV34MRemConStatusApiControllerObserver @ 9 NONAME ; #<VT>#
+

@@ -1,0 +1,48 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project BTEngSettings
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include <data_caging_paths.hrh>
+
+TARGET                  btengsettings.dll
+TARGETTYPE              dll
+UID                     0x1000008d 0x2000277F
+
+CAPABILITY              CAP_GENERAL_DLL
+VENDORID                VID_DEFAULT
+
+SOURCEPATH              ../btengsettings/src
+SOURCE                  btengsettings.cpp
+SOURCE                  btengsettingsnotify.cpp
+SOURCEPATH              ../src
+SOURCE                  btengactive.cpp
+SOURCE                  btengclient.cpp
+
+USERINCLUDE             ../inc
+USERINCLUDE             ../btengsettings/inc
+
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY                 euser.lib
+LIBRARY                 btdevice.lib
+LIBRARY                 bluetooth.lib
+LIBRARY                 btmanclient.lib
+LIBRARY                 centralrepository.lib
+LIBRARY                 featmgr.lib
+LIBRARY                 charconv.lib
+DEBUGLIBRARY            flogger.lib

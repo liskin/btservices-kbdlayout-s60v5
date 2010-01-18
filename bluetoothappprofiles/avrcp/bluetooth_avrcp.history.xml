@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relnotes name="Bluetooth Profiles">
+  <purpose>
+    Audio/Video Remote Control Profile
+  </purpose>
+
+  <defect number="PDEF140783" title="No response to Get Play Status AVRCP Command" revision="049">
+    MetadataTransferCommands timer cancelled properly and put some delays in the ctrl scripts.
+  </defect>
+
+  <defect number="PDEF139836" title=".esk and .cmi files do not have header" revision="048">
+    Added copyright headers
+  </defect>
+  
+  <defect number="DEF137119" title="Invalid button action (222) produced on TG when Press, Press, release from CT" revision="047">
+    Set button action for all passthrough commands, including EVendorUnique ones.
+  </defect>
+
+  <defect number="DEF137114" title="In multi-players situation, RemconServer paniced with pass through commands" revision="046">
+    Fixed non-leavesafe automatic RArray.
+  </defect>
+
+  <defect number="DEF136258" title="SetRemoteAddressedClientNotCorrectlyCalled" revision="045">
+    Some refactoring of HandleSetAddressedPlayer method.
+  </defect>
+
+   <defect number="DEF134042" title="[upf32] AVRCP permits invalid battery status responses" revision="044">
+    Initialise CPlayerInfoTarget::iBatteryStatus to the best value that can be retrieved from hardware P &amp; S properties. Modify CPlayerInfoTarget::DoSetBatteryStatus() to filter out invalid values
+  </defect>
+
+  <defect number="PDEF136830" title="AVRCP command handling results in crash " revision="043">
+    Ignore passthrough responses.
+  </defect>
+
+  <defect number="DEF135356" title="[System Build]: Errors in GT stage due to Bluetooth AVRCP.txt" revision="042">
+    Add IMPORT_C to ~CRemConNowPlayingTargetBase.
+  </defect>
+
+  <defect number="DEF133268" title="[System Build]: Elf2e32: Warning in Bluetooth AVRCP on ARMV7 M04816 vFuture" revision="041">
+    Remove IMPORT_C from CPlayerApplicationSettings::NewL and NewLC.
+  </defect>
+
+  <defect number="DEF129356" title="[Coverity]-SYMBIAN.CLEANUP_STACK-bluetooth/latest/bluetooth/profiles" revision="040">
+    Fix to prevent memory leak in remconbeareravrcp caused when CAVCFrame* frame is allocated on the heap but Not deallocated when it goes out of scope.
+  </defect>
+
+  <defect number="DEF126570" title="SMP: Migrate remcon and avrcp to Bluetooth logger" revision="039">
+    Change all logging over to Bluetooth logger.
+  </defect>
+
+  <defect number="PDEF123229" title="[AVRCP1.0] Leave unsafety in CRemConAvrcpStatusConverter::SupportedInterface" revision="038">
+    Added a static function -OpcodeL- which checks the Descriptor against the given opcode.
+  </defect> 
+  
+  <defect number="DEF127107" title="[AVRCP 1.3] PLAYBACK_POS notify only being triggered when exceeding interval" revision="037">
+    Now its triggered if it exceed or equal the interval.
+  </defect>
+  
+  <defect number="DEF125857" title="[coverity] - EVALUATION_ORDER - bluetooth" revision="036">
+    Evaulation order clarified in avrcpoutgoingcommandhandler.cpp.
+  </defect>
+
+  <defect number="DEF123196" title="[AVRCP1.3] Leave unsafety in ipc.cpp" revision="035">
+    Placed the leaving function on cleaup stack to handle unsafe leave.
+  </defect>
+
+  <defect number="DEF124633" title="avrcp-settings is not easily localizable" revision="034">
+    Split avrcp-settings.rss into avrcp-setting.rss and avrcp-settings.rls
+  </defect>
+
+  <defect number="DEF123768" title="[upf30] Passthrough commands with the wrong subunit type should be rejected" revision="033">
+    The PASS THROUGH commands with a non PANEL subunit_type should have a NOT IMPLEMENTED response.
+  </defect>
+
+  <defect number="DEF121789" title="Invalid Player Application Attribute ID returns wrong error code" revision="032">
+    Modified the error code.
+  </defect>
+
+  <defect number="DEF124272" title="[upf30] AVRCP Notify commands should be rejected when a remote device disconnect" revision="031">
+    Notify remcon of commands that have expired when a remote device disconnects
+  </defect>
+
+  <defect number="DEF122718" title="PlaybackPos notification functionality does not match with specification" revision="030">
+   calculated the Play Back Interval value between current and when last notification was sent and if it greater then iPlayerIntervalInMilliseconds,then send notification i.e. sent notification even in rewound case.
+  </defect> 
+
+  <defect number="DEF123182" title="Leave unsafety in PlayerApplicationSettingsResourceInit" revision="029">
+    Handled the unsafe leave by placing the concerned values and valueTexts in function playerApplicationSettingsResourceInit::DefineAttributesL(..) on cleanupstack.
+  </defect> 
+
+  <defect number="PDEF124580" title="[AVRCP1.3]Leavescan error in CRcpCommand::ParseVendorUniquePassthroughCommand" revision="028">
+    Method renamed to show it can leave.
+  </defect> 
+
+  <defect number="DEF123193" title="[AVRCP1.3] Unsafe use of RArray in CPlayerInfoTarget::DoClearEvents" revision="027">
+    RArray replaced with a new class to store supported events in a bit mask. 
+  </defect> 
+
+  <defect number="DEF122655" title="Removing a supported event is not triggering a notify" revision="026">
+    RAvrcpIPC::SetIPCOperationIdFromEventId(aEvent) is called to populate the correct operation Id for senderror(). 
+  </defect>
+
+  <defect number="DEF123765" title="[upf30] Playback interval should be treated as seconds not milliseconds" revision="025">
+    Convert the playback interval to milliseconds. 
+  </defect>
+
+  <defect number="DEF121430" title="EVENT_PLAYBACK_POS_CHANGED not being notified correctly" revision="024">
+    Codes added to handle the processing of Changed Play Status,Changed Current Track and Reached end or beginning of track.
+  </defect> 
+
+  <defect number="DEF121649" title="AVCTP command causes RemConSrv to panic with User::21" revision="023">
+    RemCon bearer changes to prevent panic.
+  </defect>
+
+  <defect number="DEF123180" title="Leave unsafety in CPlayerApplicationSettings" revision="022">
+    CleanupStack::PushL and CleanupStack::Pop are used to avoid memory leak.
+  </defect>
+
+  <defect number="DEF123179" title="Automatic variable used in call to async API" revision="021">
+    Make numRemotes a member variable so it's guaranteed to be there whenever the server writes to it.
+  </defect>
+
+  <defect number="DEF120543" title="Bounds checking issues in AVRCP 1.3" revision="020">
+    Add the boundary check for the number of attribute and the value of an attribute
+  </defect>
+  
+  <defect number="DEF121598" title="SetPlayerApplicationSettingValue command does not trigger notify" revision="019">
+    Now sending the response for EVENT_PLAYER_APPLICATION_SETTING_CHANGED i.e. PDU14
+  </defect>
+
+  <defect number="DEF120240" title="Response to ListPlayerApplicationSettingValues incorrect if > 255 values defined" revision="018">
+    Add the boundary check for the numbers of player application setting values and value texts
+  </defect>
+
+  <defect number="DEF120173" title="GetCapabilites response is incorrect if more than 255 Company IDs added" revision="017">
+    MPlayerCapabilitiesObserver::AddCompanyId() now fails with KErrOverflow if 255 company IDs are already listed.
+  </defect>
+
+  <defect number="DEF119598" title="Production Code contains comments about TMT test code" revision="016">
+	Non relevant comments are removed.
+  </defect>
+  
+  <defect number="DEF115305" title="Odd memory allocation handling in avrcp and leave in non-leaving function" revision="015">
+    Leave in a non-leaving function now handled
+  </defect>
+
+  <defect number="DEF115279" title="Forced disconnection of controller by transport during a hold results USER 21" revision="014">
+    Force disconnections of controller by transport now handled correctly
+  </defect>
+
+  <defect number="DEF119174" title="RemoveEvent is returning the position of the event" revision="013">
+    Return value has been changed to KErrNone, instead of the position of the event
+  </defect>
+
+  <defect number="DEF119028" title="No API to get inbound MTU for AVDTP media socket" revision="012">
+   API added to get inbound MTU for AVDTP media socket
+  </defect>
+
+  <defect number="DEF118408" title="ListSettingAttributes will return error when 0 setting attributes defined" revision="011">
+    CPlayerInfoTarget::ProcessListPlayerApplicationAttributes does not return error when called without defined attributes.
+  </defect>
+
+  <defect number="DEF117473" title="Doxygen not correctly generated" revision="010">
+    Interface access tags corrected for AVRCP APIs.
+  </defect>
+
+  <defect number="DEF119085" title="Calling RemoveEvent on a pending notify panics with User-130" revision="009">
+    removing the event from the pending notification list, if RemoveEvent is called.
+  </defect>
+
+  <defect number="DEF116505" title="In-source documentation required for CAVCFrame" revision="008">
+    Appropriate level of Doxygen comments added
+  </defect>
+
+  <defect number="DEF116207" title="Filename Policy non-conformance generates build warnings" revision="007">
+   Unwanted system INC file path is removed from mmp file
+  </defect>
+
+  <defect number="PDEF115625" title="KeyRepeat KeyEvents from Prev/Next keys of bluetooth headset are still sent afte" revision="006">
+    Fixes key press problems
+  </defect>
+  
+  
+  <defect number="DEF108369" title="[upf27]AVRCP uses wrong identifier when handling incoming commands" revision="005">
+    Changed the function call to get the Transaction ID 
+  </defect>
+
+  <defect number="DEF101319" title="Filename case check failures in source build and test" revision="004">
+    Corrected filenames to enable building of Symbian OS in Linux
+  </defect>
+
+  <defect number="DEF101501" title="CAvCFrame fails to retrieve the correct frame type for Vendor dependent commands" revision="003">
+    Fixing CAVCFrame::FrameType(const TDesC8&amp; aFrame) API so that it returns the type of the frame. This change has required a BR.
+  </defect>
+
+  <defect number="DEF097970" title="AVRCP sets message type to 'Command' when it should be 'Response'" revision="002">
+    AVRCP now sets message type to Response in CRcpCommand::ProcessOutgoingResponse.
+  </defect>
+
+  <defect number="PDEF100693" title="Memory leak in AVRCP" revision="001">
+    Handling memory leaks in AVRCP
+  </defect>
+</relnotes>

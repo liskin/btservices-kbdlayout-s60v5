@@ -1,0 +1,61 @@
+/*
+* Copyright (c) 2006-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is project specification file for the btaudioman client.
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include "../inc/prjconfig.h"
+
+TARGET          btaudiomanclient.dll
+TARGETTYPE      PLUGIN
+VENDORID        VID_DEFAULT
+
+CAPABILITY      CAP_ECOM_PLUGIN
+
+UID             0x10009D8D 0x10208970
+
+START RESOURCE	../data/10208970.rss
+TARGET			btaudiomanclient.rsc
+END
+
+SOURCEPATH  ../src
+SOURCE      btaudiomanplugin.cpp
+SOURCE      BTAccClient.cpp
+SOURCE      basrvactive.cpp
+SOURCE      proxy.cpp
+SOURCE      BTAccInfoCmdHandler.cpp
+SOURCE      BTAccInfoMainService.cpp
+SOURCE      BTAccInfoRequester.cpp
+
+USERINCLUDE    ../inc
+SYSTEMINCLUDE  ../../inc ../../../inc /epoc32/include/ecom
+MW_LAYER_SYSTEMINCLUDE
+
+LIBRARY     euser.lib
+LIBRARY     bluetooth.lib
+LIBRARY     ecom.lib
+
+#ifdef PRJ_USE_STUB
+LIBRARY     ASYProxy_stub.lib
+#else
+LIBRARY     ASYProxy.lib
+#endif
+
+#ifdef PRJ_FILE_TRACE
+LIBRARY	flogger.lib
+#endif
+
+// End of File

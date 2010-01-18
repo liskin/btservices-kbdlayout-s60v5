@@ -1,0 +1,10 @@
+EXPORTS
+	_ZN27CRemConNowPlayingTargetBase16PlayItemResponseEi @ 1 NONAME
+	_ZN27CRemConNowPlayingTargetBase23AddToNowPlayingResponseEi @ 2 NONAME
+	_ZN27CRemConNowPlayingTargetBase24NowPlayingContentChangedEv @ 3 NONAME
+	_ZN27CRemConNowPlayingTargetBaseD0Ev @ 4 NONAME
+	_ZN27CRemConNowPlayingTargetBaseD1Ev @ 5 NONAME
+	_ZN27CRemConNowPlayingTargetBaseD2Ev @ 6 NONAME
+	_ZN36CRemConDatabaseAwareNowPlayingTarget4NewLER24CRemConInterfaceSelectorR44MRemConDatabaseAwareNowPlayingTargetObserver @ 7 NONAME
+	_ZN38CRemConDatabaseUnawareNowPlayingTarget4NewLER24CRemConInterfaceSelectorR46MRemConDatabaseUnawareNowPlayingTargetObserver @ 8 NONAME
+

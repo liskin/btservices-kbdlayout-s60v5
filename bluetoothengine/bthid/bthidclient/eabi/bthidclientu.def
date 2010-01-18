@@ -1,0 +1,11 @@
+EXPORTS
+	_ZN12RBTHidClient11IsConnectedERK10TBTDevAddr @ 1 NONAME
+	_ZN12RBTHidClient13ConnectDeviceERK8TPckgBufI10TBTDevAddrER5TDes8R14TRequestStatus @ 2 NONAME
+	_ZN12RBTHidClient14GetConnectionsER5TDes8i @ 3 NONAME
+	_ZN12RBTHidClient16DisconnectDeviceERK8TPckgBufI10TBTDevAddrE17TBTDisconnectTypeR14TRequestStatus @ 4 NONAME
+	_ZN12RBTHidClient18NotifyStatusChangeER8TPckgBufI15THIDStateUpdateER5TDes8R14TRequestStatus @ 5 NONAME
+	_ZN12RBTHidClient23DisconnectAllGracefullyER14TRequestStatus @ 6 NONAME
+	_ZN12RBTHidClient7ConnectEv @ 7 NONAME
+	_ZNK12RBTHidClient19CancelConnectDeviceEv @ 8 NONAME
+	_ZNK12RBTHidClient24CancelNotifyStatusChangeEv @ 9 NONAME
+

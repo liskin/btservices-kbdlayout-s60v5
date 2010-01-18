@@ -1,0 +1,12 @@
+EXPORTS
+	?GetLocalName@CBTEngSettings@@QAEHAAVTDes16@@@Z @ 1 NONAME ; int CBTEngSettings::GetLocalName(class TDes16 &)
+	?GetPowerState@CBTEngSettings@@QAEHAAW4TBTPowerStateValue@@@Z @ 2 NONAME ; int CBTEngSettings::GetPowerState(enum TBTPowerStateValue &)
+	?GetVisibilityMode@CBTEngSettings@@QAEHAAW4TBTVisibilityMode@@@Z @ 3 NONAME ; int CBTEngSettings::GetVisibilityMode(enum TBTVisibilityMode &)
+	?NewL@CBTEngSettings@@SAPAV1@PAVMBTEngSettingsObserver@@@Z @ 4 NONAME ; class CBTEngSettings * CBTEngSettings::NewL(class MBTEngSettingsObserver *)
+	?NewLC@CBTEngSettings@@SAPAV1@PAVMBTEngSettingsObserver@@@Z @ 5 NONAME ; class CBTEngSettings * CBTEngSettings::NewLC(class MBTEngSettingsObserver *)
+	?SetLocalName@CBTEngSettings@@QAEHABVTDes16@@@Z @ 6 NONAME ; int CBTEngSettings::SetLocalName(class TDes16 const &)
+	?SetPowerState@CBTEngSettings@@QAEHW4TBTPowerStateValue@@@Z @ 7 NONAME ; int CBTEngSettings::SetPowerState(enum TBTPowerStateValue)
+	?SetVisibilityMode@CBTEngSettings@@QAEHW4TBTVisibilityMode@@H@Z @ 8 NONAME ; int CBTEngSettings::SetVisibilityMode(enum TBTVisibilityMode, int)
+	?GetOfflineModeSettings@CBTEngSettings@@QAEHAAW4TCoreAppUIsNetworkConnectionAllowed@@AAW4TBTEnabledInOfflineMode@@@Z @ 9 NONAME ; int CBTEngSettings::GetOfflineModeSettings(enum TCoreAppUIsNetworkConnectionAllowed &, enum TBTEnabledInOfflineMode &)
+	?ChangePowerStateTemporarily@CBTEngSettings@@QAEHXZ @ 10 NONAME ; int CBTEngSettings::ChangePowerStateTemporarily(void)
+

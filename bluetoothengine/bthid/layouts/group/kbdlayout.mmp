@@ -1,0 +1,64 @@
+/*
+* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include "../../inc/hiduids.h"
+
+TARGET        kbdlayout.dll
+TARGETTYPE    PLUGIN
+UID           ECOM_UID LAYOUT_PLUGIN_UID
+CAPABILITY    CAP_ECOM_PLUGIN //CAP_APPLICATION PowerMgmt NetworkControl
+
+SOURCEPATH    ../src
+SOURCE        layout.cpp
+SOURCE        hidlayoutimplproxy.cpp
+SOURCE        belgian.cpp
+SOURCE        danish.cpp
+SOURCE        dutch.cpp
+SOURCE        finnishswedish.cpp
+SOURCE        french.cpp
+SOURCE        german.cpp
+SOURCE        italian.cpp
+SOURCE        norwegian.cpp
+SOURCE        portuguese.cpp
+SOURCE        spanish.cpp
+SOURCE        su8danishnorwegian.cpp
+SOURCE        su8finnishswedish.cpp
+SOURCE        su8german.cpp
+SOURCE        su8intusenglish.cpp unitedkingdom.cpp unitedstates.cpp unitedstatesdvorak.cpp usinternational.cpp su8russianint.cpp
+
+USERINCLUDE   ../inc
+USERINCLUDE   ../../inc
+USERINCLUDE   ../../manager/inc
+USERINCLUDE   ../../common/inc
+
+MW_LAYER_SYSTEMINCLUDE
+SYSTEMINCLUDE ../../../../inc
+
+SOURCEPATH		../data 
+START RESOURCE          kbdlayout.rss 
+#ifdef SYMBIAN_SECURE_ECOM
+TARGET                  kbdlayout.rsc
+#endif
+END // ECOM resource definition
+
+
+LIBRARY       ecom.lib
+LIBRARY       euser.lib
+
+

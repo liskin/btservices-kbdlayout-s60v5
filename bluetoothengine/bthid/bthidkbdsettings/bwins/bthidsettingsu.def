@@ -1,0 +1,9 @@
+EXPORTS
+	??1CBtHidSettings@@UAE@XZ @ 1 NONAME ; CBtHidSettings::~CBtHidSettings(void)
+	??0CBtHidSettings@@QAE@XZ @ 2 NONAME ; CBtHidSettings::CBtHidSettings(void)
+	?NewLC@CBtHidSettings@@SAPAV1@XZ @ 3 NONAME ; class CBtHidSettings * CBtHidSettings::NewLC(void)
+	?NewL@CBtHidSettings@@SAPAV1@XZ @ 4 NONAME ; class CBtHidSettings * CBtHidSettings::NewL(void)
+	?ConstructL@CBtHidSettings@@AAEXXZ @ 5 NONAME ; void CBtHidSettings::ConstructL(void)
+	?LoadLayoutSetting@CBtHidSettings@@QAE?AW4THidKeyboardLayoutId@@XZ @ 6 NONAME ; enum THidKeyboardLayoutId CBtHidSettings::LoadLayoutSetting(void)
+	?SaveLayoutSettingL@CBtHidSettings@@QBEXW4THidKeyboardLayoutId@@@Z @ 7 NONAME ; void CBtHidSettings::SaveLayoutSettingL(enum THidKeyboardLayoutId) const
+

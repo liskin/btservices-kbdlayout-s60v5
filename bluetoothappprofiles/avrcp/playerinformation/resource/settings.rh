@@ -1,0 +1,131 @@
+// Copyright (c) 2007-2009 Nokia Corporation and/or its subsidiary(-ies).
+// All rights reserved.
+// This component and the accompanying materials are made available
+// under the terms of "Eclipse Public License v1.0"
+// which accompanies this distribution, and is available
+// at the URL "http://www.eclipse.org/legal/epl-v10.html".
+//
+// Initial Contributors:
+// Nokia Corporation - initial contribution.
+//
+// Contributors:
+//
+// Description:
+// Resource header for AVRCP resource files.
+// 
+//
+
+/**
+ @file settings.rh
+ @publishedPartner
+ @released
+*/
+
+#ifndef SETTINGS_RH
+#define SETTINGS_RH
+
+/** 
+This resource header file defines the structures and constants required
+for the AVRCP Player Application Settings and Values, as defined in
+Appendix F of the Bluetooth Specification (AVRCP), page 80.
+
+A setting file consists of an arbitrary number of settings. This file
+will be parsed and used to set values for a media application at
+startup time, to be queried through the AVRCP profile.
+
+A setting file has the following structure
+
+UID2 KUidAVRCPResourceFile    // Identifies this as an AVRCP settings file
+
+RESOURCE SETTINGS mysettings
+    {
+    settings =
+        {
+        SETTING
+            {
+            // definition of setting 1
+            },
+        SETTING
+            {
+            // definition of setting 2
+            },
+        // etc
+        };
+    }
+*/
+
+#define KUidAVRCPResourceFile       0x10285ACD
+
+#define KIllegal        0x00
+#define KEqualizerMode  0x01
+#define KRepeatMode     0x02
+#define KShuffleMode    0x03
+#define KScanMode       0x04
+
+#define KOff            0x01
+#define KOn             0x02
+
+// Off                      0x01
+#define KSingleTrackRepeat  0x02
+#define KAllTracksRepeat    0x03
+#define KGroupRepeat        0x04
+
+// Off                      0x01
+#define KAllTracksShuffle   0x02
+#define KGroupShuffle       0x03
+
+// Off                      0x01
+#define KAllTracksScan      0x02
+#define KGroupScan          0x03
+
+#define KUserDefined        0x80
+
+// Defines a single setting
+STRUCT SETTING
+    {
+    // The player application setting attribute
+    // e.g. 0x00 illegal, not to be used
+    //      0x01 equalizer status
+    //      0x02 repeat mode status
+    //      0x03 shuffle mode status
+    //      0x04 scan mode status
+    //      0x05 - 0x7f reserved for future use
+    //      0x80 - 0xff provided for TG driver static media player menu extension by CT
+    BYTE    attribute = 0;
+
+    // The defined settings for this attribute
+    BYTE    initialValue = 0;
+
+    // An string which describes this setting
+    // This can be localised into the target language
+    LTEXT8   description = "";
+
+    // The values and descriptions that this attribute can take
+    STRUCT  definedValues[];
+    }
+
+// Defines a single setting
+STRUCT VALUE
+    {
+    // The setting value id in hex
+    BYTE    valueId = 0;
+
+    // An string which describes this value
+    // This can be localised into the target language
+    LTEXT8   description = "";
+    }
+
+// Defines a set of settings and the implementations UIDs of the default
+// setting evaluator and dialog creator plug-ins.
+STRUCT SETTINGS
+    {
+    // Version of the AVRCP resource file.
+    // Settings files MUST NOT change this value.
+    // This must match with the number defined in settingsresource.cpp
+    WORD version = 1;
+
+    // An array of SETTING structures
+    STRUCT settings[];
+    }
+
+#endif
