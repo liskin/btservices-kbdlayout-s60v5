@@ -203,7 +203,7 @@ void CBtsacListening::GAVDP_ConfigurationConfirm()
 	if (err)
 		{
 		TRACE_INFO((_L("CBtsacListening::GAVDP_ConfigurationConfirm() Listen returned error:%d."), err))
-		ResetGavdp(EGavdpResetReasonGeneral);
+		ResetGavdp();
 		return;
 		}
 	if(iInitializationProcedure == EInitProcedureWaitingConfConfirmed)
@@ -269,13 +269,14 @@ void CBtsacListening::RequestCompletedL(CBtsacActive& aActive)
 				}
 			if(iGavdpResetReason != EGavdpResetReasonNone)
 				{
-				ResetGavdp(iGavdpResetReason);
+				ResetGavdp();
 				}
 			else
 				{
 				GoListen();
 				}				
-			if(iDisconnectReason == KErrDisconnected || iDisconnectReason == KErrHCILinkDisconnection)
+			if((iDisconnectReason == KErrDisconnected || iDisconnectReason == KErrHCILinkDisconnection) &&
+			    iPendingRequests == KRequestNone)
 				{
 				if(remoteAddr != TBTDevAddr())
 					{						
@@ -325,7 +326,7 @@ void CBtsacListening::GoListen()
 		{
 		// Shutdown failed, reset gavdp
 		TRACE_INFO((_L("CBtsacListening::GoListen(), error = %d."), err))
-		ResetGavdp(EGavdpResetReasonGeneral);
+		ResetGavdp();
 		}		
 	}
 
@@ -333,21 +334,18 @@ void CBtsacListening::GoListen()
 // CBtsacListening::ResetGavdp
 // -----------------------------------------------------------------------------
 //
-TInt CBtsacListening::ResetGavdp(TBTSACGavdpResetReason aReason)
+TInt CBtsacListening::ResetGavdp()
 	{
 	TRACE_FUNC
 	Parent().iGavdp->Close();
 	if( Parent().iGavdp->Open() == KErrNone )
 		{
 		iInitializationProcedure = EInitProcedureWaitingConfConfirmed;
-		if(aReason != EGavdpResetReasonCancelOpenAudio)
-			{
-			if(iPendingRequests == KRequestNone)
-				{
-				TRACE_INFO((_L("CBtsacListening::ResetGavdp() Remote Addr reseted.")))
-				Parent().SetRemoteAddr(TBTDevAddr());
-				}
-			}
+        if(iPendingRequests == KRequestNone)
+            {
+            TRACE_INFO((_L("CBtsacListening::ResetGavdp() Remote Addr reseted.")))
+            Parent().SetRemoteAddr(TBTDevAddr());
+            }
 		return Parent().iGavdp->RegisterSEPs(*Parent().iLocalSEPs, Parent().iStreamer->GetCaps());
 		}
 	else
@@ -432,7 +430,7 @@ void CBtsacListening::HandleGavdpErrorL(TInt aError)
 		// KErrDied -13
 		// KErrInUse -14
 			{
-			ResetGavdp(EGavdpResetReasonGeneral);			
+			ResetGavdp();			
 			break;
 			}
 		}

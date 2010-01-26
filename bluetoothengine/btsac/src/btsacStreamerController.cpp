@@ -28,8 +28,7 @@ using namespace SymbianSBC;
 
 // CONSTANTS
 _LIT(KBTAADLL, "btaudioadaptation.dll");
-
-//const TInt KUpgradeTimerDelay = 120000000;	// 2 minutes. How often we sill try to upgrade back to a better quality audio. 
+ 
 const TInt KRetryTimerDelay = 2000000;		// 2 seconds. If something fails, how soon should we retry. 
 const TInt KStabilizationDelay = 2000000;	// 2 seconds. Wait this long after bitpool change then start mononitor packet drops again
 const TInt KDataCollectDelay = 600000; 		// Time (600ms) to collect packet drop data
@@ -1270,7 +1269,6 @@ void CBTSACStreamerController::InitializeBitpoolDataL()
 		{
 		data.iMaxBitpoolValue = KMaxBitpoolValues[i];
 		data.iMaxDeviation = KDeviationValues[i];
-		//data.iUpgradeDelay = KUpgradeDelays[i];
 		data.iUpBitpoolIndex = (i == 0) ? i : i - 1;
 		data.iIndex = i;
 		data.iDownBitpoolIndex = (i == KNumOfBitpoolValues - 1) ? i : i + 1;

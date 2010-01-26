@@ -80,8 +80,11 @@ CBTEngIncPair::~CBTEngIncPair()
     iPla.Close();
     iPairingOkTimer.Cancel();
     iPairingOkTimer.Close();
-    iActivePairingOk->CancelRequest();
-    delete iActivePairingOk;    
+    if(iActivePairingOk)
+        {
+        iActivePairingOk->CancelRequest();
+        delete iActivePairingOk;
+        }
     TRACE_FUNC_EXIT
     }
 

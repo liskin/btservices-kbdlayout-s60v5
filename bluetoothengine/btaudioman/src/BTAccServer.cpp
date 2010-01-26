@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2005-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -58,9 +58,8 @@ CBTAccServer::~CBTAccServer()
     delete iAccMan;  
     delete iTimer;
     iSessions.Close();
-    
-    RProperty::Delete( KPSUidBluetoothEnginePrivateCategory, KBTATCodec );
-    
+    RProperty::Delete( KPSUidBluetoothEnginePrivateCategory, KBTHfpATCommand );
+    RProperty::Delete( KPSUidBluetoothEnginePrivateCategory, KBTHfpATResponse );
     TRACE_FUNC
     }
 
@@ -152,7 +151,11 @@ void CBTAccServer::ConstructL()
     iAccMan->LoadServicesL();
     
     User::LeaveIfError(RProperty::Define(KPSUidBluetoothEnginePrivateCategory,
-                                         KBTATCodec, RProperty::EByteArray,
+                                         KBTHfpATCommand, RProperty::EByteArray,
+                                         KBTEngPSKeyReadPolicy,
+                                         KBTEngPSKeyWritePolicy));
+    User::LeaveIfError(RProperty::Define(KPSUidBluetoothEnginePrivateCategory,
+                                         KBTHfpATResponse, RProperty::EByteArray,
                                          KBTEngPSKeyReadPolicy,
                                          KBTEngPSKeyWritePolicy));
     }

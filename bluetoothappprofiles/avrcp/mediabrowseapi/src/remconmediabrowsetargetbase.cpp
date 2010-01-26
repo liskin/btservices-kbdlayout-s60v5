@@ -660,13 +660,13 @@ void CRemConMediaBrowseTargetBase::ProcessGetFolderItems(const TDesC8& aData)
 		SendGetFolderItemsResponse(KErrAvrcpAirInvalidParameter, KNullDesC8);
 		return;
 		}
-
+	
 	if(request.iScope == AvrcpBrowsing::KSearchScope && !iSearchSupported)
-	    {
-        request.Close();
-        SendGetFolderItemsResponse(KErrAvrcpAirSearchNotSupported, KNullDesC8);
-        return;
-        }
+		{
+		request.Close();
+		SendGetFolderItemsResponse(KErrAvrcpAirSearchNotSupported, KNullDesC8);
+		return;
+		}
 	
 	if (request.CopyAttributes(iMediaAttributeIds) != KErrNone)
 		{
@@ -685,9 +685,9 @@ void CRemConMediaBrowseTargetBase::ProcessGetFolderItems(const TDesC8& aData)
 		iScope = ENowPlayingFolder;
 		}
 	else if(request.iScope == AvrcpBrowsing::KSearchScope)
-        {
-        iScope = ESearchResultFolder;
-        }
+		{
+		iScope = ESearchResultFolder;
+		}
 	else
 		{
 		request.Close();

@@ -871,26 +871,30 @@ TInt CControlCommand::GenerateNotificationResponsePayload(RBuf8& aFramePayload, 
 TInt CControlCommand::GenerateMetadataGetCapabilitiesResponsePayloadL(MRemConBearerObserver& /* aObserver */, RBuf8& aFramePayload, const RBuf8& aResponseData)
 	{
 	LOG_FUNC
-	__ASSERT_DEBUG( iPlayerInfoManager != NULL, AvrcpUtils::Panic(EAvrcpNotFullyConstructed));
+	__ASSERT_DEBUG(iPlayerInfoManager, AVRCP_PANIC(EAvrcpNotFullyConstructed));
 	TPtr8 responseData = aResponseData.RightTPtr(aResponseData.Length() - KLengthErrorResponse);
 
 	if(responseData[KCapabilityIdOffset] == ECapabilityIdEventsSupported)
 		{
+		// Add supported events not handled in the player info API.
 		RBuf8 eventsBuf;
 		eventsBuf.CreateL(KNumberEventsNotInPlayerInfoApi);
 		CleanupClosePushL(eventsBuf);
 		TInt count = 0;
 		
-		// if ClientId has been set it means that we've told the remote that
-		// commands are being addressed to a particular player, so return
-		// player specific info.  Otherwise return generic support.
-		if(ClientId() == KNullClientId || iPlayerInfoManager->AbsoluteVolumeSupportedL(ClientId()))
+		// If a specific player (i.e. a specific client ID)  has been indicated then
+		// we add support for the event if supported by the specific player.
+		// If no specific player has been indicated (i.e. an invalid client ID), then
+		// general support for the event is added if supported by any player.
+		// The player info manager APIs handles these different "support" semantics.
+		
+		if(iPlayerInfoManager->AbsoluteVolumeSupportedL(ClientId()))
 			{
 			count++;
 			eventsBuf.Append(ERegisterNotificationVolumeChanged );
 			}
 		
-		if(ClientId() == KNullClientId || iPlayerInfoManager->BrowsingSupportedL(ClientId()))
+		if(iPlayerInfoManager->BrowsingSupportedL(ClientId()))
 			{
 			count += 2;
 			eventsBuf.Append(ERegisterNotificationNowPlayingContentChanged );

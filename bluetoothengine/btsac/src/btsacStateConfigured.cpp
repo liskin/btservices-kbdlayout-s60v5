@@ -169,11 +169,11 @@ void CBtsacConfigured::StopTimer()
 // CBtsacConfigured::CancelActionL
 // -----------------------------------------------------------------------------
 //
-void CBtsacConfigured::CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpReset)
+void CBtsacConfigured::CancelActionL(TInt aError)
     {
     TRACE_FUNC
 	Parent().CompletePendingRequests(KOpenAudioReq, aError);
-	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), aGavdpReset, aError));
+	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, aError));
     }
 
 // -----------------------------------------------------------------------------
@@ -183,7 +183,7 @@ void CBtsacConfigured::CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpR
 void CBtsacConfigured::CancelConnectL()
     {
 	TRACE_FUNC	
-	CancelActionL(KErrCancel, EGavdpResetReasonGeneral);
+	CancelActionL(KErrCancel);
     }
 
 // -----------------------------------------------------------------------------
@@ -224,7 +224,7 @@ void CBtsacConfigured::OpenAudioLinkL(const TBTDevAddr& aAddr)
 void CBtsacConfigured::CancelOpenAudioLinkL()
     {
     TRACE_FUNC
-	CancelActionL(KErrCancel, EGavdpResetReasonGeneral);
+	CancelActionL(KErrCancel);
     }
 
 // -----------------------------------------------------------------------------
@@ -255,7 +255,7 @@ void CBtsacConfigured::GAVDP_StartStreamsConfirm()
 			{
 			TRACE_INFO((_L("CBtsacConfigured::GAVDP_StartStreamsConfirm() [ERR] Couldn't abort stream.")))
 			}
-		TRAP_IGNORE(CancelActionL(KErrNotReady, EGavdpResetReasonGeneral));
+		TRAP_IGNORE(CancelActionL(KErrNotReady));
 	 	}
 	 else
 	 	{
@@ -366,7 +366,7 @@ void CBtsacConfigured::HandleGavdpErrorL(TInt aError)
 				}
 			else
 				{
-				CancelActionL(KErrDisconnected, EGavdpResetReasonGeneral);
+				CancelActionL(KErrDisconnected);
 				}
 			break;
 			}
@@ -374,12 +374,12 @@ void CBtsacConfigured::HandleGavdpErrorL(TInt aError)
 		case KErrDisconnected: // -36
 			{
 			TRACE_INFO((_L("CBtsacConfigured::HandleGavdpErrorL() Signalling disconnected.")))
-			CancelActionL(aError, EGavdpResetReasonNone);
+			CancelActionL(aError);
 			break;
 			}
 		default:
 			{
-			CancelActionL(KErrDisconnected, EGavdpResetReasonGeneral);
+			CancelActionL(KErrDisconnected);
 			break;
 			}
 		}

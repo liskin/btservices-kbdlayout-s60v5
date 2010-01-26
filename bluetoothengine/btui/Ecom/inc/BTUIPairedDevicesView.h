@@ -228,7 +228,7 @@ class CBTUIPairedDevicesView : public CBTUIListedDevicesView,
         * @param None.
         * @return None.
         */        
-        void CancelDisconnectQueryDlgL();
+        void CancelDisconnectQueryDlg();
         
         /**
         * Disconnects from the selected BT Accessory without query.

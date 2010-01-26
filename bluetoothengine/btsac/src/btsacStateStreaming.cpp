@@ -90,7 +90,7 @@ void CBtsacStreaming::EnterL()
 // CBtsacStreaming::CancelActionL
 // -----------------------------------------------------------------------------
 //
-void CBtsacStreaming::CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpReset)
+void CBtsacStreaming::CancelActionL(TInt aError)
 	{
 	TRACE_FUNC
 	TInt ret = Parent().iStreamer->StopStream();
@@ -99,7 +99,7 @@ void CBtsacStreaming::CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpRe
 		TRACE_INFO((_L("CBtsacStreaming::Cancel() iStreamer.StopStream() returned error(%d) !!!"), ret))
 		}
 	Parent().CompletePendingRequests(KCompleteAllReqs, aError);
-	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), aGavdpReset, aError));
+	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, aError));
 	}
 
 // -----------------------------------------------------------------------------
@@ -132,7 +132,7 @@ void CBtsacStreaming::CloseAudioLinkL(const TBTDevAddr& /*aAddr*/)
 	if ( ret )
 		{
 		TRACE_INFO((_L("CBtsacStreaming::CloseAudio() Couldn't retrieve SEP Info !")))
-		CancelActionL(KErrCancel, EGavdpResetReasonGeneral); 
+		CancelActionL(KErrCancel); 
  		return;   
 		}
 	// Suspend audio
@@ -171,7 +171,7 @@ void CBtsacStreaming::StartRecording()
 			{
 			TRACE_INFO((_L("CBtsacStreaming::StartRecording() Couldn't abort stream.")))	
 			}
-		TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonNone, KErrDisconnected)));
+		TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected)));
 	 	}
 	}
 
@@ -188,7 +188,7 @@ void CBtsacStreaming::DisconnectL()
 		TRACE_INFO((_L("CBtsacStreaming::DisconnectL() StopStream() returned error: %d"), ret))	
 		}
 	Parent().CompletePendingRequests(KDisconnectReq, ret);
-	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonDisconnect, KErrNone));
+	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrNone));
 	}
 
 // -----------------------------------------------------------------------------
@@ -220,7 +220,7 @@ void CBtsacStreaming::GAVDP_AbortIndication(TSEID aSEID)
 	
 	// It is possible the remote disconnected while we have active close audio request.
 	Parent().CompletePendingRequests(KCompleteAllReqs, KErrNone);
-    TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonNone, KErrDisconnected)));
+    TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected)));
 	}
 
 // -----------------------------------------------------------------------------
@@ -347,7 +347,7 @@ void CBtsacStreaming::HandleGavdpErrorL(TInt aError)
 		case KErrDisconnected: // -36
 			{
 			Parent().CompletePendingRequests(KCompleteAllReqs, aError);
-			Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonNone, aError));
+			Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, aError));
 			break;
 			}
 		default:

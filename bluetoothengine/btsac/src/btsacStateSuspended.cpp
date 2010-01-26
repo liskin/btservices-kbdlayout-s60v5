@@ -83,11 +83,11 @@ void CBtsacSuspended::EnterL()
 // CBtsacSuspended::CancelActionL
 // -----------------------------------------------------------------------------
 //
-void CBtsacSuspended::CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpReset)
+void CBtsacSuspended::CancelActionL(TInt aError)
 	{
 	TRACE_FUNC
 	Parent().CompletePendingRequests(KOpenAudioReq, aError);
-	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), aGavdpReset, aError));
+	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, aError));
 	}
     
 // -----------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void CBtsacSuspended::OpenAudioLinkL(const TBTDevAddr& aAddr)
 void CBtsacSuspended::CancelOpenAudioL(const TBTDevAddr& /*aAddr*/)
     {
     TRACE_FUNC
-	CancelActionL(KErrCancel, EGavdpResetReasonGeneral);
+	CancelActionL(KErrCancel);
     }
     
 // -----------------------------------------------------------------------------
@@ -128,7 +128,7 @@ void CBtsacSuspended::DisconnectL()
 	{
 	TRACE_FUNC
 	Parent().CompletePendingRequests(KDisconnectReq, KErrNone);
-	CancelActionL(KErrCancel, EGavdpResetReasonGeneral);
+	CancelActionL(KErrCancel);
 	}
 	
 // -----------------------------------------------------------------------------
@@ -146,7 +146,7 @@ void CBtsacSuspended::GAVDP_StartStreamsConfirm()
 			{
 			TRACE_INFO((_L("CBtsacSuspended::GAVDP_StartStreamsConfirm() Couldn't abort stream.")))
 			}
-		TRAP_IGNORE(CancelActionL(KErrCancel, EGavdpResetReasonGeneral));
+		TRAP_IGNORE(CancelActionL(KErrDisconnected));
 	 	}
 	 else
 	 	{
@@ -210,7 +210,7 @@ void CBtsacSuspended::HandleGavdpErrorL(TInt aError)
 				}
 			else
 				{
-				CancelActionL(KErrDisconnected, EGavdpResetReasonGeneral);
+				CancelActionL(KErrDisconnected);
 				}
 			break;
 			}
@@ -226,7 +226,7 @@ void CBtsacSuspended::HandleGavdpErrorL(TInt aError)
 					}
 				else
 					{
-					CancelActionL(KErrDisconnected, EGavdpResetReasonGeneral);
+					CancelActionL(KErrDisconnected);
 					}
 				}
 			else
@@ -243,14 +243,14 @@ void CBtsacSuspended::HandleGavdpErrorL(TInt aError)
 		case KErrDisconnected: // -36
 			{
 			TRACE_INFO((_L("CBtsacSuspended::HandleGavdpErrorL() Signalling disconnected.")))
-			CancelActionL(aError, EGavdpResetReasonNone);
+			CancelActionL(aError);
 			break;
 			}
 		default:
 			{
 			// Unknown error. For safety's sake let's disconnect a2dp link and inform btaudioman
 			TRACE_INFO((_L("CBtsacSuspended::HandleGavdpErrorL() Unknown error, goes to listening")))
-			CancelActionL(KErrDisconnected, EGavdpResetReasonGeneral);
+			CancelActionL(KErrDisconnected);
 			break;
 			}
 		}

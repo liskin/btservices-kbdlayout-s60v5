@@ -111,7 +111,7 @@ private:
      */
 	virtual void CancelRequest(CBtsacActive& aActive);
 	
-	TInt ResetGavdp(TBTSACGavdpResetReason aReason);
+	TInt ResetGavdp();
 	void GoListen();
 	void DeleyedOpenAudioAndConnectL();
 

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2005-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -45,6 +45,7 @@ CBtmcCallingHandler::~CBtmcCallingHandler()
     {
     TRACE_FUNC_ENTRY
     delete iActive;
+    iRespProperty.Close();
     iCmdProperty.Close();
     TRACE_FUNC_EXIT
     }
@@ -53,7 +54,8 @@ CBtmcCallingHandler::~CBtmcCallingHandler()
 void CBtmcCallingHandler::HandleCallingCmdL(const CATCommand& aCmd)
     {
     TRACE_FUNC_ENTRY
-    TRACE_ASSERT(!iBusy, KErrInUse)
+    TRACE_ASSERT(!iActive->IsActive(), KErrInUse)
+    // Delegate the command to btmonobearer for processing
     TInt err = iCmdProperty.Set(aCmd.Des());
     if (err)
     	{
@@ -65,10 +67,9 @@ void CBtmcCallingHandler::HandleCallingCmdL(const CATCommand& aCmd)
     	}
     else
         {
-        iBusy = ETrue;
+        // wait for the response from btmonobearer
         iCmdId = aCmd.Id();
-        iActive = CBtmcActive::NewL(*this, CActive::EPriorityStandard, KCallingResponse);
-        iCmdProperty.Subscribe(iActive->iStatus);
+        iRespProperty.Subscribe(iActive->iStatus);
         iActive->GoActive();
         }
     TRACE_FUNC_EXIT
@@ -76,12 +77,12 @@ void CBtmcCallingHandler::HandleCallingCmdL(const CATCommand& aCmd)
 
 TBool CBtmcCallingHandler::ActiveCmdHandling() const
     {
-    return iBusy;
+    return iActive->IsActive();
     }
 
 TBool CBtmcCallingHandler::ActiveChldHandling() const
     {
-    return iBusy && ( iCmdId == EATCHLD );
+    return ActiveCmdHandling() && ( iCmdId == EATCHLD );
     }
 
 void CBtmcCallingHandler::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
@@ -90,18 +91,11 @@ void CBtmcCallingHandler::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
         {
         case KCallingResponse:
             {
-            delete iActive;
-            iActive = NULL;
-            if (!iBusy)
-                {
-                break;
-                }
-            iBusy = EFalse;
             TInt result = KErrNone;
             if (!aErr)
                 {
                 TBuf8<KMaxATSize> buf;
-                aErr = iCmdProperty.Get(buf);
+                aErr = iRespProperty.Get(buf);
                 if (!aErr && buf.Length() >= sizeof(TInt))
                     {
                     const TUint8* ptr = buf.Ptr();
@@ -118,7 +112,6 @@ void CBtmcCallingHandler::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
                     iProtocol.VoiceRecognitionError();
                     }
                 }
-            
             CATResult* nok = CATResult::NewLC(atid);
             iProtocol.SendResponseL(*nok);
             CleanupStack::PopAndDestroy(nok);
@@ -136,7 +129,7 @@ void CBtmcCallingHandler::CancelRequest(TInt aServiceId)
         {
         case KCallingResponse:
             {
-            iCmdProperty.Cancel();
+            iRespProperty.Cancel();
             break;    
             }
         default:
@@ -158,7 +151,9 @@ CBtmcCallingHandler::CBtmcCallingHandler(CBtmcProtocol& aProtocol)
 void CBtmcCallingHandler::ConstructL()
     {
     TRACE_FUNC
-    iCmdProperty.Attach(KPSUidBluetoothEnginePrivateCategory, KBTATCodec);
+    LEAVE_IF_ERROR( iCmdProperty.Attach(KPSUidBluetoothEnginePrivateCategory, KBTHfpATCommand) );
+    LEAVE_IF_ERROR( iRespProperty.Attach(KPSUidBluetoothEnginePrivateCategory, KBTHfpATResponse) );
+    iActive = CBtmcActive::NewL(*this, CActive::EPriorityStandard, KCallingResponse);
     TRACE_FUNC_EXIT  
     }
     

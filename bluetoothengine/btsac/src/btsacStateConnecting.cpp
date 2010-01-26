@@ -77,11 +77,11 @@ void CBtsacConnecting::EnterL()
 // CBtsacConnecting::CancelActionL
 // -----------------------------------------------------------------------------
 //
-void CBtsacConnecting::CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpReset)
+void CBtsacConnecting::CancelActionL(TInt aError)
     {
 	TRACE_FUNC
 	Parent().CompletePendingRequests((KConnectReq | KOpenAudioReq), aError);
-    Parent().ChangeStateL(CBtsacListening::NewL(Parent(), aGavdpReset, aError));
+    Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, aError));
     }
 
 // -----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ void CBtsacConnecting::CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpR
 void CBtsacConnecting::CancelOpenAudioL(const TBTDevAddr& /*aAddr*/)
     {
     TRACE_FUNC
-	CancelActionL(KErrCancel, EGavdpResetReasonGeneral);
+	CancelActionL(KErrCancel);
     }
 
 // -----------------------------------------------------------------------------
@@ -101,7 +101,7 @@ void CBtsacConnecting::CancelOpenAudioL(const TBTDevAddr& /*aAddr*/)
 void CBtsacConnecting::CancelConnectL()
     {
     TRACE_FUNC
-	CancelActionL(KErrCancel, EGavdpResetReasonGeneral);
+	CancelActionL(KErrCancel);
     }
     
 // -----------------------------------------------------------------------------
@@ -121,7 +121,7 @@ void CBtsacConnecting::GAVDP_ConnectConfirm(const TBTDevAddr& aAddr)
 		 // only possibility is that another accessory has made incoming connection, after we have sent a connect request
 		 // what a coincidence !
 		{
-		TRAP_IGNORE(CancelActionL(KErrDisconnected, EGavdpResetReasonGeneral));
+		TRAP_IGNORE(CancelActionL(KErrDisconnected));
 		}
 	}
 
@@ -137,7 +137,7 @@ void CBtsacConnecting::HandleGavdpErrorL(TInt /*aError*/)
 	// KErrInUse  -14
 	// KErrCouldNotConnect -34
 	// KErrL2CAPRequestTimeout -6312
-	CancelActionL(KErrDisconnected, EGavdpResetReasonGeneral);
+	CancelActionL(KErrDisconnected);
 	}
 
 //  End of File  

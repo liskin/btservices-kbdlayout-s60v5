@@ -781,7 +781,10 @@ void CBTHidServer::CloseBluetoothConnection(const TBTDevAddr& aAddress)
 
             // Get it to disconnect if its connected.
             connection->Disconnect();
-
+            
+            InformClientsOfStatusChange(connection->DeviceDetails(),
+                EBTDeviceDisconnected);
+            
             // Delete the connection object.
             iBTConnIndex->Remove(connection->ConnID());
 
@@ -818,7 +821,10 @@ void CBTHidServer::CloseAllBluetoothConnection()
 
                 // Get it to disconnect if its connected.
                 connection->Disconnect();
-
+                
+                InformClientsOfStatusChange(connection->DeviceDetails(),
+                    EBTDeviceDisconnected);
+                 
                 // Delete the connection object.
                 iBTConnIndex->Remove(connection->ConnID());
 

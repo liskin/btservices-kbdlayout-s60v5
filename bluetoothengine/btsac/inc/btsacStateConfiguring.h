@@ -81,7 +81,7 @@ private:
 	TInt GAVDP_ConfigurationEndIndication();
 	TInt GAVDP_StartIndication(TSEID aLocalSEID);
 	
-	void CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpReset);
+	void CancelActionL(TInt aError);
 	void HandleGavdpErrorL(TInt aError);
 
 private:    

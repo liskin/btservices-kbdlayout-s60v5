@@ -181,6 +181,8 @@ CBTUIPairedDevicesView::~CBTUIPairedDevicesView()
 	if(iConstructAsGsPlugin)
 	    	delete iTabHelper;	
 	
+	CancelDisconnectQueryDlg();
+	
     TRACE_FUNC_EXIT
     }
 
@@ -1067,13 +1069,14 @@ void CBTUIPairedDevicesView::DisconnectL()
 
     // Create confirmation query
     HBufC* stringholder = StringLoader::LoadLC(R_BT_DISCONNECT_FROM, device.iName);
-    iDisconnectQueryDlg = CAknQueryDialog::NewL();
+    if (!iDisconnectQueryDlg)
+        {
+        iDisconnectQueryDlg = CAknQueryDialog::NewL();
+        }
 
 	if(iCoverDisplayEnabled)
 		{
-	    CleanupStack::PushL(iDisconnectQueryDlg); 
 	    iDisconnectQueryDlg->PublishDialogL(ECmdShowDisconnectQuery, KUidCoverUiCategoryBtui); // initializes cover support    
-	    CleanupStack::Pop(iDisconnectQueryDlg); 
 	
 		CAknMediatorFacade* covercl = AknMediatorFacade(iDisconnectQueryDlg); // uses MOP, so control provided 
 		if (covercl) // returns null if __COVER_DISPLAY is not defined
@@ -1100,7 +1103,7 @@ void CBTUIPairedDevicesView::DisconnectL()
 // CBTUIPairedDevicesView::CancelDisconnectQueryDlgL
 // ----------------------------------------------------------
 //
-void CBTUIPairedDevicesView::CancelDisconnectQueryDlgL()
+void CBTUIPairedDevicesView::CancelDisconnectQueryDlg()
 {
 	TRACE_FUNC_ENTRY
 	
@@ -1854,7 +1857,7 @@ void CBTUIPairedDevicesView::NotifyChangeDeviceCompleteL(const TInt aErr,
         if(aErr == KErrDisconnected)
             {
             if(iDisconnectQueryDlg && aDevice.iAddr == iDisconnectQueryDevice.iAddr)
-                CancelDisconnectQueryDlgL();
+                CancelDisconnectQueryDlg();
             
             TRACE_FUNC_EXIT
             return;

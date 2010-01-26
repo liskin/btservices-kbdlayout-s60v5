@@ -103,7 +103,7 @@ private:
     void StartTimer(TTimeIntervalMicroSeconds32 aTimeout);
     void StopTimer();
  	
- 	void CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpReset);
+ 	void CancelActionL(TInt aError);
  	void HandleGavdpErrorL(TInt aError);
 
 private:    

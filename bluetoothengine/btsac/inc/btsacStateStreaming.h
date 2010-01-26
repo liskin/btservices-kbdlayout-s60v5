@@ -91,7 +91,7 @@ private:
 	void GAVDP_SuspendStreamsConfirm();
  	
  	void StartRecording();
- 	void CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpReset);
+ 	void CancelActionL(TInt aError);
  	void HandleGavdpErrorL(TInt aError);
 
 private:    

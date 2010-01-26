@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -28,12 +28,12 @@ const TUid KPSUidBluetoothEnginePrivateCategory = { 0x101FFE47 };
 
 
 /**
- * Publish and Subscribe key for passing serialized BT AT Codec 
- * between HFP RemCon Bearer and Command Handler.
+ * Publish and Subscribe key for passing BT HFP AT commands 
+ * from btmonocmdhandler to HFP RemCon Bearer.
  *
  * Default value (in binary format): ""
  */
-const TUint KBTATCodec = 0x01;
+const TUint KBTHfpATCommand = 0x01;
 
 
 /**
@@ -156,5 +156,13 @@ enum TBTBtQueryValue
  * been asked from user and user selection has been performed.
  */
 const TUint KBTNotifierLocks = 0x08;
+
+/**
+ * Publish and Subscribe key for the responses of BT HFP AT commands 
+ * from HFP RemCon Bearer to btmonocmdhandler.
+ *
+ * Default value (in binary format): ""
+ */
+const TUint KBTHfpATResponse = 0x09;
 
 #endif // BTENG_PRIVATE_PS_KEYS_H

@@ -48,6 +48,20 @@ static TBool PlayerCompare(const TRemConClientId* aId, const TAvrcpMediaPlayerIt
 	return (aId && *aId == aItem.iId);
 	}
 
+enum TFirstAbsVolSupport { EFirstAbsVolSupport };
+static TBool FirstAbsVolSupport(const TFirstAbsVolSupport*, const TAvrcpMediaPlayerItem& aItem)
+	{
+	LOG_STATIC_FUNC
+	return aItem.iId != KNullClientId && aItem.iAbsoluteVolumeSupport;
+	}
+
+enum TFirstBrowsingSupport { EFirstBrowsingSupport };
+static TBool FirstBrowsingSupport(const TFirstBrowsingSupport*, const TAvrcpMediaPlayerItem& aItem)
+	{
+	LOG_STATIC_FUNC
+	return aItem.iId != KNullClientId && (aItem.iSdpFeatures & AvrcpSdp::EBrowsing);
+	}
+
 CAvrcpPlayerInfoManager* CAvrcpPlayerInfoManager::NewL(MRemConBearerObserver& aObserver, MRemConCommandInterface& aCommandInterface)
 	{
 	LOG_STATIC_FUNC
@@ -175,8 +189,6 @@ void CAvrcpPlayerInfoManager::ClientAvailable(const TRemConClientId& aId, TPlaye
 				}
 			}
 		}
-
-
 
 	if(!err)
 		{
@@ -732,6 +744,15 @@ void CAvrcpPlayerInfoManager::UidCounterUpdate()
 		}
 	}
 
+/**
+If the client ID is set to a valid ID then we shall return the support
+status for the specific player referenced by the ID.
+Otherwise we shall return generic support which will indicate support across
+the device.
+@return whether absolute volume control is supported either by the specific player
+associated with a client ID, or generally by the device if an invalid client ID is
+provided.
+ */
 TBool CAvrcpPlayerInfoManager::AbsoluteVolumeSupportedL(const TRemConClientId& aClientId) const
 	{
 	LOG_FUNC
@@ -740,12 +761,25 @@ TBool CAvrcpPlayerInfoManager::AbsoluteVolumeSupportedL(const TRemConClientId& a
 	iLock.Wait();
 	CleanupSignalPushL(iLock);
 	
-	TInt index = iPlayers.Find(aClientId, PlayerCompare);
-	if(index < 0)
+	TBool supported = EFalse;
+	// If we receive a "NULL" client ID then it means that we should 
+	// return whether abs vol is generically supported by the device.
+	if(aClientId == KNullClientId)
 		{
-		LEAVEL(KErrNotFound);
+		// Try to find the first player supporting abs vol, if there is one then it is supported 
+		TInt index = iPlayers.Find(EFirstAbsVolSupport, FirstAbsVolSupport);
+		supported = (index >= 0);
 		}
-	TBool supported = iPlayers[index].iAbsoluteVolumeSupport;
+	else
+		{
+		// The abs vol support for a specific player is required, so return that.
+		TInt index = iPlayers.Find(aClientId, PlayerCompare);
+		if(index < 0)
+			{
+			LEAVEL(KErrNotFound);
+			}
+		supported = iPlayers[index].iAbsoluteVolumeSupport;
+		}
 	
 	CleanupStack::PopAndDestroy(&iLock);
 	
@@ -760,12 +794,25 @@ TBool CAvrcpPlayerInfoManager::BrowsingSupportedL(const TRemConClientId& aClient
 	iLock.Wait();
 	CleanupSignalPushL(iLock);
 	
-	TInt index = iPlayers.Find(aClientId, PlayerCompare);
-	if(index < 0)
+	TBool supported = EFalse;
+	// If we receive a "NULL" client ID then it means that we should 
+	// return whether browsing is generically supported by the device.
+	if(aClientId == KNullClientId)
 		{
-		LEAVEL(KErrNotFound);
+		// Try to find the first player supporting browsing, if there is one then it is supported 
+		TInt index = iPlayers.Find(EFirstBrowsingSupport, FirstBrowsingSupport);
+		supported = (index >= 0);
 		}
-	TBool supported = iPlayers[index].iSdpFeatures & AvrcpSdp::EBrowsing;
+	else
+		{
+		// The browsing support for a specific player is required, so return that.
+		TInt index = iPlayers.Find(aClientId, PlayerCompare);
+		if(index < 0)
+			{
+			LEAVEL(KErrNotFound);
+			}
+		supported = iPlayers[index].iSdpFeatures & AvrcpSdp::EBrowsing;
+		}
 	
 	CleanupStack::PopAndDestroy(&iLock);
 	

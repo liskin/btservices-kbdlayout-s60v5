@@ -98,7 +98,7 @@ void CBtsacConfiguring::EnterL()
 		}
 	else // internal problem
 		{
-  		CancelActionL(KErrCancel, EGavdpResetReasonGeneral);
+  		CancelActionL(KErrCancel);
 		}
     }
 
@@ -106,11 +106,11 @@ void CBtsacConfiguring::EnterL()
 // CBtsacConfiguring::CancelActionL
 // -----------------------------------------------------------------------------
 //
-void CBtsacConfiguring::CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpReset)
+void CBtsacConfiguring::CancelActionL(TInt aError)
     {
     TRACE_FUNC
 	Parent().CompletePendingRequests((KConnectReq | KOpenAudioReq), aError);
-    Parent().ChangeStateL(CBtsacListening::NewL(Parent(), aGavdpReset, aError));
+    Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, aError));
     }
 
 // -----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ void CBtsacConfiguring::CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdp
 void CBtsacConfiguring::CancelConnectL()
     {
     TRACE_FUNC
-	CancelActionL(KErrCancel, EGavdpResetReasonGeneral); // do no cancel till gavdp_error call back recieved
+	CancelActionL(KErrCancel);
     }
 
 // -----------------------------------------------------------------------------
@@ -142,7 +142,7 @@ void CBtsacConfiguring::DisconnectL()
 	{
 	TRACE_FUNC
 	Parent().CompletePendingRequests(KDisconnectReq, KErrNone);
-	CancelActionL(KErrCancel, EGavdpResetReasonGeneral);
+	CancelActionL(KErrCancel);
 	}	
 
 // -----------------------------------------------------------------------------
@@ -198,7 +198,7 @@ TInt CBtsacConfiguring::GAVDP_ConfigurationEndIndication()
 			{
 			TRACE_INFO((_L("CBtsacConfiguring::GAVDP_ConfigurationEndIndication() Couldn't retrieve Capabilities !")))
 		   	SEPCapabilities.Close();
-		   	TRAPD(err, CancelActionL(KErrCancel, EGavdpResetReasonGeneral));
+		   	TRAPD(err, CancelActionL(KErrCancel));
 		   	if(err)
 		   		{
 		   		return KErrNoMemory;
@@ -224,9 +224,7 @@ TInt CBtsacConfiguring::GAVDP_ConfigurationEndIndication()
 				TRACE_INFO((_L("CBtsacConfiguring::GAVDP_ConfigurationEndIndication() Media Transport Caps retrieved.")))
 				}
 	   		}
-	   	SEPCapabilities.Close();
-		
-		//Parent().StoreAccInfo();  // stores iRemoteSEPs (SEPManager) into database
+	   	SEPCapabilities.Close();	
 		
 		// Check if headset's capabilities suits us			
 		TRACE_INFO((_L("CBtsacConfiguring::GAVDP_ConfigurationEndIndication() Accessory Sampling Frequencies: %d"), SBCCaps.SamplingFrequencies()))
@@ -239,7 +237,7 @@ TInt CBtsacConfiguring::GAVDP_ConfigurationEndIndication()
 		if (Parent().iStreamer->ConfigureSEP(SBCCaps) )
 			{
 	   		TRACE_INFO((_L("CBtsacConfiguring::GAVDP_ConfigurationEndIndication() Streamer couldn't configure SEP !")))
-	        TRAPD(err, CancelActionL(KErrCancel, EGavdpResetReasonGeneral));
+	        TRAPD(err, CancelActionL(KErrCancel));
 	        if(err)
 	        	{
 	        	return KErrNoMemory;
@@ -292,7 +290,7 @@ void CBtsacConfiguring::HandleGavdpErrorL(TInt aError)
 			{
 			TRACE_INFO((_L("CBtsacConfiguring::HandleGavdpErrorL() Request TIMEOUT")))
 			// Go to listening state, gavdp will be shutdown in listening state
-			CancelActionL(KErrDisconnected, EGavdpResetReasonNone);
+			CancelActionL(KErrDisconnected);
 			break;
 			}
 			
@@ -302,7 +300,7 @@ void CBtsacConfiguring::HandleGavdpErrorL(TInt aError)
 			TRACE_INFO((_L("CBtsacConfiguring::HandleGavdpErrorL() Signalling disconnected.")))
 			// for both outgoing or incoming connection, if we have an error, 
 			// this means there is disconnection
-			CancelActionL(aError, EGavdpResetReasonNone);
+			CancelActionL(aError);
 			break;
 			}
 		
@@ -310,7 +308,7 @@ void CBtsacConfiguring::HandleGavdpErrorL(TInt aError)
 		//case KErrNotReady: // -18
 		//case KErrInUse: // -14
 			{
-			CancelActionL(KErrDisconnected, EGavdpResetReasonGeneral);
+			CancelActionL(KErrDisconnected);
 			break;
 			}
 		}

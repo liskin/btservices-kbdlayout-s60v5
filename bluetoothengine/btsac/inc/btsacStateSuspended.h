@@ -80,7 +80,7 @@ private:
    	TInt GAVDP_StartIndication(TSEID aSEID);
     void GAVDP_ReleaseIndication(TSEID aSEID);
  	
- 	void CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpReset);
+ 	void CancelActionL(TInt aError);
  	void HandleGavdpErrorL(TInt aError);
 
 private:    

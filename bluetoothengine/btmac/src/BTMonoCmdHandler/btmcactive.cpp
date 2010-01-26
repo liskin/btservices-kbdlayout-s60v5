@@ -81,7 +81,19 @@ void CBtmcActive::RunL()
     iObserver.RequestCompletedL(*this, iStatus.Int());
     TRACE_FUNC_EXIT
     }
-    
+
+// -------------------------------------------------------------------------------
+// CBtmcActive::RunError
+// This is really bad as we are just 'eating' the error not doing anything with it
+// This needs to re-evaluated and done better as later date.
+// -------------------------------------------------------------------------------
+TInt CBtmcActive::RunError(TInt aError)
+    {
+    TRACE_INFO((_L("Service %d RunError with %d"), iServiceId, aError))
+    (void) aError;
+    return KErrNone;
+    } 
+
 // -------------------------------------------------------------------------------
 // CBtmcActive::DoCancel
 // -------------------------------------------------------------------------------

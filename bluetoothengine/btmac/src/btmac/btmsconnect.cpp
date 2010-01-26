@@ -121,7 +121,7 @@ void CBtmsConnect::RfcommConnectCompletedL(TInt aErr)
                 CompleteStateRequest(aErr);
                 Parent().ChangeStateL(CBtmsCtrl::NewL(Parent(), SwapRfcommSock(iRfcomm), NULL));
                 }
-            else if (iRequestCat == ERequestConnect)
+            else if (iRequestCat == ERequestOpenAudio)
                 {
                 Parent().ChangeStateL(CBtmsOpenAudio::NewL(Parent(),SwapStateRequest(), SwapRfcommSock(iRfcomm), NULL));
                 }

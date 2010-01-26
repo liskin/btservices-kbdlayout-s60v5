@@ -221,7 +221,7 @@ void CBtsacState::GAVDP_AbortStreamConfirm()
 	{
 	TRACE_INFO((_L("CBtsacState::GAVDP_AbortStreamConfirm(), state %d"), GetStateIndex()))
 	Parent().CompletePendingRequests(KCompleteAllReqs, KErrAbort);
-	TRAPD(err, Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonNone, KErrDisconnected)));
+	TRAPD(err, Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected)));
 	if (err)
 		{
 		TRACE_INFO((_L("CBtsacState::GAVDP_AbortStreamConfirm() Couldn't change state.")))
@@ -333,7 +333,7 @@ void CBtsacState::GAVDP_AbortIndication(TSEID aSEID)
 	TRACE_INFO((_L("CBtsacState::GAVDP_AbortIndication(), state %d, SEID:%d"), GetStateIndex(), aSEID.SEID()))
 	(void)aSEID;
 	Parent().CompletePendingRequests(KCompleteAllReqs, KErrDisconnected);
-	TRAPD(err, Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonNone, KErrDisconnected)))
+	TRAPD(err, Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected)))
 	if(err)
 		{
 		TRACE_INFO((_L("CBtsacState::GAVDP_AbortIndication(), error! Couldn't change state")))

@@ -55,7 +55,6 @@ class TBitpoolData
 public:
 	TInt iMaxBitpoolValue;
 	TInt iMaxDeviation;
-	//TInt iUpgradeDelay;
 	TInt iIndex;
 	TInt iDownBitpoolIndex;
 	TInt iUpBitpoolIndex;

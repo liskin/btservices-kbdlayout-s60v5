@@ -60,9 +60,7 @@ enum TStreamConfiguredBy
 enum TBTSACGavdpResetReason
     {
     EGavdpResetReasonNone,
-    EGavdpResetReasonGeneral,
-    EGavdpResetReasonCancelOpenAudio,
-    EGavdpResetReasonDisconnect  
+    EGavdpResetReasonGeneral  
     };
 
 //Panic codes

@@ -766,7 +766,7 @@ RESOURCE DIALOG r_bt_device_untrusted_note
 RESOURCE DIALOG r_bt_waiting
     {
     flags   = EAknWaitNoteFlags;
-    buttons = R_AVKON_SOFTKEYS_CANCEL;
+    buttons = R_AVKON_SOFTKEYS_EMPTY; 
     items   =
         {
         DLG_LINE

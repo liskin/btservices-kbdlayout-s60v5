@@ -70,7 +70,7 @@ private:
     
     void GAVDP_ConnectConfirm(const TBTDevAddr& aDeviceAddr);   
         
-    void CancelActionL(TInt aError, TBTSACGavdpResetReason aGavdpReset);
+    void CancelActionL(TInt aError);
     void HandleGavdpErrorL(TInt aError);
        
 

@@ -838,8 +838,8 @@ void CBtmcProtocol::HandleReadCommandL(const CATCommand& aCmd)
     if (response)
         {
         RATResultPtrArray resarr;
-        ATObjArrayCleanupResetAndDestroyPushL(resarr);        
         CleanupStack::PushL(code);
+        ATObjArrayCleanupResetAndDestroyPushL(resarr);        
         resarr.AppendL(code);
         CleanupStack::Pop(code);
         CATResult* ok = CATResult::NewL(EATOK);
@@ -1077,9 +1077,9 @@ void CBtmcProtocol::HandleActionCommandL(const CATCommand& aCmd)
             LEAVE_IF_ERROR(params.Append(TATParam(buf)))
             code = CATResult::NewL(EATCGSN, EATActionResult, &params);
             CleanupStack::PopAndDestroy(&params);
+            CleanupStack::PushL(code);
             RATResultPtrArray resarr;
             ATObjArrayCleanupResetAndDestroyPushL(resarr);        
-            CleanupStack::PushL(code);
             resarr.AppendL(code);
             CleanupStack::Pop(code);
             CATResult* ok = CATResult::NewL(EATOK);
@@ -1116,7 +1116,7 @@ void CBtmcProtocol::StartTimerL(TInt aService, TInt aTimeout)
         {
         TRACE_FUNC_ENTRY
         iTimerActive = CBtmcActive::NewL(*this, CActive::EPriorityStandard, aService);
-        iTimer.CreateLocal();
+        LEAVE_IF_ERROR(iTimer.CreateLocal());
         iTimer.After(iTimerActive->iStatus, aTimeout);
         iTimerActive->GoActive();
         TRACE_FUNC_EXIT
