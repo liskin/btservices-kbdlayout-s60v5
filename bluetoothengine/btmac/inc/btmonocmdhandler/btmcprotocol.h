@@ -21,7 +21,6 @@
 
 #include <e32base.h>
 #include <etelmm.h>
-#include <btengdiscovery.h>
 #include "btmcactive.h"
 #include "btmcprofileid.h"
 #include "btmcprotdatabuf.h"
@@ -46,8 +45,7 @@ class CDesC8ArrayFlat;
 const TUint KBTHSRemoteAudioVolumeControl = 0x0302;
 
 NONSHARABLE_CLASS(CBtmcProtocol) : public CBase, 
-    public MBtmcActiveObserver, 
-    public MBTEngSdpResultReceiver, 
+    public MBtmcActiveObserver,
     public MATExtObserver
       {
     public:
@@ -90,20 +88,13 @@ NONSHARABLE_CLASS(CBtmcProtocol) : public CBase,
          */
         TBool ActiveChldHandling() const;
         
-    private:        
-        // from MBTEngSdpResultReceiver
-        void ServiceSearchComplete( const RSdpRecHandleArray& /*aResult*/, 
-		                                         TUint /*aTotalRecordsCount*/, TInt /*aErr*/ ) {}
-		
-        void AttributeSearchComplete( TSdpServRecordHandle /*aHandle*/, 
-		                                           const RSdpResultArray& /*aAttr*/, TInt /*aErr*/ ) {}
-		
-        void ServiceAttributeSearchComplete( TSdpServRecordHandle /*aHandle*/, 
-		                                                  const RSdpResultArray& /*aAttr*/, 
-		                                                  TInt /*aErr*/ );
-		
-		void DeviceSearchComplete( CBTDevice* /*aDevice*/, TInt /*aErr*/ ) {}
-
+        /**
+         * Set the support status of remote volume control of HSP in the remote device.
+         * @param aSupported ETrue if remote volume control is supported by HS unit.
+         */
+        void SetHspRvcSupported(TBool aSupported);
+        
+    private: 
         
         // From MBtmcActiveObserver
     
@@ -174,7 +165,6 @@ NONSHARABLE_CLASS(CBtmcProtocol) : public CBase,
         CDesC8ArrayFlat* iOutgoPacketQueue; // owned
         TInt iCredit; // How many commands are allowed to acc
         TBool iVolumeSyncFromAccessory;
-        CBTEngDiscovery* iBteng; // for volume query
         TBool iAccessoryInitiated; // who initiated the connection
         RMobilePhone::TMobilePhoneIdentityV1 iIdentity; // holds IMEI etc
         RMobilePhone::TMobilePhoneSubscriberId iId; // holds id

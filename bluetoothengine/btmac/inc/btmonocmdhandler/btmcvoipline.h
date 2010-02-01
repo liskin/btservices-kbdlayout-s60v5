@@ -18,7 +18,6 @@
 #ifndef BTMCVOIPLINE_H_
 #define BTMCVOIPLINE_H_
 
-#include "btmccallstatus.h"
 #include <mcallinformationobserver.h>
 #include <e32base.h>
 

@@ -18,8 +18,7 @@
 
 #include "atcodec.h"
 #include <mmtsy_names.h> // for etel
-#include <btengconstants.h>
-#include <btengdiscovery.h>
+#include <bttypes.h>
 #include <badesca.h>
 #include "btmcprotocol.h"
 #include "btmccallinghandler.h"
@@ -46,7 +45,7 @@ const TInt KSLC_3WayCalling = KChldFromHF | KChldFromAG;
 const TInt KBerUnknown = 99;
 
 const TInt KServiceSlcTimer = 1;
-const TInt KServiceSdpQuery = 2;
+
 const TInt KServiceGetSubscriber = 3;
 const TInt KServiceGetOperator = 4;
 const TInt KServiceCmdHandling = 5;
@@ -85,7 +84,6 @@ CBtmcProtocol::~CBtmcProtocol()
     delete iOperator;
     
     delete iEtelQuery;
-    delete iBteng;
   
     iPhone.Close();
     iServer.UnloadPhoneModule(KMmTsyModuleName);
@@ -215,6 +213,39 @@ TBool CBtmcProtocol::ActiveChldHandling() const
     return iCallingHandler->ActiveChldHandling();
     }
 
+void CBtmcProtocol::SetHspRvcSupported(TBool aSupported)
+    {
+    TRACE_FUNC
+    // Only update the supported feature field if this
+    // is for HSP controlling to avoid denial of
+    // HFP service
+    if ( iProtocolStatus->iProfile == EBtmcHSP )
+        {
+        if ( aSupported )
+            {
+            // volume control must be enabled now:
+            if ( !iPhoneStatus)
+                {
+                TRAP_IGNORE( iPhoneStatus = 
+                    CBtmcPhoneStatus::NewL(*this, iPhone, iProtocolStatus->iProfile) );
+                }
+            if ( iPhoneStatus )
+                {
+                // We just do the best effort. If enabling volume control fails,
+                // other functionalities on the HSP will still work:
+                TRAP_IGNORE( iPhoneStatus->SetVolumeControlFeatureL(ETrue) );
+                }
+            }
+        else
+            {
+            // When this serves the controlling of a HSP connection, iPhoneStatus is only
+            // used for volume control, deleting it will disable volume control:
+            delete iPhoneStatus;
+            iPhoneStatus = NULL;
+            }
+        }
+    }
+
 void CBtmcProtocol::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
     {
     TRACE_FUNC_ENTRY
@@ -228,9 +259,6 @@ void CBtmcProtocol::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
                 iObserver.SlcIndicateL(EFalse);
                 }
             break;
-            }
-        case KServiceSdpQuery:
-            {
             }
         case KServiceGetSubscriber:
             {
@@ -291,10 +319,6 @@ void CBtmcProtocol::CancelRequest(TInt aServiceId)
         {
         iTimer.Cancel();
         }
-    else if (aServiceId == KServiceSdpQuery)
-        {
-        iBteng->CancelRemoteSdpQuery();
-        }
     TRACE_FUNC_EXIT
     }
 
@@ -323,8 +347,8 @@ void CBtmcProtocol::ConstructL(TBtmcProfileId aProfile, const TDesC8& aBTDevAddr
     
     iEtelQuery = CBtmcActive::NewL(*this, CActive::EPriorityStandard, KQueryIMEI);
 
-		iPhone.GetPhoneId(iEtelQuery->iStatus, iIdentity);
-		iEtelQuery->GoActive();
+    iPhone.GetPhoneId(iEtelQuery->iStatus, iIdentity);
+    iEtelQuery->GoActive();
     
     switch (aProfile)
         {
@@ -342,9 +366,8 @@ void CBtmcProtocol::ConstructL(TBtmcProfileId aProfile, const TDesC8& aBTDevAddr
                 {
                 LEAVE(KErrBadDescriptor);
                 }
+            // HSP doesn't have an SLC protocol except the RFCOMM connection itself:
             iProtocolStatus->iSlc = ETrue;
-            iBteng = CBTEngDiscovery::NewL(this);
-            iBteng->RemoteSdpQuery(TBTDevAddr(aBTDevAddr), TUUID(EBTProfileHSP), KBTHSRemoteAudioVolumeControl);
             if ( iAccessoryInitiated && ( iProtocolStatus->iCallBits & KCallConnectedBit ) )
                 {
                 TRACE_INFO((_L("Incoming HSP connected, start CKPD trapper")));
@@ -608,10 +631,11 @@ void CBtmcProtocol::HandleTestCommandL(const CATCommand& aCmd)
 void CBtmcProtocol::HandleReadCommandL(const CATCommand& aCmd)
     {
     TRACE_FUNC
+    RATResultPtrArray resarr;
+    ATObjArrayCleanupResetAndDestroyPushL(resarr);
     CATResult* code = NULL;
-    RArray<TATParam> params;
+    RATParamArray params;
     CleanupClosePushL(params);
-    TBool response = EFalse;
     switch (aCmd.Id())
         {
         case EATCIND:
@@ -621,12 +645,12 @@ void CBtmcProtocol::HandleReadCommandL(const CATCommand& aCmd)
                 {
                 LEAVE(KErrNotSupported);
                 }
-            
+
             RMobilePhone::TMobilePhoneRegistrationStatus net = 
-                iPhoneStatus->NetworkStatus();
-            
+                    iPhoneStatus->NetworkStatus();
+
             if (net == RMobilePhone::ERegisteredOnHomeNetwork || 
-                net == RMobilePhone::ERegisteredRoaming)
+                    net == RMobilePhone::ERegisteredRoaming)
                 {
                 LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoATNetworkAvailable)))
                 }
@@ -634,10 +658,10 @@ void CBtmcProtocol::HandleReadCommandL(const CATCommand& aCmd)
                 {
                 LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoATNetworkUnavailable)))
                 }
-            
+
             // call status
             if ((iProtocolStatus->iCallBits & KCallConnectedBit) ||
-                (iProtocolStatus->iCallBits & KCallHoldBit))
+                    (iProtocolStatus->iCallBits & KCallHoldBit))
                 {
                 LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoATCallActive)))
                 }
@@ -645,7 +669,7 @@ void CBtmcProtocol::HandleReadCommandL(const CATCommand& aCmd)
                 {
                 LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoATNoCall)))
                 }
-            
+
             // Call setup status
             TInt callSetupInd = EBTMonoATNoCallSetup;
 
@@ -664,7 +688,7 @@ void CBtmcProtocol::HandleReadCommandL(const CATCommand& aCmd)
             LEAVE_IF_ERROR(params.Append(TATParam(callSetupInd)))
             // call_setup == callsetup
             LEAVE_IF_ERROR(params.Append(TATParam(callSetupInd)))
-                
+
             // Call held status
             TInt callHeldInd = EBTMonoATNoCallHeld;
             if( (iProtocolStatus->iCallBits & KCallHoldBit) && (iProtocolStatus->iCallBits & KCallConnectedBit) )
@@ -679,19 +703,18 @@ void CBtmcProtocol::HandleReadCommandL(const CATCommand& aCmd)
             // signal status
             LEAVE_IF_ERROR(params.Append(TATParam(iPhoneStatus->GetSignalStrength())))
             // roaming status
-              if(net == RMobilePhone::ERegisteredRoaming)
-                  {
-                  LEAVE_IF_ERROR(params.Append(TATParam(1)))
-                  }
-              else 
-                  {
-                  LEAVE_IF_ERROR(params.Append(TATParam(0)))
-                  }
+            if(net == RMobilePhone::ERegisteredRoaming)
+                {
+                LEAVE_IF_ERROR(params.Append(TATParam(1)))
+                }
+            else 
+                {
+                LEAVE_IF_ERROR(params.Append(TATParam(0)))
+                }
             // battery charge
             LEAVE_IF_ERROR(params.Append(TATParam(iPhoneStatus->GetBatteryCharge())))
 
             code = CATResult::NewL(EATCIND, EATReadResult, &params);
-            response = ETrue;
             break;
             }
         case EATCLIP:
@@ -699,147 +722,137 @@ void CBtmcProtocol::HandleReadCommandL(const CATCommand& aCmd)
             LEAVE_IF_ERROR(params.Append(TATParam(iProtocolStatus->iCallerIdNotif)))
             LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoATCallerIdNetworkServiceUnknown)))
             code = CATResult::NewL(EATCLIP, EATReadResult, &params);
-            response = ETrue; 
             break;
             }
         case EATCOPS:
             {
             iOperator = CBtmcOperator::NewL(*this, *this, CActive::EPriorityStandard, KServiceGetOperator);
             iOperator->GoActive();
-			break;
+            break;
             }
         case EATCREG:
-        	{
+            {
             if(!iPhoneStatus)
                 {
                 LEAVE(KErrNotSupported);
                 }
-            
+
             RMobilePhone::TMobilePhoneRegistrationStatus net = 
-                iPhoneStatus->NetworkStatus();
-			response = ETrue;
-			switch(net)
-				{
-				case RMobilePhone::ERegistrationUnknown:
-					{
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceUnknown)))
-					code = CATResult::NewL(EATCREG, EATReadResult, &params);
-					break;
-					}
-				case RMobilePhone::ENotRegisteredEmergencyOnly:
-				case RMobilePhone::ENotRegisteredNoService:
-					{
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceNotRegistered)))
-					code = CATResult::NewL(EATCREG, EATReadResult, &params);
-					break;
-					}
-				case RMobilePhone::ENotRegisteredSearching:
-				case RMobilePhone::ERegisteredBusy:
-					{
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceNotRegisteredSearching)))
-					code = CATResult::NewL(EATCREG, EATReadResult, &params);
-					break;
-					}
-				case RMobilePhone::ERegisteredOnHomeNetwork:
-					{
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceHomeNetwork)))
-					code = CATResult::NewL(EATCREG, EATReadResult, &params);
-					break;
-					}
-				case RMobilePhone::ERegistrationDenied:
-					{
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceRegistrationDenied)))
-					code = CATResult::NewL(EATCREG, EATReadResult, &params);
-					break;
-					}
-				case RMobilePhone::ERegisteredRoaming:
-					{
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
-					LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceRegisteredRoaming)))
-					code = CATResult::NewL(EATCREG, EATReadResult, &params);
-					break;
-					}
-				default:
-					TRACE_INFO(_L("Error: default in CREG"));
-					break;	
-				};
-			break;	
-      }
-    case EATCSQ:
-    	{
-    	TRACE_INFO(_L("Requesting Signal strength"));
-			response = ETrue;
-    	LEAVE_IF_ERROR(params.Append(TATParam(iPhoneStatus->GetRssiStrength())))
-    	LEAVE_IF_ERROR(params.Append(TATParam(KBerUnknown)))
-   		code = CATResult::NewL(EATCSQ, EATReadResult, &params);
-    	TRACE_INFO(_L("done"));
-    	break;
-    	}
-        	
-		case EATCGSN:
-			{
-			response = ETrue;
-   		TBuf8<RMobilePhone::KPhoneSerialNumberSize> buf;
-   		buf.Copy(iIdentity.iSerialNumber);
-   		LEAVE_IF_ERROR(params.Append(TATParam(buf)))
-   		code = CATResult::NewL(EATCGSN, EATReadResult, &params);
-			break;
-			}
-    case EATCGMI:
-    	{
-    	response = ETrue;
-    	TBuf8<RMobilePhone::KPhoneManufacturerIdSize> buf;
-    	buf.Copy(iIdentity.iManufacturer);
-   		LEAVE_IF_ERROR(params.Append(TATParam(buf)))
-   		code = CATResult::NewL(EATCGMI, EATReadResult, &params);
-   		break;
-    	}
-    case EATCGMM:
-    	{
-    	response = ETrue;
-    	TBuf8<RMobilePhone::KPhoneModelIdSize> buf;
-    	buf.Copy(iIdentity.iModel);
-   		LEAVE_IF_ERROR(params.Append(TATParam(buf)))
-   		code = CATResult::NewL(EATCGMM, EATReadResult, &params);
-   		break;    	
-    	}
-    case EATCGMR:
-    	{
-    	response = ETrue;
-    	TBuf8<RMobilePhone::KPhoneRevisionIdSize> buf;
-    	buf.Copy(iIdentity.iRevision);
-   		LEAVE_IF_ERROR(params.Append(TATParam(buf)))
-   		code = CATResult::NewL(EATCGMR, EATReadResult, &params);
-   		break;    	
-    	}
-		case EATCIMI:
-			{
-			iEtelQuery->SetServiceId(KQueryIMSI);
-			iPhone.GetSubscriberId(iEtelQuery->iStatus, iId);
-			iEtelQuery->GoActive();
-			break;
-			}
-		case EATCOLP:
-			{
-			response = ETrue;
-    	LEAVE_IF_ERROR(params.Append(TATParam(TInt(iProtocolStatus->iOutgoingCallNotif))))
-			code = CATResult::NewL(EATCOLP, EATReadResult, &params);
-			break;
-			}
-    default:
-      LEAVE(KErrNotSupported);
-      }
+                    iPhoneStatus->NetworkStatus();
+            switch(net)
+                {
+                case RMobilePhone::ERegistrationUnknown:
+                    {
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceUnknown)))
+                    code = CATResult::NewL(EATCREG, EATReadResult, &params);
+                    break;
+                    }
+                case RMobilePhone::ENotRegisteredEmergencyOnly:
+                case RMobilePhone::ENotRegisteredNoService:
+                    {
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceNotRegistered)))
+                    code = CATResult::NewL(EATCREG, EATReadResult, &params);
+                    break;
+                    }
+                case RMobilePhone::ENotRegisteredSearching:
+                case RMobilePhone::ERegisteredBusy:
+                    {
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceNotRegisteredSearching)))
+                    code = CATResult::NewL(EATCREG, EATReadResult, &params);
+                    break;
+                    }
+                case RMobilePhone::ERegisteredOnHomeNetwork:
+                    {
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceHomeNetwork)))
+                    code = CATResult::NewL(EATCREG, EATReadResult, &params);
+                    break;
+                    }
+                case RMobilePhone::ERegistrationDenied:
+                    {
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceRegistrationDenied)))
+                    code = CATResult::NewL(EATCREG, EATReadResult, &params);
+                    break;
+                    }
+                case RMobilePhone::ERegisteredRoaming:
+                    {
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregEnableUnsolicited)))
+                    LEAVE_IF_ERROR(params.Append(TATParam(EBTMonoCregNetworkServiceRegisteredRoaming)))
+                    code = CATResult::NewL(EATCREG, EATReadResult, &params);
+                    break;
+                    }
+                default:
+                    TRACE_INFO(_L("Error: default in CREG"));
+                    break;  
+                };
+            break;  
+            }
+        case EATCSQ:
+            {
+            TRACE_INFO(_L("Requesting Signal strength"));
+            LEAVE_IF_ERROR(params.Append(TATParam(iPhoneStatus->GetRssiStrength())))
+            LEAVE_IF_ERROR(params.Append(TATParam(KBerUnknown)))
+            code = CATResult::NewL(EATCSQ, EATReadResult, &params);
+            TRACE_INFO(_L("done"));
+            break;
+            }
+
+        case EATCGSN:
+            {
+            TBuf8<RMobilePhone::KPhoneSerialNumberSize> buf;
+            buf.Copy(iIdentity.iSerialNumber);
+            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
+            code = CATResult::NewL(EATCGSN, EATReadResult, &params);
+            break;
+            }
+        case EATCGMI:
+            {
+            TBuf8<RMobilePhone::KPhoneManufacturerIdSize> buf;
+            buf.Copy(iIdentity.iManufacturer);
+            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
+            code = CATResult::NewL(EATCGMI, EATReadResult, &params);
+            break;
+            }
+        case EATCGMM:
+            {
+            TBuf8<RMobilePhone::KPhoneModelIdSize> buf;
+            buf.Copy(iIdentity.iModel);
+            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
+            code = CATResult::NewL(EATCGMM, EATReadResult, &params);
+            break;      
+            }
+        case EATCGMR:
+            {
+            TBuf8<RMobilePhone::KPhoneRevisionIdSize> buf;
+            buf.Copy(iIdentity.iRevision);
+            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
+            code = CATResult::NewL(EATCGMR, EATReadResult, &params);
+            break;      
+            }
+        case EATCIMI:
+            {
+            iEtelQuery->SetServiceId(KQueryIMSI);
+            iPhone.GetSubscriberId(iEtelQuery->iStatus, iId);
+            iEtelQuery->GoActive();
+            break;
+            }
+        case EATCOLP:
+            {
+            LEAVE_IF_ERROR(params.Append(TATParam(TInt(iProtocolStatus->iOutgoingCallNotif))))
+            code = CATResult::NewL(EATCOLP, EATReadResult, &params);
+            break;
+            }
+        default:
+            LEAVE(KErrNotSupported);
+        }
     CleanupStack::PopAndDestroy(&params);
-    if (response)
-        {
-        RATResultPtrArray resarr;
+    if (code)
+        {     
         CleanupStack::PushL(code);
-        ATObjArrayCleanupResetAndDestroyPushL(resarr);        
         resarr.AppendL(code);
         CleanupStack::Pop(code);
         CATResult* ok = CATResult::NewL(EATOK);
@@ -847,9 +860,9 @@ void CBtmcProtocol::HandleReadCommandL(const CATCommand& aCmd)
         resarr.AppendL(ok);
         CleanupStack::Pop(ok);
         SendResponseL(resarr);
-        CleanupStack::PopAndDestroy(&resarr);
         CmdHandlingCompletedL();
         }
+    CleanupStack::PopAndDestroy(&resarr);
     }
 
 // -----------------------------------------------------------------------------
@@ -1070,7 +1083,9 @@ void CBtmcProtocol::HandleActionCommandL(const CATCommand& aCmd)
         case EATCGSN:
             {
             CATResult* code = NULL;
-            RArray<TATParam> params;
+            RATResultPtrArray resarr;
+            ATObjArrayCleanupResetAndDestroyPushL(resarr);              
+            RATParamArray params;
             CleanupClosePushL(params);
             TBuf8<RMobilePhone::KPhoneSerialNumberSize> buf;
             buf.Copy(iIdentity.iSerialNumber);
@@ -1078,8 +1093,6 @@ void CBtmcProtocol::HandleActionCommandL(const CATCommand& aCmd)
             code = CATResult::NewL(EATCGSN, EATActionResult, &params);
             CleanupStack::PopAndDestroy(&params);
             CleanupStack::PushL(code);
-            RATResultPtrArray resarr;
-            ATObjArrayCleanupResetAndDestroyPushL(resarr);        
             resarr.AppendL(code);
             CleanupStack::Pop(code);
             CATResult* ok = CATResult::NewL(EATOK);
@@ -1160,38 +1173,6 @@ TBool CBtmcProtocol::ServiceLevelConnected() const
         return ETrue;
         }
     return EFalse;
-    }
-
-// -----------------------------------------------------------------------------
-// CBtmcProtocol::ServiceAttributeSearchComplete
-// -----------------------------------------------------------------------------
-//    
-void CBtmcProtocol::ServiceAttributeSearchComplete( TSdpServRecordHandle /*aHandle*/, 
-                                                    const RSdpResultArray& aAttr, 
-                                                    TInt aErr )
-	{
-    TRACE_FUNC
-    if((aErr == KErrNone || aErr == KErrEof) && aAttr.Count() && aAttr[0].iAttrValue.iValNumeric)
-        {
-        TRACE_INFO((_L("Remote volume control supported")))
-        TInt err = KErrNone;
-        if (!iPhoneStatus)
-            {
-            TRAP(err, iPhoneStatus = CBtmcPhoneStatus::NewL(*this, iPhone, iProtocolStatus->iProfile));
-            }   
-			
-        if (err == KErrNone)
-            {
-            TRAP_IGNORE(iPhoneStatus->SetVolumeControlFeatureL(ETrue));
-            iPhoneStatus->ActivateRemoteVolumeControl();
-            }        
-        }
-        
-    if(aErr)
-        {
-        delete iBteng;
-        iBteng = NULL;
-        }
     }
 
 void CBtmcProtocol::SetIndicatorL(TInt aIndicator, TInt aValue)

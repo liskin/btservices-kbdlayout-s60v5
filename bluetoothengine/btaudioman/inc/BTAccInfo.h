@@ -21,7 +21,7 @@
 
 // INCLUDES
 #include <bttypes.h>  // TBTDevAddr
-
+#include <btaccTypes.h>
 // DATA TYPES
 
 // CLASS DECLARATION
@@ -125,10 +125,11 @@ public:
     void SetSupportedFeature(TUint16 aSupportedFeature, TInt aPosition);
     
     /** 
-    * Accessor for the 
-    * @return 
+    * Accessor for the supported feature of a profile
+    * @return the supported features of this profile. 0 is returned if the profile is not
+    * found in this storage.
     */
-    TUint16 SupportedFeatureL(TInt aPosition) const;
+    TUint16 SupportedFeature(TProfiles aProfile) const;
      
 public:
     TBTDevAddr iAddr;

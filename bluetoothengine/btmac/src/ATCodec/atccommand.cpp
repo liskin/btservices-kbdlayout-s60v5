@@ -423,7 +423,7 @@ EXPORT_C CATResult* CATResult::NewLC(TATId aId, TATType aType, const RATParamArr
 // CATResult::NewL
 // -----------------------------------------------------------------------------
 //
-EXPORT_C CATResult* CATResult::NewL(TATId aId, TATType aType, const TATParam aParam)
+EXPORT_C CATResult* CATResult::NewL(TATId aId, TATType aType, const TATParam& aParam)
     {
     CATResult* self = CATResult::NewLC(aId, aType, aParam);
     CleanupStack::Pop(self);
@@ -434,7 +434,7 @@ EXPORT_C CATResult* CATResult::NewL(TATId aId, TATType aType, const TATParam aPa
 // CATResult::NewLC
 // -----------------------------------------------------------------------------
 //    
-EXPORT_C CATResult* CATResult::NewLC(TATId aId, TATType aType, const TATParam aParam)
+EXPORT_C CATResult* CATResult::NewLC(TATId aId, TATType aType, const TATParam& aParam)
     {
     CATResult* self = new (ELeave) CATResult;
     CleanupStack::PushL(self);

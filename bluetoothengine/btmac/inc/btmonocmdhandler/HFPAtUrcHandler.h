@@ -20,7 +20,6 @@
 #define C_CHFPATURCHANDLER_H
 
 #include <atext.h>
-#include "HfpAtCmdHandler.h"
 #include "HFPAtEcomListen.h"
 
 /**

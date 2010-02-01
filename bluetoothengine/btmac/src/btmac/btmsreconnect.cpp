@@ -163,6 +163,10 @@ void CBtmsReconnect::RfcommConnectCompletedL(TInt aErr)
     else
         {
         Parent().LoadCmdHandlerL(EBtmcHSP, iRfcomm->Remote(), iRfcomm->AccessoryInitiatedConnection());
+        // volume control support status of the HSP in remote device
+        // is only available in the owner of this component.
+        // Ask parent to set the support in cmdhandler.
+        Parent().SetCmdHandlerRvcSupport( iRfcomm->Remote() );
         Parent().ChangeStateL(CBtmsOpenAudio::NewL(Parent(), SwapStateRequest(), SwapStateRfcommSock(), NULL));
         }
     }

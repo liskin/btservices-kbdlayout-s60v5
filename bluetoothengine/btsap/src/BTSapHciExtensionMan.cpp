@@ -93,8 +93,6 @@ void CBTHciExtensionMan::GetEncryptionKeyLengthL(const TBTDevAddr& aBTDevAddr, T
     BTSAP_TRACE_OPT(KBTSAP_TRACE_FUNCTIONS, BTSapPrintTrace(_L("[BTSap]  CBTHciExtensionMan::HandleRequestL >>")));
     
     TInt err = KErrNone; 
-    aStatus = KRequestPending;
-    iStatus = &aStatus;
     
     CBTHciExtensionCmd* cmd = NULL;
     TBTDevAddrPckgBuf pckg;
@@ -104,25 +102,21 @@ void CBTHciExtensionMan::GetEncryptionKeyLengthL(const TBTDevAddr& aBTDevAddr, T
 
     cmd->SetParamL(pckg().Des());
 
-    if (err == KErrNone)
+    iRequestOpcode = cmd->Opcode();
+    TPtrC8 ptr = cmd->DesC();
+    TUint16 requestOpcode = ptr[0] << 8 | ptr[1];
+    err = iConduit->IssueCommandL(requestOpcode, ptr.Mid(sizeof(KHciExtensionCmdPatch)));
+    if (err)
         {
-        iRequestOpcode = cmd->Opcode();
-        TPtrC8 ptr = cmd->DesC();
-        TUint16 requestOpcode = ptr[0] << 8 | ptr[1];
-        err = iConduit->IssueCommandL(requestOpcode, ptr.Mid(sizeof(KHciExtensionCmdPatch)));
-        if (err)
-            {
-            BTSAP_TRACE_OPT(KBTSAP_TRACE_ERROR, BTSapPrintTrace(_L("[BTSap]  iConduit->IssueCommandL err %d"), err));
-            }
+        BTSAP_TRACE_OPT(KBTSAP_TRACE_ERROR, BTSapPrintTrace(_L("[BTSap]  iConduit->IssueCommandL err %d"), err));
+        User::Leave(err);
         }
-    else
-        {
-        User::RequestComplete(iStatus, err);
-        }
-    if (cmd)
-        {
-        CleanupStack::PopAndDestroy(cmd);
-        }
+
+    aStatus = KRequestPending;
+    iStatus = &aStatus;    
+    
+    CleanupStack::PopAndDestroy(cmd);
+
     BTSAP_TRACE_OPT(KBTSAP_TRACE_FUNCTIONS, BTSapPrintTrace(_L("[BTSap]  CBTHciExtensionMan::HandleRequestL <<")));
     }
 

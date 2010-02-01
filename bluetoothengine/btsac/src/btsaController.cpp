@@ -111,9 +111,8 @@ void CBTSAController::ConstructL()
     iGavdp = CBTSACGavdp::NewL(state); 
  	iLocalSEPs = CBTSACSEPManager::NewL(TBTDevAddr());
  	iGavdpErrorActive = CBtsacActive::NewL(*this, CActive::EPriorityStandard, KRequestIdGavdpError); 	
-    ChangeStateL(state);
-    CleanupStack::Pop(state);   
-    
+ 	CleanupStack::Pop(state);
+ 	ChangeStateL(state);
     ResetRemoteCache();
     
     TInt err = RProperty::Define( KBTAudioRemCon, 
@@ -128,31 +127,29 @@ void CBTSAController::ConstructL()
 // CBTSAController::ChangeStateL
 // -----------------------------------------------------------------------------
 //  
+
 void CBTSAController::ChangeStateL(CBtsacState* aState)
-    {
-    TRACE_FUNC_ENTRY
-    TRACE_ASSERT(!!aState, EBTPanicNullPointer);
-    if(iState)
-	    {    	
-		if(aState->GetStateIndex() == iState->GetStateIndex())
-		    {
-		    // We already are in desired state, delete the state which came in and return
-		    TRACE_INFO((_L("CBTSAController::ChangeStateL(), already in desired state.")))
-		    delete aState;
-		    return;
-		    }
-	    }
-    CBtsacState *CurrentState = iState;    
-    iState = aState;
-    TInt err = KErrNone;
-    TRAP(err, iState->EnterL());
-    if (err)
-        {
-        ChangeStateL(iState->ErrorOnEntryL(err));
-        }
-  	delete CurrentState;
-    TRACE_FUNC_EXIT
-    }
+  {
+  TRACE_FUNC_ENTRY
+  TRACE_ASSERT(aState != NULL, EBTPanicNullPointer);
+  if(iState && aState->GetStateIndex() == iState->GetStateIndex())
+      {
+      // We already are in desired state, delete the state which came in and return
+      TRACE_INFO((_L("CBTSAController::ChangeStateL(), already in desired state.")))
+      delete aState;
+      return;
+      }
+  delete iState;
+  iState = aState;
+  TInt err = KErrNone;
+  TRAP(err, iState->EnterL());
+  if (err)
+      {
+      ChangeStateL(iState->ErrorOnEntryL(err));
+      }
+  TRACE_FUNC_EXIT
+  }
+
 
 // -----------------------------------------------------------------------------
 // CBTSAController::ResetRemoteCache

@@ -16,7 +16,7 @@
 *  Name        : basrvaccman.h
 *  Part of     : BTEng / Bluetooth Accessory Server
 *  Description : 
-*  Version     : %version: 3.1.4.1.2.2.10 %
+*  Version     : %version: 3.1.4.1.2.2.11 %
 *
 */
 
@@ -123,6 +123,14 @@ private: // From MBTAccObserver
     
     TInt ConnectionStatus(const TBTDevAddr& aAddr);
 
+    /**
+     * Get the supported features of a profile in a device.
+     * @param aAddr The address of the device.
+     * @param aProfile the profile identifier
+     * @return the supported features value.
+     */
+    TInt SupportedFeature( const TBTDevAddr& aAddr, TProfiles aProfile ) const;
+    
     //TCleanupOperation callback function for TCleanupItem
     static void CleanupLastItemFromClientRequestsArray(TAny* aPtr);
 
@@ -159,7 +167,7 @@ protected:
     
     void DestructVariant();
 
-    TInt FindAcc(const TBTDevAddr& aRemote);
+    TInt FindAcc(const TBTDevAddr& aRemote) const;
 
     TInt AudioLinkStatus();
 

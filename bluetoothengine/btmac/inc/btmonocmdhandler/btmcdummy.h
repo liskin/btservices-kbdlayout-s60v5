@@ -20,12 +20,12 @@
 
 #include <mcall.h>
 
-class MBtmcDummy : public MCall
+NONSHARABLE_CLASS(TBtmcDummyCall) : public MCall
 {
 public:
     
-    MBtmcDummy() {};    
-    ~MBtmcDummy() {};
+     TBtmcDummyCall() {};    
+    ~TBtmcDummyCall() {};
     
     TInt CallIndex() const { return 0; };     
 

@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  the entry of this plugin.
-*  Version     : %version: 12.1.6 %
+*  Version     : %version: 12.1.7 %
 *
 */
 
@@ -148,6 +148,12 @@ public:
     
     void LoadCmdHandlerL(TBtmcProfileId aProfile, const TBTDevAddr& aAddr, TBool aAccessoryInitiated);
     
+    /**
+     * Set the support status of remote volume control of HSP in the remote device.
+     * @param aSupported ETrue if remote volume control is supported by HS unit.
+     */
+    void SetCmdHandlerHspRvcSupported( TBool aSupported );
+    
     void DeleteCmdHandler();
 
     void NewProtocolDataL(const TDesC8& aData);
@@ -156,6 +162,12 @@ public:
 
     TBool IsEdrSupported() const;
 
+    /**
+     * Update the cmdhandler the support of remove volume control.
+     * @param aAddr the address of the remote device.
+     */
+    void SetCmdHandlerRvcSupport( const TBTDevAddr& aAddr );
+    
 private:
     // From base class CBTAccPlugin
 

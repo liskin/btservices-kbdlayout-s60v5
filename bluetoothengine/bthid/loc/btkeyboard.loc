@@ -47,6 +47,11 @@
 //
 #define qtn_hid_change "Change"
 
+// d: Status pane title for keyboard settings view
+// l: title_pane_t2/opt9
+//
+#define qtn_hid_settings "Settings"
+
 //
 // Settings List Item Names
 //

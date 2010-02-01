@@ -155,18 +155,26 @@ void TAccInfo::SetSupportedFeature(TUint16 aSupportedFeature, TInt aPosition)
     
     
 // -----------------------------------------------------------------------------
-// TAccInfo::SupportedFeatureL
+// TAccInfo::SupportedFeature
 // -----------------------------------------------------------------------------
 //    
-TUint16 TAccInfo::SupportedFeatureL(TInt aPosition)    const
+TUint16 TAccInfo::SupportedFeature(TProfiles aProfile) const
     {
-    if ( aPosition < iSupportedFeatures.Count() )
+    TUint16 sf = 0;
+    switch ( aProfile )
         {
-        return iSupportedFeatures.At(aPosition);            
+        case EHFP:
+            sf = iSupportedFeatures.At( EHFPIndex ); 
+            break;
+        case EHSP:
+            sf = iSupportedFeatures.At( EHSPIndex );
+            break;
+        case EStereo:
+            sf = iSupportedFeatures.At( EStereoIndex );
+            break;
+        case ERemConTG:
+            sf = iSupportedFeatures.At( ERemConTGIndex );
+            break;
         }
-    else
-        {
-        User::Leave(KErrOverflow);
-        }
-    return 0x00;
+    return sf;
     }

@@ -89,6 +89,13 @@ public:
     
     void AllowLowPowerMode();
     
+    /**
+     * Get the supported features of a profile in this device.
+     * @param aProfile the profile identifier
+     * @return the supported features value.
+     */
+    TInt SupportedFeature( TProfiles aProfile );
+    
 protected:
 
     /**

@@ -6,4 +6,5 @@ EXPORTS
 	?ActivateRemoteVolumeControl@CBtmcHandlerApi@@QAEXXZ @ 5 NONAME ; void CBtmcHandlerApi::ActivateRemoteVolumeControl(void)
 	?DeActivateRemoteVolumeControl@CBtmcHandlerApi@@QAEXXZ @ 6 NONAME ; void CBtmcHandlerApi::DeActivateRemoteVolumeControl(void)
 	?GetRemoteSupportedFeature@CBtmcHandlerApi@@QAEHXZ @ 7 NONAME ; int CBtmcHandlerApi::GetRemoteSupportedFeature(void)
+	?SetHspRvcSupported@CBtmcHandlerApi@@QAEXH@Z @ 8 NONAME ; void CBtmcHandlerApi::SetHspRvcSupported(int)
 

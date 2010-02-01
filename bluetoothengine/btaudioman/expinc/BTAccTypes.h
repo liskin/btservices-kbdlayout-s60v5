@@ -22,6 +22,12 @@
 
 #include <bttypes.h>
 
+/**
+ * This value indicates the HSP of a headset/carkit supports Remote
+ * volume control.
+ */
+const TInt KHspRemoteVolumeControlSupport = 0x10;
+
 enum TProfiles
     {
     ERemConCT   = 0x10, // AVRCP Controller

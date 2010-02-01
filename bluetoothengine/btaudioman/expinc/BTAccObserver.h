@@ -93,6 +93,13 @@ public:
     virtual TBool IsAvrcpVolCTSupported() = 0;
     virtual TBool IsAbsoluteVolumeSupported(const TBTDevAddr& aAddr) = 0;
     
+    /**
+     * Get the supported features of a profile in a device.
+     * @param aAddr The address of the device.
+     * @param aType the profile identifier
+     * @return the supported features value.
+     */
+    virtual TInt SupportedFeature( const TBTDevAddr& aAddr, TProfiles aType ) const = 0;
     };
 
 #endif // BTACC_OBSERVER_H

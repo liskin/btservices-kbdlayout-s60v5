@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  CBtmMan definition
-*  Version     : %version: 15.1.7 %
+*  Version     : %version: 15.1.8 %
 *
 */
 
@@ -232,7 +232,17 @@ void CBtmMan::LoadCmdHandlerL(TBtmcProfileId aProfile, const TBTDevAddr& aAddr, 
         iCmdHandler = CBtmcHandlerApi::NewL(*this, aProfile, aAddr.Des(), aAccessoryInitiated);
         }
     }
-    
+
+
+void CBtmMan::SetCmdHandlerHspRvcSupported( TBool aSupported )
+    {
+    if (iCmdHandler)
+        {
+        iCmdHandler->SetHspRvcSupported( aSupported );
+        }
+    }
+
+
 void CBtmMan::DeleteCmdHandler()
     {
     delete iCmdHandler;
@@ -262,7 +272,16 @@ TBool CBtmMan::IsEdrSupported() const
     {
     return iEdr;
     }
-    
+
+void CBtmMan::SetCmdHandlerRvcSupport(const TBTDevAddr& aAddr)
+    {
+    TRACE_FUNC
+    // Get volume control support status of the HSP from observer
+    TInt sf = Observer().SupportedFeature( aAddr, EHSP );
+    TRACE_INFO((_L(" HSP support feature: 0x%x"), sf));
+    iCmdHandler->SetHspRvcSupported( sf & KHspRemoteVolumeControlSupport );
+    }  
+
 void CBtmMan::ConnectToAccessory(const TBTDevAddr& aAddr, TRequestStatus& aStatus)
     {
     TRACE_FUNC_ENTRY

@@ -261,6 +261,11 @@ void CBasrvAcc::AllowLowPowerMode()
     }
 
 
+TInt CBasrvAcc::SupportedFeature( TProfiles aProfile )
+    {
+    return iAccInfo.SupportedFeature( aProfile );
+    }
+
 CBasrvAcc::CBasrvAcc(CBasrvAccMan& aAccMan)
     : iAccMan(aAccMan)
     {

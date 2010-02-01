@@ -1,34 +1,34 @@
 EXPORTS
 	??0TATParam@@QAE@ABVTDesC8@@W4TATParamType@@@Z @ 1 NONAME ; TATParam::TATParam(class TDesC8 const &, enum TATParamType)
-	??0TATParam@@QAE@H@Z @ 2 NONAME ; TATParam::TATParam(int)
-	??0TATParam@@QAE@XZ @ 3 NONAME ; TATParam::TATParam(void)
-	??1CATBase@@UAE@XZ @ 4 NONAME ; CATBase::~CATBase(void)
-	?Des@CATBase@@QBEABVTDesC8@@XZ @ 5 NONAME ; class TDesC8 const & CATBase::Des(void) const
-	?Des@TATParam@@QBEABVTDesC8@@XZ @ 6 NONAME ; class TDesC8 const & TATParam::Des(void) const
-	?ExternalizeL@CATBase@@QBEXAAVRWriteStream@@@Z @ 7 NONAME ; void CATBase::ExternalizeL(class RWriteStream &) const
-	?ExternalizeL@TATParam@@QBEXAAVRWriteStream@@@Z @ 8 NONAME ; void TATParam::ExternalizeL(class RWriteStream &) const
-	?Id@CATBase@@QBE?AW4TATId@@XZ @ 9 NONAME ; enum TATId CATBase::Id(void) const
-	?Int@TATParam@@QBEHAAH@Z @ 10 NONAME ; int TATParam::Int(int &) const
-	?InternalizeL@CATBase@@QAEXAAVRReadStream@@@Z @ 11 NONAME ; void CATBase::InternalizeL(class RReadStream &)
-	?InternalizeL@TATParam@@QAEXAAVRReadStream@@@Z @ 12 NONAME ; void TATParam::InternalizeL(class RReadStream &)
-	?NewL@CATCommand@@SAPAV1@ABVTDesC8@@@Z @ 13 NONAME ; class CATCommand * CATCommand::NewL(class TDesC8 const &)
-	?NewL@CATCommand@@SAPAV1@XZ @ 14 NONAME ; class CATCommand * CATCommand::NewL(void)
-	?NewL@CATResult@@SAPAV1@W4TATId@@W4TATType@@PBV?$RArray@VTATParam@@@@@Z @ 15 NONAME ; class CATResult * CATResult::NewL(enum TATId, enum TATType, class RArray<class TATParam> const *)
-	?NewL@CATResult@@SAPAV1@W4TATId@@W4TATType@@VTATParam@@@Z @ 16 NONAME ; class CATResult * CATResult::NewL(enum TATId, enum TATType, class TATParam)
-	?NewL@CATResult@@SAPAV1@XZ @ 17 NONAME ; class CATResult * CATResult::NewL(void)
-	?NewLC@CATCommand@@SAPAV1@ABVTDesC8@@@Z @ 18 NONAME ; class CATCommand * CATCommand::NewLC(class TDesC8 const &)
-	?NewLC@CATCommand@@SAPAV1@XZ @ 19 NONAME ; class CATCommand * CATCommand::NewLC(void)
-	?NewLC@CATResult@@SAPAV1@W4TATId@@W4TATType@@PBV?$RArray@VTATParam@@@@@Z @ 20 NONAME ; class CATResult * CATResult::NewLC(enum TATId, enum TATType, class RArray<class TATParam> const *)
-	?NewLC@CATResult@@SAPAV1@W4TATId@@W4TATType@@VTATParam@@@Z @ 21 NONAME ; class CATResult * CATResult::NewLC(enum TATId, enum TATType, class TATParam)
-	?NewLC@CATResult@@SAPAV1@XZ @ 22 NONAME ; class CATResult * CATResult::NewLC(void)
-	?ParamNum@CATBase@@QBEHXZ @ 23 NONAME ; int CATBase::ParamNum(void) const
-	?Parameter@CATBase@@QBEHHAAVTATParam@@@Z @ 24 NONAME ; int CATBase::Parameter(int, class TATParam &) const
-	?Parameters@CATBase@@QBEABV?$RArray@VTATParam@@@@XZ @ 25 NONAME ; class RArray<class TATParam> const & CATBase::Parameters(void) const
-	?Set@CATCommand@@QAEHABVTDesC8@@@Z @ 26 NONAME ; int CATCommand::Set(class TDesC8 const &)
-	?Set@CATResult@@QAEHW4TATId@@W4TATType@@PBV?$RArray@VTATParam@@@@@Z @ 27 NONAME ; int CATResult::Set(enum TATId, enum TATType, class RArray<class TATParam> const *)
-	?SetInt@TATParam@@QAEXH@Z @ 28 NONAME ; void TATParam::SetInt(int)
-	?SetValue@TATParam@@QAEHABVTDesC8@@W4TATParamType@@@Z @ 29 NONAME ; int TATParam::SetValue(class TDesC8 const &, enum TATParamType)
-	?Type@CATBase@@QBE?AW4TATType@@XZ @ 30 NONAME ; enum TATType CATBase::Type(void) const
-	?Type@TATParam@@QBE?AW4TATParamType@@XZ @ 31 NONAME ; enum TATParamType TATParam::Type(void) const
-	?ATObjArrayCleanupResetAndDestroyPushL@@YAXAAV?$RPointerArray@VCATResult@@@@@Z @ 32 NONAME ; void ATObjArrayCleanupResetAndDestroyPushL(class RPointerArray<class CATResult> &)
+	?NewLC@CATResult@@SAPAV1@W4TATId@@W4TATType@@PBV?$RArray@VTATParam@@@@@Z @ 2 NONAME ; class CATResult * CATResult::NewLC(enum TATId, enum TATType, class RArray<class TATParam> const *)
+	?NewL@CATResult@@SAPAV1@W4TATId@@W4TATType@@PBV?$RArray@VTATParam@@@@@Z @ 3 NONAME ; class CATResult * CATResult::NewL(enum TATId, enum TATType, class RArray<class TATParam> const *)
+	?Parameters@CATBase@@QBEABV?$RArray@VTATParam@@@@XZ @ 4 NONAME ; class RArray<class TATParam> const & CATBase::Parameters(void) const
+	?NewL@CATResult@@SAPAV1@XZ @ 5 NONAME ; class CATResult * CATResult::NewL(void)
+	?InternalizeL@TATParam@@QAEXAAVRReadStream@@@Z @ 6 NONAME ; void TATParam::InternalizeL(class RReadStream &)
+	?InternalizeL@CATBase@@QAEXAAVRReadStream@@@Z @ 7 NONAME ; void CATBase::InternalizeL(class RReadStream &)
+	??1CATBase@@UAE@XZ @ 8 NONAME ; CATBase::~CATBase(void)
+	?Type@CATBase@@QBE?AW4TATType@@XZ @ 9 NONAME ; enum TATType CATBase::Type(void) const
+	?NewLC@CATCommand@@SAPAV1@ABVTDesC8@@@Z @ 10 NONAME ; class CATCommand * CATCommand::NewLC(class TDesC8 const &)
+	?ExternalizeL@TATParam@@QBEXAAVRWriteStream@@@Z @ 11 NONAME ; void TATParam::ExternalizeL(class RWriteStream &) const
+	?Set@CATResult@@QAEHW4TATId@@W4TATType@@PBV?$RArray@VTATParam@@@@@Z @ 12 NONAME ; int CATResult::Set(enum TATId, enum TATType, class RArray<class TATParam> const *)
+	??0TATParam@@QAE@XZ @ 13 NONAME ; TATParam::TATParam(void)
+	?NewL@CATCommand@@SAPAV1@ABVTDesC8@@@Z @ 14 NONAME ; class CATCommand * CATCommand::NewL(class TDesC8 const &)
+	?Type@TATParam@@QBE?AW4TATParamType@@XZ @ 15 NONAME ; enum TATParamType TATParam::Type(void) const
+	?NewLC@CATResult@@SAPAV1@W4TATId@@W4TATType@@ABVTATParam@@@Z @ 16 NONAME ; class CATResult * CATResult::NewLC(enum TATId, enum TATType, class TATParam const &)
+	?Des@CATBase@@QBEABVTDesC8@@XZ @ 17 NONAME ; class TDesC8 const & CATBase::Des(void) const
+	?Id@CATBase@@QBE?AW4TATId@@XZ @ 18 NONAME ; enum TATId CATBase::Id(void) const
+	?Parameter@CATBase@@QBEHHAAVTATParam@@@Z @ 19 NONAME ; int CATBase::Parameter(int, class TATParam &) const
+	?Des@TATParam@@QBEABVTDesC8@@XZ @ 20 NONAME ; class TDesC8 const & TATParam::Des(void) const
+	?NewL@CATResult@@SAPAV1@W4TATId@@W4TATType@@ABVTATParam@@@Z @ 21 NONAME ; class CATResult * CATResult::NewL(enum TATId, enum TATType, class TATParam const &)
+	?SetValue@TATParam@@QAEHABVTDesC8@@W4TATParamType@@@Z @ 22 NONAME ; int TATParam::SetValue(class TDesC8 const &, enum TATParamType)
+	??0TATParam@@QAE@H@Z @ 23 NONAME ; TATParam::TATParam(int)
+	?Set@CATCommand@@QAEHABVTDesC8@@@Z @ 24 NONAME ; int CATCommand::Set(class TDesC8 const &)
+	?SetInt@TATParam@@QAEXH@Z @ 25 NONAME ; void TATParam::SetInt(int)
+	?Int@TATParam@@QBEHAAH@Z @ 26 NONAME ; int TATParam::Int(int &) const
+	?ParamNum@CATBase@@QBEHXZ @ 27 NONAME ; int CATBase::ParamNum(void) const
+	?NewLC@CATCommand@@SAPAV1@XZ @ 28 NONAME ; class CATCommand * CATCommand::NewLC(void)
+	?ExternalizeL@CATBase@@QBEXAAVRWriteStream@@@Z @ 29 NONAME ; void CATBase::ExternalizeL(class RWriteStream &) const
+	?ATObjArrayCleanupResetAndDestroyPushL@@YAXAAV?$RPointerArray@VCATResult@@@@@Z @ 30 NONAME ; void ATObjArrayCleanupResetAndDestroyPushL(class RPointerArray<class CATResult> &)
+	?NewLC@CATResult@@SAPAV1@XZ @ 31 NONAME ; class CATResult * CATResult::NewLC(void)
+	?NewL@CATCommand@@SAPAV1@XZ @ 32 NONAME ; class CATCommand * CATCommand::NewL(void)
 

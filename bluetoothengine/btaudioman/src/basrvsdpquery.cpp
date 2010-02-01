@@ -356,8 +356,11 @@ void CBasrvSdpQuery::MakeAccInfo(TAccInfo& aInfo)
                 if (iServiceAttrs[ii].iAttrValue)
                     {
                     TRACE_INFO((_L("HSP Remote volume control is supported.")))
-                    // Server is going to feed 0x10 to supported features for headset profile
-                    aInfo.SetSupportedFeature(0x10, TAccInfo::EHSPIndex);
+                    // Server is going to feed 0x10 to supported features for headset profile.
+                    // The SDP of HSP doesn't really use supported feature attribute.
+                    // We save RVC support in supported feature field for internal future use only.
+                    // This approach is consistent with Accessory framework API.
+                    aInfo.SetSupportedFeature(KHspRemoteVolumeControlSupport, TAccInfo::EHSPIndex);
                     }
                 }
             else if ( iServiceAttrs[ii].iUUID == KAVRemoteControlTargetUUID )

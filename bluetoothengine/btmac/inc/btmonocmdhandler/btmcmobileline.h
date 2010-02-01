@@ -28,6 +28,8 @@
 #include "btmccallactive.h"
 #include "btmcline.h"
 
+#include "btmcdummy.h"
+
 // FORWARD DECLARATIONS
 class CBtmcCallStatus;
 
@@ -112,12 +114,14 @@ NONSHARABLE_CLASS(CBtmcMobileLine) : public CBase, public MBtmcLine, public MBtm
         RMobilePhone& iPhone; // unowned
 
         RMobileLine iLine; // owned
-
+        
         RPointerArray<CBtmcCallActive> iCallActives;
         
         CBtmcActive* iLineIncomingActive;
         CBtmcActive* iLineOutgoingActive;
         
+        TBtmcDummyCall iDummyCall; // used in implemtation of CallInformationL()
+
         TBuf<KMaxName> iLineName;
         
         // passed to RMobileLine::NotifyCallAdded

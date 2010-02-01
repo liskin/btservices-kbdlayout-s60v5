@@ -64,6 +64,11 @@ EXPORT_C TInt CBtmcHandlerApi::GetRemoteSupportedFeature()
     return iHandler->GetRemoteSupportedFeature();
     }
 
+EXPORT_C void CBtmcHandlerApi::SetHspRvcSupported(TBool aSupported)
+    {
+    return iHandler->SetHspRvcSupported(aSupported);
+    }
+
 CBtmcHandlerApi::CBtmcHandlerApi()
     {
     }

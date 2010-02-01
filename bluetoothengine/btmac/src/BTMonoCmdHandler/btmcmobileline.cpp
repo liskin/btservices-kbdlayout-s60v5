@@ -22,7 +22,6 @@
 #include "btmc_defs.h"
 #include "debug.h"
 #include "btmccallstatus.h"
-#include "btmcdummy.h"
 
 const TInt KMobileLineActiveService = 30;
 const TInt KMobileCallActiveService = 31;
@@ -68,9 +67,7 @@ CBtmcMobileLine::~CBtmcMobileLine()
 // ==========================================================
 const MCall& CBtmcMobileLine::CallInformationL()
     {
-    MBtmcDummy dummy = MBtmcDummy();    
-    const MCall& fakeCall (dummy); 
-    return fakeCall; 
+    return iDummyCall; 
     }
 
 // ==========================================================

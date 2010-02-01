@@ -117,6 +117,14 @@ void CBtmsCtrl::OpenAudioLinkL(const TBTDevAddr& aAddr, TRequestStatus& aStatus)
 void CBtmsCtrl::AccInUse()
 	{
 	TRACE_FUNC
+	if ( iRfcomm->Service() == EBTProfileHSP )
+	    {
+	    // volume control support status of the HSP in remote device
+	    // is only available in the owner of this component.
+	    // Ask parent to set the support in cmdhandler.
+	    Parent().SetCmdHandlerRvcSupport( iRfcomm->Remote() );
+	    }
+	
 	TInt err;
 	TRAP( err,
     if (!iSco)

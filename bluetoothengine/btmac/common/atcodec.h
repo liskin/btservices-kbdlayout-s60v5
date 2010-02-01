@@ -300,9 +300,9 @@ public:
     
     IMPORT_C static CATResult* NewLC(TATId aId, TATType aType = EATErrorResult, const RATParamArray* aParams = NULL);
 
-    IMPORT_C static CATResult* NewL(TATId aId, TATType aType, const TATParam aParam);
+    IMPORT_C static CATResult* NewL(TATId aId, TATType aType, const TATParam& aParam);
     
-    IMPORT_C static CATResult* NewLC(TATId aId, TATType aType, const TATParam aParam);
+    IMPORT_C static CATResult* NewLC(TATId aId, TATType aType, const TATParam& aParam);
 
     /**
     * 

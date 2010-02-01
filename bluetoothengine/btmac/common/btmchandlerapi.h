@@ -47,6 +47,12 @@ public:
     IMPORT_C void DeActivateRemoteVolumeControl();     
     
     IMPORT_C TInt GetRemoteSupportedFeature();
+    
+    /**
+     * Set the support status of remote volume control of HSP in the remote device.
+     * @param aSupported ETrue if remote volume control is supported by HS unit.
+     */
+    IMPORT_C void SetHspRvcSupported(TBool aSupported);
 
 private:
     CBtmcHandlerApi();

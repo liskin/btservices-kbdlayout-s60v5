@@ -8,4 +8,5 @@ EXPORTS
 	_ZN15CBtmcHandlerApi27ActivateRemoteVolumeControlEv @ 7 NONAME
 	_ZN15CBtmcHandlerApi29DeActivateRemoteVolumeControlEv @ 8 NONAME
 	_ZN15CBtmcHandlerApi25GetRemoteSupportedFeatureEv @ 9 NONAME
+	_ZN15CBtmcHandlerApi18SetHspRvcSupportedEi @ 10 NONAME
 

@@ -190,19 +190,10 @@ RESOURCE CBA r_bt_softkeys_select_stop
 //
 RESOURCE DIALOG r_bt_enter_passkey_query
     {
-    flags   = EGeneralQueryFlags;
+    flags   = EGeneralQueryFlags | EEikDialogFlagVirtualInput ;
     buttons = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
     items   =
-        {
-        DLG_LINE
-            {
-            type    = EAknCtPopupHeadingPane;
-            id      = EAknMessageQueryHeaderId;
-            control = AVKON_HEADING
-                {
-                label   = qtn_bt_passkey_heading;
-                };
-            },
+        {        
         DLG_LINE
             {
             type    = EAknCtQuery;

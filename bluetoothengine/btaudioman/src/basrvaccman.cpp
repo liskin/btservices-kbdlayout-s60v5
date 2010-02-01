@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  Implementation of an accessory management.
-*  Version     : %version:  14.1.7 %
+*  Version     : %version:  14.1.8 %
 *
 */
 
@@ -651,6 +651,22 @@ TInt CBasrvAccMan::ConnectionStatus(const TBTDevAddr& aAddr)
     return 0;
 	}
 
+TInt CBasrvAccMan::SupportedFeature( const TBTDevAddr& aAddr, TProfiles aProfile ) const
+    {
+    TRACE_INFO_SEG(
+        {
+        TBuf<12> buf;
+        aAddr.GetReadable(buf);
+        Trace(_L("CBasrvAccMan::SupportedFeature '%S'  profile %d"), &buf, aProfile );
+        });
+    TInt idx = FindAcc(aAddr);
+    if (idx >= 0)
+        {
+        return iAccs[idx]->SupportedFeature(aProfile );
+        }
+    return 0;
+    }
+
 void CBasrvAccMan::RequestCompletedL(CBasrvActive& aActive)
     {
     TRACE_FUNC
@@ -779,7 +795,7 @@ void CBasrvAccMan::DoAudioRequestL()
         }    
     }
 
-TInt CBasrvAccMan::FindAcc(const TBTDevAddr& aRemote)
+TInt CBasrvAccMan::FindAcc(const TBTDevAddr& aRemote) const
     {
     TInt count = iAccs.Count();
     for (TInt i = 0; i < count; i++)
