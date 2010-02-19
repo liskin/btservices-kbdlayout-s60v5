@@ -23,6 +23,7 @@
 #include <e32cmn.h>
 #include <BTNotif.rsg>          // Own resources
 #include <btengsettings.h>
+#include <bluetoothuiutil.h>
 #include "BTNGenericQueryNotifier.h"      // Own class definition
 #include "btNotifDebug.h"       // Debugging macros
 
@@ -65,7 +66,7 @@ CBTGenericQueryNotifier::~CBTGenericQueryNotifier()
     {
     Cancel();   // Free own resources
     delete iName; 
-    delete iQueryMessage; 
+    iQueryMessage.Close(); 
 	delete iQueryHeader;
     }
 
@@ -226,14 +227,15 @@ void CBTGenericQueryNotifier::ProcessParamBufferL(const TDesC8& aBuffer)
 		}
 	
 	// if the logic string contains substitute indicator "%U", replace it with device name:
-	//		
-	iQueryMessage = StringLoader::LoadL( iMessageResourceId);
-	_LIT(PU,"%U");
-	if( iQueryMessage->Find(PU) != KErrNotFound)
+	//
+	HBufC* buf = StringLoader::LoadL( iMessageResourceId);
+	iQueryMessage.Assign( buf );
+
+	TInt keyLen;
+	TInt pos = BluetoothUiUtil::GetStringSubstringKeyPos( 
+	        iQueryMessage, 0, keyLen );
+	if( pos > KErrNotFound)
 		{		
-		delete iQueryMessage;
-		iQueryMessage=NULL;
-		
 		//if no device name provided, default name will be used:
 		if( !bPckg().iNameExists )			
 			iName=StringLoader::LoadL(R_BT_DIALOG_DEF_NAME);
@@ -242,7 +244,8 @@ void CBTGenericQueryNotifier::ProcessParamBufferL(const TDesC8& aBuffer)
 			iName=HBufC::NewL(bPckg().iName.Length() );
 			iName->Des().Copy(bPckg().iName);
 			}
-		iQueryMessage = StringLoader::LoadL( iMessageResourceId,*iName);		
+		BluetoothUiUtil::LoadResourceAndSubstringL( 
+		        iQueryMessage, iMessageResourceId, *iName, 0);
 		}
 	else
 		{
@@ -258,18 +261,16 @@ void CBTGenericQueryNotifier::ProcessParamBufferL(const TDesC8& aBuffer)
 TPtrC8 CBTGenericQueryNotifier::UpdateL(const TDesC8& aBuffer)
 	{
    	FLOG(_L("[BTNOTIF]\t CBTGenericQueryNotifier::UpdateL")); 
-    delete iQueryMessage;
-    iQueryMessage = NULL;
 	ProcessParamBufferL(aBuffer);
 	if( !iNotifUiUtil->IsQueryReleased() )
 		{
 		if(iIsMessageQuery )
 		    {
-		    iNotifUiUtil->UpdateMessageQueryDlgL(*iQueryMessage);
+		    iNotifUiUtil->UpdateMessageQueryDlgL(iQueryMessage);
 		    }
 		else
 		    {
-		    iNotifUiUtil->UpdateQueryDlgL(*iQueryMessage);
+		    iNotifUiUtil->UpdateQueryDlgL(iQueryMessage);
 		    }
 		}
    	FLOG(_L("[BTNOTIF]\t CBTGenericQueryNotifier::UpdateL complete")); 	
@@ -325,12 +326,12 @@ void CBTGenericQueryNotifier::ShowQueryAndCompleteL()
     if( iIsMessageQuery	)
 		{
 		
-        keypress = iNotifUiUtil->ShowMessageQueryL(*iQueryMessage, *iQueryHeader, 
+        keypress = iNotifUiUtil->ShowMessageQueryL(iQueryMessage, *iQueryHeader, 
                         R_BT_GENERIC_MESSAGE_QUERY, CAknQueryDialog::EConfirmationTone );        
 		}
 	else
     	{
-    	keypress = iNotifUiUtil->ShowQueryL( *iQueryMessage, R_BT_GENERIC_QUERY, 
+    	keypress = iNotifUiUtil->ShowQueryL( iQueryMessage, R_BT_GENERIC_QUERY, 
     	        iSecondaryDisplayCommand, name, CAknQueryDialog::EConfirmationTone );
     	}
 	

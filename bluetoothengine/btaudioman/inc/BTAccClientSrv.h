@@ -47,9 +47,6 @@ enum TBTAccSrvServRequest
     EBTAccSrvCancelNotifyConnectionStatus,
     EBTAccSrvConnectionStatus,
     EBTAccSrvGetInfoOfConnectedAcc,
-    EBTAccSrvAudioToPhone,
-    EBTAccSrvAudioToAccessory,
-    EBTAccSrvCancelAudioToAccessory,
     EBTAccSrvInvalidIpc,
     };
 

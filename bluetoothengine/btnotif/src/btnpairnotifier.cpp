@@ -22,10 +22,10 @@
 #include <btextnotifierspartner.h> // new file introduced by xSymbian
 #endif
 
-#include <StringLoader.h>    // Localisation stringloader
 #include <utf.h>             // Unicode character conversion utilities
 #include <btengconnman.h>
 #include <BTNotif.rsg>       // Own resources
+#include <bluetoothuiutil.h>
 #include "btnpairnotifier.h"
 #include "btNotifDebug.h"
 #include "btnotifnameutils.h"
@@ -80,16 +80,17 @@ void CBTNPairNotifierBase::GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, co
         {
         User::Leave(KErrInUse);
         }
-    else if ( AutoLockOnL() )
+
+    iMessage = (RMessage2)aMessage;
+    iReplySlot = aReplySlot;
+
+    if ( AutoLockOnL() )
         {
         // The phone is locked, access denied.
         //
         CompleteMessage(KErrCancel);
-        return;
         }
 
-    iMessage = (RMessage2)aMessage;
-    iReplySlot = aReplySlot;
     }
 
 // ----------------------------------------------------------
@@ -127,9 +128,11 @@ TPtrC8 CBTNPairNotifierBase::UpdateL( const TDesC8& aBuffer )
     // and user has not given a alias for device.   
         if( !iNotifUiUtil->IsQueryReleased() && !iDevice->IsValidFriendlyName() )
             {
-            HBufC* prompt = GenerateQueryPromoptLC();
-            iNotifUiUtil->UpdateQueryDlgL( *prompt );
-            CleanupStack::PopAndDestroy( prompt );
+            RBuf prompt;
+            prompt.CleanupClosePushL();
+            GenerateQueryPromptL( prompt );
+            iNotifUiUtil->UpdateQueryDlgL( prompt );
+            CleanupStack::PopAndDestroy( &prompt );
             }
         }
 
@@ -203,13 +206,16 @@ TBool CBTNPairNotifierBase::AuthoriseIncomingPairingL()
     
     TBTDeviceName devName;
     BtNotifNameUtils::GetDeviceDisplayName( devName, iDevice );
-    HBufC* prompt = StringLoader::LoadLC( R_BT_ACCEPT_PAIRING_REQUEST, devName );   
+    RBuf prompt;
+    prompt.CleanupClosePushL();
+    BluetoothUiUtil::LoadResourceAndSubstringL( 
+            prompt, R_BT_ACCEPT_PAIRING_REQUEST, devName, 0 );
 
-    TBTDeviceName nameCoverUi( KNullDesC );
+    devName.Zero();
     // Show query for use to accept/reject incoming pairing request
-    TInt keypress = iNotifUiUtil->ShowQueryL( *prompt, R_BT_GENERIC_QUERY, 
-             ECmdBTnotifUnavailable, nameCoverUi, CAknQueryDialog::EConfirmationTone );
-    CleanupStack::PopAndDestroy( prompt );
+    TInt keypress = iNotifUiUtil->ShowQueryL( prompt, R_BT_GENERIC_QUERY, 
+             ECmdBTnotifUnavailable, devName, CAknQueryDialog::EConfirmationTone );
+    CleanupStack::PopAndDestroy( &prompt );
 
     if( iMessage.IsNull() ) // cancelled by the stack
         {
@@ -236,11 +242,12 @@ TBool CBTNPairNotifierBase::AuthoriseIncomingPairingL()
     }
 
 // ----------------------------------------------------------
-// CBTNPairNotifierBase::GenerateQueryPromoptLC
+// CBTNPairNotifierBase::GenerateQueryPromptL
 // To be implemented in derived classes.
 // ----------------------------------------------------------
 //
-HBufC* CBTNPairNotifierBase::GenerateQueryPromoptLC()
+void CBTNPairNotifierBase::GenerateQueryPromptL(  RBuf& aRBuf )
     {
-    return NULL;
+    FLOG(_L("[BTNOTIF]\t CBTNPairNotifierBase::GenerateQueryPromptL WARNING "));
+    (void) aRBuf;
     }

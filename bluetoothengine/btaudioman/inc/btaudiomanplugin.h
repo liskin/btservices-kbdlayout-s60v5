@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -171,7 +171,10 @@ private:
 
     void ConstructL();
 
-    TInt HandleAsyncRequest(const TBTDevAddr& aAddr, TInt aRequestId);
+    TInt PrepareAsyncRequest(const TBTDevAddr& aAddr, TInt aRequestId);
+
+    void NotifyConnectionStatus();
+    TInt ReconnectIfNeccessary();
 
     void ReportProfileConnectionEvents(const TBTDevAddr& aAddr, const TInt aProfiles, TBool aConnected);
 
@@ -187,6 +190,7 @@ private: // data
     CBasrvActive* iActive4ProfileStatus;
     TProfileStatus iProfileStatus;
     TProfileStatusPckg iProfileStatusPckg;
+    TInt iNotifyConnectionStatusFailure;
     };
 
 

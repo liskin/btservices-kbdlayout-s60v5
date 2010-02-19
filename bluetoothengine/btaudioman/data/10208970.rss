@@ -37,7 +37,7 @@ RESOURCE REGISTRY_INFO BTAudioManPluginResource
                     {
                     implementation_uid = 0x1020897C;
                     version_no         = 1;
-                    display_name       = "0x1020897B";
+                    display_name       = "0x10208970";
                     default_data       = KACCESSORYPLUGINAPIMAINSERVICE;      
                     opaque_data        = "Heap=0x1000|Stack=0x1000";
                     rom_only           = 1;      
@@ -46,7 +46,7 @@ RESOURCE REGISTRY_INFO BTAudioManPluginResource
                     {
                     implementation_uid = 0x1020897D;
                     version_no         = 1;
-                    display_name       = "0x1020897B";
+                    display_name       = "0x10208970";
                     default_data       = KACCESSORYPLUGINAPIHANDLER;      
                     opaque_data        = "";
                     rom_only           = 1;

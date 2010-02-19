@@ -27,6 +27,7 @@
 #include "BTAccServer.h"
 #include "basrvaccman.h"
 #include "BTAccInfo.h"
+#include "btaccpanic.h"
 
 typedef TPckgBuf<TBTDevAddr> TBTDevAddrPckgBuf;
 
@@ -64,7 +65,6 @@ CBTAccSession::~CBTAccSession()
         iNotifyProfileMsg.Complete(KErrAbort);
         }
     iProfileStatusCache.Close();
-    DestructVariant();
     
     //clear the accessory managers pointer to this session if it has one
     iAccMan.ClearProfileNotifySession(*this);
@@ -78,7 +78,7 @@ void CBTAccSession::CreateL()
     TRACE_FUNC
     //use CreateL instead of NewSessionL when using Server() to ensure the
     //session has been created correctly and Server() returns a valid pointer
-    Server().ClientOpened(*this);
+    Server().ClientOpenedL(*this);
     }
 
 void CBTAccSession::ConnectCompleted(TInt aErr, TInt aProfile, const RArray<TBTDevAddr>* aConflicts)
@@ -89,10 +89,24 @@ void CBTAccSession::ConnectCompleted(TInt aErr, TInt aProfile, const RArray<TBTD
         TRACE_INFO((_L("CBTAccSession::ConnectCompleted err %d"), aErr))
         if (aConflicts)
             {
-            TBuf8<KBTDevAddrSize * 2> buf;
+            if (aErr == KErrNone)
+                {
+                //we need to error so the client knows there are conflicts which need handling
+                aErr = KErrGeneral; 
+                }
+            
+            const TInt KMaxNumberOfConflicts = 2;
+            
+            TBuf8<KBTDevAddrSize * KMaxNumberOfConflicts> buf;
             TInt count = aConflicts->Count();
+            __ASSERT_DEBUG(count <= KMaxNumberOfConflicts, BTACC_PANIC(EMaxNumberOfConflictsExceeded));
+            
             for (TInt i = 0; i < count; i++)
                 {
+                if(i >= KMaxNumberOfConflicts)
+                    {
+                    break; //prevent descriptor overflow
+                    }
                 buf.Append((*aConflicts)[i].Des());
                 }
             
@@ -101,10 +115,10 @@ void CBTAccSession::ConnectCompleted(TInt aErr, TInt aProfile, const RArray<TBTD
                 iConnectMsg.Write(1, buf);
                 }
             }
-        else if (!aErr)
+        else if (aErr == KErrNone)
             {
             TPckgBuf<TInt> buf(aProfile);
-            iConnectMsg.Write(1, buf);
+            aErr = iConnectMsg.Write(1, buf);
             }
         iConnectMsg.Complete(aErr);
         }
@@ -116,10 +130,10 @@ void CBTAccSession::DisconnectCompleted(TInt aProfile, TInt aErr)
     if (iDisconnectMsg.Handle())
         {
         TRACE_FUNC
-        if (!aErr)
+        if (aErr == KErrNone)
             {
             TPckgBuf<TInt> buf(aProfile);
-            iDisconnectMsg.Write(1, buf);
+            aErr = iDisconnectMsg.Write(1, buf);
             }
         iDisconnectMsg.Complete(aErr);
         }
@@ -449,13 +463,6 @@ void CBTAccSession::ServiceL(const RMessage2& aMessage)
         case EBTAccSrvGetInfoOfConnectedAcc:
             {
             GetInfoOfConnectedAcc(aMessage);
-            break;
-            }
-        case EBTAccSrvAudioToPhone:
-        case EBTAccSrvAudioToAccessory:
-        case EBTAccSrvCancelAudioToAccessory:
-            {
-            HandleAudio4DosRequest(aMessage);
             break;
             }
         default:

@@ -33,6 +33,7 @@
 #include <btotgpairpub.inl>
 #include <btengconnman.h>
 #include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
+#include <bluetoothuiutil.h>
 #include "btnotifnameutils.h"
 
 #ifdef __SERIES60_HELP
@@ -154,9 +155,11 @@ void CBTNumCmpNotifier::HandleGetDeviceCompletedL(const CBTDevice* /*aDev*/)
 	// For outgoing pairing request or accepted incoming pairing request,
 	// ask user to compare the pincodes in two devices.
 	TBTDeviceName nameCoverUi( KNullDesC );
-	HBufC* prompt = GenerateQueryPromoptLC(); 
-    TInt answer = iNotifUiUtil->ShowQueryL( *prompt, R_BT_GENERIC_QUERY, ECmdShowBtOpenCoverNote, nameCoverUi );   
-	CleanupStack::PopAndDestroy( prompt ); 
+    RBuf prompt;
+    prompt.CleanupClosePushL();
+    GenerateQueryPromptL( prompt );
+    TInt answer = iNotifUiUtil->ShowQueryL( prompt, R_BT_GENERIC_QUERY, ECmdShowBtOpenCoverNote, nameCoverUi );   
+	CleanupStack::PopAndDestroy( &prompt ); 
 	
     if( answer )
         {
@@ -187,20 +190,18 @@ void CBTNumCmpNotifier::HandleGetDeviceCompletedL(const CBTDevice* /*aDev*/)
     }
 
 // ----------------------------------------------------------
-// CBTNumCmpNotifier::GenerateQueryPromoptLC
+// CBTNumCmpNotifier::GenerateQueryPromptL
 // Generate prompt for Numeric Comparison query and return.
 // ----------------------------------------------------------
 //
-HBufC* CBTNumCmpNotifier::GenerateQueryPromoptLC()
+void CBTNumCmpNotifier::GenerateQueryPromptL( RBuf& aRBuf )
     {
-    FLOG(_L("[BTNOTIF]\t CBTNumCmpNotifier::GenerateQueryPromoptLC()"));
+    FLOG(_L("[BTNOTIF]\t CBTNumCmpNotifier::GenerateQueryPromptL()"));
     TBTDeviceName devName;
     BtNotifNameUtils::GetDeviceDisplayName( devName, iDevice );
-    
-    CPtrCArray* subs = new (ELeave) CPtrCArray(2);
-    CleanupStack::PushL( subs );
     TBuf<KBTDeviceShortNameLength> shortName;
     
+    TPtrC namePtr;
     // Cut the name and put ellipsis in the middle if necessary
     // By example "SampleSymbianDevice" after this operation will be shown in
     // the dialog as "Sam...ice"(for 7 chars device name limit)
@@ -215,18 +216,20 @@ HBufC* CBTNumCmpNotifier::GenerateQueryPromoptLC()
         //adding only end of the name to the final string
         shortName.Append( devName.Right( shortName.MaxLength() - 
                           shortName.Length() ) );
-        subs->AppendL( shortName );
+        namePtr.Set( shortName );
         }
     else
         {
-        subs->AppendL( devName );
+        namePtr.Set( devName );
         }
-    subs->AppendL( iPasskeyToShow );
-    HBufC* prompt = StringLoader::LoadL( R_BT_SSP_PASSKEY_COMPARISON_PROMPT, *subs );
-    CleanupStack::PopAndDestroy( subs );
-    CleanupStack::PushL( prompt );
-    FLOG(_L("[BTNOTIF]\t CBTNumCmpNotifier::GenerateQueryPromoptLC() <<"));
-    return prompt;
+
+    BluetoothUiUtil::LoadResourceAndSubstringL( 
+            aRBuf, R_BT_SSP_PASSKEY_COMPARISON_PROMPT, namePtr, 0 );
+    // Numeric comparison key shall not be localized either, use our own
+    // string loading:
+    BluetoothUiUtil::AddSubstringL( aRBuf, iPasskeyToShow, 1);
+    FLOG(_L("[BTNOTIF]\t CBTNumCmpNotifier::GenerateQueryPromptL() <<"));
+
     }
 
 // End of File

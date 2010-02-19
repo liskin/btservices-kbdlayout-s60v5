@@ -49,8 +49,6 @@ SOURCE        basrvaccman.cpp
 SOURCE        BTAccSession.cpp
 SOURCE		  basrvpowercontrolagent.cpp
 SOURCE        basrvrvc.cpp
-SOURCE        BTAccSession_accfw_var.cpp
-SOURCE        basrvaccman_accfw_var.cpp
 SOURCE        basrvaccfwconn.cpp
 
 USERINCLUDE     ../inc

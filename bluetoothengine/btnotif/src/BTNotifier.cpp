@@ -31,7 +31,7 @@
 #include <BTNotif.rsg>       // Own resources
 #include <featmgr.h>            // Feature Manager API
 #include <utf.h>             // CnvUtfConverter
-
+#include <bluetoothuiutil.h>
 #include "btnotifier.h"      // Own class definition
 #include "btNotifDebug.h"    // Debugging macros
 #include "btnotiflock.h"
@@ -85,14 +85,14 @@ void CBTNotifierBase::ConstructL()
     {
 	// Sets up TLS, must be done before FeatureManager is used.
 	FeatureManager::InitializeLibL();
-	TBool isCoverUI = ( FeatureManager::FeatureSupported( KFeatureIdCoverDisplay ) ) 
+	iIsCoverUI = ( FeatureManager::FeatureSupported( KFeatureIdCoverDisplay ) ) 
                     ? ETrue : EFalse; 	
 	// Frees the TLS. Must be done after FeatureManager is used.
     FeatureManager::UnInitializeLib(); 
 
     iBTEngSettings = CBTEngSettings::NewL();
     iDevMan = CBTEngDevMan::NewL( this );
-    iNotifUiUtil = CBTNotifUIUtil::NewL( isCoverUI );
+    iNotifUiUtil = CBTNotifUIUtil::NewL( iIsCoverUI );
     }
 
 // ----------------------------------------------------------
@@ -145,6 +145,11 @@ TPtrC8 CBTNotifierBase::StartL(const TDesC8& /*aBuffer*/)
 //
 void CBTNotifierBase::StartL(const TDesC8& aBuffer, TInt aReplySlot, const RMessagePtr2& aMessage)
     {
+    if( !iNotifUiUtil )
+        {
+        iNotifUiUtil = CBTNotifUIUtil::NewL( iIsCoverUI );    
+        }
+    
     TRAPD(err, GetParamsL(aBuffer, aReplySlot, aMessage));
     if (err)
         {
@@ -423,6 +428,10 @@ void CBTNotifierBase::GetDeviceFromRegL(const TBTDevAddr& aAddr)
     TBTRegistrySearch mySearch;
     mySearch.FindAddress( aAddr );
     iDeviceArray = new (ELeave) CBTDeviceArray(1);
+    if( !iDevMan )
+        {
+        iDevMan = CBTEngDevMan::NewL( this );    
+        }
     TInt err = iDevMan->GetDevices( mySearch, iDeviceArray );
     if(err)
         {
@@ -449,12 +458,14 @@ void CBTNotifierBase::QueryBlockDeviceL()
     TInt resId = IsUserAwarePaired( iDevice->AsNamelessDevice() ) ? 
         R_BT_BLOCK_PAIRED_DEVICE_NOHELP : R_BT_BLOCK_DEVICE_NOHELP;
 	
-	HBufC* stringHolder = StringLoader::LoadLC( resId, bName );
+    RBuf stringholder;
+    stringholder.CleanupClosePushL();
+    BluetoothUiUtil::LoadResourceAndSubstringL( stringholder, resId, bName, 0 );
 
-	TInt keypress = iNotifUiUtil->ShowMessageQueryL( *stringHolder, *header, 
+	TInt keypress = iNotifUiUtil->ShowMessageQueryL( stringholder, *header, 
 	        R_BT_GENERIC_MESSAGE_QUERY, CAknQueryDialog::EConfirmationTone );
     
-    CleanupStack::PopAndDestroy(stringHolder);                   
+    CleanupStack::PopAndDestroy(&stringholder);                   
     CleanupStack::PopAndDestroy(header);  
 
     if( keypress )// user replied "Yes"
@@ -479,6 +490,10 @@ void CBTNotifierBase::DoBlockDevice()
     iDevice->DeleteLinkKey();
  
     iBTRegistryQueryState = ESetDeviceBlocked;
+    if( !iDevMan )
+        {
+        iDevMan = CBTEngDevMan::NewL( this );    
+        }
     TInt devManErr = iDevMan->ModifyDevice( *iDevice );     
             
     // if error, complete message, otherwise waiting for devman callback
@@ -496,6 +511,10 @@ void CBTNotifierBase::ChangeAuthorizeState( TBool aTrust )
     iDevice->SetGlobalSecurity(sec);
  
     iBTRegistryQueryState = ESetDeviceAuthorizeState;
+    if( !iDevMan )
+        {
+        iDevMan = CBTEngDevMan::NewL( this );    
+        }
     TInt devManErr = iDevMan->ModifyDevice( *iDevice );     
             
     // if error, complete message, otherwise waiting for devman callback

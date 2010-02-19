@@ -22,7 +22,6 @@
 #include <aknlists.h>
 #include <aknPopup.h>
 #include <avkon.mbg>
-#include <StringLoader.h>       // Localisation stringloader
 #include <wlaninternalpskeys.h> // For WLAN state checking
 #include <ctsydomainpskeys.h>
 #include <AknNotiferAppServerApplication.h> 
@@ -33,6 +32,7 @@
 #include <wlanplugin.mbg>       // Borrow WLan signal strenth bar to show RSSI  
 #include <devui_const.h>
 #include <btengutil.h>
+#include <bluetoothuiutil.h>
 #include "btninqui.h"           // Own class definition
 #include "btNotifDebug.h"       // Debugging macros
 #include "btnotifnameutils.h"
@@ -1047,21 +1047,14 @@ void CBTInqUI::AdjustDeviceArrayL(CBTDeviceArray* aDeviceArray)
 TInt CBTInqUI::QueryUnblockDeviceL(CBTDevice* aDevice)
 	{
 	FLOG(_L("[BTNOTIF]\t CBTInqUI::QueryUnblockDeviceL()"));
-
-    HBufC* stringholder = NULL;
-
-    if (aDevice->IsValidFriendlyName())
-       	{
-        stringholder = StringLoader::LoadLC(R_BT_UNBLOCK_DEVICE, aDevice->FriendlyName());
-        }
-    else
-        {  	
-        stringholder = StringLoader::LoadLC(R_BT_UNBLOCK_DEVICE, BTDeviceNameConverter::ToUnicodeL(aDevice->DeviceName()));
-        }
-
-    TBTDeviceName name(KNullDesC);
+	RBuf stringholder;
+	stringholder.CleanupClosePushL();
+    TBTDeviceName name;
+    BtNotifNameUtils::GetDeviceDisplayName( name, aDevice );
+    BluetoothUiUtil::LoadResourceAndSubstringL( 
+            stringholder, R_BT_UNBLOCK_DEVICE, name, 0 );
     TInt keypress(0);
-    keypress = iUiUtil->ShowQueryL( *stringholder, R_BT_UNBLOCK_QUERY, 
+    keypress = iUiUtil->ShowQueryL( stringholder, R_BT_UNBLOCK_QUERY, 
             ECmdBTnotifUnavailable, name, CAknQueryDialog::EConfirmationTone );
     CleanupStack::PopAndDestroy();  // stringholder
     FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::QueryUnblockDeviceL()  keypress= %d"),keypress));    

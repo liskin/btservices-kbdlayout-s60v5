@@ -12,13 +12,14 @@
 * Contributors:
 *
 * Description:  Implementation of an accessory management.
-*  Version     : %version:  14.1.8 %
+*  Version     : %version:  14.1.10 %
 *
 */
 
 
 // INCLUDE FILES
 #include <centralrepository.h>
+#include <btengdomaincrkeys.h>
 #include "basrvaccman.h"
 #include "BTAccSession.h"
 #include "BTAccClientSrv.h"
@@ -42,6 +43,28 @@ CBasrvAccMan* CBasrvAccMan::NewL()
     self->ConstructL();
     CleanupStack::Pop(self);
     return self;
+    }
+
+void CBasrvAccMan::ConstructL()
+    {
+    iAsyncHandlingActive = 
+        CBasrvActive::NewL(*this, CActive::EPriorityStandard, KAsyncHandlingRequest);
+    
+    CRepository* cenrep = NULL;
+    TRAP_IGNORE(cenrep = CRepository::NewL(KCRUidBluetoothEngine));
+    TInt avrcpVol = EBTAvrcpVolCTNotSupported;
+    TInt autoDisconnect = EBTDisconnectIfAudioOpenFails;
+    if (cenrep)
+        {
+        cenrep->Get(KBTAvrcpVolCTLV, avrcpVol);
+        cenrep->Get(KBTDisconnectIfAudioOpenFailsLV, autoDisconnect);
+        delete cenrep;
+        }
+    iAvrcpVolCTSupported = (avrcpVol == EBTAvrcpVolCTSupported);
+    iDisconnectIfAudioOpenFails = (autoDisconnect == EBTDisconnectIfAudioOpenFails);
+    TRACE_INFO((_L("[AVRCP_Vol_CT] %d [DisconnectIfAudioOpenFails] %d"), 
+        iAvrcpVolCTSupported, iDisconnectIfAudioOpenFails))
+    LoadServicesL();
     }
 
 CBasrvAccMan::~CBasrvAccMan()
@@ -77,7 +100,6 @@ CBasrvAccMan::~CBasrvAccMan()
     iNotifierArray.ResetAndDestroy();
     iNotifierArray.Close();
     iClientRequests.Close();
-    DestructVariant();
     TRACE_FUNC    
     }
 
@@ -152,7 +174,14 @@ void CBasrvAccMan::DisconnectL(CBTAccSession& aSession, const TBTDevAddr& aAddr)
         request.iRequest = EBTAccSrvDisconnectAccessory;
         request.iAddr = aAddr;
         iClientRequests.AppendL(request);
+        
+        //remove the last item from the RArray if a leave occurs later
+        TCleanupItem cleanupItem(CleanupLastItemFromClientRequestsArray, &iClientRequests);
+        CleanupStack::PushL(cleanupItem);
+        
         iAccs[idx]->DisconnectL();
+        
+        CleanupStack::Pop(&iClientRequests);
         }
     else
         {
@@ -416,12 +445,21 @@ void CBasrvAccMan::RemoveAudioRequest(const TBTDevAddr& aAddr)
 void CBasrvAccMan::ShowNote(TBTGenericInfoNoteType aNote, const TBTDevAddr& aAddr)
     {
     TRACE_INFO((_L("CBasrvAccMan::ShowNote %d"), aNote))
-    TRAPD(err, iNotifierArray.Append(CBasrvActiveNotifier::NewL(*this, CActive::EPriorityStandard, KShowNoteRequest, aAddr, aNote)));
-    if (err)
+    TRAPD(err, DoShowNoteL(aNote, aAddr));
+    if (err != KErrNone)
         {
         TRACE_ERROR((_L("could not construct active notifer object")))
         return;
         }
+    }
+
+void CBasrvAccMan::DoShowNoteL(TBTGenericInfoNoteType aNote, const TBTDevAddr& aAddr)
+    {
+    CBasrvActiveNotifier* activeNotifier = CBasrvActiveNotifier::NewL(*this, CActive::EPriorityStandard, KShowNoteRequest, aAddr, aNote);
+    
+    CleanupStack::PushL(activeNotifier);
+    iNotifierArray.AppendL(activeNotifier);
+    CleanupStack::Pop(activeNotifier);
     }
 
 void CBasrvAccMan::FilterProfileSupport(TAccInfo& aInfo)
@@ -729,8 +767,6 @@ void CBasrvAccMan::RequestCompletedL(CBasrvActive& aActive)
         case KAsyncHandlingRequest:
             {
             DoAudioRequestL();
-            delete iAsyncHandlingActive;
-            iAsyncHandlingActive = NULL;
             break;
             }
         default:
@@ -760,7 +796,7 @@ CBasrvAccMan::CBasrvAccMan()
 void CBasrvAccMan::DoAudioRequestL()
     {
     TRACE_FUNC
-    if (iAudioRequests.Count() && !iAudioRequests[0].iOngoing && (!iAsyncHandlingActive || !iAsyncHandlingActive->IsActive()))
+    if (iAudioRequests.Count() && !iAudioRequests[0].iOngoing && !iAsyncHandlingActive->IsActive())
         {
         iAudioRequests[0].iOngoing = ETrue;
         TInt err = KErrNotFound;
@@ -827,7 +863,7 @@ void CBasrvAccMan::RejectAudioLink(const TBTDevAddr& aAddr, TAccAudioType aType)
     req.iReqType = ERejectAudioOpenedByAcc;
     req.iOngoing = EFalse;
     TInt idx = 0;
-    if (iAudioRequests.Count() && iAudioRequests[0].iOngoing)
+    if (iAudioRequests.Count() && iAudioRequests[0].iOngoing && !iAsyncHandlingActive->IsActive())
         {
         idx = 1;
         }
@@ -839,18 +875,12 @@ void CBasrvAccMan::RejectAudioLink(const TBTDevAddr& aAddr, TAccAudioType aType)
         Trace(_L("[Audio Request buf] 2(Reject) %d at '%S', to index %d"), iCloseType, &buf, idx);
         });
 
-    if (!err && !iAsyncHandlingActive && !iAudioRequests[0].iOngoing)
+    if ((err == KErrNone) && !iAudioRequests[0].iOngoing)
         {
-        // Start rejection asynchronously
-        iAsyncHandlingActive = 
-            CBasrvActive::New(*this, CActive::EPriorityStandard, KAsyncHandlingRequest);
-        if (iAsyncHandlingActive)
-            {
-            iAsyncHandlingActive->iStatus = KRequestPending;
-            TRequestStatus* sta = &(iAsyncHandlingActive->iStatus);
-            User::RequestComplete(sta, KErrNone);
-            iAsyncHandlingActive->GoActive();
-            }
+        iAsyncHandlingActive->iStatus = KRequestPending;
+        TRequestStatus* sta = &(iAsyncHandlingActive->iStatus);
+        User::RequestComplete(sta, KErrNone);
+        iAsyncHandlingActive->GoActive();
         }
     }
 

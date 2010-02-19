@@ -57,10 +57,33 @@ CBtmcNumber::~CBtmcNumber()
 void CBtmcNumber::GoActive()
     {
     TRACE_ASSERT(!IsActive(), KErrGeneral);
-    iEntry.iIndex = 1;
+    GetMsisdnStoreInfo();
+    TRACE_FUNC
+    }
+
+// -------------------------------------------------------------------------------
+// CBtmcNumber::GetMsisdnStoreInfo
+// -------------------------------------------------------------------------------
+void CBtmcNumber::GetMsisdnStoreInfo()
+    {
+    TRACE_FUNC_ENTRY
+    iState = EStateGettingMsisdnStoreInfo;
+    iStore.GetInfo(iStatus, iOnStoreInfoPckg);
+    SetActive();
+    TRACE_FUNC_EXIT
+    }
+
+// -------------------------------------------------------------------------------
+// CBtmcNumber::GetMsisdnStoreEntry
+// -------------------------------------------------------------------------------
+void CBtmcNumber::GetMsisdnStoreEntry()
+    {
+    TRACE_FUNC_ENTRY
+    iState = EStateGettingMsisdnStoreEntry;
+    iEntry.iIndex = iUsedEntriesCount++;
     iStore.Read(iStatus, iPckg);
     SetActive();
-    TRACE_FUNC
+    TRACE_FUNC_EXIT
     }
 
 // -------------------------------------------------------------------------------
@@ -70,55 +93,103 @@ void CBtmcNumber::RunL()
     {
     TRACE_FUNC_ENTRY
     
-    RATResultPtrArray resarr;
-    ATObjArrayCleanupResetAndDestroyPushL(resarr);
-    CATResult* okerr = NULL;
-    if (iStatus == KErrNone)
+    switch (iState)
         {
-        TBuf8<RMobileONStore::KOwnNumberTextSize> nameBuf;
-        nameBuf.Copy(iEntry.iNumber.iTelNumber);
-        
-        TRACE_INFO((_L8("ao status %d, phonebook returned %S"), iStatus.Int(), &nameBuf))
-        RATParamArray params;
-        CleanupClosePushL(params);
-        LEAVE_IF_ERROR(params.Append(TATParam()))
-        LEAVE_IF_ERROR(params.Append(TATParam(nameBuf, EATDQStringParam)))  
-         
-        TBTMonoATPhoneNumberType numType;
-        if (nameBuf.Length() == 0)
+        case EStateGettingMsisdnStoreEntry:
             {
-            numType = EBTMonoATPhoneNumberUnavailable;
+            if (iStatus == KErrNone)
+                {
+                if(iEntry.iNumber.iTelNumber.Length() == 0)
+                    {
+                    GetMsisdnStoreEntry();
+                    break;
+                    }
+              
+                iCorrectNumbersCount++;
+
+                RATResultPtrArray resarr;
+                ATObjArrayCleanupResetAndDestroyPushL(resarr);
+                
+                TBuf8<RMobileONStore::KOwnNumberTextSize> telnumberBuf;
+                telnumberBuf.Copy(iEntry.iNumber.iTelNumber);
+                
+                TRACE_INFO((_L8("ao status %d, phonebook returned %S"), iStatus.Int(), &telnumberBuf))
+                RATParamArray params;
+                CleanupClosePushL(params);
+                LEAVE_IF_ERROR(params.Append(TATParam()))
+                LEAVE_IF_ERROR(params.Append(TATParam(telnumberBuf, EATDQStringParam)))  
+                 
+                TBTMonoATPhoneNumberType numType;
+                if(telnumberBuf.Locate('+') == 0)
+                    {
+                    numType = EBTMonoATPhoneNumberInternational;
+                    }
+                else
+                    {
+                    numType = EBTMonoATPhoneNumberNational;
+                    }
+                LEAVE_IF_ERROR(params.Append(TATParam(numType)))
+                LEAVE_IF_ERROR(params.Append(TATParam()))
+                LEAVE_IF_ERROR(params.Append(TATParam(4)))
+                CATResult* code = CATResult::NewL(EATCNUM, EATActionResult, &params);
+                CleanupStack::PushL(code);
+                resarr.AppendL(code);
+                CleanupStack::Pop(code);
+                CleanupStack::PopAndDestroy(&params);
+                
+                if(iCorrectNumbersCount == iOnStoreInfo.iUsedEntries)
+                    {
+                    CATResult* okerr = CATResult::NewL(EATOK);
+                    CleanupStack::PushL(okerr);
+                    resarr.AppendL(okerr);
+                    CleanupStack::Pop(okerr);
+                    iProtocol.SendResponseL(resarr);
+                    CleanupStack::PopAndDestroy(&resarr);
+                    Observer().RequestCompletedL(*this, iStatus.Int());  
+                    }
+                else
+                    {
+                    iProtocol.SendResponseL(resarr);
+                    CleanupStack::PopAndDestroy(&resarr);
+                    GetMsisdnStoreEntry();
+                    }
+                }
+            else
+                {
+                CATResult* okerr = CATResult::NewL(EATERROR);
+                CleanupStack::PushL(okerr);
+                iProtocol.SendResponseL(*okerr);
+                CleanupStack::PopAndDestroy(okerr);
+                Observer().RequestCompletedL(*this, iStatus.Int());  
+                }
+
+            break;
             }
-        else if(nameBuf.Locate('+') == 0)
+        case EStateGettingMsisdnStoreInfo:
             {
-            numType = EBTMonoATPhoneNumberInternational;
+            if(iStatus==KErrNone && iOnStoreInfo.iUsedEntries>0 && 
+                    (iOnStoreInfo.iCaps & RMobilePhoneStore::KCapsIndividualEntry))
+                {
+                GetMsisdnStoreEntry();
+                }
+            else
+                {
+                CATResult* okerr = CATResult::NewL(EATOK);
+                CleanupStack::PushL(okerr);
+                iProtocol.SendResponseL(*okerr);
+                CleanupStack::PopAndDestroy(okerr);
+                Observer().RequestCompletedL(*this, iStatus.Int());  
+                }
+            break;
             }
-        else
-            {
-            numType = EBTMonoATPhoneNumberNational;
-            }
-        LEAVE_IF_ERROR(params.Append(TATParam(numType)))
-        LEAVE_IF_ERROR(params.Append(TATParam()))
-        LEAVE_IF_ERROR(params.Append(TATParam(4)))
-        CATResult* code = CATResult::NewL(EATCNUM, EATActionResult, &params);
-        CleanupStack::PushL(code);
-        resarr.AppendL(code);
-        CleanupStack::Pop(code);
-        CleanupStack::PopAndDestroy(&params);
-        okerr = CATResult::NewL(EATOK);
+            
+        default:
+            break;        
         }
-    else
-        {
-        okerr = CATResult::NewL(EATERROR);
-        }
-    CleanupStack::PushL(okerr);
-    resarr.AppendL(okerr);
-    CleanupStack::Pop(okerr);
-    iProtocol.SendResponseL(resarr);
-    CleanupStack::PopAndDestroy(&resarr);
-    Observer().RequestCompletedL(*this, iStatus.Int());    
+    
     TRACE_FUNC_EXIT
     }
+
 
 // -------------------------------------------------------------------------------
 // CBtmcNumber::DoCancel
@@ -147,7 +218,8 @@ CBtmcNumber::CBtmcNumber(
     CBtmcProtocol& aProtocol, 
     CActive::TPriority aPriority, 
     TInt aServiceId)
-    : CBtmcActive(aObserver, aPriority, aServiceId), iProtocol(aProtocol), iPckg(iEntry)
+    : CBtmcActive(aObserver, aPriority, aServiceId), iProtocol(aProtocol), iPckg(iEntry),
+    iOnStoreInfoPckg(iOnStoreInfo), iState(EStateNull), iUsedEntriesCount(1), iCorrectNumbersCount(0)
     {
     }
 

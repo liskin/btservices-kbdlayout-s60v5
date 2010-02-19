@@ -72,8 +72,9 @@ NONSHARABLE_CLASS(CBTPinNotifier): public CBTNPairNotifierBase
         /**
         * From CBTNPairNotifierBase
         * Generate prompt in Pin query dialog.
+        * @param aRBuf the descriptor to which the prompt will be loaded.
         */      
-        HBufC* GenerateQueryPromoptLC(); 
+        void GenerateQueryPromptL(RBuf& aRBuf); 
 
     private:
 

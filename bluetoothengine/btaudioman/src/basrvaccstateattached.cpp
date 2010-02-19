@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  Implementation of Connected state.
-*  Version     : %version: 20 %
+*  Version     : %version: 21 %
 *
 */
 
@@ -385,7 +385,7 @@ void CBasrvAccStateAttached::CancelRequest(CBasrvActive& aActive)
     }
 
 CBasrvAccStateAttached::CBasrvAccStateAttached(CBasrvAcc& aParent, TBool aShowNote)
-    : CBasrvAccState(aParent, NULL), iShowNote(aShowNote)
+    : CBasrvAccState(aParent), iShowNote(aShowNote)
     {
     }
 

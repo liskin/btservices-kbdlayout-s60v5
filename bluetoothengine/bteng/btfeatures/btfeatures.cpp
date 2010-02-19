@@ -17,8 +17,8 @@
 
 
 #include <btfeaturescfg.h> 
-#include <featmgr/FeatureControl.h>
-#include <featmgr/FeatMgr.h>
+#include <featmgr/featurecontrol.h>
+#include <featmgr/featmgr.h>
 
 /**
 	Device supports bluetooth data profiles disabled.

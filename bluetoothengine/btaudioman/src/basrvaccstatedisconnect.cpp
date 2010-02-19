@@ -81,7 +81,7 @@ void CBasrvAccStateDisconnect::CancelRequest(CBasrvActive& /*aActive*/)
     }
 
 CBasrvAccStateDisconnect::CBasrvAccStateDisconnect(CBasrvAcc& aParent, TInt aConnErr)
-    : CBasrvAccState(aParent, NULL), iConnErr(aConnErr)
+    : CBasrvAccState(aParent), iConnErr(aConnErr)
     {
     }
  

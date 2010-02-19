@@ -858,10 +858,15 @@ TUint CRemConBearerAvrcp::MrcciNewTransactionId()
 	return Observer().NewTransactionId();
 	}
 
+void CRemConBearerAvrcp::MrcciCommandExpired(TUint aTransactionId)
+    {
+    LOG_FUNC
+    Observer().CommandExpired(aTransactionId);
+    }
+
 void CRemConBearerAvrcp::MrccciSetAddressedClient(const TRemConClientId& aClientId)
 	{
 	LOG_FUNC
-
 	Observer().SetRemoteAddressedClient(TUid::Uid(KRemConBearerAvrcpImplementationUid), aClientId);
 	}
 

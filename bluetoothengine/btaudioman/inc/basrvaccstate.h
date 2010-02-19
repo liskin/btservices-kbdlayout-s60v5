@@ -132,7 +132,7 @@ protected:
     /**
     * Default constructor
     */
-    CBasrvAccState(CBasrvAcc& aParent, TRequestStatus* aRequest);
+    CBasrvAccState(CBasrvAcc& aParent);
     
     /**
      * Gets the owner of the state machine
@@ -142,24 +142,6 @@ protected:
      */
     CBasrvAcc& Parent();
     
-    /**
-     * Completes the pending request in this state with specified error code 
-     * and then zero the pointer.
-     *
-     * @since S60 v3.1
-     * @param aErr the completion error code
-     */
-    void CompleteStateRequest(TInt aErr);
-    
-    /**
-     * Completes the give pending request with specified error code..
-     *
-     * @since S60 v3.1
-     * @param aRequest the request to be completed
-     * @param aErr the completion error code
-     */
-    void CompleteRequest(TRequestStatus* aRequest, TInt aErr);
-
     void StatePrint(const TDesC& aStateName);
 
     TAccInfo& AccInfo();
@@ -173,12 +155,6 @@ protected:
 protected:
 
     CBasrvAcc& iParent;
-
-    /**
-     * Possible to be NULL.
-     * The async request performed in this state if it is not NULL.
-     */
-    TRequestStatus* iRequest;
     };
 
 #endif      // C_BTASRVACCSTATE_H

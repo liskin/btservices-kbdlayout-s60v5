@@ -201,6 +201,12 @@ TUint CAvrcpBulkBearer::MrcciNewTransactionId()
 	return iObserver->NewTransactionId();
 	}
 
+void CAvrcpBulkBearer::MrcciCommandExpired(TUint aTransactionId)
+    {
+    LOG_FUNC
+    iObserver->CommandExpired(aTransactionId);
+    }
+
 TInt CAvrcpBulkBearer::MrcbciSetAddressedClient(const TRemConAddress& aAddr, const TRemConClientId& aClient)
 	{
 	LOG_FUNC

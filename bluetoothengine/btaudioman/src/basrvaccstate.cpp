@@ -27,7 +27,6 @@ const TInt KBitAvrcpSupportedFeatureCategory2 = 0x2;
 
 CBasrvAccState::~CBasrvAccState()
     {
-    CompleteStateRequest(KErrAbort);
     }
     
 CBasrvAccState* CBasrvAccState::ErrorOnEntry(TInt /*aReason*/)
@@ -102,33 +101,14 @@ void CBasrvAccState::CancelRequest(CBasrvActive& /*aActive*/)
     TRACE_FUNC
     }
 
-CBasrvAccState::CBasrvAccState(CBasrvAcc& aParent, TRequestStatus* aRequest)
-    : iParent(aParent), iRequest(aRequest)
+CBasrvAccState::CBasrvAccState(CBasrvAcc& aParent)
+    : iParent(aParent)
     {
     }
 
 CBasrvAcc& CBasrvAccState::Parent()
     {
     return iParent;
-    }
-
-void CBasrvAccState::CompleteStateRequest(TInt aErr)
-    {
-    if (iRequest)
-        {
-        User::RequestComplete(iRequest, aErr);
-        TRACE_INFO((_L("Request 0x%08X completed with %d"), iRequest, aErr))
-        iRequest = NULL;
-        }
-    }
-    
-void CBasrvAccState::CompleteRequest(TRequestStatus* aStatus, TInt aErr)
-    {
-    if (aStatus)
-        {
-        User::RequestComplete(aStatus, aErr);
-        TRACE_INFO((_L("Request 0x%08X completed with %d"), aStatus, aErr))
-        }
     }
 
 void CBasrvAccState::StatePrint(const TDesC& aStateName)

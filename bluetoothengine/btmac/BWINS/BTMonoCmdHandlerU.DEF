@@ -1,10 +1,10 @@
 EXPORTS
-	??1CBtmcHandlerApi@@UAE@XZ @ 1 NONAME ; CBtmcHandlerApi::~CBtmcHandlerApi(void)
+	?NewL@CBtmcHandlerApi@@SAPAV1@AAVMBtmcObserver@@W4TBtmcProfileId@@ABVTDesC8@@H@Z @ 1 NONAME ; class CBtmcHandlerApi * CBtmcHandlerApi::NewL(class MBtmcObserver &, enum TBtmcProfileId, class TDesC8 const &, int)
 	?HandleNrecCompletedL@CBtmcHandlerApi@@QAEXH@Z @ 2 NONAME ; void CBtmcHandlerApi::HandleNrecCompletedL(int)
-	?HandleProtocolDataL@CBtmcHandlerApi@@QAEXABVTDesC8@@@Z @ 3 NONAME ; void CBtmcHandlerApi::HandleProtocolDataL(class TDesC8 const &)
-	?NewL@CBtmcHandlerApi@@SAPAV1@AAVMBtmcObserver@@W4TBtmcProfileId@@ABVTDesC8@@H@Z @ 4 NONAME ; class CBtmcHandlerApi * CBtmcHandlerApi::NewL(class MBtmcObserver &, enum TBtmcProfileId, class TDesC8 const &, int)
-	?ActivateRemoteVolumeControl@CBtmcHandlerApi@@QAEXXZ @ 5 NONAME ; void CBtmcHandlerApi::ActivateRemoteVolumeControl(void)
-	?DeActivateRemoteVolumeControl@CBtmcHandlerApi@@QAEXXZ @ 6 NONAME ; void CBtmcHandlerApi::DeActivateRemoteVolumeControl(void)
-	?GetRemoteSupportedFeature@CBtmcHandlerApi@@QAEHXZ @ 7 NONAME ; int CBtmcHandlerApi::GetRemoteSupportedFeature(void)
-	?SetHspRvcSupported@CBtmcHandlerApi@@QAEXH@Z @ 8 NONAME ; void CBtmcHandlerApi::SetHspRvcSupported(int)
+	?ActivateRemoteVolumeControl@CBtmcHandlerApi@@QAEXXZ @ 3 NONAME ; void CBtmcHandlerApi::ActivateRemoteVolumeControl(void)
+	?GetRemoteSupportedFeature@CBtmcHandlerApi@@QAEHXZ @ 4 NONAME ; int CBtmcHandlerApi::GetRemoteSupportedFeature(void)
+	?SetHspRvcSupported@CBtmcHandlerApi@@QAEXH@Z @ 5 NONAME ; void CBtmcHandlerApi::SetHspRvcSupported(int)
+	?HandleProtocolDataL@CBtmcHandlerApi@@QAEXABVTDesC8@@@Z @ 6 NONAME ; void CBtmcHandlerApi::HandleProtocolDataL(class TDesC8 const &)
+	?DeActivateRemoteVolumeControl@CBtmcHandlerApi@@QAEXXZ @ 7 NONAME ; void CBtmcHandlerApi::DeActivateRemoteVolumeControl(void)
+	??1CBtmcHandlerApi@@UAE@XZ @ 8 NONAME ; CBtmcHandlerApi::~CBtmcHandlerApi(void)
 

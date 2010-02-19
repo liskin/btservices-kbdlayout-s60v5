@@ -105,7 +105,7 @@ void CBasrvAccStateConnect::CancelRequest(CBasrvActive& /*aActive*/)
     }
 
 CBasrvAccStateConnect::CBasrvAccStateConnect(CBasrvAcc& aParent)
-    : CBasrvAccState(aParent, NULL)
+    : CBasrvAccState(aParent)
     {
     }
     

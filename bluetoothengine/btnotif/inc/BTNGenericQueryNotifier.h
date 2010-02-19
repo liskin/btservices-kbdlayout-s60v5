@@ -95,14 +95,14 @@ NONSHARABLE_CLASS(CBTGenericQueryNotifier) : public CBTNotifierBase
                 
     private:
     	
-        HBufC*				iQueryMessage;
-		HBufC*				iQueryHeader;  		      
+        RBuf				iQueryMessage;
+		HBufC*				iQueryHeader;
         HBufC*				iName;
 
 	    TInt 		iMessageResourceId;
 	    TSecondaryDisplayBTnotifDialogs	iSecondaryDisplayCommand;
 		TBool 		iIsMessageQuery;
-		TBool 		iIsNameQuery; 
+		TBool 		iIsNameQuery;
     };
 
 #endif

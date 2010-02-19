@@ -77,10 +77,9 @@ NONSHARABLE_CLASS(CBTSSPPasskeyEntryNotifier): public CBTNPairNotifierBase
     
         /**
         * Generate prompt for passkey entry query.
-        * @param None.
-        * @return None.
+        * @param aRBuf the descriptor to which the prompt will be loaded.
         */
-        HBufC* GenerateQueryPromoptLC();
+        void GenerateQueryPromptL( RBuf& aRBuf );
         
     private:
 

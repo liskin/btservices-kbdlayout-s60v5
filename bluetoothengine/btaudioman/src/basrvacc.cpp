@@ -107,30 +107,35 @@ void CBasrvAcc::AccessoryConnectedL(const TBTDevAddr& aAddr, TProfiles aProfile)
 void CBasrvAcc::AccOpenedAudio(TProfiles aProfile)
     {
     TRACE_FUNC
+    __ASSERT_ALWAYS(iState, User::Panic(KPanicCategory, EInvalidNullState));
     iState->AccOpenedAudio(aProfile);
     }
 
 void CBasrvAcc::AccClosedAudio(TProfiles aProfile)
     {
     TRACE_FUNC
+    __ASSERT_ALWAYS(iState, User::Panic(KPanicCategory, EInvalidNullState));
     iState->AccClosedAudio(aProfile);
     }
     
 void CBasrvAcc::AccessoryDisconnectedL(TProfiles aProfile)
     {
     TRACE_FUNC
+    __ASSERT_ALWAYS(iState, User::Panic(KPanicCategory, EInvalidNullState));
     iState->AccessoryDisconnectedL(aProfile);
     }
 
 void CBasrvAcc::OpenAudioL(TAccAudioType aType)
     {
     TRACE_FUNC
+    __ASSERT_ALWAYS(iState, User::Panic(KPanicCategory, EInvalidNullState));
     iState->OpenAudioL(aType);
     }
 
 void CBasrvAcc::CloseAudioL(TAccAudioType aType)
     {
     TRACE_FUNC
+    __ASSERT_ALWAYS(iState, User::Panic(KPanicCategory, EInvalidNullState));
     iState->CloseAudioL(aType);
     }
 

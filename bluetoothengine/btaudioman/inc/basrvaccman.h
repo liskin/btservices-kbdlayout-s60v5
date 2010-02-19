@@ -16,7 +16,7 @@
 *  Name        : basrvaccman.h
 *  Part of     : BTEng / Bluetooth Accessory Server
 *  Description : 
-*  Version     : %version: 3.1.4.1.2.2.11 %
+*  Version     : %version: 3.1.4.1.2.2.13 %
 *
 */
 
@@ -100,10 +100,6 @@ public:
 
     TBTEngConnectionStatus ConnectionStatus4Client(const TBTDevAddr& aAddr) const;
 
-    // For DosServer version only
-    void AudioToPhone(CBasrvAudio4Dos& aAudio4Dos);
-    void AudioToAccessory(CBasrvAudio4Dos& aAudio4Dos);
-
     TBool IsAvrcpVolCTSupported();
     TBool IsAbsoluteVolumeSupported(const TBTDevAddr& aAddr);
     TBool DisconnectIfAudioOpenFails();
@@ -153,6 +149,9 @@ private:
      */
     void CancelRequest(CBasrvActive& aActive);
 
+private:
+    void DoShowNoteL(TBTGenericInfoNoteType aNote, const TBTDevAddr& aAddr);
+    
 protected:
     /**
     * Default constructor
@@ -164,8 +163,6 @@ protected:
     void HandleNewAudioRequestL();
 
     void DoAudioRequestL();
-    
-    void DestructVariant();
 
     TInt FindAcc(const TBTDevAddr& aRemote) const;
 

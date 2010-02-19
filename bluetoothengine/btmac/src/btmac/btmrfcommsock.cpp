@@ -229,16 +229,20 @@ void CBtmRfcommSock::HandleConnectCompleteL(TInt aErr)
     {
     TRACE_FUNC_ENTRY
     TRACE_INFO((_L("err %d"), aErr))
-
+    
+    if (aErr == KErrNone)
+    	{
+		TBTSockAddr sockAddr;
+		iDataSocket->RemoteName(sockAddr);
+		iRemote = sockAddr.BTAddr();
+    	}
+    
     // Process the connect complete before issuing a receive request to ensure that
     // we are ready to process the data when it is received.
     iObserver->RfcommConnectCompletedL(aErr);
 
-    if (!aErr)
+    if (aErr == KErrNone)
         {
-        TBTSockAddr sockAddr;
-        iDataSocket->RemoteName(sockAddr);
-        iRemote = sockAddr.BTAddr();
         iInData.ReAllocL(256);
         RequestMasterRole();
         TInt err = iAda.Open(iServer, iRemote);
@@ -256,17 +260,20 @@ void CBtmRfcommSock::HandleAcceptCompleteL(TInt aErr)
     {
     TRACE_FUNC_ENTRY
 
-    iRemoteHasConnected = ETrue;
+    if (aErr == KErrNone)
+    	{
+		iRemoteHasConnected = ETrue;
+		TBTSockAddr sockAddr;
+		iDataSocket->RemoteName(sockAddr);
+		iRemote = sockAddr.BTAddr();
+    	}
 
     // Process the accept complete before issuing a receive request to ensure that
     // we are ready to process the data when it is received.
     iObserver->RfcommAcceptCompletedL(aErr, iService);
 
-   if (!aErr)
+   if (aErr == KErrNone)
         {
-        TBTSockAddr sockAddr;
-        iDataSocket->RemoteName(sockAddr);
-        iRemote = sockAddr.BTAddr();
         iInData.ReAllocL(256);
         RequestMasterRole();
         TInt err = iAda.Open(iServer, iRemote);

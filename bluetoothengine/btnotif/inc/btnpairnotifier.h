@@ -84,8 +84,9 @@ NONSHARABLE_CLASS(CBTNPairNotifierBase) : public CBTNotifierBase
         
         /**
          * Generate prompt based on subclass's own needs.
+         * @param aRBuf the descriptor to which the prompt will be loaded.
          */
-        virtual HBufC* GenerateQueryPromoptLC();
+        virtual void GenerateQueryPromptL( RBuf& aRBuf );
         
     private:
         /**

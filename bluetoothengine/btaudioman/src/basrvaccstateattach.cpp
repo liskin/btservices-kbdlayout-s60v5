@@ -126,7 +126,7 @@ void CBasrvAccStateAttach::CancelRequest(CBasrvActive& /*aActive*/)
     }
 
 CBasrvAccStateAttach::CBasrvAccStateAttach(CBasrvAcc& aParent, TBool aConnecting)
-    : CBasrvAccState(aParent, NULL), iConnecting(aConnecting)
+    : CBasrvAccState(aParent), iConnecting(aConnecting)
     {
     }
  

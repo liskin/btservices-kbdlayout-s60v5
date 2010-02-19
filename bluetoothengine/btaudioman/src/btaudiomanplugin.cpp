@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -70,23 +70,27 @@ TBool CBtAudioManPlugin::IsProfileSupported(const TBTProfile aProfile ) const
 TInt CBtAudioManPlugin::Connect( const TBTDevAddr& aAddr )
     {
     TRACE_FUNC
-    return HandleAsyncRequest(aAddr, ERequestConnect);    
+    TInt err = PrepareAsyncRequest(aAddr, ERequestConnect);
+    if(!err)
+        {
+        iDiagnostic.Zero();
+        iClient.ConnectToAccessory(iActive4ClientReq->iStatus, iBTDevAddrPckgBuf, iDiagnostic);
+        iActive4ClientReq->GoActive();
+        }
+    return err;
     }
 
 void CBtAudioManPlugin::CancelConnect( const TBTDevAddr& aAddr )
     {
     if (iBTDevAddrPckgBuf() == aAddr &&
-        iActive4ClientReq &&
         iActive4ClientReq->IsActive() &&
         iActive4ClientReq->RequestId() == ERequestConnect )
         {
         TRACE_INFO(_L("CBtAudioManPlugin::CancelConnect KErrCancel"))
-        delete iActive4ClientReq;
-        iActive4ClientReq = NULL;
+        iActive4ClientReq->Cancel();
         if (iObserver)
             {
-            iObserver->ConnectComplete(iBTDevAddrPckgBuf(), 
-                EBTProfileHFP, KErrCancel);
+            iObserver->ConnectComplete(aAddr, EBTProfileHFP, KErrCancel);
             }
         }
     else
@@ -94,8 +98,7 @@ void CBtAudioManPlugin::CancelConnect( const TBTDevAddr& aAddr )
         TRACE_INFO(_L("CBtAudioManPlugin::CancelConnect KErrNotFound"))
         if (iObserver)
             {
-            iObserver->ConnectComplete(aAddr , 
-                EBTProfileHFP, KErrNotFound);
+            iObserver->ConnectComplete(aAddr, EBTProfileHFP, KErrNotFound);
             }
         }
 
@@ -107,8 +110,21 @@ TInt CBtAudioManPlugin::Disconnect( const TBTDevAddr& aAddr, TBTDisconnectType /
     if (aAddr == TBTDevAddr())
         {
         req = ERequestDisconnectAll;
-        }    
-    return HandleAsyncRequest(aAddr, req);
+        }
+    TInt err = PrepareAsyncRequest(aAddr, req);
+    if (!err)
+        {
+        if (req == ERequestDisconnect)
+            {
+            iClient.DisconnectAccessory(iActive4ClientReq->iStatus, iBTDevAddrPckgBuf, iDiagnostic);
+            }
+        else // if (req == ERequestDisconnectAll)
+            {
+            iClient.DisconnectAllGracefully(iActive4ClientReq->iStatus);
+            }
+        iActive4ClientReq->GoActive();
+        }
+    return err;
     }
 
 void CBtAudioManPlugin::GetConnections( RBTDevAddrArray& aAddrArray, TBTProfile aConnectedProfile )
@@ -207,22 +223,45 @@ TBTEngConnectionStatus CBtAudioManPlugin::IsConnected( const TBTDevAddr& aAddr )
 void CBtAudioManPlugin::RequestCompletedL(CBasrvActive& aActive)
     {
     TRACE_FUNC
+    TInt result = aActive.iStatus.Int();
     switch (aActive.RequestId())
         {
         case ENotifyProfileStatusChange:
             {
-            if (aActive.iStatus == KErrNone && iObserver)
+            // Notify any observer if one is present, and we got valid data (i.e. no error)
+            if (result == KErrNone && iObserver)
                 {
-                ReportProfileConnectionEvents(iProfileStatus.iAddr, iProfileStatus.iProfiles,
-                    iProfileStatus.iConnected);
-                iClient.NotifyConnectionStatus(iProfileStatusPckg, aActive.iStatus);
-                aActive.GoActive();
+                ReportProfileConnectionEvents(iProfileStatus.iAddr, iProfileStatus.iProfiles, iProfileStatus.iConnected);
+                }
+            // Handle resubscribing for future notifications
+            static const TInt KMaxFailedNotifyConnectionStatusAttempts = 3;
+            if (result == KErrNone)
+                {
+                iNotifyConnectionStatusFailure = 0; // reset failure count
+                NotifyConnectionStatus();
+                }
+            else if (result != KErrServerTerminated && iNotifyConnectionStatusFailure < KMaxFailedNotifyConnectionStatusAttempts)
+                {
+                TRACE_ERROR((_L8("Connection Status Notification failed (transiently): %d"), result))
+                ++iNotifyConnectionStatusFailure;
+                NotifyConnectionStatus();
+                }
+            else
+                {
+                // The server has died unexpectedly, or we've failed a number of times in succession so we cannot re-subscribe. 
+                // The lack of state here makes it diffcult to know how to report (handle?) this.  However, we are in
+                // no worse situation than before, plus the issue is now logged.
+                TRACE_ERROR((_L8("Connection Status Notification failed (terminally): %d"), result))
+                iClient.Close(); // clean the handle, this might kill outstanding disconnect/connect requests
+                                 // but it looks like the server is hosed anyway...
+                // In keeping with the existing logic we don't attempt to re-start the server.  That will only happen when an
+                // active request is made.
                 }
             break;
             }
         case ERequestConnect:
             {
-            if (iActive4ClientReq->iStatus.Int() != KErrNone) // might have conflicts, decode iDiagnostic
+            if (result != KErrNone) // might have conflicts, decode iDiagnostic
                 {
                 if (iDiagnostic.Length() >= KBTDevAddrSize)
                     {
@@ -238,14 +277,12 @@ void CBtAudioManPlugin::RequestCompletedL(CBasrvActive& aActive)
                         TRACE_INFO((_L8("conflict <%S>"), &myPtr))
                         ptr.Set(ptr.Mid(KBTDevAddrSize));
                         }
-                    iObserver->ConnectComplete(iBTDevAddrPckgBuf(), 
-                        EBTProfileHFP, iActive4ClientReq->iStatus.Int(), &array);
+                    iObserver->ConnectComplete(iBTDevAddrPckgBuf(), EBTProfileHFP, result, &array);
                     CleanupStack::PopAndDestroy(&array);
                     }
                 else
                     {
-                    iObserver->ConnectComplete(iBTDevAddrPckgBuf(), 
-                        EBTProfileHFP, iActive4ClientReq->iStatus.Int());
+                    iObserver->ConnectComplete(iBTDevAddrPckgBuf(), EBTProfileHFP, result);
                     }
                 }
             else
@@ -258,16 +295,13 @@ void CBtAudioManPlugin::RequestCompletedL(CBasrvActive& aActive)
                     }
                 ReportProfileConnectionEvents(iBTDevAddrPckgBuf(), profile, ETrue);
                 }
-            delete iActive4ClientReq;
-            iActive4ClientReq = NULL;
             break;
             }
         case ERequestDisconnect:
             {
-            if (iActive4ClientReq->iStatus.Int() != KErrNone)
+            if (result != KErrNone)
                 {
-                iObserver->DisconnectComplete(iBTDevAddrPckgBuf(), 
-                        EBTProfileHFP, iActive4ClientReq->iStatus.Int());
+                iObserver->DisconnectComplete(iBTDevAddrPckgBuf(), EBTProfileHFP, result);
                 }
             else
                 {
@@ -278,27 +312,24 @@ void CBtAudioManPlugin::RequestCompletedL(CBasrvActive& aActive)
                     pckg.Copy(iDiagnostic.Mid(0, sizeof(TInt))); 
                     }
                 ReportProfileConnectionEvents(iBTDevAddrPckgBuf(), profile, EFalse);
-                }            
-            delete iActive4ClientReq;
-            iActive4ClientReq = NULL;
+                }
             break;
             }
         case ERequestDisconnectAll:
             {
-            iObserver->DisconnectComplete(iBTDevAddrPckgBuf(), 
-                        EBTProfileHFP, iActive4ClientReq->iStatus.Int());
-			break;
+            iObserver->DisconnectComplete(iBTDevAddrPckgBuf(), EBTProfileHFP, result);
+            break;
             }
         }
     }
     
 void CBtAudioManPlugin::CancelRequest(CBasrvActive& aActive)
     {
-    if (aActive.RequestId() == ENotifyProfileStatusChange )
+    if (aActive.RequestId() == ENotifyProfileStatusChange)
         {
         iClient.CancelNotifyConnectionStatus();
         }
-    else if (aActive.RequestId() == ERequestConnect )
+    else if (aActive.RequestId() == ERequestConnect)
         {
         iClient.CancelConnectToAccessory();
         }
@@ -312,51 +343,49 @@ CBtAudioManPlugin::CBtAudioManPlugin() : iProfileStatusPckg(iProfileStatus)
 void CBtAudioManPlugin::ConstructL()
     {
     LEAVE_IF_ERROR(iClient.Connect());
+    // Create the handler for profile notifications
     iActive4ProfileStatus = CBasrvActive::NewL(*this, CActive::EPriorityStandard, ENotifyProfileStatusChange);
+    NotifyConnectionStatus();
+    // Create the handler for active requests (connect, disconnect, etc.)
+    iActive4ClientReq = CBasrvActive::New(*this, CActive::EPriorityStandard, ERequestConnect);
+    }
+
+void CBtAudioManPlugin::NotifyConnectionStatus()
+    {
     iClient.NotifyConnectionStatus(iProfileStatusPckg, iActive4ProfileStatus->iStatus);
     iActive4ProfileStatus->GoActive();
     }
 
-TInt CBtAudioManPlugin::HandleAsyncRequest(const TBTDevAddr& aAddr, TInt aRequestId)
+TInt CBtAudioManPlugin::ReconnectIfNeccessary()
     {
     TInt err = KErrNone;
-    if (! iClient.Handle() )
+    if (iClient.Handle() == KNullHandle)
         {
+        TRACE_INFO((_L8("Handle to Audio Man Server is not valid, connecting again...")))
         err = iClient.Connect();
+        TRACE_INFO((_L8("... reconnection result = %d"), err))
+        if(!err)
+            {
+            // Now reconnected, we should start status notifications again...
+            NotifyConnectionStatus();
+            }
         }
-    if ( err )
+    return err;
+    }
+
+TInt CBtAudioManPlugin::PrepareAsyncRequest(const TBTDevAddr& aAddr, TInt aRequestId)
+    {
+    TInt err = KErrNone;
+    err = ReconnectIfNeccessary();
+    if (!err && iActive4ClientReq->IsActive())
         {
-        return err;
-        }
-    if ( iActive4ClientReq )
-        {
+        // I would normally expect KErrInUse, so as to distinguish this failure from running out of message slots
         err = KErrServerBusy;
         }
     if (!err)
         {
-        iActive4ClientReq = CBasrvActive::New(*this, CActive::EPriorityStandard, aRequestId);
-        if (iActive4ClientReq)
-            {
-            iBTDevAddrPckgBuf() = aAddr;
-            if (aRequestId == ERequestConnect)
-                {
-                iDiagnostic.Zero();
-                iClient.ConnectToAccessory(iActive4ClientReq->iStatus, iBTDevAddrPckgBuf, iDiagnostic);
-                }
-            else if (aRequestId == ERequestDisconnect)
-                {
-                iClient.DisconnectAccessory(iActive4ClientReq->iStatus, iBTDevAddrPckgBuf, iDiagnostic);
-                }
-            else // if (aRequestId == ERequestDisconnectAll)
-            	{
-            	iClient.DisconnectAllGracefully(iActive4ClientReq->iStatus);
-            	}
-            iActive4ClientReq->GoActive();
-            }
-        else
-            {
-            err = KErrNoMemory;
-            }
+        iBTDevAddrPckgBuf() = aAddr;
+        iActive4ClientReq->SetRequestId(aRequestId);
         }
     return err;    
     }
@@ -365,7 +394,7 @@ void CBtAudioManPlugin::ReportProfileConnectionEvents(const TBTDevAddr& aAddr, c
     {
     TRACE_FUNC
     TRACE_INFO((_L("status %d profiles 0x%04X"), aConnected, aProfiles))
-	TBTEngConnectionStatus status = IsConnected(aAddr);
+    TBTEngConnectionStatus status = IsConnected(aAddr);
     if (iObserver)
         {
         if (aConnected)
@@ -385,21 +414,21 @@ void CBtAudioManPlugin::ReportProfileConnectionEvents(const TBTDevAddr& aAddr, c
             }
         else
             {
-			if(	status != EBTEngConnected )
-				{
-	            if (aProfiles & EHFP)
-	                {
-	                iObserver->DisconnectComplete(aAddr, EBTProfileHFP, KErrNone);
-	                }
-	            if (aProfiles & EHSP)
-	                {
-	                iObserver->DisconnectComplete(aAddr, EBTProfileHSP, KErrNone);
-	                }
-	            if (aProfiles & EStereo)
-	                {
-	                iObserver->DisconnectComplete(aAddr, EBTProfileA2DP, KErrNone);
-	                }
-				}
+            if (status != EBTEngConnected)
+                {
+                if (aProfiles & EHFP)
+                    {
+                    iObserver->DisconnectComplete(aAddr, EBTProfileHFP, KErrNone);
+                    }
+                if (aProfiles & EHSP)
+                    {
+                    iObserver->DisconnectComplete(aAddr, EBTProfileHSP, KErrNone);
+                    }
+                if (aProfiles & EStereo)
+                    {
+                    iObserver->DisconnectComplete(aAddr, EBTProfileA2DP, KErrNone);
+                    }
+                }
             }
         }
     }

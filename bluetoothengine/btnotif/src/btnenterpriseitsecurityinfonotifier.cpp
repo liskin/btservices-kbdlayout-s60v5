@@ -18,7 +18,7 @@
 // INCLUDE FILES
 #include <BTNotif.rsg>								// Own resources
 #include "btnenterpriseitsecurityinfonotifier.h"	// Own class definition
-#include "BTNotifDebug.h"							// Debugging macros
+#include "btNotifDebug.h"							// Debugging macros
 #include <tulstringresourcereader.h>
 #include <e32cmn.h>
 #include <dcmo.rsg>

@@ -18,7 +18,6 @@
 
 #include <aknnotewrappers.h>
 #include <aknradiobuttonsettingpage.h>
-#include <StringLoader.h>	// localisation stringloader
 #include <BtuiViewResources.rsg>		// Compiled resource ids
 #include <BTSapDomainPSKeys.h>	
 #include <centralrepository.h> 
@@ -29,13 +28,13 @@
 #include <SecondaryDisplay/BtuiSecondaryDisplayAPI.h>
 #include <btfeaturescfg.h>					// For EnterpriseEnablementL()
 #include <btnotif.h>
-
+#include <utf.h>
+#include <bluetoothuiutil.h>
 #include "btdevmodel.h"
 
 #include "debug.h"
 #include "BTUIMainView.h"
 
-#include <utf.h>
 // ----------------------------------------------------
 // CBTUIMainView::SetSapStatusL
 // ----------------------------------------------------
@@ -72,26 +71,28 @@ void CBTUIMainView::SetSapStatusL( TBTSapMode aValue )
 				{
 
 				// Create confirmation query
-				HBufC* stringholder = StringLoader::LoadLC( R_BT_DISCONNECT_FROM, connectedSap );
+				RBuf stringholder;
+				CleanupClosePushL( stringholder );
+				BluetoothUiUtil::LoadResourceAndSubstringL( stringholder, 
+				        R_BT_DISCONNECT_FROM, connectedSap, 0 );
 				CAknQueryDialog* dlg = CAknQueryDialog::NewL();
 
 				if(iCoverDisplayEnabled)
 					{
 					CleanupStack::PushL(dlg); 						
 				    dlg->PublishDialogL(ECmdShowDisconnectQuery, KUidCoverUiCategoryBtui); // initializes cover support    
-					CleanupStack::Pop(dlg); 						
-
 					CAknMediatorFacade* covercl = AknMediatorFacade(dlg); // uses MOP, so control provided 
 					if (covercl) // returns null if __COVER_DISPLAY is not defined
 					    {	    
 					    covercl->BufStream() << BTDeviceNameConverter::ToUTF8L(connectedSap);// takes copy so consts are ok too
 					    covercl->BufStream().CommitL(); // no more data to send so commit buf
-					    }  
+					    }
+					CleanupStack::Pop(dlg);
 					}
 					
-				TInt keypress = dlg->ExecuteLD( R_BT_DISCONNECT_FROM_QUERY, *stringholder );
+				TInt keypress = dlg->ExecuteLD( R_BT_DISCONNECT_FROM_QUERY, stringholder );
 
-				CleanupStack::PopAndDestroy(stringholder);	// stringholder
+				CleanupStack::PopAndDestroy(&stringholder);	// stringholder
 
 				if( keypress )	// User has accepted the dialog
 					{

@@ -192,7 +192,7 @@ void CBasrvAccStateQuery::GetAccInfoCompletedL(TInt aErr, const TAccInfo* aAcc, 
     }
 
 CBasrvAccStateQuery::CBasrvAccStateQuery(CBasrvAcc& aParent, TBool aConnectingRequest)
-    : CBasrvAccState(aParent, NULL), iConnecting(aConnectingRequest)
+    : CBasrvAccState(aParent), iConnecting(aConnectingRequest)
     {
     }
 

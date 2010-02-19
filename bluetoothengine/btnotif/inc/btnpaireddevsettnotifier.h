@@ -83,11 +83,6 @@ NONSHARABLE_CLASS(CBTPairedDevSettNotifier) : public CBTNotifierBase
     private:
 
 		/**
-		 * Leave function called by non-leave btengdevman callback function HandleGetDevicesComplete().
-		 *@param aErr. Passed by caller.
-		 */
-
-		/**
         * Parse the data out of the message that is sent by the client of the notifier. 
 		* @param aBuffer A package buffer containing received parameters.
         * @return None.

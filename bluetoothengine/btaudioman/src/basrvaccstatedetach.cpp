@@ -112,7 +112,7 @@ void CBasrvAccStateDetach::CancelRequest(CBasrvActive& /*aActive*/)
     }
 
 CBasrvAccStateDetach::CBasrvAccStateDetach(CBasrvAcc& aParent)
-    : CBasrvAccState(aParent, NULL)
+    : CBasrvAccState(aParent)
     {
     }
  

@@ -58,13 +58,6 @@ public:  // Constructors and destructor
 
     void NotifyClientNewProfile(TInt aProfile, const TBTDevAddr& aAddr);
     void NotifyClientNoProfile(TInt aProfile, const TBTDevAddr& aAddr);
-
-    // For DosServer version only
-    void AudioToPhone(const RMessage2& aMessage);
-    void AudioToAccessory(const RMessage2& aMessage);
-    void CancelAudioToAccessory();
-    void AudioToPhoneComplete();
-    void AudioToAccessoryComplete(TInt aErr);
         
 private:
     /**
@@ -113,10 +106,6 @@ private:
     * C++ default constructor.
     */
     CBTAccSession(CBasrvAccMan& aAccMan);
-
-    void HandleAudio4DosRequest(const RMessage2 &aMessage);
-
-    void DestructVariant();
 
     void UpdateProfileStatusCache(const TProfileStatus& aStatus);
 

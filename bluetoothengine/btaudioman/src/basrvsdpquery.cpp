@@ -67,23 +67,23 @@ void CBasrvSdpQuery::QueryAccInfoL(const TBTDevAddr& aAddr, TBool aTolerateSdpEr
     SF.iAttrValue = 0;
     SF.iUUID = KAudioSinkUUID;  
     SF.iAttrID = KSdpAttrIdSupportedFeatures;        
-    iServiceAttrs.Append(SF); // Advanced Audio Distribution Profile - BT Stereo Audio
+    iServiceAttrs.AppendL(SF); // Advanced Audio Distribution Profile - BT Stereo Audio
     
     SF.iUUID = 0x111e;   // HFP
     SF.iAttrID = KSdpAttrIdSupportedFeatures;
-    iServiceAttrs.Append(SF); // BT Handsfree Profile - BT Mono Audio
+    iServiceAttrs.AppendL(SF); // BT Handsfree Profile - BT Mono Audio
     
     SF.iUUID = 0x1108;   // HSP
     SF.iAttrID = 0x0302;  // Atti id of remote volume control
-    iServiceAttrs.Append(SF); // BT Headset Profile - BT Mono Audio 
+    iServiceAttrs.AppendL(SF); // BT Headset Profile - BT Mono Audio 
 
     SF.iUUID = KAVRemoteControlTargetUUID;
     SF.iAttrID = KSdpAttrIdSupportedFeatures;
-    iServiceAttrs.Append(SF);  // Audio Video Remote Control Profile
+    iServiceAttrs.AppendL(SF);  // Audio Video Remote Control Profile
     
     SF.iUUID = KAVRemoteControlTargetUUID;
     SF.iAttrID = KSdpAttrIdBluetoothProfileDescriptorList;
-    iServiceAttrs.Append(SF);  // Audio Video Remote Control Profile, to find out avrcp 1.4 support    
+    iServiceAttrs.AppendL(SF);  // Audio Video Remote Control Profile, to find out avrcp 1.4 support    
 
     
     /*****************************************************
@@ -100,7 +100,7 @@ void CBasrvSdpQuery::QueryAccInfoL(const TBTDevAddr& aAddr, TBool aTolerateSdpEr
     TUUID serviceUuid = TUUID((0x00005555),(0x00001000),(0x80000002),(0xEE000001)); // model number
     SF.iUUID = serviceUuid;  
     SF.iAttrID = 0x0300; // Attri id of device model number
-    iServiceAttrs.Append(SF); 
+    iServiceAttrs.AppendL(SF); 
     iCursor = 0;
     iTolerateSdpError = aTolerateSdpError;
     iSdpAgent = CSdpAgent::NewL(*this, iAddr);
@@ -134,13 +134,19 @@ void CBasrvSdpQuery::RequestCompletedL(CBasrvActive& aActive)
         {
         case ECreateView:
             {
+            // if we're called with iResponse != NULL we're leaking memory.
+            __ASSERT_ALWAYS(!iResponse, User::Invariant());
+            
             iResponse = NULL;
             if (aActive.iStatus > KErrNone)
                 {
-    		    iResponse = CBTRegistryResponse::NewL(iReg);	
-    		    aActive.SetRequestId(EGetResponse);    
-    		    iResponse->Start(aActive.iStatus);
-        	    aActive.GoActive();
+                TRAP_IGNORE( iResponse = CBTRegistryResponse::NewL(iReg) ); 
+                if (iResponse)
+                    {
+                    aActive.SetRequestId(EGetResponse);    
+                    iResponse->Start(aActive.iStatus);
+                    aActive.GoActive();
+                    }
                 }
             else
                 {
@@ -172,15 +178,21 @@ CBasrvSdpQuery::CBasrvSdpQuery(MBasrvSdpQuerier& aQuerier)
 void CBasrvSdpQuery::QueryCompleteL(TInt aErr)
     {
     iSdpAgent->Cancel();
+
     delete iSdpAgent;
     iSdpAgent = NULL;
+
     delete iSdpSearchPattern;
     iSdpSearchPattern = NULL;
+
     TBTDeviceClass cod = TBTDeviceClass();
 	if ( iResponse && iResponse->Results().Count() > 0 )
     	{
     	cod = (iResponse->Results())[0]->DeviceClass();
     	}
+	delete iResponse;
+	iResponse = NULL;
+	
     if (!aErr)
         {
         TAccInfo info;

@@ -22,6 +22,11 @@
 #include <e32base.h>
 #include "debugconfig.h"
 
+enum TPanic
+	{
+	EInvalidNullState = 1,
+	};
+
 #ifdef PRJ_ENABLE_TRACE
 
 #ifdef PRJ_FILE_TRACE

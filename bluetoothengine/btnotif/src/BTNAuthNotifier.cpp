@@ -17,7 +17,6 @@
 
 
 // INCLUDE FILES
-#include <StringLoader.h>    // Localisation stringloader
 #include <BTNotif.rsg>       // Own resources
 #include "btnauthnotifier.h" // Own class definition
 #include "btNotifDebug.h"    // Debugging macros
@@ -39,6 +38,7 @@
 #include <hlplch.h>
 #include <csxhelp/bt.hlp.hrh> // The bt hrh info is needed, for help launching
 #endif
+#include <bluetoothuiutil.h>
 #include "btnotifnameutils.h"
 
 
@@ -120,30 +120,31 @@ void CBTAuthNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, const R
         {
         User::Leave(KErrInUse);
         }
-    else if ( AutoLockOnL() )
+
+    iMessage = aMessage;
+    iReplySlot = aReplySlot;
+
+    if ( AutoLockOnL() )
         {
         // The phone is locked, access denied.
         // Write results back to caller and complete message.	
-		CompleteMessage(EFalse, KErrNone);	
+	CompleteMessage(EFalse, KErrNone);	
         return;
         }
     
-	TBTAuthorisationParams param;
- 	TPckgC<TBTAuthorisationParams> pckg(param);
- 	pckg.Set(aBuffer);
+    TBTAuthorisationParams param;
+    TPckgC<TBTAuthorisationParams> pckg(param);
+    pckg.Set(aBuffer);
 
- 	iServiceUid = pckg().iUid.iUid;  // Pick up service uid from message
- 	iBTAddr = pckg().iBDAddr;
- 	if ( OtherOutgoPairing( iBTAddr ) )
+    iServiceUid = pckg().iUid.iUid;  // Pick up service uid from message
+    iBTAddr = pckg().iBDAddr;
+    if ( OtherOutgoPairing( iBTAddr ) )
         {
         // We won't allow connection request from another device during outgoing pairing:
         FLOG(_L("[BTNOTIF]\t CBTAuthNotifier: outgoing pair in progress, reject request from other device"));
         CompleteMessage(KErrCancel);
         return;
-        }
- 	
-    iMessage = aMessage;
-    iReplySlot = aReplySlot;
+        }	
  	
     // create iDevice so that the name won't be lost if the device does
     // not exist in registry.
@@ -201,9 +202,12 @@ TPtrC8 CBTAuthNotifier::UpdateL(const TDesC8& aBuffer)
         if ( !iDevice->IsValidFriendlyName() && iDevice->IsValidDeviceName())
             {
             // Create new prompt string with new device name
-            HBufC* stringholder = StringLoader::LoadL( iStrResourceId, BTDeviceNameConverter::ToUnicodeL(iDevice->DeviceName()));
-            CleanupStack::PushL( stringholder );
-            iNotifUiUtil->UpdateQueryDlgL( *stringholder );
+            RBuf stringholder;
+            CleanupClosePushL( stringholder );
+            BluetoothUiUtil::LoadResourceAndSubstringL( 
+                    stringholder, iStrResourceId, 
+                    BTDeviceNameConverter::ToUnicodeL(iDevice->DeviceName()), 0 );
+            iNotifUiUtil->UpdateQueryDlgL( stringholder );
             iNotifUiUtil->UpdateCoverUiL( iDevice->DeviceName() );
             CleanupStack::PopAndDestroy();  // stringholder
             }
@@ -500,8 +504,11 @@ void CBTAuthNotifier::ShowAuthoQueryL()
 
     TBTDeviceName tempDeviceName; 
     BtNotifNameUtils::GetDeviceDisplayName(tempDeviceName, iDevice);
-    HBufC* stringholder = StringLoader::LoadLC( iStrResourceId, tempDeviceName);
-    TInt keypress = iNotifUiUtil->ShowQueryL( *stringholder, R_BT_AUTHORISATION_QUERY, 
+    RBuf stringholder;
+    CleanupClosePushL( stringholder );
+    BluetoothUiUtil::LoadResourceAndSubstringL( 
+            stringholder, iStrResourceId, tempDeviceName, 0);
+    TInt keypress = iNotifUiUtil->ShowQueryL( stringholder, R_BT_AUTHORISATION_QUERY, 
             iCoverUiDlgId, tempDeviceName, CAknQueryDialog::EConfirmationTone );
     CleanupStack::PopAndDestroy();  // stringholder
     // If this notifier is cancelled by the caller, no need to perform the rest operation:

@@ -28,6 +28,8 @@ PRJ_EXPORTS
 ../rom/BtuiResources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(BtuiResources.iby)
 ../inc/BtuiPluginInterface.h |../../inc/BtuiPluginInterface.h
 ../inc/BtuiPluginInterface.inl |../../inc/BtuiPluginInterface.inl
+../Ecom/inc/bluetoothuiutil.h   |../../inc/bluetoothuiutil.h
+../Ecom/inc/bluetoothuiutil.inl |../../inc/bluetoothuiutil.inl
 // Help exports
 #include "../help/group/bld.inf"
 

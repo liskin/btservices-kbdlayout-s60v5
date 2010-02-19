@@ -295,6 +295,7 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         CBTEngSettings*             iBTEngSettings;
     private:
         CBTEngDevMan*               iDevMan;  // for BT registry manipulation
+        TBool                       iIsCoverUI;
         
     };
 

@@ -31,6 +31,7 @@ public:
 	virtual void MrcciNewCommand(CAvrcpCommand& aCommand, const TRemConClientId& aClientId) = 0;
 
 	virtual TUint MrcciNewTransactionId() = 0;
+	virtual void MrcciCommandExpired(TUint aTransactionId) = 0;
 	};
 
 NONSHARABLE_CLASS(MRemConBulkCommandInterface) : public MRemConCommandInterface

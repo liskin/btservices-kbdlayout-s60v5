@@ -40,6 +40,9 @@ void CPlayerWatcherBase::StopWatchingPlayer(TRemConClientId aClientId)
 	CInternalCommand* command = *iCommands.Find(aClientId);
 	__ASSERT_DEBUG(command, AVRCP_PANIC(ENotWatchingPlayer));
 
+	TUint transId = command->RemConCommandId();
+	iCommandInterface.MrcciCommandExpired(transId);
+
 	iCommands.Remove(aClientId);
 	command->DecrementUsers();
 	}

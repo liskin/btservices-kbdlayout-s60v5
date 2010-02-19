@@ -38,10 +38,11 @@ _LIT8(KFuncEntryFormat8, ">%S");
 _LIT8(KFuncEntryThisFormat8, ">%S, [0x%08X]");
 _LIT8(KFuncExitFormat8, "<%S");
 
-_LIT(KPanicCategory, "BTAccServer");    
 _LIT8(KPanicPrefix8, "PANIC code ");
 _LIT8(KLeavePrefix8, "LEAVE code ");
 #endif
+
+_LIT(KPanicCategory, "BTAccServer");	// need it also for release 
 
 const TInt KMaxLogLineLength = 512;
 

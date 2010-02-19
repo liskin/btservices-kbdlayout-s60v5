@@ -30,6 +30,7 @@
 #include "btmanclient.h"         // TBTDevAddrPckgBug
 #include "basrvaccman.h"
 #include "BTAccInfo.h"
+#include "btaccpanic.h"
 
 /**  PubSub key read and write policies */
 _LIT_SECURITY_POLICY_C1( KBTEngPSKeyReadPolicy, 
@@ -78,33 +79,25 @@ CBTAccServer* CBTAccServer::NewLC()
     }
 
 void CBTAccServer::StartShutdownTimerIfNoSessions()
-	{
-	if (iSessions.Count() == 0 && (!iTimer || !iTimer->IsActive()))
-		{
-		if (!iTimer)
-		    {
-		    TRAP_IGNORE(iTimer = CPeriodic::NewL(CActive::EPriorityStandard));
-		    }
-		
-		if (iTimer)
-		    {
-		    iTimer->Start(KShutdownDelay, 0, TCallBack(CBTAccServer::TimerFired, this));
-		    }
-		
-	    TRACE_FUNC	
-		}
-	}
+    {
+    TRACE_FUNC	
+    __ASSERT_DEBUG(iTimer, BTACC_PANIC(ENoShutdownTimer));
+    if (iSessions.Count() == 0 && !iTimer->IsActive())
+        {
+        iTimer->Start(KShutdownDelay, 0, TCallBack(CBTAccServer::TimerFired, this));
+        }
+    }
 
-void CBTAccServer::ClientOpened(CBTAccSession& aSession)
-	{
-	TRACE_FUNC
-	
-	//cancel the timer to prevent the server from shutting down
+void CBTAccServer::ClientOpenedL(CBTAccSession& aSession)
+    {
+    TRACE_FUNC
+
+    //add the session to the array of sessions
+    iSessions.AppendL(&aSession);
+
+    //cancel the timer to prevent the server from shutting down
     CancelShutdownTimer();
-	
-	//add the session to the array of sessions
-	(void)iSessions.Append(&aSession);
-	}
+    }
 
 void CBTAccServer::ClientClosed(CBTAccSession& aSession)
 	{
@@ -148,8 +141,9 @@ CSession2* CBTAccServer::NewSessionL(const TVersion& aVersion, const RMessage2& 
 void CBTAccServer::ConstructL()
     {
     iAccMan = CBasrvAccMan::NewL();
-    iAccMan->LoadServicesL();
-    
+
+    iTimer = CPeriodic::NewL(CActive::EPriorityStandard);
+
     User::LeaveIfError(RProperty::Define(KPSUidBluetoothEnginePrivateCategory,
                                          KBTHfpATCommand, RProperty::EByteArray,
                                          KBTEngPSKeyReadPolicy,
@@ -162,8 +156,7 @@ void CBTAccServer::ConstructL()
 
 void CBTAccServer::CancelShutdownTimer()
     {
-    delete iTimer;
-    iTimer = NULL;
+    iTimer->Cancel();
     }
 
 TInt CBTAccServer::TimerFired(TAny* /*aThis*/)

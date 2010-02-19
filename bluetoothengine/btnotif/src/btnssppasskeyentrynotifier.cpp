@@ -31,7 +31,7 @@
 #endif
 #include <BTNotif.rsg>       // Own resources
 #include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
-
+#include <bluetoothuiutil.h>
 #include "btnotif.hrh"       // Own resource header
 #include "btnssppasskeyentrynotifier.h"  // Own class definition
 #include "btNotifDebug.h"    // Debugging macros
@@ -184,9 +184,11 @@ TPtrC8 CBTSSPPasskeyEntryNotifier::UpdateL(const TDesC8& aBuffer)
         }
     if ( !iNotifUiUtil->IsQueryReleased() )
         {
-        HBufC* update = GenerateQueryPromoptLC();
-        iNotifUiUtil->UpdateQueryDlgL( *update );
-        CleanupStack::PopAndDestroy( update ); 
+        RBuf prompt;
+        prompt.CleanupClosePushL();
+        GenerateQueryPromptL( prompt );
+        iNotifUiUtil->UpdateQueryDlgL( prompt );
+        CleanupStack::PopAndDestroy( &prompt ); 
         }        
     
     FLOG(_L("[BTNOTIF]\t CBTSSPPasskeyEntryNotifier::UpdateL() completed"));
@@ -226,11 +228,14 @@ void CBTSSPPasskeyEntryNotifier::HandleGetDeviceCompletedL(const CBTDevice* /*aD
     iBuf.Zero();
     iBuf.Append(iPasskey);
     iBuf.Append(_L("    "));
-    HBufC* prompt = GenerateQueryPromoptLC();
     
-    TInt answer = iNotifUiUtil->ShowQueryL( *prompt, R_BT_PASSKEY_QUERY, 
+    RBuf prompt;
+    prompt.CleanupClosePushL();
+    GenerateQueryPromptL( prompt );
+    
+    TInt answer = iNotifUiUtil->ShowQueryL( prompt, R_BT_PASSKEY_QUERY, 
             ECmdBTnotifUnavailable, nameCoverUi );    
-    CleanupStack::PopAndDestroy( prompt );  
+    CleanupStack::PopAndDestroy( &prompt );  
 
     if( iAnswer ) // user pressed entry key from remote keyboard.
         {
@@ -260,23 +265,18 @@ void CBTSSPPasskeyEntryNotifier::HandleGetDeviceCompletedL(const CBTDevice* /*aD
     }
 
 // ----------------------------------------------------------
-// CBTSSPPasskeyEntryNotifier::GenerateQueryPromoptLC
+// CBTSSPPasskeyEntryNotifier::GenerateQueryPromptL
 // ----------------------------------------------------------
 //
-HBufC* CBTSSPPasskeyEntryNotifier::GenerateQueryPromoptLC()
+void CBTSSPPasskeyEntryNotifier::GenerateQueryPromptL(  RBuf& aRBuf )
     {
-    FLOG(_L("[BTNOTIF]\t CBTSSPPasskeyEntryNotifier::GenerateQueryPromoptLC()"));
+    FLOG(_L("[BTNOTIF]\t CBTSSPPasskeyEntryNotifier::GenerateQueryPromptL()"));
     TBTDeviceName devName; 
     BtNotifNameUtils::GetDeviceDisplayName(devName, iDevice);   
-    
-    CPtrCArray* subsPrompt = new (ELeave) CPtrCArray(2);
-    CleanupStack::PushL( subsPrompt );
-    subsPrompt->AppendL( devName );
-    subsPrompt->AppendL( iBuf );
-    HBufC* prompt = StringLoader::LoadL( R_BT_SSP_PASSKEY_ENTRY , *subsPrompt );
-    CleanupStack::PopAndDestroy( subsPrompt );
-    CleanupStack::PushL( prompt );
-    FLOG(_L("[BTNOTIF]\t CBTSSPPasskeyEntryNotifier::GenerateQueryPromoptLC() << "));
-    return prompt;
+    BluetoothUiUtil::LoadResourceAndSubstringL( 
+            aRBuf, R_BT_SSP_PASSKEY_ENTRY, devName, 0 );
+    BluetoothUiUtil::AddSubstringL( aRBuf, iBuf, 1 );
+    FLOG(_L("[BTNOTIF]\t CBTSSPPasskeyEntryNotifier::GenerateQueryPromptL() << "));
+
     }
 // End of File

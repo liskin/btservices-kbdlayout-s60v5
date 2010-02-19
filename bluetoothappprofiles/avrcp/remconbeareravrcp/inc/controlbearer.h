@@ -59,6 +59,8 @@ public:	// Interface to command handlers, from MRemConCommandInterface
 	void MrccciNewNotifyResponse(CControlCommand& aCommand);
 	
 	TUint MrcciNewTransactionId();
+    void MrcciCommandExpired(TUint aTransactionId);
+    
 	void MrccciSetAddressedClient(const TRemConClientId& aClient);
 
 private: // MRemConBearerInterfaceV3 functions called from RemCon

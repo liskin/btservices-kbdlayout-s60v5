@@ -93,7 +93,7 @@ NONSHARABLE_CLASS(CBTGenericInfoNotifier) : public CBTNotifierBase
         void ShowNoteAndCompleteL();
         
     private:
-        HBufC*	iQueryMessage;
+        RBuf	iQueryMessage;
 	    TInt 	iMessageResourceId;
 	    TSecondaryDisplayBTnotifDialogs iSecondaryDisplayCommand;
     };

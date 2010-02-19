@@ -46,6 +46,7 @@ private:	// Interface to command handlers, from MRemConCommandInterface
 	void MrcciNewCommand(CAvrcpCommand& aCommand,const TRemConClientId& aClientId);
 	
 	TUint MrcciNewTransactionId();
+    void MrcciCommandExpired(TUint aTransactionId);
 	
 	TInt MrcbciSetAddressedClient(const TRemConAddress& aAddr, const TRemConClientId& aClient);
 	void MrcbciRemoveAddressing(const TRemConAddress& aAddr);

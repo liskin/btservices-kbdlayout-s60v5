@@ -18,22 +18,22 @@
 
 // INCLUDE FILES
 
-#include <stringloader.h>       // Localisation stringloader
 #include <BTNotif.rsg>          // Own resources
 #include <btnotif.h>
+#include <bluetoothuiutil.h>
 #include "btnotiflock.h"
-#include "btnpaireddevsettNotifier.h"      // Own class definition
-#include "BTNotifDebug.h"       // Debugging macros
+#include "btnpaireddevsettnotifier.h"      // Own class definition
+#include "btNotifDebug.h"       // Debugging macros
 #include <bluetooth/hci/hcierrors.h>
 #include "btnotifnameutils.h"
 
-#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
+#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
 
 #include <e32cmn.h>
-#include <aknmediatorfacade.h>  // CoverUI 
+#include <AknMediatorFacade.h>  // CoverUI 
 
 #ifdef __SERIES60_HELP
-#include <HLPLCH.H>
+#include <hlplch.h>
 #include <csxhelp/bt.hlp.hrh> // The bt hrh info is needed, for help launching
 #endif
 
@@ -127,26 +127,23 @@ void CBTPairedDevSettNotifier::HandleGetDeviceCompletedL(const CBTDevice* /*aDev
     TBTDeviceName name;
     BtNotifNameUtils::GetDeviceDisplayName(name, iDevice);
     
+    RBuf stringholder;
+    stringholder.CleanupClosePushL();
+    
     // 1. Show pairing status note
     FTRACE(FPrint(_L("[BTNOTIF]\t CBTPairedDevSettNotifier iPairingStatus: %d"), iPairingStatus));
     TInt resourceId = ProcessPairingErrorCode( iPairingStatus );    
-    HBufC* stringholder = StringLoader::LoadLC( resourceId );
-    _LIT(PU,"%U");
-    if( stringholder->Find(PU) != KErrNotFound)
-        {
-        CleanupStack::PopAndDestroy( stringholder );
-        stringholder = StringLoader::LoadLC( resourceId, name );
-        }   
-    
+    BluetoothUiUtil::LoadResourceAndSubstringL( stringholder, resourceId, name, 0 );
+
     if (!iPairingStatus)
         {
-        iNotifUiUtil->ShowConfirmationNoteL( ETrue, *stringholder, iSecondaryDisplayCommand, name );
+        iNotifUiUtil->ShowConfirmationNoteL( ETrue, stringholder, iSecondaryDisplayCommand, name );
         }
     else
         {
-        iNotifUiUtil->ShowErrorNoteL( ETrue, *stringholder, iSecondaryDisplayCommand, name );
+        iNotifUiUtil->ShowErrorNoteL( ETrue, stringholder, iSecondaryDisplayCommand, name );
         }
-    CleanupStack::PopAndDestroy( stringholder ); // stringholder
+    CleanupStack::PopAndDestroy( &stringholder );
       
     if( iPairingStatus || (iDevice && iDevice->GlobalSecurity().Banned() ) )
         {

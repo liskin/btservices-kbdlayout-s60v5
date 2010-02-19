@@ -48,7 +48,9 @@
 
 #include <gstabhelper.h>
 #include <btui.mbg>						// Tab icon for General Setting
+#include <bluetoothuiutil.h>
 #include "BTUIMainView.h" 				// base View.
+
 
 const TInt KAutoConnect2ndTry = 1;
 const TUint32 SetExcludePairedDeviceMask = 0x800000;
@@ -620,20 +622,15 @@ void CBTUIPairedDevicesView::DeleteDeviceDlgL()
     device.iIndex = index;
     iModel->GetDevice(device);
 
-    HBufC* stringholder = NULL;
+    RBuf stringholder;
+    CleanupClosePushL( stringholder );
 
 	TInt tmp=EStatusBtuiConnected|EStatusPhysicallyConnected;
     // Choose confirmation phrase
-    //
-    if ( device.iStatus & tmp )
-        {
-        stringholder = StringLoader::LoadLC(R_BT_WARN_ERASE_CONNECTED, 
-        	device.iName);
-        }
-    else
-        {
-        stringholder = StringLoader::LoadLC(R_BT_WARN_ERASE, device.iName );
-        }    
+    TInt resourceId = ( device.iStatus & tmp ) ? R_BT_WARN_ERASE_CONNECTED :
+        R_BT_WARN_ERASE;
+    BluetoothUiUtil::LoadResourceAndSubstringL( 
+            stringholder, resourceId, device.iName, 0 );
 
     // Create confirmation query
     //
@@ -653,9 +650,9 @@ void CBTUIPairedDevicesView::DeleteDeviceDlgL()
 		    covercl->BufStream().CommitL(); // no more data to send so commit buf
 		    }  
 		}
-    TInt keypress = dlg->ExecuteLD(R_BT_WARN_ERASE_QUERY, *stringholder);
+    TInt keypress = dlg->ExecuteLD(R_BT_WARN_ERASE_QUERY, stringholder);
 
-    CleanupStack::PopAndDestroy(stringholder);  // stringholder
+    CleanupStack::PopAndDestroy(&stringholder);  // stringholder
 
     if(keypress)  // User has accepted the dialog
         {
@@ -772,19 +769,23 @@ void CBTUIPairedDevicesView::BlockDeviceDlgL()
 		
 	HBufC* header= iCoeEnv->AllocReadResourceLC(R_BT_OPTION_BLOCK_DEVICE_HEADER); 
 	
-	HBufC* stringHolder = NULL;
+	RBuf stringHolder;
+	CleanupClosePushL( stringHolder );
+	TInt resouseId;
 	if (device.iStatus & (EStatusBtuiConnected|EStatusPhysicallyConnected) )
-		 stringHolder = StringLoader::LoadLC(
-		 (iHelpEnabled? R_BT_OPTION_BLOCK_CONNECTED_PAIRED_DEVICES_HELP:
-		  R_BT_OPTION_BLOCK_CONNECTED_PAIRED_DEVICES_NOHELP ), 
-		 device.iName);
+	    {
+	    resouseId = iHelpEnabled? R_BT_OPTION_BLOCK_PAIRED_DEVICE_HELP : 
+            R_BT_OPTION_BLOCK_PAIRED_DEVICE_NOHELP;
+	    }
 	else
-		stringHolder = StringLoader::LoadLC(
-		 (iHelpEnabled?R_BT_OPTION_BLOCK_PAIRED_DEVICE_HELP:R_BT_OPTION_BLOCK_PAIRED_DEVICE_NOHELP),
-		 device.iName);
+	    {
+	    resouseId = iHelpEnabled ? R_BT_OPTION_BLOCK_PAIRED_DEVICE_HELP :
+            R_BT_OPTION_BLOCK_PAIRED_DEVICE_NOHELP;
+	    }
+	BluetoothUiUtil::LoadResourceAndSubstringL( 
+	        stringHolder, resouseId, device.iName, 0 );
 	
-	
-	CAknMessageQueryDialog *queryDialog = CAknMessageQueryDialog::NewL (*stringHolder, 
+	CAknMessageQueryDialog *queryDialog = CAknMessageQueryDialog::NewL (stringHolder, 
 	  CAknQueryDialog::EConfirmationTone);		
 	queryDialog->PrepareLC(R_BT_MESSAGE_QUERY);
 	
@@ -816,7 +817,7 @@ void CBTUIPairedDevicesView::BlockDeviceDlgL()
         keypress = queryDialog->RunLD();
         }
 	
-	CleanupStack::PopAndDestroy(stringHolder);  				 
+	CleanupStack::PopAndDestroy(&stringHolder);  				 
 	CleanupStack::PopAndDestroy(header);
 	        
 	if(keypress)
@@ -978,11 +979,14 @@ void CBTUIPairedDevicesView::OpenWaitNoteL(CAknWaitDialog*& aWaitDialog,TUint aN
 		TSecondaryDisplayBtuiDialogs aSec,const TDesC& aDevName)
 	{
 	TRAPD(err,
-		HBufC* stringholder = StringLoader::LoadLC(aNoteTextResource , aDevName );
+	        RBuf stringholder;
+	        CleanupClosePushL( stringholder );
+	        BluetoothUiUtil::LoadResourceAndSubstringL( 
+	                stringholder, aNoteTextResource, aDevName, 0 );
 	    aWaitDialog = new (ELeave) CAknWaitDialog(
                     reinterpret_cast<CEikDialog**>(&aWaitDialog), ETrue);
 	    aWaitDialog->PrepareLC(aNoteResource);
-	    aWaitDialog->SetTextL(*stringholder);
+	    aWaitDialog->SetTextL(stringholder);
 
 	    if(iCoverDisplayEnabled)
 	        {
@@ -998,7 +1002,7 @@ void CBTUIPairedDevicesView::OpenWaitNoteL(CAknWaitDialog*& aWaitDialog,TUint aN
 	    aWaitDialog->SetCallback(this); // for capturing Cancel keypress	            
 	    aWaitDialog->RunLD();
 	    
-    	CleanupStack::PopAndDestroy(stringholder); // stringholder
+    	CleanupStack::PopAndDestroy(&stringholder); // stringholder
     );
     // if the above functions leaves the iWaitNote is deleted, but
     // not set to NULL. This will cause a problem, when
@@ -1068,8 +1072,11 @@ void CBTUIPairedDevicesView::DisconnectL()
 	iDisconnectQueryDevice = device;//remember device related with query dialog
 
     // Create confirmation query
-    HBufC* stringholder = StringLoader::LoadLC(R_BT_DISCONNECT_FROM, device.iName);
-    if (!iDisconnectQueryDlg)
+    RBuf stringholder;
+    CleanupClosePushL( stringholder );
+    BluetoothUiUtil::LoadResourceAndSubstringL( 
+            stringholder, R_BT_DISCONNECT_FROM, device.iName, 0 );
+    if ( !iDisconnectQueryDlg )
         {
         iDisconnectQueryDlg = CAknQueryDialog::NewL();
         }
@@ -1086,9 +1093,9 @@ void CBTUIPairedDevicesView::DisconnectL()
 		    }  
 		}
 			
-    TInt keypress = iDisconnectQueryDlg->ExecuteLD(R_BT_DISCONNECT_FROM_QUERY, *stringholder);
+    TInt keypress = iDisconnectQueryDlg->ExecuteLD(R_BT_DISCONNECT_FROM_QUERY, stringholder);
 
-    CleanupStack::PopAndDestroy(stringholder);  // stringholder
+    CleanupStack::PopAndDestroy(&stringholder);  // stringholder
 
 	iDisconnectQueryDlg = NULL;
     if(keypress)  // User has accepted the dialog
@@ -1189,22 +1196,22 @@ void CBTUIPairedDevicesView::ConnectCompleteL(TInt aError,const TBTDevice& aDevi
             break;
         case KErrAlreadyExists:	// connection exists allready
         	{
-          	HBufC* stringholder = NULL;
+          	RBuf stringholder;
+          	CleanupClosePushL( stringholder );
           	if(aConflictingDeviceNames && aConflictingDeviceNames->Count()> 0)
         		{        		
         		if(aConflictingDeviceNames->Count() == 1)
         			{
-        			stringholder=StringLoader::LoadLC(R_BT_DISCONNECT_FIRST_PROMPT,
-        			  *(*aConflictingDeviceNames)[0],iCoeEnv );	
+        			BluetoothUiUtil::LoadResourceAndSubstringL( stringholder, 
+        			        R_BT_DISCONNECT_FIRST_PROMPT, 
+        			        *(*aConflictingDeviceNames)[0], 0 );
         			}
         		else
         			{
-        			CPtrC16Array* aa=new(ELeave) CPtrC16Array(1+1);
-       				aa->InsertL(0, *(*aConflictingDeviceNames)[0] );
-        			aa->InsertL(1, *(*aConflictingDeviceNames)[1] );
-        			stringholder=StringLoader::LoadLC(R_BT_DISCONNECT_FIRST_STEREO_PROMPT ,
-        			  *aa,iCoeEnv);
-        			delete(aa);        					
+        			BluetoothUiUtil::LoadResourceAndSubstringL( stringholder, 
+                        R_BT_DISCONNECT_FIRST_STEREO_PROMPT, 
+                        *(*aConflictingDeviceNames)[0], 0 );
+        			BluetoothUiUtil::AddSubstringL( stringholder, *(*aConflictingDeviceNames)[1], 1 );       					
         			}
         		TRACE_INFO(_L("KErrAllreadyExists"))      	  		  
           		}
@@ -1235,8 +1242,8 @@ void CBTUIPairedDevicesView::ConnectCompleteL(TInt aError,const TBTDevice& aDevi
 			    	}  
 				}
 		
-        	note->ExecuteLD(*stringholder);
-        	CleanupStack::PopAndDestroy(stringholder);
+        	note->ExecuteLD(stringholder);
+        	CleanupStack::PopAndDestroy(&stringholder);
         	}
         	break;	
 		case KErrServerBusy:
@@ -1261,68 +1268,28 @@ void CBTUIPairedDevicesView::ConnectCompleteL(TInt aError,const TBTDevice& aDevi
             //          
 			CAknInformationNote* notePtr = new (ELeave) CAknInformationNote();
 
-            HBufC* stringHolder = NULL;
+            RBuf stringHolder;
+            CleanupClosePushL( stringHolder );
             
-			if (!FeatureManager::FeatureSupported(KFeatureIdAccessoryFw))
-				{
-            	if (CallOnGoing())
-                	{
-                	stringHolder = StringLoader::LoadLC(R_BT_AUDIOS_ACCESSORY_PROMPT); // qtn_bt_audio_accessory "Audio routed to BT handsfree"            
-                	
-                	if(iCoverDisplayEnabled)
-						{
-						CleanupStack::PushL(notePtr); 			
-				    	notePtr->PublishDialogL(ECmdBtuiShowBtAudioAccessory, KUidCoverUiCategoryBtui); // initializes cover support    
-						CleanupStack::Pop(notePtr); 
-						}
-					
-					notePtr->ExecuteLD(*stringHolder);
-	                }
-	            else
-	                {
-	                TRACE_INFO(_L("No call ongoing. Connected to"))
-	                stringHolder = StringLoader::LoadLC(R_BT_CONF_CONNECTED_PROMPT, aDevice.iName); // "Connected to %U"
-	                
-	                if(iCoverDisplayEnabled)
-						{
-						CleanupStack::PushL(notePtr); 			
-				    	notePtr->PublishDialogL(ECmdBtuiShowBtConfConnected, KUidCoverUiCategoryBtui); // initializes cover support    
-						CleanupStack::Pop(notePtr); 
+            BluetoothUiUtil::LoadResourceAndSubstringL( stringHolder,
+                    R_BT_CONF_CONNECTED_PROMPT, aDevice.iName, 0 );
+            
+            if(iCoverDisplayEnabled)
+                    {
+                    CleanupStack::PushL(notePtr); 			
+                    notePtr->PublishDialogL(ECmdBtuiShowBtConfConnected, KUidCoverUiCategoryBtui); // initializes cover support    
+                    CleanupStack::Pop(notePtr); 
 
-						CAknMediatorFacade* covercl = AknMediatorFacade(notePtr); // uses MOP, so control provided 
-						if (covercl) // returns null if __COVER_DISPLAY is not defined
-					    	{	
-							  covercl->BufStream() <<  BTDeviceNameConverter::ToUTF8L(aDevice.iName);	
-							  covercl->BufStream().CommitL(); // no more data to send so commit buf
-					    	}  
-						}
-	                
-	                notePtr->ExecuteLD(*stringHolder);
-	                }           				
-                }
-            else
-                {
-                TRACE_INFO(_L("AccFW Supported. Connected to"))
-                stringHolder = StringLoader::LoadLC(R_BT_CONF_CONNECTED_PROMPT, aDevice.iName);
+                    CAknMediatorFacade* covercl = AknMediatorFacade(notePtr); // uses MOP, so control provided 
+                    if (covercl) // returns null if __COVER_DISPLAY is not defined
+                        {	
+                            covercl->BufStream() << BTDeviceNameConverter::ToUTF8L(aDevice.iName);	
+                          covercl->BufStream().CommitL(); // no more data to send so commit buf
+                        }  
+                    }
                 
-                if(iCoverDisplayEnabled)
-						{
-						CleanupStack::PushL(notePtr); 			
-				    	notePtr->PublishDialogL(ECmdBtuiShowBtConfConnected, KUidCoverUiCategoryBtui); // initializes cover support    
-						CleanupStack::Pop(notePtr); 
-
-						CAknMediatorFacade* covercl = AknMediatorFacade(notePtr); // uses MOP, so control provided 
-						if (covercl) // returns null if __COVER_DISPLAY is not defined
-					    	{	
-								covercl->BufStream() << BTDeviceNameConverter::ToUTF8L(aDevice.iName);	
-							  covercl->BufStream().CommitL(); // no more data to send so commit buf
-					    	}  
-						}
-	                
-	            notePtr->ExecuteLD(*stringHolder);
-                }           
-                
-            CleanupStack::PopAndDestroy(stringHolder);
+            notePtr->ExecuteLD(stringHolder);        
+            CleanupStack::PopAndDestroy(&stringHolder);
             }
             
             TRAP_IGNORE(LaunchSettingViewL();)
@@ -1330,13 +1297,17 @@ void CBTUIPairedDevicesView::ConnectCompleteL(TInt aError,const TBTDevice& aDevi
 
         case KErrNotSupported:
             {
-            TRACE_INFO(_L("error = KErrNotSupported"))			
-			
+            TRACE_INFO(_L("error = KErrNotSupported"))
+            
+            RBuf stringHolder;
+            CleanupClosePushL( stringHolder );
+            
+            BluetoothUiUtil::LoadResourceAndSubstringL( stringHolder,
+                    R_BT_DEVICE_NOT_SUPPORTED, aDevice.iName, 0 );
 			
 			// create note
 			//
 			CAknInformationNote* note = new (ELeave) CAknInformationNote();
-            HBufC* stringHolder = StringLoader::LoadLC(R_BT_DEVICE_NOT_SUPPORTED,aDevice.iName);
             
 			if(iCoverDisplayEnabled)
 				{
@@ -1351,8 +1322,8 @@ void CBTUIPairedDevicesView::ConnectCompleteL(TInt aError,const TBTDevice& aDevi
 						covercl->BufStream().CommitL(); // no more data to send so commit buf
 			    	}  
 				}
-			note->ExecuteLD(*stringHolder);
-        	CleanupStack::PopAndDestroy(stringHolder);
+			note->ExecuteLD(stringHolder);
+        	CleanupStack::PopAndDestroy(&stringHolder);
             }
             break;
 
@@ -1613,14 +1584,17 @@ void CBTUIPairedDevicesView::DeviceSearchCompleteL(CBTDevice* aDevice,
         }
 	TRACE_FUNC_EXIT		
 	}
+
+
 // ------------------------------------------------------
 // CBTUIPairedDevicesView::ShowDisconnecNote
 // ------------------------------------------------------	
 void CBTUIPairedDevicesView::ShowDisconnecNoteL(TBTDevice *aDevice)
     {
-    HBufC* stringholder = StringLoader::LoadLC(
-      R_BT_DISCONNECT_FIRST_PROMPT, aDevice->iName);
-
+    RBuf stringholder;
+    CleanupClosePushL( stringholder );
+    BluetoothUiUtil::LoadResourceAndSubstringL( 
+            stringholder, R_BT_DISCONNECT_FIRST_PROMPT, aDevice->iName, 0 );
     // Launch a waiting confirmation note
     //
     CAknConfirmationNote* note = new (ELeave) CAknConfirmationNote(ETrue);
@@ -1639,9 +1613,9 @@ void CBTUIPairedDevicesView::ShowDisconnecNoteL(TBTDevice *aDevice)
         CleanupStack::Pop(note); 				
     	}
 
-    note->ExecuteLD(*stringholder);
+    note->ExecuteLD(stringholder);
 
-    CleanupStack::PopAndDestroy(stringholder); // stringholder    
+    CleanupStack::PopAndDestroy(&stringholder); // stringholder    
     
     }
 

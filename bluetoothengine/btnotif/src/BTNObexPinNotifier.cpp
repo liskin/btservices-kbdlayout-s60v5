@@ -84,17 +84,18 @@ void CBTObexPinNotifier::GetParamsL(const TDesC8& /* aBuffer */, TInt aReplySlot
         {
         User::Leave(KErrInUse);
         }
-    else if ( AutoLockOnL() )
+
+    iMessage = aMessage;
+    iReplySlot = aReplySlot;
+
+    if ( AutoLockOnL() )
         {
         // The phone is locked, access denied.
         //
         CompleteMessage(KErrCancel);
         return;
         }
-        
-    iMessage = aMessage;
-    iReplySlot = aReplySlot;
-    
+ 
     ShowNoteCompleteMessageL();
 
     FLOG(_L("[BTNOTIF]\t CBTObexPinNotifier::GetParamsL() completed"));

@@ -164,32 +164,5 @@ void RBTAccClient::GetInfoOfConnectedAcc(TPckg<TAccInfo>& aInfoPckg, TRequestSta
     SendReceive(EBTAccSrvGetInfoOfConnectedAcc, TIpcArgs(&aInfoPckg),  aStatus);
     }
 
-// ---------------------------------------------------------
-// AudioToPhone
-// Dos Related functionality only. 
-// ---------------------------------------------------------
-//
-TInt RBTAccClient::AudioToPhone()
-    {
-    TRACE_FUNC
-    return SendReceive(EBTAccSrvAudioToPhone);
-    }
-
-// ---------------------------------------------------------
-// AudioToAccessory
-// Dos Related functionality only.
-// ---------------------------------------------------------
-//
-void RBTAccClient::AudioToAccessory( TRequestStatus& aStatus )
-    {
-    TRACE_FUNC
-    SendReceive(EBTAccSrvAudioToAccessory, aStatus);
-    }
-
-void RBTAccClient::CancelAudioToAccessory()
-    {
-    SendReceive(EBTAccSrvCancelAudioToAccessory);
-    }
-
     
 // End of File

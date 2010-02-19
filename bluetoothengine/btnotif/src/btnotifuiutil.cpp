@@ -17,12 +17,12 @@
 
 #include <bautils.h>         // BAFL utils (for language file)
 #include "btnotifuiutil.h"
-#include "BTNotifDebug.h"    // Debugging macros
-#include <stringloader.h>    // Localisation stringloader
-#include <AknNoteWrappers.h> // Information note
+#include "btNotifDebug.h"    // Debugging macros
+#include <StringLoader.h>    // Localisation stringloader
+#include <aknnotewrappers.h> // Information note
 #include <aknmessagequerydialog.h> // for the blocking query
-#include <aknmediatorfacade.h>  // CoverUI 
-#include <CoreApplicationUIsDomainPSKeys.h>  // Backlight control
+#include <AknMediatorFacade.h>  // CoverUI 
+#include <coreapplicationuisdomainpskeys.h>  // Backlight control
 #include <AknNotiferAppServerApplication.h>  // Application Key enable/disable
 
 CBTNotifUIUtil* CBTNotifUIUtil::NewL( TBool aCoverDisplayEnabled )

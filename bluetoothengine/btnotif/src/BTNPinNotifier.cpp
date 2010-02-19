@@ -24,6 +24,7 @@
 #include <btotgpairpub.inl>
 #include <btextnotifiers.h>
 #include <BTNotif.rsg>       // Own resources
+#include <bluetoothuiutil.h>
 #include "btnotif.hrh"       // Own resource header
 #include "btnpinnotifier.h"  // Own class definition
 #include "btNotifDebug.h"    // Debugging macros
@@ -167,11 +168,12 @@ void CBTPinNotifier::HandleGetDeviceCompletedL(const CBTDevice* aDev)
  	FOREVER
 	 	{
 	    TBuf<KBTPassKeyMaxLength> tempResultBuffer;
-	    
-	    HBufC* prompt = GenerateQueryPromoptLC(); // prompt still in stack.
-        TInt keypress = iNotifUiUtil->ShowTextInputQueryL(tempResultBuffer, *prompt, R_BT_ENTER_PASSKEY_QUERY, 
+	    RBuf prompt;
+	    prompt.CleanupClosePushL();
+	    GenerateQueryPromptL( prompt );
+        TInt keypress = iNotifUiUtil->ShowTextInputQueryL(tempResultBuffer, prompt, R_BT_ENTER_PASSKEY_QUERY, 
                 ECmdShowBtOpenCoverNote, CAknQueryDialog::EConfirmationTone );
-        CleanupStack::PopAndDestroy( prompt );
+        CleanupStack::PopAndDestroy( &prompt );
 
         if( keypress ) // OK pressed
         	{
@@ -248,35 +250,32 @@ TBool CBTPinNotifier::CheckAndSetAutomatedPairing()
     }
 
 // ----------------------------------------------------------
-// CBTPinNotifier::GenerateQueryPromoptLC
+// CBTPinNotifier::GenerateQueryPromptL
 // ---------------------------------------------------------- 
-HBufC* CBTPinNotifier::GenerateQueryPromoptLC()
+void CBTPinNotifier::GenerateQueryPromptL( RBuf& aRBuf )
     {
-    FLOG(_L("[BTNOTIF]\t CBTPinNotifier::GenerateQueryPromoptLC() >>"));
-    HBufC* prompt = NULL;
-
+    FLOG(_L("[BTNOTIF]\t CBTPinNotifier::GenerateQueryPromptLC() >>"));
     TBTDeviceName devName;
-    BtNotifNameUtils::GetDeviceDisplayName( devName, iDevice );
+    BtNotifNameUtils::GetDeviceDisplayName( devName, iDevice ); 
     if (iPasskeyLength > 0)  //Minimum length passkey is defined
         {
-        CDesCArray* stringArray = new ( ELeave ) CDesCArrayFlat( 1 );
-        CleanupStack::PushL( stringArray );
-        CArrayFix<TInt>* indexArray = new(ELeave) CArrayFixFlat<TInt>(1);
-        CleanupStack::PushL( indexArray ); 
+        BluetoothUiUtil::LoadResourceAndSubstringL( 
+                aRBuf, R_BT_MIN_PASSKEY_PROMPT, devName, 1 );
 
-        stringArray->AppendL( BTDeviceNameConverter::ToUnicodeL(iDevice->DeviceName()) );   
-        indexArray->AppendL( iPasskeyLength);   
-        prompt = StringLoader::LoadL( R_BT_MIN_PASSKEY_PROMPT, *stringArray, *indexArray );
-
-        CleanupStack::PopAndDestroy( indexArray );
-        CleanupStack::PopAndDestroy( stringArray );
-        CleanupStack::PushL( prompt );
+        RBuf tmpBuf;
+        tmpBuf.CleanupClosePushL();
+        tmpBuf.Swap( aRBuf );
+        aRBuf.ReAllocL( aRBuf.MaxLength() + sizeof(TUint));
+        aRBuf.Zero();
+        // Passkey length should be localized, hope StringLoader can make it:
+        StringLoader::Format( aRBuf, tmpBuf, 0, iPasskeyLength );
+        CleanupStack::PopAndDestroy( &tmpBuf );
         }
     else
         {
-        prompt = StringLoader::LoadLC( R_BT_PASSKEY_PROMPT, devName );
+        BluetoothUiUtil::LoadResourceAndSubstringL( 
+                aRBuf, R_BT_PASSKEY_PROMPT, devName, 0 );
         }
-    FLOG(_L("[BTNOTIF]\t CBTPinNotifier::GenerateQueryPromoptLC() <<"));
-    return prompt;
+    FLOG(_L("[BTNOTIF]\t CBTPinNotifier::GenerateQueryPromptLC() <<"));
     }
 // End of File

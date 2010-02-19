@@ -49,7 +49,7 @@ public:  // Constructors and destructor
     
     void StartShutdownTimerIfNoSessions();
     
-    void ClientOpened(CBTAccSession& aSession);
+    void ClientOpenedL(CBTAccSession& aSession);
         
     void ClientClosed(CBTAccSession& aSession);
         

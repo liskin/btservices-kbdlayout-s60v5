@@ -93,34 +93,6 @@ public:
     */
     void GetInfoOfConnectedAcc(TPckg<TAccInfo>& aInfoPckg, TRequestStatus& aStatus ); 
     
-
-    /**
-    * Transfer audio to phone
-    * @param    None
-    * @return   TInt indicating the success of call.      
-    */
-    TInt AudioToPhone();
-
-    /**
-    * Routes the audio paths from the phone to the accessory from which they
-    * have been earlier on moved to the phone with the audio to phone 
-    * operation. In practice also reconnects to the accessory.
-    * @param aStatus            When the request completes contains the 
-    *                           success status of the operation.
-    * @return                   None.
-    */
-    void AudioToAccessory( TRequestStatus& aStatus );
-
-    /**
-    * Cancels the audio to accessory operation.
-    * Note that if this request is made after the point when it is not 
-    * possible to cancel the actual operation any more, the audio paths 
-    * might still be routed to the accessory again.
-    * @param                    TRequestStatus status to be cancelled.
-    * @return                   None.
-    */
-    void CancelAudioToAccessory();
-    
 public: // Functions from base classes
 
     /**

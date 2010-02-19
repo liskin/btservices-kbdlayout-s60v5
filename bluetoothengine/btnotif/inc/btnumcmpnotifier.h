@@ -75,10 +75,9 @@ NONSHARABLE_CLASS(CBTNumCmpNotifier): public CBTNPairNotifierBase
         
         /**
         * From CBTNPairNotifierBase
-        * @param None.
-        * @return None.
+        * @param aRBuf the descriptor to which the prompt will be loaded.
         */
-        HBufC* GenerateQueryPromoptLC();
+        void GenerateQueryPromptL( RBuf& aRBuf );
 
     private:
 

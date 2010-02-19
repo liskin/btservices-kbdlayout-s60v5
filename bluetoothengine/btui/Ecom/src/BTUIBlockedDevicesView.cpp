@@ -36,7 +36,9 @@
 
 #include <gstabhelper.h>
 #include <btui.mbg>						// Tab icon for General Setting
+#include <bluetoothuiutil.h>
 #include "BTUIMainView.h" 				// base View.
+
 // ---------------------------------------------------------
 // CBTUIBlockedDevicesView::ConstructL
 // Symbian 2nd phase constructor can leave.
@@ -177,12 +179,16 @@ void CBTUIBlockedDevicesView::HandleCommandL(TInt aCommand)
         	TBTDevice device;
             device.iIndex = bItemIndex;
         	iModel->GetDevice(device);
-        	        	
+        	
+        	RBuf s;
+        	CleanupClosePushL( s );
+        	BluetoothUiUtil::LoadResourceAndSubstringL(
+        	        s, R_BT_WARN_ERASE_BLOCKED, device.iName, 0);
+        	
         	CAknQueryDialog* dialog = CAknQueryDialog::NewL(CAknQueryDialog::EConfirmationTone);
-        	HBufC* s = StringLoader::LoadLC(R_BT_WARN_ERASE_BLOCKED,device.iName);
-			TInt keypress = dialog->ExecuteLD(R_BT_GENERIC_QUERY, *s);
+			TInt keypress = dialog->ExecuteLD(R_BT_GENERIC_QUERY, s);
 
-			CleanupStack::PopAndDestroy(s);
+			CleanupStack::PopAndDestroy(&s);
 
 			if(keypress)  // User has accepted the dialog
 			    {
