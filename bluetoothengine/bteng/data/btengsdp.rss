@@ -879,7 +879,7 @@ RESOURCE SERVICE_RECORD r_service_record_hs_gw
                             elements = 
                                 {
                                 ELEMENT_UUID { uuid = SERVICE_CLASS_ID_HEADSET; },
-                                ELEMENT_WORD { value = 0x0100; }
+                                ELEMENT_WORD { value = 0x0102; }
                                 };
                             }
                         };

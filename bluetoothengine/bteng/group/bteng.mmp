@@ -35,11 +35,11 @@ SOURCE                  btengsrvpluginmgr.cpp
 SOURCE                  btengsrvbbconnectionmgr.cpp
 SOURCE                  btengsdpdbhandler.cpp
 SOURCE                  btengsrvkeywatcher.cpp
-SOURCE                  btengactive.cpp
 SOURCE                  btengpairman.cpp
 SOURCE                  btengpairbase.cpp
 SOURCE                  btengincpair.cpp 
 SOURCE                  btengotgpair.cpp
+SOURCE                  btengsrvsettingsmgr.cpp
 START RESOURCE          ../data/btengsdp.rss
 HEADER
 TARGETPATH              RESOURCE_FILES_DIR
@@ -63,6 +63,10 @@ LIBRARY                 efsrv.lib
 LIBRARY                 featmgr.lib
 LIBRARY                 aknnotify.lib
 LIBRARY                 btfeatures.lib
+
+#ifndef SETLOCALNAME
+LIBRARY                 btengsettings.lib
+#endif
 
 LIBRARY                 btpowercontrol.lib
 #ifndef __WINS__

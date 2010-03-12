@@ -82,8 +82,6 @@ NONSHARABLE_CLASS(CBtmcPhoneStatus) : public CBase, public MBtmcActiveObserver
         
         TInt GetRssiStrength();
         
-        TInt GetVolumeStatus();
-        
         TInt GetBatteryCharge();
         
         void SetRecognitionInitiator(TBTMonoVoiceRecognitionInitiator aInitiator);

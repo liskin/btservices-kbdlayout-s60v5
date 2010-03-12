@@ -30,7 +30,6 @@ SOURCEPATH              ../btengsettings/src
 SOURCE                  btengsettings.cpp
 SOURCE                  btengsettingsnotify.cpp
 SOURCEPATH              ../src
-SOURCE                  btengactive.cpp
 SOURCE                  btengclient.cpp
 
 USERINCLUDE             ../inc

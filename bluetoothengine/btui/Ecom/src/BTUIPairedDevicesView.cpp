@@ -289,6 +289,11 @@ void CBTUIPairedDevicesView::HandleCommandL(TInt aCommand)
             TBTDevice device;
             device.iIndex = iContainer->CurrentItemIndex();
             iModel->GetDevice(device);
+            if ( device.iStatus & EStatusBtuiConnected )
+                {
+                // If device is already connected, we do nothing here. 
+                break;
+                }
             device.iOperation = EOpConnect;
             ConnectL( device, ETrue );
 	        break;            	
@@ -1069,6 +1074,13 @@ void CBTUIPairedDevicesView::DisconnectL()
     TBTDevice device;
     device.iIndex = index;
     iModel->GetDevice(device);
+    
+    if ( !( device.iStatus & EStatusBtuiConnected) )
+        {
+        // If device is already disconnected, return immediately.
+        return;
+        }
+    
 	iDisconnectQueryDevice = device;//remember device related with query dialog
 
     // Create confirmation query

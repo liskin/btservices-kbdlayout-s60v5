@@ -122,7 +122,6 @@ void CBtmcOperator::RunL()
 void CBtmcOperator::DoCancel()
     {
     TRACE_FUNC
-	iStore.CancelAsyncRequest(EMobilePhoneStoreRead);
     }
 
 // -------------------------------------------------------------------------------

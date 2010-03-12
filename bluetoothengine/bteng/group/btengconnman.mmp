@@ -31,7 +31,6 @@ SOURCE                  btengconnman.cpp
 SOURCE                  btengconnhandler.cpp
 SOURCEPATH              ../src
 SOURCE                  btengclient.cpp
-SOURCE                  btengactive.cpp
 
 USERINCLUDE             ../inc
 USERINCLUDE             ../btengconnman/inc

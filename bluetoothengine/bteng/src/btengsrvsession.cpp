@@ -22,6 +22,7 @@
 #include "btengserver.h"
 #include "btengsrvbbconnectionmgr.h"
 #include "btengpairman.h"
+#include "btengsrvsettingsmgr.h"
 #include "btengclientserver.h"
 #include "debug.h"
 
@@ -79,14 +80,11 @@ CBTEngSrvSession::~CBTEngSrvSession()
         {
         iNotifyConnMessage.Complete( KErrCancel );
         }
-    CancelPairRequest();
     if( Server() )
         {
-        Server()->RemoveSession( iAutoSwitchOff );
+        Server()->RemoveSession(this, iAutoSwitchOff );
         }
-    
     delete iConnectionEventQueue;
-    
     TRACE_FUNC_EXIT
     }
 
@@ -150,20 +148,6 @@ void CBTEngSrvSession::NotifyConnectionEvent(const TBTDevAddr aAddr,
     }
 
 // ---------------------------------------------------------------------------
-// Comfirm the caller if pairing request is completed in this invoke. 
-// ---------------------------------------------------------------------------
-//
-TInt CBTEngSrvSession::CompletePairRequest( TInt aResult )
-    {
-    if ( !iPairMessage.IsNull())
-        {
-        iPairMessage.Complete( aResult );
-        return KErrNone;
-        }
-    return KErrNotFound;
-    }
-
-// ---------------------------------------------------------------------------
 // From class CSession2
 // Handles servicing of a client request that has been passed to the server.
 // ---------------------------------------------------------------------------
@@ -171,11 +155,11 @@ TInt CBTEngSrvSession::CompletePairRequest( TInt aResult )
 void CBTEngSrvSession::ServiceL( const RMessage2& aMessage )
     {
     TRAPD( err, DispatchMessageL( aMessage ) );
-
     if( !aMessage.IsNull() &&
         ( err || 
           ( aMessage.Function() != EBTEngNotifyConnectionEvents && 
-            aMessage.Function() != EBTEngPairDevice ) ) )
+            aMessage.Function() != EBTEngPairDevice &&
+            aMessage.Function() != EBTEngSetPowerState ) ) )
         {
             // Return the error code to the client.
         aMessage.Complete( err );
@@ -206,15 +190,13 @@ void CBTEngSrvSession::DispatchMessageL( const RMessage2& aMessage )
         {
         case EBTEngSetPowerState:
             {
-            iAutoSwitchOff = (TBool) aMessage.Int1();
-            Server()->SetPowerStateL( (TBTPowerStateValue) aMessage.Int0(), 
-                                       iAutoSwitchOff );
+            Server()->SetPowerStateL( aMessage );
             }
             break;
         case EBTEngSetVisibilityMode:
             {
-            Server()->SetVisibilityModeL( (TBTVisibilityMode) aMessage.Int0(),
-                                           aMessage.Int1() );
+            Server()->SettingsManager()->SetVisibilityModeL(
+                        (TBTVisibilityMode) aMessage.Int0(),aMessage.Int1() );
             }
             break;
         case EBTEngNotifyConnectionEvents:
@@ -229,7 +211,6 @@ void CBTEngSrvSession::DispatchMessageL( const RMessage2& aMessage )
                 {
                 User::Leave(KErrInUse);
                 }
-            
             //save the client message
             iNotifyConnMessage = RMessage2(aMessage);
             
@@ -261,17 +242,9 @@ void CBTEngSrvSession::DispatchMessageL( const RMessage2& aMessage )
         case EBTEngIsDeviceConnected:
         case EBTEngGetConnectedAddresses:
             {
-            TBTPowerStateValue pwr = EBTPowerOff;
-            Server()->GetHwPowerState( pwr );
-            if( pwr )
-                {
-                    // Simply forward it to the plug-in manager
-                Server()->DispatchPluginMessageL( aMessage );
-                }
-            else
-                {
-                User::Leave( KErrNotReady );
-                }
+            CheckPowerOnL();
+            // Simply forward it to the plug-in manager
+            Server()->DispatchPluginMessageL( aMessage );
             }
             break;    
         case EBTEngIsDeviceConnectable:
@@ -282,38 +255,31 @@ void CBTEngSrvSession::DispatchMessageL( const RMessage2& aMessage )
         case EBTEngPrepareDiscovery:
             {
             aMessage.Complete( KErrNone );  // Client does not have to wait.
-            Server()->iBBConnMgr->ManageTopology( ETrue );
+            Server()->BasebandConnectionManager()->ManageTopology( ETrue );
             }
             break;
         case EBTEngSetPairingObserver:
+            {
+            CheckPowerOnL();
+            // Simply forward it to the pairing manager
+            Server()->PairManager()->ProcessCommandL( aMessage );
+            break;
+            }
         case EBTEngPairDevice:
             {
-            TBTPowerStateValue pwr = EBTPowerOff;
-            (void) Server()->GetHwPowerState( pwr );
-            if( pwr )
-                {
-                // Simply forward it to the pairing manager
-                Server()->PairManager().ProcessCommandL( aMessage );
-                if ( opcode == EBTEngPairDevice )
-                    {
-                    iPairMessage = RMessage2( aMessage );
-                    }
-                }
-            else
-                {
-                User::Leave( KErrNotReady );
-                }
+            CheckPowerOnL();
+            // Simply forward it to the pairing manager
+            Server()->PairManager()->ProcessCommandL( aMessage );
             break;
             }
         case EBTEngCancelPairDevice:
             {
-            CancelPairRequest();
+            Server()->PairManager()->ProcessCommandL( aMessage );
             break;
             }
         default:
             {
-            TRACE_INFO( ( _L( "[BTENG]\t DispatchMessageL: bad request (%d)" ), 
-                                aMessage.Function() ) )
+            TRACE_INFO( ( _L( "[BTENG]\t DispatchMessageL: bad request (%d)" ), aMessage.Function() ) )
             User::Leave( KErrArgument );
             }
             break;
@@ -322,14 +288,15 @@ void CBTEngSrvSession::DispatchMessageL( const RMessage2& aMessage )
     }
 
 // ---------------------------------------------------------------------------
-// Only the originator of pairing can cancel the pairing request.
+// Check if power is on, and leave if it is not.
 // ---------------------------------------------------------------------------
 //
-void CBTEngSrvSession::CancelPairRequest()
+void CBTEngSrvSession::CheckPowerOnL()
     {
-    if ( !iPairMessage.IsNull() )
+    TBTPowerState power = EBTOff;
+    (void) Server()->SettingsManager()->GetHwPowerState( power );
+    if ( power == EBTOff )
         {
-        Server()->PairManager().CancelCommand( iPairMessage.Function() );
-        iPairMessage.Complete( KErrCancel );
+        User::Leave( KErrNotReady );
         }
     }

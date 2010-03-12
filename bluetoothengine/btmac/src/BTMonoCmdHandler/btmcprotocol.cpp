@@ -389,7 +389,6 @@ void CBtmcProtocol::ConstructL(TBtmcProfileId aProfile, const TDesC8& aBTDevAddr
         {
         iCallStatus->ReportCallStatusL();
         }
-    iVolumeSyncFromAccessory = EFalse;
     TRACE_FUNC_EXIT
     }
 
@@ -938,12 +937,15 @@ void CBtmcProtocol::HandleWriteCommandL(const CATCommand& aCmd)
             LEAVE_IF_ERROR(aCmd.Parameter(0, param))
             TInt value;
             LEAVE_IF_ERROR(param.Int(value))
-            if (!iPhoneStatus)
+            // In HFP, AT+VGS is not valid before service level connection
+            // has established.
+            // In HSP, AT+VGS is allowed at any time.
+            if (!iPhoneStatus && iProtocolStatus->iProfile == EBtmcHSP )
                 {
                 iPhoneStatus = CBtmcPhoneStatus::NewL(*this, iPhone, iProtocolStatus->iProfile);
                 iPhoneStatus->SetVolumeControlFeatureL(ETrue);
                 }
-            if(iVolumeSyncFromAccessory)
+            if(iPhoneStatus)
                 {
                 iPhoneStatus->SetSpeakerVolumeL(value);
                 }
@@ -1025,36 +1027,8 @@ void CBtmcProtocol::HandleWriteCommandL(const CATCommand& aCmd)
     CleanupStack::Pop(ok);
     SendResponseL(resarr);
     CleanupStack::PopAndDestroy(&resarr);
-    
-    // solution to volume sync - phone will always send its volume status back to accessory
-    
-    if( (aCmd.Id() == EATVGS) && (iVolumeSyncFromAccessory == EFalse) )
-    	{
-    	iVolumeSyncFromAccessory = ETrue;
-    	TInt vol(KErrNotFound);
-
-        if(iPhoneStatus)
-            {
-            vol = iPhoneStatus->GetVolumeStatus();
-            }
-
-    	if(vol > KErrNotFound) // volume exists
-    		{
-        TATParam param = TATParam();
-        LEAVE_IF_ERROR(aCmd.Parameter(0, param))
-        TInt value;
-        LEAVE_IF_ERROR(param.Int(value))
-        if(value != vol)
-    			{
-    			CATResult* event = CATResult::NewLC(EATVGS, EATUnsolicitedResult, vol);
-    			SendUnsoltResultL(*event);
-    			CleanupStack::PopAndDestroy(event);
-    			}
-    		}
-    	}
     CmdHandlingCompletedL();    
     }
-
 
 // -----------------------------------------------------------------------------
 // CBtmcProtocol::HandleActionCommandL

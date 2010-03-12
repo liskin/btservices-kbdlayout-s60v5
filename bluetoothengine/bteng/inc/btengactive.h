@@ -86,10 +86,12 @@ public:
      * @since S60 v3.2
      * @param aObserver Pointer to callback interface that receives notification
      *                  that the request has been completed.
+     * @param aId Identifier for the CBTEngActive instance.
+     * @param aPriority The priority of the active object.
      * @return Pointer to the constructed CBTEngActive object.
      */
-    static CBTEngActive* NewL( MBTEngActiveObserver& aObserver, 
-                                TInt aId, TInt aPriority );
+    static CBTEngActive* NewL( MBTEngActiveObserver& aObserver, TInt aId,
+                                TInt aPriority = CActive::EPriorityStandard );
 
     /**
      * Destructor

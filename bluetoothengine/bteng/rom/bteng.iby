@@ -29,9 +29,8 @@ file=ABI_DIR\BUILD_DIR\btengdevman.dll            SHARED_LIB_DIR\btengdevman.dll
 file=ABI_DIR\BUILD_DIR\btengdiscovery.dll         SHARED_LIB_DIR\btengdiscovery.dll
 file=ABI_DIR\BUILD_DIR\btfeatures.dll             SHARED_LIB_DIR\btfeatures.dll
 file=ABI_DIR\BUILD_DIR\btengsettings.dll          SHARED_LIB_DIR\btengsettings.dll
-data=ZPRIVATE\10005950\backup_registration.xml	private\10005950\backup_registration.xml
-data=ZPRIVATE\10003A3F\APPS\bttoggle_reg.rsc 	Private\10003a3f\apps\bttoggle_reg.rsc
-
+data=ZPRIVATE\10005950\backup_registration.xml		private\10005950\backup_registration.xml
+data=ZPRIVATE\10003A3F\APPS\bttoggle_reg.rsc 			Private\10003a3f\apps\bttoggle_reg.rsc
 data=DATAZ_\RESOURCE_FILES_DIR\btengsdp.rsc       RESOURCE_FILES_DIR\btengsdp.rsc
 data=DATAZ_\RESOURCE_FILES_DIR\btrfs.txt       RESOURCE_FILES_DIR\btrfs.txt
 

@@ -134,6 +134,10 @@ CBTEngPairMan::~CBTEngPairMan()
         iPairingServ->Close();
         delete iPairingServ;
         }
+    if ( !iMessage.IsNull() )
+        {
+        iMessage.Complete( KErrCancel );
+        }
     TRACE_FUNC_EXIT
     }
 
@@ -156,14 +160,24 @@ void CBTEngPairMan::ProcessCommandL( const RMessage2& aMessage )
             }
         case EBTEngPairDevice:
             {
+            if ( !iMessage.IsNull() )
+                {
+                User::Leave( KErrServerBusy );
+                }
             TBTDevAddrPckgBuf addrPkg;
             aMessage.ReadL( KBTEngAddrSlot, addrPkg );
             PairDeviceL( addrPkg(), aMessage.Int1() );
+            iMessage = RMessage2( aMessage );
             break;
             }
         case EBTEngCancelPairDevice:
             {
-            CancelCommand( opcode );
+            // Only the client who requested pairing can cancel it:
+            if ( !iMessage.IsNull() && aMessage.Session() == iMessage.Session() )
+                {
+                iPairer->CancelOutgoingPair();
+                iMessage.Complete( KErrCancel );
+                }
             break;
             }
         default:
@@ -174,27 +188,6 @@ void CBTEngPairMan::ProcessCommandL( const RMessage2& aMessage )
             }
         }
     TRACE_FUNC_EXIT    
-    }
-
-// ---------------------------------------------------------------------------
-// Cancels outgoing pairing requests
-// ---------------------------------------------------------------------------
-//
-void CBTEngPairMan::CancelCommand( TInt aOpCode )
-    {
-    switch( aOpCode )
-        {
-        case EBTEngPairDevice:
-            {
-            TRACE_FUNC_ENTRY
-            if ( iPairer )
-                {
-                iPairer->CancelOutgoingPair();
-                }
-            TRACE_FUNC_EXIT
-            break;
-            }
-        }
     }
 
 // ---------------------------------------------------------------------------
@@ -228,7 +221,7 @@ RBluetoothPairingServer* CBTEngPairMan::PairingServer()
 //
 RSocketServ& CBTEngPairMan::SocketServ()
     {
-    return iServer.SocketServ();
+    return iServer.SocketServer();
     }
 
 // ---------------------------------------------------------------------------
@@ -237,7 +230,7 @@ RSocketServ& CBTEngPairMan::SocketServ()
 //
 RBTRegServ& CBTEngPairMan::BTRegServ()
     {
-    return iServer.BTRegServ();
+    return iServer.RegistrServer();
     }
 
 // ---------------------------------------------------------------------------
@@ -265,13 +258,23 @@ void CBTEngPairMan::OutgoingPairCompleted( TInt aErr )
         aErr = KErrNone;
         }
     // we must complete client's pairing request:
-    iServer.iSessionIter.SetToLast();
-    CBTEngSrvSession* session = (CBTEngSrvSession*) iServer.iSessionIter--;
-    TInt ret( KErrNotFound );
-    while( session && ret )
+    if ( !iMessage.IsNull()  )
         {
-        ret = session->CompletePairRequest( aErr );
-        session = (CBTEngSrvSession*) iServer.iSessionIter--;
+        iMessage.Complete( aErr );
+        }
+    TRACE_FUNC_EXIT
+    }
+
+// ---------------------------------------------------------------------------
+// A session will be ended, completes the pending request for this session.
+// ---------------------------------------------------------------------------
+//
+void CBTEngPairMan::SessionClosed( CSession2* aSession )
+    {
+    TRACE_FUNC_ARG( ( _L( " session %x"), aSession ) )
+    if ( !iMessage.IsNull() && iMessage.Session() == aSession )
+        {
+        iMessage.Complete( KErrCancel );
         }
     TRACE_FUNC_EXIT
     }

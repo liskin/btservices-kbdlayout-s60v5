@@ -21,7 +21,6 @@
 #include <e32svr.h>
 #include <StifParser.h>
 #include <Stiftestinterface.h>
-#include <btmsgtypeuid.h>
 #include <UiklafInternalCRKeys.h>
 #include <UikonInternalPSKeys.h>
 #include <obexutils.rsg>
@@ -29,6 +28,9 @@
 #include "testlogger.h"
 #include "ObexServAPItest.h"
 
+
+// Defined to coincide with the definition in btmsgtypeuid.h 
+const TUid KUidMsgTypeBt                 = {0x10009ED5};
 
 
 // ============================ MEMBER FUNCTIONS ===============================

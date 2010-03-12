@@ -73,12 +73,6 @@ public:
                                  TBTEngConnectionStatus aConnStatus, 
                                  RBTDevAddrArray* aArray, TInt aErr );
 
-    /**
-     * Completes client's pairing request.
-     * @param aResult the resultof pairing the client will receive.
-     */
-    TInt CompletePairRequest( TInt aResult );
-    
 private: // from base class CSession2
 
     /**
@@ -131,22 +125,22 @@ private:
     void DispatchMessageL( const RMessage2& aMessage );
 
     /**
-     * Cancels outstanding pairing request.
+     * Cancels outstanding request.
      */
-    void CancelPairRequest();
-    
+    void CancelRequest();
+
+    /**
+     * Checks if power is on, and leaves with error KErrNotReady if not.
+     */
+    void CheckPowerOnL();
+
 private: // data
+
     /**
      * Client-server message containing the thread handle of the client.
      * For connection notifications.
      */
     RMessage2 iNotifyConnMessage;
-
-    /**
-     * For connection notifications.
-     * For outgoing pairing request.
-     */
-    RMessage2 iPairMessage;
     
     /**
      * Flag indicating if this client requested BT to be switched on temporarily.

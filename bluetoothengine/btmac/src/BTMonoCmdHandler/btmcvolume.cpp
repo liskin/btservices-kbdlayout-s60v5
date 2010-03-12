@@ -60,11 +60,13 @@ CBtmcVolume::~CBtmcVolume()
 void CBtmcVolume::SetSpeakerVolumeL(TInt aHfVol)
     {
     TRACE_FUNC
-    TRACE_INFO((_L("phone vol %d, acc vol %d"), iPhnSpkrVol, iAccSpkrVol))
+    TRACE_INFO((_L("current vols phone %d, acc %d"), iPhnSpkrVol, iAccSpkrVol))
+    // Store the new volume setting of headset regardless of 
+    // whether volume control is active or not currently
     iAccSpkrVol = HfToPhoneVolScale(aHfVol);
-    if (iVolCtrlActivated)
+    TRACE_INFO((_L("new acc vol %d"), iAccSpkrVol))
+    if ( IsActiveRemoteVolumeControl() )
         {
-        TRACE_INFO((_L("to new vol %d"), iAccSpkrVol))
         TInt vol = GetNewPhoneVol();
         if (vol != KNoAudioStreaming)
             {
@@ -72,10 +74,6 @@ void CBtmcVolume::SetSpeakerVolumeL(TInt aHfVol)
             iPhnSpkrVol = vol;
             DoSetSpeakerVolL( prevPhVol );
             }
-        }
-    else
-        {
-        TRACE_INFO((_L("volume control inactive!")))
         }
     }
 
@@ -86,13 +84,11 @@ void CBtmcVolume::SetMicrophoneVolumeL(TInt /*aHfVol*/)
 
 void CBtmcVolume::ActivateRemoteVolumeControl()
     {
-    if (!iVolCtrlActivated)
+    TRACE_FUNC
+    if (!IsActiveRemoteVolumeControl() )
         {
-        TRACE_FUNC
 		iVolLevelProperty.Subscribe(iActive->iStatus);     
         iActive->GoActive();
-
-        iVolCtrlActivated = ETrue;
         TInt vol = GetNewPhoneVol();
         TRACE_INFO((_L("current phone vol %d, acc vol %d"), vol, iAccSpkrVol))
         if (vol != KNoAudioStreaming)
@@ -109,11 +105,7 @@ void CBtmcVolume::ActivateRemoteVolumeControl()
 
 void CBtmcVolume::DeActivateRemoteVolumeControl()
     {
-    if (iVolCtrlActivated)
-        {
-        iVolCtrlActivated = EFalse;
-        iActive->Cancel();
-        }
+    iActive->Cancel();
     TRACE_FUNC
     }
 
@@ -242,21 +234,15 @@ void CBtmcVolume::DoSetSpeakerVolL( TInt aPrevPhVol )
             volClick = (iAccSpkrVol > iPhnSpkrVol) ? KPSVolumeUpClicked : KPSVolumeDownClicked;
             }        
         }
-     
+    TInt err( KErrNotFound );
     if( volClick )
         {
-        iAction = ESpeakerVolSet;
-        TInt err = iVolKeyEventProperty.Set( volClick );
-        if( err )
-            {
-            iAction = ESpeakerVolSubscribe;
-            TRACE_ERROR((_L("Set KMediaKeysVolumeKeyEvent err %d"), err));
-            }
+        err = iVolKeyEventProperty.Set( volClick );
+        TRACE_INFO((_L("Set KMediaKeysVolumeKeyEvent click %d err %d"), volClick, err));
         }
-    else
-        {        
-        iAction = ESpeakerVolSubscribe;
-        }
+    
+    iAction = err ? ESpeakerVolSubscribe : ESpeakerVolSet;
+
     TRACE_FUNC_EXIT 
     }
 
@@ -312,5 +298,10 @@ TInt CBtmcVolume::GetVolume()
 	    return PhoneToHfVolScale(iPhnSpkrVol);
 	return iPhnSpkrVol;
 	}
+
+TBool CBtmcVolume::IsActiveRemoteVolumeControl()
+    {
+    return iActive->IsActive();
+    }
 
 // End of file

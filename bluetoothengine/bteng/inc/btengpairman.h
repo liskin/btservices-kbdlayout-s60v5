@@ -61,12 +61,6 @@ public:
     void ProcessCommandL( const RMessage2& aMessage );
     
     /**
-     * Cancels an outstanding command.
-     * @param aOpcode the identifier of the command to be cancelled.
-     */
-    void CancelCommand( TInt aOpCode );
-    
-    /**
      * Handle a change in BTRegistry remote device table.
      *
      * @since S60 v5.1
@@ -101,6 +95,14 @@ public:
      * 
      */
     void OutgoingPairCompleted( TInt aErr );
+    
+    /**
+     * Be informed that a session will be closed.
+     *
+     * @since Symbian^3
+     * @param aSession the session to be cloased.
+     */
+    void SessionClosed(CSession2* aSession );
     
     /**
      * Unpair a device via registry
@@ -313,6 +315,11 @@ private:
      * Own.
      */
     CBTEngPairBase* iPairer;
+    
+    /**
+     * Client-server message for power change requests.
+     */
+    RMessage2 iMessage;
     };
 
 #endif /*BTENGPAIRMANAGER_H_*/

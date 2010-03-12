@@ -59,6 +59,7 @@ CBTInqNotifier::~CBTInqNotifier()
     {
     FLOG(_L("[BTNOTIF]\t CBTInqNotifier::~CBTInqNotifier()"));
     delete iUi;
+    iUi = NULL;
     FLOG(_L("[BTNOTIF]\t CBTInqNotifier::~CBTInqNotifier() completed"));
     }
 
@@ -84,7 +85,7 @@ void CBTInqNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, const RM
     {
     FLOG(_L("[BTNOTIF]\t CBTInqNotifier::GetParamsL()"));
 
-    if( iUi || iReplySlot!=NULL || !iMessage.IsNull() )
+    if( !iMessage.IsNull() )
         {
         aMessage.Complete(KErrInUse);
         return;
@@ -124,6 +125,8 @@ void CBTInqNotifier::Cancel()
     if( iUi )
         {
         iUi->Cancel();
+        delete iUi;
+        iUi = NULL;
         }
     CBTNotifierBase::Cancel();
     FLOG(_L("[BTNOTIF]\t CBTInqNotifier::Cancel() completed"));

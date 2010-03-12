@@ -620,6 +620,14 @@ void CBtmcCallStatus::ReportRingAndClipL(TBool aColp)
 void CBtmcCallStatus::ReportCallEventL(TInt aPrevStatus, TInt aNewStatus, TBool /*aOutgoing*/)
     {
     TRACE_FUNC_ENTRY
+    if ( iProtocol.ProtocolStatus().iProfile == EBtmcHSP)
+        {
+        // HSP 1.2 requires either RING indicator or in-band ringing
+        // tone, but not both.
+        TRACE_INFO((_L(" HSP connection, no call indicator")))  
+        return;
+        }
+    
     // CCWA
     if (iProtocol.ProtocolStatus().iCallWaitingNotif == EBTMonoATCallWaitingNotifEnabled && 
         (!(aPrevStatus & KCallRingingBit) && (aNewStatus & KCallRingingBit)) &&

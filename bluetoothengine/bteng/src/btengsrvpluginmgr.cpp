@@ -229,7 +229,7 @@ TBool CBTEngSrvPluginMgr::FilterByEnterpriseDisablementModeL(TUid aUid) const
 	{
 	TRACE_FUNC_ENTRY
 	TBool want = EFalse;
-	switch ( iServer->EnterpriseEnablementMode() )
+	switch ( BluetoothFeatures::EnterpriseEnablementL() )
 		{
 	case BluetoothFeatures::EDisabled:
 		// In Disabled mode all plugins are filtered out.
@@ -322,7 +322,7 @@ void CBTEngSrvPluginMgr::LoadBTSapPluginL()
     TRACE_FUNC_ENTRY
 
 	// SAP is supported in neither Data Profiles Disabled nor Disabled mode.
-    if ( iServer->EnterpriseEnablementMode() != BluetoothFeatures::EEnabled )
+    if ( BluetoothFeatures::EnterpriseEnablementL() != BluetoothFeatures::EEnabled )
         {
         TRACE_INFO( ( _L( "\tno we're not... Bluetooth is enterprise-IT-disabled" ) ) )
         User::Leave(KErrNotSupported);

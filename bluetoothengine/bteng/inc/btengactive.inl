@@ -16,6 +16,66 @@
 */
 
 
+// ======== MEMBER FUNCTIONS ========
+
+// ---------------------------------------------------------------------------
+// C++ default constructor
+// ---------------------------------------------------------------------------
+//
+inline CBTEngActive::CBTEngActive(  MBTEngActiveObserver& aObserver, TInt aId, 
+    TInt aPriority )
+:   CActive( aPriority ),
+    iRequestId( aId ),
+    iObserver( aObserver )
+    {
+    CActiveScheduler::Add( this );
+    }
+
+
+// ---------------------------------------------------------------------------
+// Symbian 2nd-phase constructor
+// ---------------------------------------------------------------------------
+//
+inline void CBTEngActive::ConstructL()
+    {
+    }
+
+
+// ---------------------------------------------------------------------------
+// NewLC
+// ---------------------------------------------------------------------------
+//
+inline CBTEngActive* CBTEngActive::NewL( MBTEngActiveObserver& aObserver, 
+    TInt aId, TInt aPriority )
+    {
+    CBTEngActive* self = new( ELeave ) CBTEngActive( aObserver, aId, aPriority );
+    CleanupStack::PushL( self );
+    self->ConstructL();
+    CleanupStack::Pop( self );
+    return self;
+    }
+
+
+// ---------------------------------------------------------------------------
+// Destructor
+// ---------------------------------------------------------------------------
+//
+inline CBTEngActive::~CBTEngActive()
+    {
+    Cancel();
+    }
+
+
+// ---------------------------------------------------------------------------
+// From class CActive.
+// Called by the active scheduler when the request has been cancelled.
+// ---------------------------------------------------------------------------
+//
+inline void CBTEngActive::DoCancel()
+    {
+    }
+
+
 
 // -----------------------------------------------------------------------------
 // Get the identifier of this instance.
@@ -64,4 +124,27 @@ inline void CBTEngActive::CancelRequest()
 inline TRequestStatus& CBTEngActive::RequestStatus()
     {
     return iStatus;
+    }
+
+
+// ---------------------------------------------------------------------------
+// From class CActive.
+// Called by the active scheduler when the request has been completed.
+// ---------------------------------------------------------------------------
+//
+inline void CBTEngActive::RunL()
+    {
+    iObserver.RequestCompletedL( this, iRequestId, iStatus.Int() );
+    }
+
+
+// ---------------------------------------------------------------------------
+// From class CActive.
+// Called by the active scheduler when an error in RunL has occurred.
+// ---------------------------------------------------------------------------
+//
+inline TInt CBTEngActive::RunError( TInt aError )
+    {
+    iObserver.HandleError( this, iRequestId, aError );
+    return KErrNone;
     }

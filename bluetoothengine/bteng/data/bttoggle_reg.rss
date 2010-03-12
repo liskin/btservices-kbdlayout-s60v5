@@ -24,7 +24,9 @@ UID3 0x2001FD3D
 
 RESOURCE APP_REGISTRATION_INFO
     {
-    app_file = "bttoggle";	
+    app_file = "bttoggle";
+    hidden = KAppIsHidden;
+    launch = KAppLaunchInForeground;
     }
 
 

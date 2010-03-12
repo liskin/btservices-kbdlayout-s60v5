@@ -88,6 +88,8 @@ NONSHARABLE_CLASS(CBtmcVolume) : public CBase, public MBtmcActiveObserver
 
         TInt GetNewPhoneVol();
 
+        TBool IsActiveRemoteVolumeControl();
+        
     private:
         enum TVolSyncAction
             {
@@ -109,8 +111,6 @@ NONSHARABLE_CLASS(CBtmcVolume) : public CBase, public MBtmcActiveObserver
 		TInt iMaxSpkrVol; // Maximum volume level of the phone
 		TInt iStep;
         TVolSyncAction iAction;
-    	
-    	TBool iVolCtrlActivated;
     };
 
 

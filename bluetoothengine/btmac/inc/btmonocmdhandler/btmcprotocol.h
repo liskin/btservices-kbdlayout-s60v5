@@ -164,7 +164,6 @@ NONSHARABLE_CLASS(CBtmcProtocol) : public CBase,
         TBool iHandleCmdPending;
         CDesC8ArrayFlat* iOutgoPacketQueue; // owned
         TInt iCredit; // How many commands are allowed to acc
-        TBool iVolumeSyncFromAccessory;
         TBool iAccessoryInitiated; // who initiated the connection
         RMobilePhone::TMobilePhoneIdentityV1 iIdentity; // holds IMEI etc
         RMobilePhone::TMobilePhoneSubscriberId iId; // holds id

@@ -26,6 +26,8 @@
 #include "btengsrvkeywatcher.h"
 #include "btengserver.h"
 #include "btengsrvpluginmgr.h"
+#include "btengsrvsettingsmgr.h"
+#include "btengpairman.h"
 #include "btengprivatepskeys.h"
 #include "btengprivatecrkeys.h"
 #include "debug.h"
@@ -302,7 +304,7 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
             aActive->GoActive();
             if( !aStatus && !iDutModeKey.Get( val ) )
                 {
-                iServer->SetDutMode( val );
+                iServer->SettingsManager()->SetDutMode( val );
                 }
             }
             break;
@@ -316,7 +318,7 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
             remoteLockVal = ERemoteLocked;
             if( !aStatus && !iPhoneLockKey.Get( val ) && val == remoteLockVal )
                 {
-                iServer->SetPowerStateL( EBTPowerOff, EFalse );
+                iServer->SetPowerStateL( EBTOff, EFalse );
                 }
 #endif  //RD_REMOTELOCK
             }
@@ -329,7 +331,7 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
             if( !aStatus && !iSystemStateKey.Get( val ) && 
                  val == ESwStateShuttingDown )
                 {
-                iServer->SetVisibilityModeL( EBTVisibilityModeNoScans , 0 );
+                iServer->SettingsManager()->SetVisibilityModeL( EBTVisibilityModeNoScans , 0 );
                 iServer->DisconnectAllL();   
                 }
             }
@@ -339,7 +341,7 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
             TRACE_INFO( ( _L( "PHY count key changed" ) ) )
             iPHYCountKey.Subscribe( aActive->RequestStatus() );
             aActive->GoActive();
-            iServer->SetUiIndicatorsL();
+            iServer->SettingsManager()->SetUiIndicatorsL();
             }
             break;
         case KBTEngBtConnectionWatcher:
@@ -347,7 +349,7 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
             TRACE_INFO( ( _L( "BT connection key changed" ) ) )
             iBtConnectionKey.Subscribe( aActive->RequestStatus() );
             aActive->GoActive();
-            iServer->SetUiIndicatorsL();
+            iServer->SettingsManager()->SetUiIndicatorsL();
             }
             break;        
         case KBTEngScanningWatcher:
@@ -357,7 +359,7 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
             aActive->GoActive();
             if ( !iBtScanningKey.Get( val ) )
                 {
-                iServer->UpdateVisibilityModeL( val );
+                iServer->SettingsManager()->UpdateVisibilityModeL( val );
                 }
             }
             break;
@@ -369,7 +371,7 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
             if( !aStatus && !iEmergencyCallKey.Get( val ) && val )
                 {
                 // An emergency call initiated -> Close SAP connection if it's active
-                iServer->iPluginMgr->DisconnectProfile( EBTProfileSAP );
+                iServer->PluginManager()->DisconnectProfile( EBTProfileSAP );
                 }
             }
             break;
@@ -380,7 +382,7 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
             aActive->GoActive();
             if( !aStatus && !iSspDebugModeKey.Get( val ) )
                 {
-                iServer->CheckSspDebugModeL( (TBool) val );
+                iServer->SettingsManager()->CheckSspDebugModeL( (TBool) val );
                 }
             break;
             }
@@ -396,7 +398,7 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
             if( !err && myChangedTable == KRegistryChangeRemoteTable )
             	{
             	TRACE_INFO( ( _L("BT Remote registry key changed") ) )
-            	iServer->RemoteRegistryChangeDetected();            	
+            	iServer->PairManager()->RemoteRegistryChangeDetected();
             	}
         	break;
         	}    
@@ -407,18 +409,18 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
             aActive->GoActive();
             iSapKeyCenRep->Get( KBTSapEnabled, val );
             
-            TBTPowerStateValue powerState = EBTPowerOff;
-            User::LeaveIfError( iServer->GetHwPowerState( (TBTPowerStateValue&) powerState ) );
-            if( aStatus >= 0 && powerState )
+            TBTPowerState powerState = EBTOff;
+            User::LeaveIfError( iServer->SettingsManager()->GetHwPowerState( powerState ) );
+            if( aStatus >= 0 && powerState == EBTOn )
                 {
                 // Relevant only if BT is on
                 if( val == EBTSapEnabled )
                     {
-                    iServer->iPluginMgr->LoadBTSapPluginL();
+                    iServer->PluginManager()->LoadBTSapPluginL();
                     }
                 else
                     {
-                    iServer->iPluginMgr->UnloadBTSapPlugin();
+                    iServer->PluginManager()->UnloadBTSapPlugin();
                     }
                 }
             }

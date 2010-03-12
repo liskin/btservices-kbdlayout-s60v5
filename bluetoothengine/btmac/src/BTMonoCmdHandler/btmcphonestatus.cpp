@@ -302,14 +302,6 @@ void CBtmcPhoneStatus::CancelRequest(TInt aServiceId)
         }
     }
 
-TInt CBtmcPhoneStatus::GetVolumeStatus()
-	{
-	if(iVol)
-		return iVol->GetVolume();
-	else
-		return 0;
-	}
-
 // -----------------------------------------------------------------------------
 // CBtmcPhoneStatus::CBtmcPhoneStatus
 // -----------------------------------------------------------------------------

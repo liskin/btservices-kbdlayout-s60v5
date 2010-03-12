@@ -86,7 +86,6 @@ NONSHARABLE_CLASS(CBtmcOperator) : public CBtmcActive
         CBtmcProtocol& iProtocol;
         RTelServer iServer;
         RMobilePhone iPhone;
-		RMobileONStore iStore;
         RMmCustomAPI iCustomApi;
         RMmCustomAPI::TOperatorNameInfo iInfo;
     };

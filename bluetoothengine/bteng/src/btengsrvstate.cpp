@@ -22,6 +22,7 @@
 #include "btengsrvstate.h"
 #include "btengserver.h"
 #include "btengsrvpluginmgr.h"
+#include "btengsrvsettingsmgr.h"
 #include "debug.h"
 
 
@@ -93,10 +94,10 @@ CBTEngSrvState::TBTEngSrvOperation CBTEngSrvState::CurrentOperation()
 // ?implementation_description
 // ---------------------------------------------------------------------------
 //
-void CBTEngSrvState::StartStateMachineL( TBool aState )
+void CBTEngSrvState::StartStateMachineL( TBTPowerState aState )
     {
     TRACE_FUNC_ENTRY
-    if( aState )
+    if( aState == EBTOn )
         {
         // Power on; starting state is initializing the stack
         iState = EInitBTStack;
@@ -107,8 +108,8 @@ void CBTEngSrvState::StartStateMachineL( TBool aState )
         // Power off, starting state is to disconnect the plug-ins
         iState = EDisconnectPlugins;
         iOperation = EPowerOff;
-        iServer->UpdateCenRepPowerKeyL( EBTPowerOff );
-        iServer->SetUiIndicatorsL();
+        iServer->SettingsManager()->UpdateCenRepPowerKeyL( EBTOff );
+        iServer->SettingsManager()->SetUiIndicatorsL();
         }
     ChangeState();
     }
@@ -121,10 +122,7 @@ void CBTEngSrvState::StartStateMachineL( TBool aState )
 void CBTEngSrvState::ChangeState()
     {
     TRACE_FUNC_ENTRY
-    if(!iAsyncCallback->IsActive())
-        {
-        iAsyncCallback->CallBack();
-        }
+    iAsyncCallback->CallBack();
     }
 
 // ---------------------------------------------------------------------------
@@ -153,7 +151,7 @@ void CBTEngSrvState::RequestCompletedL()
         case EInitBTStack:
             {
             iState = ELoadDIService;
-            iServer->InitBTStackL();
+            iServer->SettingsManager()->InitBTStackL();
             }
             break;
         case ELoadDIService:
@@ -166,13 +164,13 @@ void CBTEngSrvState::RequestCompletedL()
             {
             iState = ELoadNextPlugin;
             TEComResolverParams params;
-            iServer->iPluginMgr->LoadProfilePluginsL( params );
+            iServer->PluginManager()->LoadProfilePluginsL( params );
             }
             break;
         case ELoadNextPlugin:
             {
                 // Only change the state when all plug-ins are loaded
-            if( iServer->iPluginMgr->LoadPluginL() <= 0 )
+            if( iServer->PluginManager()->LoadPluginL() <= 0 )
                 {
                 iState = EIdle;
                 }
@@ -181,7 +179,7 @@ void CBTEngSrvState::RequestCompletedL()
         case EStopBTStack:
             {
             iState = EWaitingForPowerOff;
-            iServer->StopBTStackL();
+            iServer->SettingsManager()->StopBTStackL();
             }
             break;
         case EUnloadDIService:
@@ -193,7 +191,7 @@ void CBTEngSrvState::RequestCompletedL()
         case EUnloadPlugins:
             {
             iState = EUnloadDIService;
-            iServer->iPluginMgr->UnloadProfilePlugins();
+            iServer->PluginManager()->UnloadProfilePlugins();
             }
             break;
         case EDisconnectPlugins:
@@ -214,8 +212,8 @@ void CBTEngSrvState::RequestCompletedL()
             {
             if( iOperation == EPowerOn )
                 {
-                iServer->UpdateCenRepPowerKeyL( EBTPowerOn );
-                iServer->SetUiIndicatorsL();
+                iServer->SettingsManager()->UpdateCenRepPowerKeyL( EBTOn );
+                iServer->SettingsManager()->SetUiIndicatorsL();
                 }
             iOperation = ESrvOpIdle;
             iServer->CheckIdle();

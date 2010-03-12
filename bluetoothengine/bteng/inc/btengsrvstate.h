@@ -20,17 +20,12 @@
 #ifndef BTENGSRVSTATE_H
 #define BTENGSRVSTATE_H
 
-
-//#include <?include_file>
+#include <bluetooth/hci/hcitypes.h>
 
 #include "btengactive.h"
-#include "btserversdkcrkeys.h"
 
 class MBTEngActiveObserver;
 class CBTEngServer;
-
-/**  ?description */
-//const ?type ?constant_var = ?constant;
 
 
 /**
@@ -93,32 +88,26 @@ public:
     virtual ~CBTEngSrvState();
 
     /**
-     * ?description
+     * Getter for the current operation.
      *
      * @since S60 v3.2
-     * @param ?arg1 ?description
-     * @param ?arg2 ?description
-     * @return ?description
+     * @return The current operation.
      */
     CBTEngSrvState::TBTEngSrvOperation CurrentOperation();
 
     /**
-     * ?description
+     * Start the state machine. If the state machine was already running,
+     * it is simply restarted.
      *
      * @since S60 v3.2
      * @param ?arg1 ?description
-     * @param ?arg2 ?description
-     * @return ?description
      */
-    void StartStateMachineL( TBool aState );
+    void StartStateMachineL( TBTPowerState aState );
 
     /**
-     * ?description
+     * Schedule the next state operation.
      *
      * @since S60 v3.2
-     * @param ?arg1 ?description
-     * @param ?arg2 ?description
-     * @return ?description
      */
     void ChangeState();    
 
@@ -133,11 +122,20 @@ private:
      * Symbian 2nd-phase constructor
      */
     void ConstructL();
-    
+
+    /**
+     * Callback function for asynchronous cycle.
+     */
     static TInt ChangeStateCb(TAny* aThis);
-    
+
+    /**
+     * Execute the next state operation.
+     */
     void RequestCompletedL();
-    
+
+    /**
+     * Handle an error that occurred during a state operation.
+     */
     void HandleError(TInt aError);
 
 private: // data

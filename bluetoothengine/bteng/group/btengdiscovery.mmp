@@ -32,7 +32,6 @@ SOURCE                  btengsdpquery.cpp
 SOURCE                  btengsdpattrparser.cpp
 SOURCE                  btengdevicesearch.cpp
 SOURCEPATH              ../src
-SOURCE                  btengactive.cpp
 SOURCE                  btengsdpdbhandler.cpp
 
 USERINCLUDE             ../inc

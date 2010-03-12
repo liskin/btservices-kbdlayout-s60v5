@@ -182,7 +182,7 @@ TInt CObexTestLogger::Log(TLogLevel aLevel, TRefByValue<const TDesC8> aLogText, 
     buffer.Insert( 0, GetPrefix( aLevel ) );
 
     // Log a timestamp
-    TTimeStamp8 time;
+    TStifLoggerTimeStamp8 time;
     TRAP_IGNORE( LogTimeStampL( time ) );
     buffer.Insert( 0, time );
 
@@ -227,7 +227,7 @@ TInt CObexTestLogger::Log(const TDesC& aCategory, TRefByValue<const TDesC8> aLog
     buffer.Copy( converter );
 
     // Log a timestamp
-    TTimeStamp8 time;
+    TStifLoggerTimeStamp8 time;
     TRAP_IGNORE( LogTimeStampL( time ) );
     buffer.Insert( 0, time );
 
@@ -501,9 +501,9 @@ void CObexTestLogger::LogHeadSectionL()
     iLog->Log( KJSSECTION );
     TBuf<KSysUtilVersionTextLength> version( _L( "Version unknown!" ) );
     (void) SysUtil::GetSWVersion( version );
-    TTimeStamp8 date;
+    TStifLoggerTimeStamp8 date;
     LogTimeStampL( date, EFalse );
-    TTimeStamp8 time;
+    TStifLoggerTimeStamp8 time;
     LogTimeStampL( time );
     TPtrC timePtr( time.Mid( 6, 13 ) );
     iLog->Log( KHtmlStatSection, &date, &timePtr, &version );
