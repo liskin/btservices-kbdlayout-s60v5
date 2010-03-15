@@ -57,7 +57,8 @@ enum TBTConnectionState
     EHostReconnecting, /*!< Host is reconnecting to the device */
     EHIDReconnecting, /*!< The device is reconnection to the host */
     EDisconnecting, /*!< The connection is being closed */
-    EConnecting
+    EConnecting,      /*!< The connection is being set up from phone side */
+    EHIDInitConnecting /*!< The connection is being set up from remote HID */
     };
 
 /*!

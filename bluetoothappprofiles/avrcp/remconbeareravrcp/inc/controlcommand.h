@@ -27,7 +27,6 @@
 #include <remconcoreapi.h>
 #include <remcon/remconbearerplugin.h>
 #include <remcon/clientid.h>
-#include "internaltypes.h"
 
 #include <avcframe.h>
 

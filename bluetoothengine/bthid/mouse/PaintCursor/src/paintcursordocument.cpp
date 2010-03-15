@@ -15,7 +15,7 @@
 *
 */
 
-
+#include <apgwgnam.h>
 #include "paintcursordocument.h"
 #include "paintcursorappui.h"
 
@@ -44,4 +44,10 @@ CEikAppUi* CPaintCursorDocument::CreateAppUiL()
     {
     return new (ELeave) CPaintCursorAppUi;
     }
+
+void CPaintCursorDocument::UpdateTaskNameL(CApaWindowGroupName* aWgName) 
+    { 
+    aWgName->SetHidden(ETrue); 
+    } 
+
 

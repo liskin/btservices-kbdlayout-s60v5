@@ -64,7 +64,6 @@ USERINCLUDE   ../inc
 USERINCLUDE   ../../common
 
 MW_LAYER_SYSTEMINCLUDE_SYMBIAN
-USERINCLUDE ../../../../../../os/bt/bluetoothmgmt/btcommon/inc
 
 LIBRARY       avc.lib
 LIBRARY       ecom.lib

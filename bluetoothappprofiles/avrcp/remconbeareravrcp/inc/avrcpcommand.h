@@ -25,7 +25,7 @@
 #include <e32base.h>
 #include <bluetoothav.h>
 #include <bluetooth/avctptypes.h>
-#include "internaltypes.h"
+#include "avrcputils.h"
 
 class CAvrcpPlayerInfoManager;
 /**
@@ -68,9 +68,9 @@ protected:
 			const TBTDevAddr& aAddr);
 	
 public:
-	TBTDblQueLink	iHandlingLink;	// Used to form handling queue in command handlers
-	TBTDblQueLink	iReadyLink;		// Used to form ready command queue in CRemConBearerAvrcp
-	TBTDblQueLink	iSendLink;		// Used to form send queue in CRcpRouter
+	TAvrcpDblQueLink	iHandlingLink;	// Used to form handling queue in command handlers
+	TAvrcpDblQueLink	iReadyLink;		// Used to form ready command queue in CRemConBearerAvrcp
+	TAvrcpDblQueLink	iSendLink;		// Used to form send queue in CRcpRouter
 
 protected:
 	TUint							iRemConId;

@@ -25,9 +25,8 @@ UID3 0x2001FE5C //App UID
 RESOURCE APP_REGISTRATION_INFO
     {
     app_file = "paintcursor";
-	localisable_resource_file = APP_RESOURCE_DIR"\\paintcursor";
-	localisable_resource_id = R_PAINTCURSOR_LOCALISABLE_APP_INFO;
-//	hidden = KAppIsHidden;
+    hidden = KAppIsHidden;
+    launch = KAppLaunchInForeground;
     }
 
 // End of File

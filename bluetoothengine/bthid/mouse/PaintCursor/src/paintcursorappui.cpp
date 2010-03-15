@@ -20,6 +20,7 @@
 #include <eikmenup.h>
 #include <e32property.h>
 #include <paintcursor.rsg>
+#include <apgwgnam.h>
 
 #include "paintcursorapp.h"
 #include "paintcursorappui.h"
@@ -131,6 +132,7 @@ void CPaintCursorAppUi::MouseCursorStatusChangedL(TInt aStatus)
         case ECursorHide:
             {
             iAppView->HideCursor();
+            EndTask();
             break;
             }
         case ECursorNotInitialized:
@@ -157,5 +159,28 @@ void CPaintCursorAppUi::EndTask()
 
     // Request window server to end our application
     task.EndTask();
+    }
+
+void CPaintCursorAppUi::HandleForegroundEventL(TBool aForeground)
+    {
+    if(aForeground)
+        {
+        TInt wgId = iEikonEnv->RootWin().Identifier();
+
+        TApaTask self( iCoeEnv->WsSession() );
+
+        self.SetWgId( wgId );
+        self.SendToBackground();
+
+        RWsSession session = iEikonEnv->WsSession();
+
+        CApaWindowGroupName* wgName = CApaWindowGroupName::NewLC(session, wgId);
+
+        wgName->SetHidden(ETrue);
+
+        wgName->SetWindowGroupName(iEikonEnv->RootWin());
+
+        CleanupStack::PopAndDestroy(); // wgName
+        }
     }
 

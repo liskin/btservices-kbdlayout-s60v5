@@ -129,6 +129,7 @@ TInt CBtAudioManPlugin::Disconnect( const TBTDevAddr& aAddr, TBTDisconnectType /
 
 void CBtAudioManPlugin::GetConnections( RBTDevAddrArray& aAddrArray, TBTProfile aConnectedProfile )
     {
+    TRACE_FUNC
     aAddrArray.Reset();
     TProfiles profile = EUnknownProfile;
     
@@ -149,7 +150,6 @@ void CBtAudioManPlugin::GetConnections( RBTDevAddrArray& aAddrArray, TBTProfile 
     TInt numAddresses = 2;
     TInt count = numAddresses;
     RBuf8 addrbuf;
-    TPtrC8 ptr(addrbuf);
     
     do
         {
@@ -186,6 +186,8 @@ void CBtAudioManPlugin::GetConnections( RBTDevAddrArray& aAddrArray, TBTProfile 
     //iterate if the number of connections is greater than our 'best guess' or
     //maybe another connection was established while this was taking place
     while (count > numAddresses);
+    
+    TPtrC8 ptr(addrbuf);
     
     //iterate through the addresses buffer
     while (ptr.Length() >= KBTDevAddrSize)

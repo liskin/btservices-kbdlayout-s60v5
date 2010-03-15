@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -33,6 +33,7 @@ enum TPairManActiveRequestId
     ERegistryPairedDevicesNewView,
     ERegistryInitiatePairedDevicesList,
     ERegistryGetPairedDevices,
+    ERegistryGetLocalAddress,
     };
 
 /**  The message argument which holds the Bluetooth address. */
@@ -81,16 +82,20 @@ void CBTEngPairMan::ConstructL()
         User::LeaveIfError( iAuthenResult.Open( *iPairingServ ) );
         iSSPResultActive = CBTEngActive::NewL( *this, ESimplePairingResult, CActive::EPriorityStandard );
         iAuthenResultActive = CBTEngActive::NewL( *this, EAuthenticationResult, CActive::EPriorityStandard );        
-        SubscribeSspPairingResult();
-        SubscribeAuthenticateResult();
         }
+
+    // RProperty for accessing the local device address
+    User::LeaveIfError( iPropertyLocalAddr.Attach(KPropertyUidBluetoothCategory, KPropertyKeyBluetoothGetLocalDeviceAddress) );
 
     // connect to registry
     User::LeaveIfError( iBTRegistry.Open( BTRegServ() ) );    
     iRegistryActive = CBTEngActive::NewL( *this, ERegistryInitiatePairedDevicesView, CActive::EPriorityStandard );
-    // Start to get the list of all paired devices.
-    CreatePairedDevicesView( ERegistryInitiatePairedDevicesView );
-    iPairedDevices = new (ELeave) RArray<TBTNamelessDevice>;
+    iPairedDevices = new (ELeave) RArray<TBTNamelessDevice>; 
+
+    // Initialise paired devices list
+    iLocalAddrActive = CBTEngActive::NewL( *this, ERegistryGetLocalAddress, CActive::EPriorityStandard );
+    InitPairedDevicesList();
+ 
     TRACE_FUNC_EXIT
     }
 
@@ -138,6 +143,85 @@ CBTEngPairMan::~CBTEngPairMan()
         {
         iMessage.Complete( KErrCancel );
         }
+    iPropertyLocalAddr.Cancel();
+    iPropertyLocalAddr.Close();
+    delete iLocalAddrActive;
+    TRACE_FUNC_EXIT
+    }
+
+// ---------------------------------------------------------------------------
+// Initialises the paired devices list.
+// If the local address is not available from the P&S key 
+// KPropertyKeyBluetoothGetLocalDeviceAddress, then the list may need to be 
+// updated once the H/W is switched on. This is so that any registry update 
+// from a restore operation can be included in the list, without mistaking the 
+// new devices for new pairings.
+// ---------------------------------------------------------------------------
+//
+void CBTEngPairMan::InitPairedDevicesList()
+    {
+    TRACE_FUNC_ENTRY
+
+    // Check that we have the Bluetooth local address. If we don't then initialise anyway, but subscribe for an update.
+    // This allows us to refresh our paired devices list to include updates made to the remote devices table of the 
+    // Bluetooth registry from a restore operation. We need to include these devices without mistaking them for new 
+    // pairings. We look solely at the P&S key for the address to avoid the condition whereby the address has been
+    // entered into the reigstry but the Bluetooth Manager server has not begun the restore process yet. The signalling
+    // of the P&S key will cause Bluetooth Manager to update the registry with any restored devices before fulfilling
+    // any further requests.
+
+    // Subscribe to local address property in case we need an update.
+    iPropertyLocalAddr.Subscribe( iLocalAddrActive->iStatus );
+    iLocalAddrActive->SetRequestId( ERegistryGetLocalAddress );
+    iLocalAddrActive->GoActive();
+
+    // Attempt to read address from P&S key.
+    TBuf8<KBTDevAddrSize> btAddrDes;
+    TInt err = iPropertyLocalAddr.Get( btAddrDes );
+
+    // Is the P&S key defined yet? (if not, stack not up yet)
+    if ( err == KErrNone )
+        {
+        // P&S key defined, is local address set? (if not, H/W not initialised yet)
+        if ( btAddrDes.Length() == KBTDevAddrSize )
+            {
+            TBTDevAddr btAddr = btAddrDes;
+
+            if ( btAddr != TBTDevAddr() )
+                {
+                // Non-zero local address is available.
+                iPropertyLocalAddr.Cancel();
+                iLocalAddrActive->CancelRequest();
+                }
+            }
+        }
+
+    // Perform initialisation of the paired devices list.
+    DoInitPairedDevicesList();
+
+    TRACE_FUNC_EXIT
+    }
+
+// ---------------------------------------------------------------------------
+// Initialises the paired devices list (second stage)
+// This method performs the actual initialisation, now that the local BT H/W
+// address had been made available.
+// ---------------------------------------------------------------------------
+//
+void CBTEngPairMan::DoInitPairedDevicesList()
+    {
+    TRACE_FUNC_ENTRY
+
+    if ( !iRegistryActive->IsActive() )
+        {
+        // Start to get the list of all paired devices.
+        CreatePairedDevicesView( ERegistryInitiatePairedDevicesView );
+        }
+    else
+        {
+        iNotHandledInitEventCounter++;
+        }
+
     TRACE_FUNC_EXIT
     }
 
@@ -294,24 +378,34 @@ void CBTEngPairMan::UnpairDevice( const TBTDevAddr& aAddr )
     if ( index > KErrNotFound )
         {
         dev = (*iPairedDevices)[index];
-        TBTDeviceSecurity security = dev.GlobalSecurity();
-        // Clear trust setting so that correct icon will be shown in ui applications.
-        security.SetNoAuthenticate(EFalse );
-        security.SetNoAuthorise(EFalse );
-        dev.SetGlobalSecurity(security);
-        dev.DeleteLinkKey();
-        if ( dev.IsValidUiCookie() && 
-             ( dev.UiCookie() & EBTUiCookieJustWorksPaired ) )
+        
+        TRequestStatus status( KRequestPending );
+        // Unpair the device in registry (synchronously)
+        iBTRegistry.UnpairDevice( dev.Address(), status );
+        User::WaitForRequest( status );
+        TRACE_INFO( ( _L( "Delete link key, res %d"), status.Int() ) )
+        
+        if ( status == KErrNone )
             {
-            // Remove the UI cookie bit for Just Works pairing.
-            TInt32 cookie = dev.UiCookie() & ~EBTUiCookieJustWorksPaired;
-            dev.SetUiCookie( cookie );
-            TRACE_INFO( ( _L( "UI cookie %x cleared"), EBTUiCookieJustWorksPaired ) );
+            TBTDeviceSecurity security = dev.GlobalSecurity();
+            // Clear trust setting so that correct icon will be shown in ui applications.
+            security.SetNoAuthenticate(EFalse );
+            security.SetNoAuthorise(EFalse );
+            dev.SetGlobalSecurity(security);
+            dev.DeleteLinkKey();
+            if ( dev.IsValidUiCookie() && 
+                 ( dev.UiCookie() & EBTUiCookieJustWorksPaired ) )
+                {
+                // Remove the UI cookie bit for Just Works pairing.
+                TInt32 cookie = dev.UiCookie() & ~EBTUiCookieJustWorksPaired;
+                dev.SetUiCookie( cookie );
+                TRACE_INFO( ( _L( "UI cookie %x cleared"), EBTUiCookieJustWorksPaired ) );
+                }
+            // modify the device in registry synchronously
+            // status.Int() could be -1 if the device is not in registry 
+            // which is totally fine for us.
+            (void) UpdateRegDevice( dev );
             }
-        // modify the device in registry synchronously
-        // status.Int() could be -1 if the device is not in registry 
-        // which is totally fine for us.
-        (void) UpdateRegDevice( dev );
         }
     TRACE_FUNC_EXIT
     }
@@ -396,9 +490,24 @@ void CBTEngPairMan::RequestCompletedL( CBTEngActive* /*aActive*/, TInt aId, TInt
             break;
             }
         case ERegistryInitiatePairedDevicesList:
+            {			
+			if (iSSPResultActive && iAuthenResultActive)
+				{
+				SubscribeSspPairingResult();
+				SubscribeAuthenticateResult();
+				}
+            HandleGetPairedDevicesCompletedL( aStatus, aId );
+            break;
+            }
         case ERegistryGetPairedDevices:    
             {
             HandleGetPairedDevicesCompletedL( aStatus, aId );
+            break;
+            }
+        case ERegistryGetLocalAddress:
+            {
+            // Refresh paired devices list to include any restored devices.
+            DoInitPairedDevicesList();
             break;
             }
         default:
@@ -434,6 +543,7 @@ TInt CBTEngPairMan::SetPairObserver(const TBTDevAddr& aAddr, TBool aActivate)
     {
     TRACE_FUNC_ARG( ( _L( "%d" ), aActivate ) )
     TRACE_BDADDR( aAddr )
+    iPairingOperationAttempted = ETrue;
     TInt err( KErrNone );
     if ( !aActivate )
         {
@@ -466,6 +576,7 @@ TInt CBTEngPairMan::SetPairObserver(const TBTDevAddr& aAddr, TBool aActivate)
 //
 void CBTEngPairMan::PairDeviceL( const TBTDevAddr& aAddr, TUint32 aCod )
     {
+    iPairingOperationAttempted = ETrue;
     if ( !iPairer)
         {
         // no existing pair handling, create one:
@@ -499,27 +610,35 @@ void CBTEngPairMan::CancelSubscribe()
     }
 
 // ---------------------------------------------------------------------------
-// Subscribes to simple pairing result from Pairing Server
+// Subscribes to simple pairing result from Pairing Server (if not already 
+// subscribed).
 // ---------------------------------------------------------------------------
 //
 void CBTEngPairMan::SubscribeSspPairingResult()
     {
     TRACE_FUNC_ENTRY
-    iPairingResult.SimplePairingResult( iSimplePairingRemote, iSSPResultActive->RequestStatus() );
-    iSSPResultActive->GoActive();
+    if ( !iSSPResultActive->IsActive() )
+        {
+        iPairingResult.SimplePairingResult( iSimplePairingRemote, iSSPResultActive->RequestStatus() );
+        iSSPResultActive->GoActive();
+        }
     TRACE_FUNC_EXIT
     }
 
 // ---------------------------------------------------------------------------
-// Subscribes to authentication result from Pairing Server
+// Subscribes to authentication result from Pairing Server (if not already
+// subscribed).
 // ---------------------------------------------------------------------------
 //
 void CBTEngPairMan::SubscribeAuthenticateResult()
     {
     TRACE_FUNC_ENTRY
-    // Subscribe authentication result (which requires pairing for unpaired devices)
-    iAuthenResult.AuthenticationResult( iAuthenticateRemote, iAuthenResultActive->RequestStatus() );
-    iAuthenResultActive->GoActive();
+    if ( !iAuthenResultActive->IsActive() )
+        {
+        // Subscribe authentication result (which requires pairing for unpaired devices)
+        iAuthenResult.AuthenticationResult( iAuthenticateRemote, iAuthenResultActive->RequestStatus() );
+        iAuthenResultActive->GoActive();
+        }
     TRACE_FUNC_EXIT
     }
 
@@ -570,7 +689,14 @@ void CBTEngPairMan::HandlePairingResultL( const TBTDevAddr& aAddr, TInt aResult 
 void CBTEngPairMan::CreatePairedDevicesView( TInt aReqId )
     {
     TRACE_FUNC_ENTRY
-    iNotHandledRegEventCounter = 0;
+    if ( aReqId == ERegistryInitiatePairedDevicesView )
+        {
+        iNotHandledInitEventCounter = 0;
+        }
+    else
+        {
+        iNotHandledRegEventCounter = 0;
+        }
     TBTRegistrySearch searchPattern;
     searchPattern.FindBonded();
     iRegistryActive->SetRequestId( aReqId );
@@ -608,8 +734,14 @@ void CBTEngPairMan::HandleCreatePairedDevicesViewCompletedL( TInt aStatus, TInt 
     TRACE_FUNC_ENTRY
 
     if ( aReqId == ERegistryInitiatePairedDevicesView )
-        {// Initialization phase, list paired devices if there are.
-        if ( aStatus > KErrNone )
+        {// Initialization phase, list paired devices if there are any.
+        if ( iNotHandledInitEventCounter )
+            {
+            // Reinitialisaton detected, create paired device view again:
+            (void) iBTRegistry.CloseView();
+            CreatePairedDevicesView( ERegistryInitiatePairedDevicesView );
+            }
+        else if ( aStatus > KErrNone )
             {
             GetPairedDevices( ERegistryInitiatePairedDevicesList );
             }
@@ -620,7 +752,25 @@ void CBTEngPairMan::HandleCreatePairedDevicesViewCompletedL( TInt aStatus, TInt 
         }
     else
         {
-        if (iNotHandledRegEventCounter)
+        if ( iNotHandledInitEventCounter )
+            {
+            // We need to reinitialise but we may be pairing.
+            // This situation is not expected to arise, as reinitialisation means
+            // that the H/W was only just switched on.
+            // If we have ever started to take part in a pairing, then prioritise that
+            // pairing.
+            (void) iBTRegistry.CloseView();
+            if ( iPairingOperationAttempted )
+                {
+                iNotHandledInitEventCounter = 0;
+                CreatePairedDevicesView( ERegistryPairedDevicesNewView );
+                }
+            else
+                {
+                CreatePairedDevicesView( ERegistryInitiatePairedDevicesView );
+                }
+            }
+        else if (iNotHandledRegEventCounter)
             { // more registry change detected, create paired device view again:
             (void) iBTRegistry.CloseView();
             CreatePairedDevicesView( ERegistryPairedDevicesNewView );
@@ -650,19 +800,46 @@ void CBTEngPairMan::HandleGetPairedDevicesCompletedL( TInt /*aStatus*/, TInt aRe
     (void) iBTRegistry.CloseView();
     if ( aReqId == ERegistryInitiatePairedDevicesList )
         {
-        // We completed the initialization of paired device list, 
-        // move all paired devices to the array:
-        UpdatePairedDeviceListL();
+        if ( iNotHandledInitEventCounter )
+            {
+            // Reinitialisation required, create paired device view again:
+            CreatePairedDevicesView( ERegistryInitiatePairedDevicesView );
+            }
+        else
+            {
+            // We completed the initialisation of paired device list, 
+            // move all paired devices to the array:
+            UpdatePairedDeviceListL();
+            }
         }
-    
-    if (iNotHandledRegEventCounter)
-        { // more registry change detected, create paired device view again:
-        CreatePairedDevicesView( ERegistryPairedDevicesNewView );
-        }
-    else if ( aReqId == ERegistryGetPairedDevices)
+    else
         {
-        // no more registry change detected, find new pairings:
-        CheckPairEventL();
+        if (iNotHandledInitEventCounter)
+            {
+            // We need to reinitialise but we may be pairing.
+            // This situation is not expected to arise, as reinitialisation means
+            // that the H/W was only just switched on.
+            // If we have ever started to take part in a pairing, then prioritise that
+            // pairing.
+            if ( iPairingOperationAttempted )
+                {
+                iNotHandledInitEventCounter = 0;
+                CreatePairedDevicesView( ERegistryPairedDevicesNewView );
+                }
+            else
+                {
+                CreatePairedDevicesView( ERegistryInitiatePairedDevicesView );
+                }		
+            }     
+        else if (iNotHandledRegEventCounter)
+            { // more registry change detected, create paired device view again:
+            CreatePairedDevicesView( ERegistryPairedDevicesNewView );
+            }
+        else if ( aReqId == ERegistryGetPairedDevices)
+           {
+            // no more registry change detected, find new pairings:
+            CheckPairEventL();
+           }
         }
 
     TRACE_FUNC_EXIT
@@ -721,9 +898,10 @@ void CBTEngPairMan::CheckPairEventL()
         TRACE_BDADDR( dev.Address() );
         if ( newPaired && !iPairer)
             {
+            iPairingOperationAttempted = ETrue;
             iPairer = CBTEngIncPair::NewL( *this, dev.Address() );
             }
-        if ( iPairer )
+        if ( newPaired && iPairer )
             {
             // Ask pair handler to decide what to do:
             iPairer->HandleRegistryNewPairedEvent( dev );

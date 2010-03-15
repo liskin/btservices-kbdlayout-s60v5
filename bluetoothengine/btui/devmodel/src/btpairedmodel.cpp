@@ -419,12 +419,35 @@ void CBTPairedModel::ConnectComplete(TBTDevAddr& aAddr, TInt aErr, RBTDevAddrArr
             if(di >=0 )
             	{
             	nameArray.Append(&iDeviceArray[di]->iName);
-            	}            	
+            	}
             }
-        if(iObserver )
-        	{
-    		iObserver->NotifyChangeDeviceComplete(aErr, connectedDevice, &nameArray);        	
-        	}            
+
+        // we will unset the connect status of the device if connection failed &
+            // it is found in paired devices.
+        if( index >= 0 )
+            {
+            // add EStatusBtuiConnected status if the device has a profile connection
+            TBTEngConnectionStatus connStatus;
+            iConnMan->IsConnected(connectedDevice.iAddr, connStatus);
+   
+            if (connStatus != EBTEngConnecting && connStatus != EBTEngConnected)
+                {
+                TRACE_INFO(_L("Unset EStatusBtuiConnected"))
+                UnsetStatusFlags(iDeviceArray[index]->iStatus,EStatusBtuiConnected );
+                }
+            }
+        
+        if(iObserver)
+            {
+            //Show only phone issued request complete notes
+            //Do not show notes for device issued request when BTUI is active
+            if ( requestIssuedFromPhone ) 
+                {
+                iObserver->NotifyChangeDeviceComplete(aErr, connectedDevice, &nameArray);
+                }
+               
+            SendRefreshIfNoError(aErr);
+            }
         nameArray.Reset();
         }
     else 

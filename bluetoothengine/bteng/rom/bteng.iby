@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2003-2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -29,7 +29,6 @@ file=ABI_DIR\BUILD_DIR\btengdevman.dll            SHARED_LIB_DIR\btengdevman.dll
 file=ABI_DIR\BUILD_DIR\btengdiscovery.dll         SHARED_LIB_DIR\btengdiscovery.dll
 file=ABI_DIR\BUILD_DIR\btfeatures.dll             SHARED_LIB_DIR\btfeatures.dll
 file=ABI_DIR\BUILD_DIR\btengsettings.dll          SHARED_LIB_DIR\btengsettings.dll
-data=ZPRIVATE\10005950\backup_registration.xml		private\10005950\backup_registration.xml
 data=ZPRIVATE\10003A3F\APPS\bttoggle_reg.rsc 			Private\10003a3f\apps\bttoggle_reg.rsc
 data=DATAZ_\RESOURCE_FILES_DIR\btengsdp.rsc       RESOURCE_FILES_DIR\btengsdp.rsc
 data=DATAZ_\RESOURCE_FILES_DIR\btrfs.txt       RESOURCE_FILES_DIR\btrfs.txt

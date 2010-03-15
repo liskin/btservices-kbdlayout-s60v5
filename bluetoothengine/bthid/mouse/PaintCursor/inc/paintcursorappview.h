@@ -33,7 +33,8 @@ _LIT( KMouseCurorSrvName, "\\system\\apps\\animation\\BTCURSOR_SERVER" );
 /*!
  An instance of the CPaintCursorAppView View object for PaintCursor application
  */
-class CPaintCursorAppView : public CCoeControl
+class CPaintCursorAppView : public CCoeControl,  public MCoeControlObserver
+
     {
 public:
 
@@ -55,17 +56,28 @@ public:
      Destroy the object and release all memory objects
      */
     ~CPaintCursorAppView();
+    
+    void HideCursor();
 
+    void ShowCursor();
+	
 public:
     // from CCoeControl
 
     void SizeChanged();
 
     void Draw(const TRect& aRect) const;
+	
+public:
+    /**
+    * From MCoeControlObserver, HandleControlEventL.
+    */
+    // event handling section
+    // e.g Listbox events
+    void HandleControlEventL( CCoeControl* aControl, TCoeEvent aEventType );
 
-    void HideCursor();
+    void HandleResourceChange( TInt aType );
 
-    void ShowCursor();
 private:
 
     /*!

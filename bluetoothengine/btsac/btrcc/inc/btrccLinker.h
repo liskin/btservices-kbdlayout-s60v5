@@ -319,7 +319,6 @@ NONSHARABLE_CLASS(CBTRCCLinker) : public CActive, public MRemConBatteryTargetObs
         
         CBTRCCVolumeLevelControllerBase* iVolController;
         CBTRCCVolumeLevelControllerBase* iAbsoluteVolController;
-        CBTRCCVolumeLevelControllerBase* iLegacyVolController;
         
         TInt iRegisterVolumeChangeNotificationCounter;//Counter for re-register for remote volume control notification
 };

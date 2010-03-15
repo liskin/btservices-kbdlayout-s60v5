@@ -32,6 +32,7 @@
 #include "btnpaireddevsettnotifier.h"
 #include "btnssppasskeyentrynotifier.h"
 #include "btnumcmpnotifier.h"
+#include "btuserconfnotifier.h"
 #include "btnenterpriseitsecurityinfonotifier.h"
 
 // CONSTANTS
@@ -105,6 +106,12 @@ LOCAL_C void CreateBTNotifiersL( CArrayPtrFlat<MEikSrvNotifierBase2>* aNotifiers
     aNotifiers->AppendL( numCmpNotifier );
     CleanupStack::Pop( numCmpNotifier );
 
+    CBTUserConfNotifier* userConfNotifier = CBTUserConfNotifier::NewL();
+    CleanupStack::PushL(userConfNotifier);
+    aNotifiers->AppendL( userConfNotifier );
+    CleanupStack::Pop( userConfNotifier );
+
+    
     CBTEnterpriseItSecurityInfoNotifier* enterpriseItSecurityNotifier = CBTEnterpriseItSecurityInfoNotifier::NewL();
     CleanupStack::PushL(enterpriseItSecurityNotifier);
     aNotifiers->AppendL(enterpriseItSecurityNotifier);

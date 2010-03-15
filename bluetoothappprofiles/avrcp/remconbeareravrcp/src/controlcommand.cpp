@@ -608,6 +608,7 @@ void CControlCommand::SetResponseType(TInt aErr)
 		{
 		case KErrNone:
 		case KErrCompletion:
+		case KErrAvrcpHandledInternallyRespondNow:
 			if (cType == AVC::EControl)
 				{
 				iFrame->SetType(AVC::EAccepted);

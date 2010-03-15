@@ -19,6 +19,7 @@
 #include <e32svr.h>
 #include <bttypes.h>
 #include "bthidsession.h"
+#include "bthidconnection.h"
 #include "bthidserver.h"
 #include "bthidclientsrv.h"
 #include "hidsdpclient.h"
@@ -193,10 +194,10 @@ void CBTHidServerSession::RequestConnectionL(const RMessage2& aMessage)
         TPckg<TBTDevAddr> addrPack(addr);
 
         iConnectionMessage.ReadL(0, addrPack);
+        
         // Ask the server to create a new connection object
-
-
-        iConnectingID = iServer.NewConnectionL();
+        iConnectingID = iServer.NewConnectionL(EConnecting);
+        
         TRAPD( res,
                 // Retrieve the hid device object for this new connection
                 CBTHidDevice &devDetails =

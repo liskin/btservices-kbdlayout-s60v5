@@ -103,7 +103,9 @@ void CBTHidConnection::SetConnID(TInt aConnID)
     {
     // We shouldn't be trying to set the id for this connection
     // after it is connected.
-    __ASSERT_DEBUG(iConnectionState == ENotConnected || iConnectionState == EConnecting,
+    __ASSERT_DEBUG(iConnectionState == ENotConnected || 
+	               iConnectionState == EConnecting   || 
+				   iConnectionState == EHIDInitConnecting ,
             User::Panic(KPanicBTConnection, ESocketsBadState));
 
     iConnID = aConnID;
@@ -214,7 +216,7 @@ void CBTHidConnection::OfferControlSocket(const TBTDevAddr& aAddress,
     (_L("[BTHID]\tCBTHidConnection::OfferControlSocket"));
     if (aAddress == iDevice->iAddress)
         {
-        __ASSERT_DEBUG((iConnectionState == ELinkLost) ||
+        __ASSERT_DEBUG((iConnectionState == ELinkLost) || (iConnectionState == EHIDInitConnecting) ||
                 (iConnectionState == EHIDReconnecting),
                 User::Panic(KPanicBTConnection, ESocketsBadState));
 
@@ -223,8 +225,11 @@ void CBTHidConnection::OfferControlSocket(const TBTDevAddr& aAddress,
         iControlSocket = aSocket;
         aSocket = 0;
 
-        // Mark that the HID Device is reconnecting to us.
-        ChangeState(EHIDReconnecting);
+        // Mark that the HID Device is reconnecting to us. Skip the state change if an initial connection from HID device. 
+        if (iConnectionState != EHIDInitConnecting) 
+            {
+            ChangeState(EHIDReconnecting);
+            }
         }
     }
 
@@ -236,7 +241,7 @@ void CBTHidConnection::OfferInterruptSocket(const TBTDevAddr& aAddress,
 
     if (aAddress == iDevice->iAddress)
         {
-        __ASSERT_DEBUG((iConnectionState == EHIDReconnecting), //||(iConnectionState == ELinkLost) ,
+        __ASSERT_DEBUG((iConnectionState == EHIDReconnecting) ||(iConnectionState == EHIDInitConnecting) ,
                 User::Panic(KPanicBTConnection, ESocketsBadState));
 
         // Take ownership of this socket
@@ -248,18 +253,35 @@ void CBTHidConnection::OfferInterruptSocket(const TBTDevAddr& aAddress,
         if (KErrNone == error)
             {
             // Mark that we are now reconnected.
-
+            TBTConnectionState prevState = iConnectionState; 
             ChangeState(EConnected);
 
-            // Inform the observer that the connection has been restored.
-            iObserver.LinkRestored(iConnID);
-
+            if (prevState == EHIDInitConnecting)
+                {
+                // If this was an remote HID initial connection, start the SDP Search. 
+                iObserver.StartSDPSearch(iConnID);
+                }
+            else
+                {
+                // Inform the observer that the connection has been restored.
+                iObserver.LinkRestored(iConnID);
+                }
             }
         else
             {
             // Close the sockets as they can't be used
             CloseChannels();
-            ChangeState(ELinkLost);
+           
+            if (iConnectionState == EHIDInitConnecting)
+                {
+                 ChangeState(ENotConnected);
+                // If this was an remote HID initial connection inform the observer
+                iObserver.FirstTimeConnectionCompleteFromRemote(iConnID, error);
+                }
+            else
+                {
+                ChangeState(ELinkLost);
+                }
             }
         }
     }

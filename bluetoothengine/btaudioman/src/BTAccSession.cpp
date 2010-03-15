@@ -253,6 +253,11 @@ void CBTAccSession::GetConnections(const RMessage2& aMessage)
         //finished with the accessory info array
         infos.Close();
         
+        if(buf.Length() <= 0)
+            {
+            ret = KErrNotFound;
+            }
+        
         //if there is no error and the buffer has something in,
         //write the buffer to the message
         if (ret == KErrNone)

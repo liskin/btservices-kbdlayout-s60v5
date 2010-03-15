@@ -20,6 +20,7 @@
 #define PaintCursorDOCUMENT_H
 
 #include <AknDoc.h>
+#include <apgwgnam.h>
 
 class CEikAppUi;
 
@@ -54,6 +55,8 @@ private:
      * From CEikDocument, create CPaintCursorAppUi "App UI" object.
      */
     CEikAppUi* CreateAppUiL();
+    
+    void UpdateTaskNameL(CApaWindowGroupName* aWgName);
     };
 
 #endif

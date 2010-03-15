@@ -632,7 +632,7 @@ void CBTEngSrvSettingsMgr::SetDutMode( TInt aDutMode )
         return;
         }
 
-    if (powerState == EBTOn)
+    if (powerState == EBTPowerOn)
         {
 
 #ifndef __WINS__

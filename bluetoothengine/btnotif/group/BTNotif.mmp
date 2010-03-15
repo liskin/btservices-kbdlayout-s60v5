@@ -40,6 +40,7 @@ SOURCE          BTNPBAPPinNotifier.cpp
 SOURCE          btnpaireddevsettnotifier.cpp
 SOURCE          btnssppasskeyentrynotifier.cpp
 SOURCE          btnumcmpnotifier.cpp
+SOURCE          btuserconfnotifier.cpp
 SOURCE          btnotifuiutil.cpp
 SOURCE          btnotifactive.cpp
 SOURCE          btnpairnotifier.cpp

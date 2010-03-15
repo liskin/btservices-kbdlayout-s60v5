@@ -133,7 +133,7 @@ void CBasrvAccStateQuery::GetAccInfoCompletedL(TInt aErr, const TAccInfo* aAcc, 
     if ( ( AccInfo().iConnProfiles & EHFP ) && 
          AccInfo().iSupportedFeatures[TAccInfo::EHFPIndex] == 0 )
         {
-        CBTAccPlugin* plugin = Parent().AccMan().PluginMan().Plugin(EHFP);;
+        CBTAccPlugin* plugin = Parent().AccMan().PluginMan().Plugin(EHFP);
         AccInfo().SetSupportedFeature((TUint16)plugin->GetRemoteSupportedFeature(), TAccInfo::EHFPIndex);
         }
     

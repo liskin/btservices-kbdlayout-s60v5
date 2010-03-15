@@ -27,6 +27,10 @@
 #endif
 #include <btnotif.h>			// notifier id for power mode setting 
 
+// @todo remove this declaration once both stack and UI layers are in codeline
+const TUid KBTUserConfirmationNotifierUidCopyForWrapper={0x2002E224};
+
+
 const TInt KMaxSynchReplyBufLength = 256;  //what should be?
 
 const TUid KBTInquiryChannel            = {0x00000601}; // Channel for inquiry notifier
@@ -45,6 +49,7 @@ const TInt KBTGenericInfoNotifierPriority = MEikSrvNotifierBase2::ENotifierPrior
 const TInt KBTGenericQueryNotifierPriority = MEikSrvNotifierBase2::ENotifierPriorityHigh;
 const TInt KBTNumericComparisonPriority     = MEikSrvNotifierBase2::ENotifierPriorityVHigh;  // for SSP
 const TInt KBTPasskeyEntryNotifierPriority = MEikSrvNotifierBase2::ENotifierPriorityVHigh;   // for SSP
+const TInt KBTUserConfirmationNotifierPriority = MEikSrvNotifierBase2::ENotifierPriorityVHigh;   // for SSP
 const TInt KBTPairedDeviceSettingPriority = MEikSrvNotifierBase2::ENotifierPriorityVHigh;   
 const TInt KBTEnterpriseItSecurityInfoNotifierPriority = MEikSrvNotifierBase2::ENotifierPriorityHigh;
 
@@ -165,6 +170,14 @@ CArrayPtr<MEikSrvNotifierBase2>* DoCreateNotifierArrayL()
     subjects->AppendL( notif );
     CleanupStack::Pop( notif );
 
+    notif = new (ELeave) CAknNotifierWrapperLight(*master,
+                                                  KBTUserConfirmationNotifierUidCopyForWrapper,
+                                                  KBTUserConfirmationNotifierUidCopyForWrapper,
+                                                  KBTUserConfirmationNotifierPriority);
+    CleanupStack::PushL( notif );
+    subjects->AppendL( notif );
+    CleanupStack::Pop( notif );    
+    
     notif = new (ELeave) CAknNotifierWrapperLight(*master,
                                                   KBTEnterpriseItSecurityInfoNotifierUid,
                                                   KBTEnterpriseItSecurityInfoNotifierUid,

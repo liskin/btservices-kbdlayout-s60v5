@@ -77,6 +77,8 @@ private:
     void SendToBackground();
 
     void EndTask();
+    
+    void HandleForegroundEventL(TBool aForeground);
 
 private:
     CPaintCursorAppView* iAppView;

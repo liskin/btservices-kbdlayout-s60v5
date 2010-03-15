@@ -33,6 +33,7 @@
 _LIT(KMpxPlayerExeName, "mpx.exe");
 
 _LIT(KMpxPlayerSearchPatternBySID, "*102072c3*");
+_LIT(KVideoPlayerSearchPatternBySID, "*200159B2*");
 
 static const TInt KPlayCmdToPlayerDelay = 6000000; // value will be tuned later 
 
@@ -243,7 +244,7 @@ void CPlayerStarter::StartPlayIfNeeded()
         {
         return;
         }
-    if (!IsMusicPlayerRunning())
+    if (!IsMusicPlayerRunning() && !IsVideoPlayerRunning())
          {
          TRAPD(err, LaunchMusicPlayerL());
          // Send the response of play command to remote device
@@ -259,6 +260,22 @@ TBool CPlayerStarter::IsMusicPlayerRunning()
     // Music player is running if we can find a thread whose name contains 
     // S60 Music Player's SID.
     TFindThread findt(KMpxPlayerSearchPatternBySID);
+    TFullName result;
+    TBool running(EFalse);
+    if (!findt.Next(result))
+        {
+        TRACE_INFO((_L("Thread '%S'is found"), &result));
+        running = ETrue;
+        }
+    return running;
+    }
+
+TBool CPlayerStarter::IsVideoPlayerRunning()
+    {
+    TRACE_FUNC
+    // Video player is running if we can find a thread whose name contains 
+    // Video Player's SID.
+    TFindThread findt(KVideoPlayerSearchPatternBySID);
     TFullName result;
     TBool running(EFalse);
     if (!findt.Next(result))

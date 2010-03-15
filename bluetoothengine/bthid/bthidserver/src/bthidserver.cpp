@@ -38,6 +38,7 @@
 #include "hidgeneric.h"
 #include "hidlayoutids.h"
 #include "bthidPsKey.h"
+#include "hidsdpclient.h"
 
 
 #ifndef DBG
@@ -97,6 +98,8 @@ CBTHidServer::~CBTHidServer()
     iReqs.ResetAndDestroy();
     
     delete iGenHID;
+    
+    delete iHidSdpClient;
     
     RProperty::Delete( KPSUidBthidSrv, KBTMouseCursorState );
     }
@@ -241,8 +244,11 @@ void CBTHidServer::InformClientsOfStatusChange(
         const CBTHidDevice& aDeviceDetails, TBTHidConnState aState)
     {
         TRACE_INFO( (_L("[BTHID]\tCBTHidServer::InformClientsOfStatusChange, state=%d"),aState) );
-    if (aState == EBTDeviceConnected || aState == EBTDeviceLinkRestored
-            || aState == EBTDeviceLinkLost || aState == EBTDeviceDisconnected)
+        if (aState == EBTDeviceConnected || 
+	     aState == EBTDeviceLinkRestored || 
+		 aState == EBTDeviceLinkLost     || 
+		 aState == EBTDeviceDisconnected || 
+		 aState == EBTDeviceConnectedFromRemote)
         {
         iLastUsedAddr = aDeviceDetails.iAddress;
         iActiveState = ETrue;
@@ -286,6 +292,7 @@ void CBTHidServer::GlobalNotify(const TBTDevAddr& aDeviceAddr,
     switch (aState)
         {
         case EBTDeviceLinkRestored:
+        case EBTDeviceConnectedFromRemote:
             {
             HandleAsyncRequest(aDeviceAddr, EBTConnected);
             break;
@@ -484,10 +491,11 @@ TBTEngConnectionStatus CBTHidServer::ConnectStatus(const TBTDevAddr& aAddress)
                 foundItem = ETrue;
                 TBTConnectionState HidConnectionStatus =
                         connection->ConnectStatus();
-                if (EFirstConnection == HidConnectionStatus || EConnecting
-                        == HidConnectionStatus || EHIDReconnecting
-                        == HidConnectionStatus || EHostReconnecting
-                        == HidConnectionStatus)
+                if ( (EFirstConnection   == HidConnectionStatus) || 
+				     (EConnecting        == HidConnectionStatus) || 
+                     (EHIDReconnecting   == HidConnectionStatus) || 
+                     (EHostReconnecting  == HidConnectionStatus) || 
+                     (EHIDInitConnecting == HidConnectionStatus) )
                     {
                     retVal = EBTEngConnecting;
                     }
@@ -502,6 +510,33 @@ TBTEngConnectionStatus CBTHidServer::ConnectStatus(const TBTDevAddr& aAddress)
         }
 
     return retVal;
+    }
+
+TBool CBTHidServer::DeviceExistInContainer(const TBTDevAddr& aAddress)
+    {
+    TInt i = 0;
+    TBool foundItem = EFalse;
+    TInt BTConnectionObjCount = iBTConnContainer->Count();
+
+    TRACE_INFO(_L("[BTHID]\tCBTHidServer::DeviceExistInContainer()"));
+    while ((i < BTConnectionObjCount) && (!foundItem))
+        {
+        CBTHidConnection *connection =
+                static_cast<CBTHidConnection*> ((*iBTConnContainer)[i]);
+
+        if (connection)
+            {
+            CBTHidDevice& devDetails = connection->DeviceDetails();
+
+            if (devDetails.iAddress == aAddress)
+                {
+                foundItem = ETrue;                
+                }
+            }
+        i++;
+        }
+
+    return foundItem;
     }
 
 TBool CBTHidServer::GetConnectionAddress(TDes8& aAddressBuf)
@@ -549,8 +584,9 @@ TBool CBTHidServer::IsAllowToConnectFromServerSide(TUint aDeviceSubClass)
             CBTHidDevice& devDetails = connection->DeviceDetails();
             TBTConnectionState HidConnectionStatus =
                     connection->ConnectStatus();
-            if (connection->IsConnected() || HidConnectionStatus
-                    == EHIDReconnecting)
+            if (connection->IsConnected() || 
+			      HidConnectionStatus == EHIDReconnecting || 
+				  HidConnectionStatus == EHIDInitConnecting)
                 {
                 if ((IsKeyboard(aDeviceSubClass) && IsKeyboard(
                         devDetails.iDeviceSubClass)) || (IsPointer(
@@ -597,7 +633,7 @@ TBool CBTHidServer::IsAllowToConnectFromClientSide(TBTDevAddr aDevAddr)
     TInt BTConnectionObjCount = iBTConnContainer->Count();
 
     TUint deviceSubClass = GetDeviceSubClass(aDevAddr);
-        TRACE_INFO(_L("[BTHID]\tCBTHidServer::IsAllowToConnectFromClientSide()"));
+    TRACE_INFO( (_L("[BTHID]\tCBTHidServer::IsAllowToConnectFromClientSide() BTConnectionObjCount = %d"), BTConnectionObjCount) );
     while ((i < BTConnectionObjCount) && retVal)
         {
         CBTHidConnection *connection =
@@ -608,16 +644,18 @@ TBool CBTHidServer::IsAllowToConnectFromClientSide(TBTDevAddr aDevAddr)
             CBTHidDevice& devDetails = connection->DeviceDetails();
             TBTConnectionState HidConnectionStatus =
                     connection->ConnectStatus();
-            if (connection->IsConnected() || HidConnectionStatus
-                    == EConnecting)
+            if (connection->IsConnected() || 
+			       HidConnectionStatus == EConnecting || 
+				   HidConnectionStatus == EHIDInitConnecting)
                 {
                 if (devDetails.iAddress != aDevAddr)
-                    {
+                    {                    
                     if ((IsKeyboard(deviceSubClass) && IsKeyboard(
                             devDetails.iDeviceSubClass)) || (IsPointer(
                             deviceSubClass) && IsPointer(
                             devDetails.iDeviceSubClass)))
                         {
+                        TRACE_INFO(_L("[BTHID]\tCBTHidServer::() NO connection allowed, connection exist already!"));
                         retVal = EFalse;
                         iConflictAddr = devDetails.iAddress;
                         }
@@ -699,11 +737,14 @@ void CBTHidServer::CleanOldConnection(TInt aConnID)
     return;
     } 
 
-TInt CBTHidServer::NewConnectionL()
+TInt CBTHidServer::NewConnectionL(TBTConnectionState aConnectionStatus)
     {
         TRACE_INFO(_L("[BTHID]\tCBTHidServer::NewConnectionL"));
+     __ASSERT_DEBUG( aConnectionStatus == EConnecting || aConnectionStatus == EHIDInitConnecting ,
+                               CBTHidServer::PanicServer(EBadState));
+     
     CBTHidConnection *connection = CBTHidConnection::NewLC(iSocketServ,
-            *this, EConnecting);
+            *this, aConnectionStatus);
     // Add to the connection container object.
     iBTConnContainer->AddL(connection);
     CleanupStack::Pop(); // connection
@@ -1012,6 +1053,132 @@ void CBTHidServer::FirstTimeConnectionComplete(TInt aConnID, TInt aStatus)
         }
     }
 
+void CBTHidServer::FirstTimeConnectionCompleteFromRemote(TInt aConnID, TInt aStatus)
+    {
+        TRACE_INFO( (_L("[BTHID]\tCBTHidServer::FirstTimeConnectionCompleteFromRemote(%d)"), aStatus));
+    TInt error = aStatus;
+
+    CBTHidConnection* connection =
+            static_cast<CBTHidConnection*> (iBTConnIndex->At(aConnID));
+    __ASSERT_ALWAYS(connection, PanicServer(EInvalidHandle));
+
+    if (error == KErrNone)
+        {
+        TBool genHidConnected = EFalse;
+
+            TRAP( error,
+                    // Inform the Generic HID of the Connection
+                    GenericHIDConnectL(connection, ETrue);
+
+                    // Record that we got as far as informing the Generic HID.
+                    genHidConnected = ETrue;
+
+                    // Try to start monitoring the channels.
+                    connection->StartMonitoringChannelsL();
+            )
+
+        if (error != KErrNone)
+            {
+            // If we informed the Generic HID of the connection, then
+            // we must also disconnect.
+            if (genHidConnected)
+                {
+                iGenHID->Disconnected(aConnID);
+                }
+
+            // Delete the connection object.
+            //Quietly refuse the remote initialized connection in case of error. 
+            //No need to bother user.
+            iBTConnIndex->Remove(aConnID);
+            }
+        else
+            {
+            // Update the stored devices, as we could have power off
+            // and no clean shutdown.
+            // Use the non-leaving version.
+            CleanOldConnection(aConnID);
+            StoreVirtuallyCabledDevices(KFileStore);
+            InformClientsOfStatusChange(connection->DeviceDetails(),
+                    EBTDeviceConnectedFromRemote);
+            }
+        }
+    else
+        {
+        //Quietly refuse the remote initialized connection in case of error.
+        //No need to bother user.
+        iBTConnIndex->Remove(aConnID);
+        }
+    }
+
+void CBTHidServer::StartSDPSearch(TInt aConnID)
+    {
+    iConnID = aConnID;
+    TRACE_INFO( (_L("[BTHID]\tCBTHidServer::StartSDPSearch aConnID= (%d)"), aConnID));
+    CBTHidConnection* connection =
+            static_cast<CBTHidConnection*> (iBTConnIndex->At(iConnID));
+    __ASSERT_ALWAYS(connection, PanicServer(EInvalidHandle));
+    
+    TRAPD( res,
+                // Retrieve the hid device object for this new connection
+                CBTHidDevice &devDetails =
+                ConnectionDetailsL(iConnID);
+
+                // Create a new HID Sdp Client
+                // Its only used here so it doesn't matter if we leave.
+                delete iHidSdpClient;
+                iHidSdpClient = 0;
+                //Create a new hid sdp client using the hid device object.
+                iHidSdpClient = CHidSdpClient::NewL(devDetails, *this);
+
+                // Start the hid sdp client
+                iHidSdpClient->StartL();
+        )
+    
+    if (res != KErrNone)
+        {
+        // Get the server to delete the new connection object
+        DeleteNewConnection(iConnID);
+        }
+    }
+
+void CBTHidServer::HidSdpSearchComplete(TInt aResult)
+    {
+    TRACE_FUNC(_L("[BTHID]\tCBTHidServer::HidSdpSearchComplete"));
+    // This is a callback from the Hid SDP client so we can't delete it here
+    // Get it to destroy itself when its convenient.
+    iHidSdpClient->Kill();
+    // Deleted outside destructor.
+    iHidSdpClient = 0;
+
+    // If the SDP search was a success
+    if (aResult == KErrNone)
+        {       
+        // Try to connect to the device as a HID
+        CBTHidConnection* connection =
+                static_cast<CBTHidConnection*> (iBTConnIndex->At(iConnID));
+        __ASSERT_ALWAYS(connection, PanicServer(EInvalidHandle));
+        if (connection)
+            {
+            CBTHidDevice& devDetails = connection->DeviceDetails();
+            
+            //Only after SDP search complete, do we know the CoD which is needed
+            //to tell if the incoming connection is allowed or not.
+            //ETrue , establish the connection.
+            //EFalse, refuse the remote connecion sliently
+            if (IsAllowToConnectFromClientSide(devDetails.iAddress))
+                {
+                FirstTimeConnectionCompleteFromRemote(iConnID, aResult);
+                }
+            else
+                {
+                FirstTimeConnectionCompleteFromRemote(iConnID, KErrAlreadyExists);
+                }
+            }
+        
+        }
+    }
+
+
 void CBTHidServer::LinkLost(TInt aConnID)
     {
         TRACE_INFO( (_L("[BTHID]\tCBTHidServer::LinkLost(%d)"), aConnID));
@@ -1126,9 +1293,10 @@ void CBTHidServer::SocketAccepted(TUint aPort, TInt aErrorCode)
     else
         {
         TInt i = 0;
-        TInt count = iBTConnContainer->Count();
+        
         TInt err = KErrNone;
 
+        TInt connectingID = 0;
         // Check which port has accepted a connection
         switch (aPort)
             {
@@ -1137,8 +1305,32 @@ void CBTHidServer::SocketAccepted(TUint aPort, TInt aErrorCode)
                 // Get the BT address of the device that has connected
                 iTempControl->RemoteName(sockAddr);
                 devAddr = sockAddr.BTAddr();
+                // incoming HID connection is allowed
+                if (!DeviceExistInContainer(devAddr))
+                    {                    
+                    TRAPD( res,                            
+                           // to be created as New if device not yet listed in container
+                           connectingID = NewConnectionL(EHIDInitConnecting);
+                    
+                           // Retrieve the hid device object for this new connection
+                           CBTHidDevice &devDetails =
+                           ConnectionDetailsL(connectingID);
+
+                           // Fill in the information we got from the client
+                           devDetails.iAddress = devAddr;
+                           devDetails.iUseSecurity = ETrue;
+                           )
+
+                     if (res != KErrNone && connectingID != 0)
+                         {
+                         // Get the server to delete the new connection object
+                         DeleteNewConnection(connectingID);
+                         }
+                     }
+
                 if (IsAllowToConnectFromClientSide(devAddr))
                     {
+                    TInt count = iBTConnContainer->Count();
                     while ((i < count) && (iTempControl))
                         {
                         CBTHidConnection
@@ -1184,7 +1376,7 @@ void CBTHidServer::SocketAccepted(TUint aPort, TInt aErrorCode)
                         TRACE_INFO(_L("[BTHID]\tCBTHidServer::SocketAccepted, control channel failed, shutdown listener"));
                     ShutdownListeners(err);
                     }
-
+                
                 break;
 
                 // The HID Interrupt Channel
@@ -1194,6 +1386,7 @@ void CBTHidServer::SocketAccepted(TUint aPort, TInt aErrorCode)
                 devAddr = sockAddr.BTAddr();
                 if (IsAllowToConnectFromClientSide(devAddr))
                     {
+                    TInt count = iBTConnContainer->Count();
                     while ((i < count) && (iTempInterrupt))
                         {
                         CBTHidConnection

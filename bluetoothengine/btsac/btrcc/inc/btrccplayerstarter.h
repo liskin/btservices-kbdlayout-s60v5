@@ -125,6 +125,11 @@ private:
         TBool IsMusicPlayerRunning();
         
         /**
+         * Tells if Video player is running or not.
+         */
+        TBool IsVideoPlayerRunning();
+
+        /**
          * Launch MPX player.
          */
         void LaunchMusicPlayerL();

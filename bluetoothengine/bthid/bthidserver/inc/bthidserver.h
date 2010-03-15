@@ -37,12 +37,15 @@
 #include "genericserver.h"
 #include "hidlayoutids.h"
 #include "genericactive.h"
+#include "hidsdpobserver.h"
+#include "bthidconnection.h"
 
 class CBTConnection;
 class CSocketListener;
 class CBTHidConnection;
 class CBTHidDevice;
 class CGenericHid;
+class CHidSdpClient;
 class CBTHidNotifierHelper;
 
 /**
@@ -53,7 +56,8 @@ class CBTHidNotifierHelper;
 class CBTHidServer : public CGenericServer,
         public MBTConnectionObserver,
         public MListenerObserver,
-        public MTransportLayer
+        public MTransportLayer,
+        public MHidSdpObserver
     {
 public:
 
@@ -117,7 +121,7 @@ public:
      Asks the server to create a new connection object.
      @result ID for the connection
      */
-    TInt NewConnectionL();
+    TInt NewConnectionL(TBTConnectionState aConnectionState);
 
     /*!
      Asks the server to do a first-time connection to a device.
@@ -151,7 +155,15 @@ public:
      @result TBTEngConnectionStatus
      */
     TBTEngConnectionStatus ConnectStatus(const TBTDevAddr& aAddress);
-
+    
+    /*!
+     Finds out the connection status for a given Bluetooth address connected with HID profile
+     @param aBDAddr reference to TBTAddr that is checked from Bluetooth registry
+     @result ETrue  device is found from Container
+             EFalse  device is not found from Container
+         */    
+    TBool DeviceExistInContainer(const TBTDevAddr& aAddress);
+    
     /*!
      Panic the server.
      @param aPanic panic code
@@ -177,6 +189,8 @@ public:
     void HandleInterruptData(TInt aConnID, const TDesC8& aBuffer);
 
     void FirstTimeConnectionComplete(TInt aConnID, TInt aStatus);
+    
+    void FirstTimeConnectionCompleteFromRemote(TInt aConnID, TInt aStatus);
 
     void LinkLost(TInt aConnID);
 
@@ -185,10 +199,17 @@ public:
     void Disconnected(TInt aConnID);
 
     void Unplugged(TInt aConnID);
+    
+    void StartSDPSearch(TInt aConnID);
 
 public:
     //from MListenerObserver
     void SocketAccepted(TUint aPort, TInt aErrorCode);
+    
+public:
+    // from MHidSdpObserver
+
+    void HidSdpSearchComplete(TInt aResult);
 
 public:
     //from MTransportLayer
@@ -363,7 +384,12 @@ private:
     RNotifier iNotifier;
 
     RPointerArray<CBTHidNotifierHelper> iReqs;
-
+    
+    /*! The ID given to this connection */
+    TInt iConnID;
+    
+    /*! A hid sdp client */
+    CHidSdpClient* iHidSdpClient;
     };
 
 

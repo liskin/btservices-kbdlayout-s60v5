@@ -31,6 +31,7 @@
 enum TBTHidConnState
     {
     EBTDeviceConnected, /*!< Device connected */
+    EBTDeviceConnectedFromRemote, /*!< Device connected from remote HID device */
     EBTDeviceLinkLost, /*!< Device link lost */
     EBTDeviceLinkRestored, /*!< Device link restored */
     EBTDeviceDisconnected, /*!< Device disconnected */

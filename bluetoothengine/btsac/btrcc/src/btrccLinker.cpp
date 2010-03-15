@@ -25,7 +25,6 @@
 #include <apacmdln.h>
 #include <apgcli.h>
 #include "btaudioremconpskeys.h"
-#include "btrccLegacyVolumeLevelController.h"
 #include "btrccAbsoluteVolumeLevelController.h"
 #include "btrccLinker.h"
 #include "btrccplayerstarter.h"
@@ -87,7 +86,6 @@ void CBTRCCLinker::ConstructL()
     if (iAccObserver.IsAvrcpVolCTSupported())
         {
         iAbsoluteVolController = CBTRCCAbsoluteVolumeLevelController::NewL(*iInterfaceSelector, *this);
-        iLegacyVolController = CBTRCCLegacyVolumeLevelController::NewL(*iInterfaceSelector, *this);
         }
     else 
    		{
@@ -101,8 +99,6 @@ void CBTRCCLinker::ConstructL()
 
     iRemConBatteryTgt = CRemConBatteryApiTarget::NewL(*iInterfaceSelector, *this);
 
-//    iBrowsingAdapter = CBTRCCBrowsingAdapter::NewL(*iInterfaceSelector); 
-    
     if (iAccObserver.IsAvrcpVolCTSupported()) 
         {
         iInterfaceSelector->OpenControllerL();
@@ -129,7 +125,6 @@ CBTRCCLinker::~CBTRCCLinker()
         User::RequestComplete(iClientRequest, KErrAbort);
 	
     delete iAbsoluteVolController;
-    delete iLegacyVolController;
 	delete iPlayerStarter;
 	Cancel();
     iStateArray.ResetAndDestroy();
@@ -437,17 +432,18 @@ void CBTRCCLinker::StartRemoteVolumeControl()
     if (iAccObserver.IsAvrcpVolCTSupported())
         {
         // Choose based on SDP result whether to create 
-        // absolute controller or legacy controller.
+        // absolute controller or not.
         if(!iVolController)
             {
             if (iAccObserver.IsAbsoluteVolumeSupported(iRemoteAddr))
                 {
                 iVolController = iAbsoluteVolController;
+                TRACE_INFO(_L("Absolute volume supported, taking it into use."))
                 }
             else 
-                {
-                iVolController = iLegacyVolController;
-                }
+            	{
+                TRACE_INFO(_L("No absolute volume supported, so no volume control."))
+            	}
             }
         }
     if (iVolController)
@@ -466,6 +462,7 @@ void CBTRCCLinker::StopRemoteVolumeControl()
     if (iVolController)
         {
         iVolController->Stop();
+        iVolController = NULL; 
         }
     }
 

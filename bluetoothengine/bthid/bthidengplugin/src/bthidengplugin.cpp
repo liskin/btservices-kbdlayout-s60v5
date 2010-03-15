@@ -137,7 +137,8 @@ void CBTHidPlugin::HandleNotifyProfileStatusChange(CGenericActive& aActive)
         THIDStateUpdate& HIDStateUpdate = iHIDStateUpdatePckg();
 
         if (HIDStateUpdate.iState == EBTDeviceConnected
-                || HIDStateUpdate.iState == EBTDeviceLinkRestored)
+                || HIDStateUpdate.iState == EBTDeviceLinkRestored
+                || HIDStateUpdate.iState == EBTDeviceConnectedFromRemote)
             {
             retStatus = ETrue;
             ReportProfileConnectionEvents(HIDStateUpdate.iDeviceAddress,

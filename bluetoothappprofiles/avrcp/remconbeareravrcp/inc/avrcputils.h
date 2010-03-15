@@ -170,4 +170,22 @@ private:
 	CSpecificThreadCallBackBody*	iBody;
 	};
 
+/**
+An extended double queue link class to provide additional features.
+*/
+NONSHARABLE_CLASS(TAvrcpDblQueLink) : public TDblQueLink
+	{
+	public:
+		inline TBool IsQueued() const;
+	};
+
+/**
+Indicates whether the queue link is attached to a queue.
+@return True if the link is queued, false otherwise.
+*/
+inline TBool TAvrcpDblQueLink::IsQueued() const
+	{
+	return iNext ? ETrue : EFalse;
+	}
+
 #endif // AVRCPUTILS_H

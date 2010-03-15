@@ -56,6 +56,19 @@ public:
      @param aStatus KErrNone, or system error code.
      */
     virtual void FirstTimeConnectionComplete(TInt aConnID, TInt aStatus) = 0;
+    
+    /*!
+     Report a change in the connection status
+     @param aConnID connection id
+     @param aStatus KErrNone, or system error code.
+     */
+    virtual void FirstTimeConnectionCompleteFromRemote(TInt aConnID, TInt aStatus) = 0;
+    
+    /*!
+     Start SDP on remote HID device
+     @param aConnID connection id
+     */
+    virtual void StartSDPSearch(TInt aConnID) = 0;
 
     /*!
      Reports that a connection has entered the link loss state
