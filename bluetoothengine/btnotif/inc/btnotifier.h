@@ -293,9 +293,12 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         TBTDevAddr                  iBTAddr; // Gotten from PckBuffer, constant no matter how iDevice changes.
         CBTNotifUIUtil*             iNotifUiUtil;           // Utility to show UI notes & queries
         CBTEngSettings*             iBTEngSettings;
+        TBool                       iIsCoverUI;
+
     private:
         CBTEngDevMan*               iDevMan;  // for BT registry manipulation
-        TBool                       iIsCoverUI;
+
+
         
     };
 

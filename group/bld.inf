@@ -21,6 +21,7 @@ DEFAULT
 #include "../btservices_plat/group/bld.inf"
 #include "../btservices_pub/group/bld.inf"
 #include "../bluetoothengine/group/bld.inf"
+#include "../atcommands/group/bld.inf"
 
 PRJ_EXPORTS
 

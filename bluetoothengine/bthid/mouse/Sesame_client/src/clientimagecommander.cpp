@@ -175,6 +175,11 @@ EXPORT_C void RImageCommander::ImageCommand( TInt aCommand )
     {
     // Could optionally decode the commands here
     DBG(RDebug::Print(_L("RImageCommander::ImageCommand %d"), aCommand));
+    if ( aCommand == KRedrawBTCursorAnim ) 
+        {
+        //reset the current location to avoid sudden jumping 
+        iCurrentPoint.SetXY(0,0);
+        }
 
     RAnim::Command( aCommand );
     
@@ -230,7 +235,6 @@ TInt RImageCommander::SendPointerEvent(TPointerEvent::TType aEventType)
     return KErrNone;
     }
 
-
 TBool RImageCommander::RestrictPos()
     {
     TBool notInScreen(EFalse);
@@ -242,6 +246,12 @@ TBool RImageCommander::RestrictPos()
         TInt mode(screen->CurrentScreenMode());
         screen->GetScreenModeSizeAndRotation(mode, sizeAndRotation);
         }
+    
+    DBG(
+        RDebug::Print(_L("RImageCommander::RestrictPos sizeAndRotation.iPixelSize (%d,%d)"), sizeAndRotation.iPixelSize.iWidth, sizeAndRotation.iPixelSize.iHeight);
+        RDebug::Print(_L("RImageCommander::RestrictPos sizeAndRotation.iRotation (%d)"), sizeAndRotation.iRotation);
+        )
+
     TRect validRect(sizeAndRotation.iPixelSize);
     if (! validRect.Contains(iCurrentPoint))
         {
@@ -268,7 +278,11 @@ inline TBool RImageCommander::CheckCurrentPoint()
     DBG(
     if (outSide)
         {
-       RDebug::Print(_L("RImageCommander::CheckCurrentPoint not in screen (%d,%d)"), pos.iX, pos.iY);
+       RDebug::Print(_L("RImageCommander::CheckCurrentPoint NOT in screen (%d,%d)"), pos.iX, pos.iY);
+        }
+    else
+        {
+       RDebug::Print(_L("RImageCommander::CheckCurrentPoint DOES in screen (%d,%d)"), pos.iX, pos.iY);
         }
     )
     return outSide;

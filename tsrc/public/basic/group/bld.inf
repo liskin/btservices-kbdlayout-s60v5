@@ -19,7 +19,6 @@
 PRJ_PLATFORMS
 DEFAULT
 #include "../btengapitest/group/bld.inf"
-#include "../obexservapitest/group/bld.inf"
 #include "../atextpluginapitest/group/bld.inf"
 
 //build files for shortlinkconn

@@ -335,6 +335,7 @@ void CBTEngServer::RemoveSession( CSession2* aSession, TBool aAutoOff )
 void CBTEngServer::QueueTimer( CBTEngServer::TTimerQueued aTimer, TInt64 aInterval )
     {
     TRACE_FUNC_ARG( ( _L( "queueing timer %d" ), (TInt) aTimer ) )
+    __ASSERT_DEBUG( iTimer, PanicServer( EBTEngPanicMemberVarIsNull ) );
     iTimerQueued |= aTimer;
     TTimeIntervalMicroSeconds interval( aInterval );
     switch( aTimer )
@@ -364,6 +365,10 @@ void CBTEngServer::QueueTimer( CBTEngServer::TTimerQueued aTimer, TInt64 aInterv
 void CBTEngServer::RemoveTimer( CBTEngServer::TTimerQueued aTimer )
     {
     TRACE_FUNC_ARG( ( _L( "removing timer %d" ), (TInt) aTimer ) )
+    if(!iTimer)
+        {
+        return; // not fully constructed yet, don't do anything
+        }
     iTimerQueued &= ~aTimer;
     // Timers can be removed without being queued, no need to check.
     switch( aTimer )

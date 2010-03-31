@@ -177,21 +177,21 @@ void CBTToggle::ToggleBT()
     //BT Connected or error obtaining link count (in the case of error, we are cautious and assume BT is connected)
     if (errLinkCount || linkCount > 0)
       {
-      TRACE_INFO((_L("[BTENG][BTTOGGLE]Ongoing BT connection") ))								
+      TRACE_INFO((_L("[BTENG][BTTOGGLE]Ongoing BT connection") ))
       __ASSERT_DEBUG(iActiveNotifier == ENoneQuery, Panic(EBTToggleInvalidStateCloseConnectionQuery));
 
-      iActiveNotifier = ECloseConnectionQuery;						
+      iActiveNotifier = ECloseConnectionQuery;
       iPckgGenericQuery().iMessageType = EBTSwitchOffAnyway;
       iPckgGenericQuery().iNameExists = EFalse;
-      iNotifier.StartNotifierAndGetResponse(iStatus, KBTGenericQueryNotifierUid, iPckgGenericQuery, iConnQuery );			
-      SetActive();															
-      }	
+      iNotifier.StartNotifierAndGetResponse(iStatus, KBTGenericQueryNotifierUid, iPckgGenericQuery, iConnQuery );
+      SetActive();
+      }
     //No open connections
     else
       {
       TRACE_INFO((_L("[BTENG][BTTOGGLE] No BT connections") ))
       ChangeBtPowerMode(EBTPowerOff);
-      }					 
+      }
     }
   TRACE_FUNC_EXIT	
   }
@@ -241,20 +241,17 @@ TInt CBTToggle::ChangeBtPowerMode(TBTPowerStateValue aNewPowerState)
   TRACE_FUNC_ENTRY
   __ASSERT_DEBUG(iActiveNotifier == ENoneQuery, Panic(EBTToggleInvalidStateChangeBtPowerMode));
 
-  TRequestStatus *stat = &iStatus; 
-  TInt errPower = iSettings->SetPowerState(aNewPowerState);					
-
+  TInt errPower = iSettings->SetPowerState(aNewPowerState);
   if (KErrNone == errPower)
     {
     ShowNotification( static_cast<TBool>(aNewPowerState) );
+    iActiveNotifier = EPowerModeChangeNote; 
+    iStatus = KRequestPending;
+    SetActive();
     }
-  iActiveNotifier = EFakeNotif; 
-  iStatus = KRequestPending;
-  User::RequestComplete(stat, KErrNone);
-  SetActive();
 
   TRACE_FUNC_EXIT
-  return errPower; 	
+  return errPower;
   }
 
 // ==========================================================
@@ -284,7 +281,7 @@ void CBTToggle::ShowNotification( TBool aStatus )
   Cancel();
 
   //Start new notification
-  iNotifier.StartNotifier(KBTGenericInfoNotifierUid, pckgGenericInfo, result);	
+  iNotifier.StartNotifierAndGetResponse(iStatus, KBTGenericInfoNotifierUid, pckgGenericInfo, result);	
 
   TRACE_FUNC_EXIT
   }
@@ -304,7 +301,11 @@ void CBTToggle::DoCancel()
   else if ( ECloseConnectionQuery == iActiveNotifier ) 
     {
     iNotifier.CancelNotifier(KBTGenericQueryNotifierUid); 
-    }
+    }  
+  else if ( EPowerModeChangeNote == iActiveNotifier ) 
+      {
+      iNotifier.CancelNotifier(KBTGenericQueryNotifierUid); 
+      }
 
   // For all cancels, we must reset iActiveNotifier back to ENoneQuery
   // to permit another request to be made.
@@ -328,10 +329,10 @@ void CBTToggle::RunL()
   // to permit another request to be made.
   switch (iActiveNotifier)
     {							
-    case EPowerModeQuery:				
+    case EPowerModeQuery:
       iActiveNotifier = ENoneQuery;
-      ShowNotification(ETrue);
-      CActiveScheduler::Stop();
+      ShowNotification(ETrue);    
+      SetActive();
       break; 			
     case ECloseConnectionQuery:							
       iActiveNotifier = ENoneQuery;
@@ -343,8 +344,8 @@ void CBTToggle::RunL()
         {
         CActiveScheduler::Stop();
         }																				
-      break;											
-    default: //ENoneQuery or EFakeNotif
+      break;
+    default: //ENoneQuery or EPowerModeChangeNote
       iActiveNotifier = ENoneQuery;
       CActiveScheduler::Stop();
     }						

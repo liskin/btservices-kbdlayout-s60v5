@@ -99,6 +99,8 @@ TInt CBTEngIncPair::ObserveIncomingPair( const TBTDevAddr& aAddr )
     if ( iAddr == aAddr )
         {
         err = KErrNone;
+        iUserAwarePairing = ETrue; // This function is called by a notifier, which means the UI has been involved
+        // Therefore we can display it in the paired devices list
         if ( !iActive->IsActive() && !OpenPhysicalLinkAdaptor() )
             {
             // If we are observing physical link, or showing user a note,
@@ -171,46 +173,46 @@ void CBTEngIncPair::DoHandleRegistryNewPairedEvent( const TBTNamelessDevice& aDe
         iActivePairingOk->CancelRequest();
         UnSetPairResult();  // we might have set it before (if the link went down) so we want to reset it.   
         }
-    switch ( aDev.LinkKeyType() )
-        {
-        case ELinkKeyUnauthenticatedNonUpgradable:
-            {
-            // If an application uses btengconnman API to connect a service of 
-            // this device and JW pairing occurred as part of security enforcement,
-            // it shall be a user aware pairing, and we shall add this device in paired
-            // view. In this way, user is able to disconnect the device from our UI.
-            // Otherwise the link key has been created by a device without IO requesting 
-            // a service connection with phone. We won't take any action (e.g. remove 
-            // link key) in this case. As the result, this device can't be seen in our UI, 
-            // however other applications are still freely to use its services.
-            TRACE_INFO(_L("[BTEng]: CBTEngIncPair: JW pairing with no IO device" ) )
-            TBTEngConnectionStatus status = iParent.IsDeviceConnected( aDev.Address() );
-            if ( status == EBTEngConnecting || status == EBTEngConnected )
-                {
-                // the return error is ingore as we can not have other proper 
-                // exception handling option:
-                (void) iParent.AddUiCookieJustWorksPaired( aDev );
-                }
-            iParent.RenewPairer( NULL );
-            break;
-            }
-        case ELinkKeyUnauthenticatedUpgradable:
-            {
-            // The linkkey has been created  by an incoming OBEX service request
-            // which resulted a pairing event received from pair server.
-            TRACE_INFO(_L("[BTEng]: CBTEngIncPair: JW pairing with IO device" ) )
-            iParent.RenewPairer( NULL );
-            break;
-            }
-        default:
-            {
-            // Other pairing model than Just Works:
-            CancelPlaNotification();
-            SetPairResult( KErrNone );
-            ShowPairingNoteAndAuthorizeQuery();
-            break;
-            }
-        }
+    if (aDev.LinkKeyType() == ELinkKeyUnauthenticatedNonUpgradable && !iUserAwarePairing)
+		{
+		// If an application uses btengconnman API to connect a service of 
+		// this device and JW pairing occurred as part of security enforcement,
+		// it shall be a user aware pairing, and we shall add this device in paired
+		// view. In this way, user is able to disconnect the device from our UI.
+		// Otherwise the link key has been created by a device without IO requesting 
+		// a service connection with phone. We won't take any action (e.g. remove 
+		// link key) in this case. As the result, this device can't be seen in our UI, 
+		// however other applications are still freely to use its services.
+		TRACE_INFO(_L("[BTEng]: CBTEngIncPair: JW pairing with no IO device" ) )
+		TBTEngConnectionStatus status = iParent.IsDeviceConnected( aDev.Address() );
+		if ( status == EBTEngConnecting || status == EBTEngConnected )
+			{
+			// the return error is ingore as we can not have other proper 
+			// exception handling option:
+			(void) iParent.AddUiCookieJustWorksPaired( aDev );
+			}
+		iParent.RenewPairer( NULL );
+		}
+    else if (aDev.LinkKeyType() == ELinkKeyUnauthenticatedUpgradable && !iUserAwarePairing)
+		{
+		// The linkkey has been created  by an incoming OBEX service request
+		// which resulted a pairing event received from pair server.
+		TRACE_INFO(_L("[BTEng]: CBTEngIncPair: JW pairing with IO device" ) )
+		iParent.RenewPairer( NULL );
+		}
+    else
+		{
+		if (aDev.LinkKeyType() == ELinkKeyUnauthenticatedNonUpgradable || aDev.LinkKeyType() == ELinkKeyUnauthenticatedUpgradable)
+			{
+			// The user was involved in the pairing, so display in the paired devices list
+			(void) iParent.AddUiCookieJustWorksPaired(aDev);
+			}
+		TRACE_INFO(_L("[BTEng]: CBTEngIncPair: Non-JW pairing"))
+		// Other pairing model than Just Works:
+		CancelPlaNotification();
+		SetPairResult( KErrNone );
+		ShowPairingNoteAndAuthorizeQuery();
+		}
     TRACE_FUNC_EXIT
     }
 

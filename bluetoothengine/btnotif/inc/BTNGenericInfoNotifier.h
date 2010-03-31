@@ -80,7 +80,7 @@ NONSHARABLE_CLASS(CBTGenericInfoNotifier) : public CBTNotifierBase
 		* @param aBuffer A package buffer containing received parameters.
         * @return None.
         */
-		void ProcessParamBufferL(const TDesC8& aBuffer);
+		void ProcessParamBufferL(const TDesC8& aBuffer, TBool aSyncCall);
 		
         /**
         * C++ default constructor.
@@ -90,7 +90,7 @@ NONSHARABLE_CLASS(CBTGenericInfoNotifier) : public CBTNotifierBase
         /**
          * Show Information note and complete message. 
          */
-        void ShowNoteAndCompleteL();
+        void ShowNoteAndCompleteL(TBool aSyncCall);
         
     private:
         RBuf	iQueryMessage;

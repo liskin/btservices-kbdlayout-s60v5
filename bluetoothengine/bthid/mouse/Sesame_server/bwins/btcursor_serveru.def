@@ -1,4 +1,0 @@
-EXPORTS
-	?CreateCAnimDllL@@YAPAVCAnimDll@@XZ @ 1 NONAME ; class CAnimDll * CreateCAnimDllL(void)
-	?CreateInstanceL@CMouseCursorSrv@@UAEPAVCAnim@@H@Z @ 2 NONAME ; class CAnim * CMouseCursorSrv::CreateInstanceL(int)
-

@@ -28,9 +28,10 @@ VENDORID		VID_DEFAULT
 SOURCEPATH		.
 SOURCE			btfeatures.cpp
 
+USERINCLUDE		../../inc
 MW_LAYER_SYSTEMINCLUDE
 
 LIBRARY			euser.lib
-LIBRARY			featmgr.lib
+LIBRARY			centralrepository.lib
 
 deffile ~/btfeatures.def

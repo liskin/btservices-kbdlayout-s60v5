@@ -164,6 +164,10 @@ void CPaintCursorAppView::HandleResourceChange( TInt aType )
         AknLayoutUtils::LayoutMetricsRect( AknLayoutUtils::EMainPane, mainPaneRect );
         SetRect( mainPaneRect );
         DrawNow();
+        if (iMouseInitialized)
+            {
+            iClientCommander.ImageCommand( KRedrawBTCursorAnim );
+            }
         }
     }
 

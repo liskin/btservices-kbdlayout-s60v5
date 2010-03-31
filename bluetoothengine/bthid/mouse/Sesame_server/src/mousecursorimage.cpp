@@ -189,6 +189,18 @@ void CImage::Command( TInt aOpcode, TAny* aArgs )
             iSpriteFunctions->Activate(EFalse);
             }
         break;
+        
+        case KRedrawBTCursorAnim:
+            {
+            iSpriteFunctions->Activate(EFalse);
+            iSpriteGc->Reset();
+            iSpriteFunctions->SetPosition(TPoint());
+            iSpriteFunctions->SizeChangedL();
+            iSpriteFunctions->Activate(ETrue);
+            DrawCursor();
+            }
+        break;
+        
         case KChangeCursor:
             {
             TPoint pos = *(TPoint *)aArgs;

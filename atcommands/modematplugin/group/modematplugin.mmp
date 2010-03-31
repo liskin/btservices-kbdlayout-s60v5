@@ -1,0 +1,51 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for project modematplugin
+*
+*/
+
+
+#include <platform_paths.hrh>
+
+TARGET                  modematplugin.dll
+TARGETTYPE              PLUGIN
+UID                     0x10009D8D 0x20029FBF 
+
+CAPABILITY              CAP_ECOM_PLUGIN
+VENDORID                VID_DEFAULT
+
+SOURCEPATH              ../src
+SOURCE                  proxy.cpp
+SOURCE                  modematplugin.cpp
+SOURCE                  atcopscmd.cpp
+
+START RESOURCE          ../src/20029fbf.rss  
+TARGET                  modematplugin.rsc
+END
+
+USERINCLUDE             ../inc
+
+MW_LAYER_SYSTEMINCLUDE
+
+SYSTEMINCLUDE           /epoc32/include/ecom
+
+LIBRARY	ECom.lib
+LIBRARY euser.lib
+LIBRARY atextpluginbase.lib
+LIBRARY etelmm.lib 
+LIBRARY etel.lib
+LIBRARY etelpckt.lib
+LIBRARY customapi.lib
+
+DEBUGLIBRARY flogger.lib

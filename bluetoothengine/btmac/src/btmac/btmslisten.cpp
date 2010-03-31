@@ -43,6 +43,7 @@ CBtmsListen::~CBtmsListen()
     {
     delete iHfpSock;
     delete iHspSock;
+    Parent().StoppedListenning();
     }
 
 void CBtmsListen::EnterL()
@@ -83,6 +84,7 @@ void CBtmsListen::StartListenerL()
     TRACE_STATE((_L("[BTMAC State] Start EBTProfileHSP, last used port %d"), lastUsedPort)) 
     Parent().RegisterServiceL(ag, iHspSock->ListenL(ag, sec,lastUsedPort));
     iHspSock->SetService(EBTProfileHSP);
+    Parent().StartedListenning();
     }
 
 void CBtmsListen::OpenAudioLinkL(const TBTDevAddr& aAddr, TRequestStatus& aStatus)

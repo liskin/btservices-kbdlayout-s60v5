@@ -85,10 +85,13 @@ CBTGenericInfoNotifier::TNotifierInfo CBTGenericInfoNotifier::RegisterL()
 TPtrC8 CBTGenericInfoNotifier::StartL( const TDesC8& aBuffer )
     {
     FLOG(_L("[BTNOTIF]\t CBTGenericInfoNotifier::StartL()"));
- 	ProcessParamBufferL(aBuffer);
+    if( !iNotifUiUtil )
+        {
+        iNotifUiUtil = CBTNotifUIUtil::NewL( iIsCoverUI );
+        }
+    ProcessParamBufferL(aBuffer, ETrue);
+    FLOG(_L("[BTNOTIF]\t CBTGenericInfoNotifier::StartL() completed"));
 
-	FLOG(_L("[BTNOTIF]\t CBTGenericInfoNotifier::StartL() completed"));
-	
     TPtrC8 ret(KNullDesC8);
     return (ret);
     }
@@ -109,7 +112,7 @@ void CBTGenericInfoNotifier::GetParamsL(const TDesC8& aBuffer,
 	    return;
 	    }
     iMessage = aMessage;
- 	ProcessParamBufferL(aBuffer);
+ 	ProcessParamBufferL(aBuffer, EFalse);
     }
 
 // ----------------------------------------------------------
@@ -117,10 +120,10 @@ void CBTGenericInfoNotifier::GetParamsL(const TDesC8& aBuffer,
 // Parse the data out of the message that is sent by the
 // client of the notifier.
 // ----------------------------------------------------------
-void CBTGenericInfoNotifier::ProcessParamBufferL(const TDesC8& aBuffer)
+void CBTGenericInfoNotifier::ProcessParamBufferL(const TDesC8& aBuffer, TBool aSyncCall)
 	{
 	TBTGenericInfoNotifierParams bParams;
-	TPckgC<TBTGenericInfoNotifierParams> bPckg(bParams);	
+	TPckgC<TBTGenericInfoNotifierParams> bPckg(bParams);
 		
 	bPckg.Set( aBuffer );
 	iSecondaryDisplayCommand = ECmdBTnotifUnavailable;
@@ -222,7 +225,7 @@ void CBTGenericInfoNotifier::ProcessParamBufferL(const TDesC8& aBuffer)
 		}
 	else
 	    {
-	    ShowNoteAndCompleteL();
+	    ShowNoteAndCompleteL(aSyncCall);
 	    }
 	}
 	
@@ -231,10 +234,13 @@ void CBTGenericInfoNotifier::ProcessParamBufferL(const TDesC8& aBuffer)
 // Shows the notifier in backround 
 // ----------------------------------------------------------
 //
-void CBTGenericInfoNotifier::ShowNoteAndCompleteL()
+void CBTGenericInfoNotifier::ShowNoteAndCompleteL(TBool aSyncCall)
 	{
 	iNotifUiUtil->ShowInfoNoteL( iQueryMessage, iSecondaryDisplayCommand );
-    CompleteMessage(KErrNone);
+	if (!aSyncCall)
+		{
+        CompleteMessage(KErrNone);
+        }
     FLOG(_L("[BTNOTIF]\t CBTGenericInfoNotifier::ShowNoteAndComplete() complete"));
 	}
 
@@ -248,7 +254,7 @@ void CBTGenericInfoNotifier::HandleGetDeviceCompletedL(const CBTDevice* /*aDev*/
     BluetoothUiUtil::LoadResourceAndSubstringL( 
             iQueryMessage, iMessageResourceId, name, 0);      
     
-    ShowNoteAndCompleteL();
+    ShowNoteAndCompleteL(EFalse);
 
     FLOG(_L("[BTNOTIF]\t CBTGenericInfoNotifier::HandleGetDeviceComplete() Complete"));        
     }

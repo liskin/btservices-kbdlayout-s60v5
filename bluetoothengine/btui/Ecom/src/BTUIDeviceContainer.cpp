@@ -32,7 +32,7 @@
 #include "debug.h"               
 #include "btui.h" // Global declarations
 
-const TInt KBTNumberOfIcons = 13;    // Number of class of device icons
+const TInt KBTNumberOfIcons = 14;    // Number of class of device icons + extra one DEV_STATUS_AUTHORIZED
 	
 _LIT( DEV_TYPE_COMPUTER,"0\t");
 _LIT( DEV_TYPE_PHONE,"1\t");

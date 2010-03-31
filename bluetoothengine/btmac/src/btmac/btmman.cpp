@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  CBtmMan definition
-*  Version     : %version: 15.1.8 %
+*  Version     : %version: 15.1.9 %
 *
 */
 
@@ -27,6 +27,7 @@
 #include "btmactive.h"
 #include "btmstate.h"
 #include "btmslisten.h"
+#include "btmpagescanparametersmanager.h"
 #include "debug.h"
 
 
@@ -71,6 +72,7 @@ CBtmMan::~CBtmMan()
     DeleteAllRegisteredServices();
     delete iBteng;
     iServices.Close();
+    delete iPageScanParametersManager;
     TRACE_FUNC_EXIT
     }
 
@@ -452,10 +454,30 @@ void CBtmMan::ConstructL()
     iEdr = (edr == EBTEScoSupported) ? ETrue : EFalse;
     TRACE_INFO((_L("EDR feature %d"), iEdr))
     iBteng = CBTEngDiscovery::NewL();
+    TRAP_IGNORE(iPageScanParametersManager = CBtmPageScanParametersManager::NewL());
     CBtmState* state = CBtmsListen::NewL(*this);
     CleanupStack::PushL(state);
     ChangeStateL(state);
     CleanupStack::Pop(state);
     TRACE_FUNC_EXIT
     }
-    
+
+void CBtmMan::StartedListenning()
+    {
+    TRACE_FUNC_ENTRY
+    if (iPageScanParametersManager)
+        {
+        iPageScanParametersManager->Activate();
+        }
+    TRACE_FUNC_EXIT
+    }
+
+void CBtmMan::StoppedListenning()
+    {
+    TRACE_FUNC_ENTRY
+    if (iPageScanParametersManager)
+        {
+        iPageScanParametersManager->Deactivate();
+        }
+    TRACE_FUNC_EXIT
+    }

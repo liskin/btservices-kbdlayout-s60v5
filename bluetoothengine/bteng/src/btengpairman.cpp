@@ -412,6 +412,7 @@ void CBTEngPairMan::UnpairDevice( const TBTDevAddr& aAddr )
 
 TInt CBTEngPairMan::AddUiCookieJustWorksPaired( const TBTNamelessDevice& aDev )
     {
+	TRACE_FUNC_ENTRY
     TInt err( KErrNone );
     // There might be UI cookies used by other applications,
     // we should not overwrite them. 
@@ -426,6 +427,7 @@ TInt CBTEngPairMan::AddUiCookieJustWorksPaired( const TBTNamelessDevice& aDev )
         err = UpdateRegDevice( dev );
         TRACE_INFO( ( _L( "[BTENG] CBTEngOtgPair write Ui cookie ret %d"), err ) );
         }
+    TRACE_FUNC_EXIT
     return err;
     }
 

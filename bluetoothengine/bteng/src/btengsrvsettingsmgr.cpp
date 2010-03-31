@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -402,7 +402,11 @@ void CBTEngSrvSettingsMgr::ScanModeTimerCompletedL()
     SetVisibilityModeL( EBTVisibilityModeHidden, 0 );
     TBTPowerState power = EBTOff;
     TInt err = GetHwPowerState( power );
-    if( !err && power )
+    // See p2.1.2.1.2 of the UI spec
+    // NB:  Please distinguish between TBTPowerState::EBTOff (defined in hcitypes.h)
+    //      and TBTPowerStateValue::EBTPowerOff (defined in btserversdkcrkeys.h)
+    //      because they have the opposite values
+    if( !err && (power != EBTOff))
         {
         // Show a notification to the user
         TBTGenericInfoNotiferParamsPckg pckg;

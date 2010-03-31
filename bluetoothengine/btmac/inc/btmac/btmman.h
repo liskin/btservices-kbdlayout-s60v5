@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  the entry of this plugin.
-*  Version     : %version: 12.1.7 %
+*  Version     : %version: 12.1.8 %
 *
 */
 
@@ -38,6 +38,7 @@ class RSocketServ;
 class CBtmState;
 class CBtmActive;
 class CBtmcHandlerApi;
+class CBtmPageScanParametersManager;
 
 /**
  * the main class of BTMAC.
@@ -167,7 +168,11 @@ public:
      * @param aAddr the address of the remote device.
      */
     void SetCmdHandlerRvcSupport( const TBTDevAddr& aAddr );
-    
+
+    void StartedListenning();
+
+    void StoppedListenning();
+
 private:
     // From base class CBTAccPlugin
 
@@ -328,6 +333,8 @@ private:
     TBool iEdr;
     
     CBTEngDiscovery* iBteng;
+
+    CBtmPageScanParametersManager* iPageScanParametersManager;
     };
 
 #endif // C_BTMMAN_H

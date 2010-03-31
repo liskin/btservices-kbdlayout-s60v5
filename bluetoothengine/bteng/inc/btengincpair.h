@@ -176,6 +176,7 @@ private:
      */
     RTimer iPairingOkTimer;
     CBTEngActive* iActivePairingOk;
+    TBool iUserAwarePairing;
     };
 
 #endif /*BTENGINCPAIR_H_*/

@@ -79,14 +79,23 @@ enum TBTLocalNameStatus
  */
 const TUint32 KBTSapEnabled	= 0x00000003;
 
-const TUint32 KBtHidKeyboardLayout = 0x00000004;
-
 /**  Enumeration for Bluetooth SAP setting */
 enum TBTSapMode
     {
     EBTSapDisabled = 0,
     EBTSapEnabled
     };
+
+const TUint32 KBtHidKeyboardLayout = 0x00000004;
+
+const TUint32 KBluetoothEnterpriseState = 0x00000005;
+
+enum TBluetoothEnterpriseState
+	{
+	EBluetoothEnterpriseDisabled = 0,
+	EBluetoothEnterpriseDataProfilesDisabled = 1,
+	EBluetoothEnterpriseEnabled = 2,
+	};
 
 
 #endif // BTENG_PRIVATE_CR_KEYS_H

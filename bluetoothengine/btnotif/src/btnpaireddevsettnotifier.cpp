@@ -141,7 +141,7 @@ void CBTPairedDevSettNotifier::HandleGetDeviceCompletedL(const CBTDevice* /*aDev
         }
     else
         {
-        iNotifUiUtil->ShowErrorNoteL( ETrue, stringholder, iSecondaryDisplayCommand, name );
+        iNotifUiUtil->ShowErrorNoteL( EFalse, stringholder, iSecondaryDisplayCommand, name );
         }
     CleanupStack::PopAndDestroy( &stringholder );
       

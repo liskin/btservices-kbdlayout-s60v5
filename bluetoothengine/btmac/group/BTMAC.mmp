@@ -51,6 +51,7 @@ SOURCE      btmsaudio.cpp
 SOURCE      btmstempd.cpp
 SOURCE      btmsreconnect.cpp
 SOURCE      btmsdisconnect.cpp
+SOURCE      btmpagescanparametersmanager.cpp
 
 USERINCLUDE ../inc/btmac ../common
 SYSTEMINCLUDE ../../inc ../../../inc /epoc32/include/ecom

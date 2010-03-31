@@ -16,19 +16,11 @@
 */
 
 
-#include <btfeaturescfg.h> 
-#include <featmgr/featurecontrol.h>
-#include <featmgr/featmgr.h>
+#include <btfeaturescfg.h>
 
-/**
-	Device supports bluetooth data profiles disabled.
-*/
-const TInt KFeatureIdTempFfBluetoothDataProfilesDisabled = 0x1000001;
-	
-/**
-	Device supports bluetooth disabled.
-*/
-const TInt KFeatureIdTempFfBluetoothDisabled = 0x1000002;
+#include <centralrepository.h> 
+
+#include "btengprivatecrkeys.h"
 
 
 EXPORT_C void BluetoothFeatures::SetEnterpriseEnablementL(BluetoothFeatures::TEnterpriseEnablementMode aMode)
@@ -40,54 +32,72 @@ EXPORT_C void BluetoothFeatures::SetEnterpriseEnablementL(BluetoothFeatures::TEn
 	if ( proc.SecureId() != KDcmoServerSecureUid )
 		{
 		User::Leave(KErrPermissionDenied);
-		}	
-
-	const TUid KBtDisabledUid = {KFeatureIdTempFfBluetoothDisabled};
-	const TUid KBtDataProfilesDisabledUid = {KFeatureIdTempFfBluetoothDataProfilesDisabled};
-
-	RFeatureControl featureControl;
-	User::LeaveIfError(featureControl.Connect());
-	CleanupClosePushL(featureControl);
-	switch ( aMode )
+		}
+	
+	// get ready to use the central repository.
+	CRepository* cenRep = CRepository::NewL(KCRUidBTEngPrivateSettings);
+	CleanupStack::PushL(cenRep);
+	
+	switch(aMode)
 		{
 	case EDisabled:
-		User::LeaveIfError(featureControl.EnableFeature(KBtDisabledUid));
-		User::LeaveIfError(featureControl.DisableFeature(KBtDataProfilesDisabledUid));
+		User::LeaveIfError(cenRep->Set(KBluetoothEnterpriseState, EBluetoothEnterpriseDisabled));
 		break;
 	case EDataProfilesDisabled:
-		User::LeaveIfError(featureControl.DisableFeature(KBtDisabledUid));
-		User::LeaveIfError(featureControl.EnableFeature(KBtDataProfilesDisabledUid));
+		User::LeaveIfError(cenRep->Set(KBluetoothEnterpriseState, EBluetoothEnterpriseDataProfilesDisabled));
 		break;
 	case EEnabled:
-		User::LeaveIfError(featureControl.DisableFeature(KBtDisabledUid));
-		User::LeaveIfError(featureControl.DisableFeature(KBtDataProfilesDisabledUid));
+		User::LeaveIfError(cenRep->Set(KBluetoothEnterpriseState, EBluetoothEnterpriseEnabled));
 		break;
 	default:
 		User::Leave(KErrArgument);
 		break;
 		}
-	CleanupStack::PopAndDestroy(&featureControl);
+	
+	CleanupStack::PopAndDestroy(cenRep);
 	}
 
 EXPORT_C BluetoothFeatures::TEnterpriseEnablementMode BluetoothFeatures::EnterpriseEnablementL()
 	{
-	TEnterpriseEnablementMode mode = EDisabled;
+	TEnterpriseEnablementMode mode = EEnabled;
+	TInt setting = EBluetoothEnterpriseEnabled;
 	
-	FeatureManager::InitializeLibL();
-    const TBool bluetoothDisabled = FeatureManager::FeatureSupported(KFeatureIdTempFfBluetoothDisabled);
-    if ( !bluetoothDisabled )
+	// get the value out of the repository.
+	CRepository* cenRep = CRepository::NewL(KCRUidBTEngPrivateSettings);
+	CleanupStack::PushL(cenRep);
+	
+	TInt err = cenRep->Get(KBluetoothEnterpriseState, setting);
+	if(err == KErrNotFound)
 		{
-		const TBool dataProfilesDisabled = FeatureManager::FeatureSupported(KFeatureIdTempFfBluetoothDataProfilesDisabled);
-		if ( dataProfilesDisabled )
-			{
-			mode = EDataProfilesDisabled;
-			}
-		else
-			{
-			mode = EEnabled;
-			}	
+		// not found in repository, so assume enabled by default
+		mode = EEnabled;
 		}
-    FeatureManager::UnInitializeLib();
-    
+	else if(err == KErrNone)
+		{
+		// Got a value from repository, convert it as appropriate.
+		switch(setting)
+			{
+		case EBluetoothEnterpriseDisabled:
+			mode = EDisabled;
+			break;
+		case EBluetoothEnterpriseDataProfilesDisabled:
+			mode = EDataProfilesDisabled;
+			break;
+		case EBluetoothEnterpriseEnabled:
+			mode = EEnabled;
+			break;
+		default:
+			User::Leave(KErrUnknown);
+			break;
+			}
+		}
+	else
+		{
+		// Some other error accessing the central repository.
+		User::Leave(err);
+		}
+	
+	CleanupStack::PopAndDestroy(cenRep);
+	
 	return mode;
 	}

@@ -49,9 +49,15 @@ public:
      * Create an instance of the Animation Server image aType.
      * @param aType KAnimationSquare implies "construct a bouncing square"
      */
-    IMPORT_C CAnim* CreateInstanceL(TInt aType);
+    CAnim* CreateInstanceL(TInt aType);
 
     };
+
+/**
+ * Entry point function to Create the animation plugin
+ * Returns the object of the CMouseCursorSrv class
+ */
+IMPORT_C CAnimDll* CreateCAnimDllL();
 
 #endif // __MOUSECURSORSRV_H__
 // End of File

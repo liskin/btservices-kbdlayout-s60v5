@@ -203,9 +203,13 @@ void CBtmcVolume::DoSetSpeakerVolL( TInt aPrevPhVol )
         diff1 = Abs( aPrevPhVol - iAccSpkrVol );
         diff2 = Abs( iPhnSpkrVol - iAccSpkrVol );
         
-        if( diff2 >= diff1  )
+        if (diff2 > diff1)
             {
             // the previous phone volume is closer to current headset volume setting
+            volClick = ( aPrevPhVol < iPhnSpkrVol ) ? KPSVolumeDownClicked : KPSVolumeUpClicked;
+            }
+        else if ( (diff2 == diff1) && (diff1 !=0) )
+            {
             volClick = ( aPrevPhVol < iPhnSpkrVol ) ? KPSVolumeDownClicked : KPSVolumeUpClicked;
             }
         // otherwise we have roughly synchronized vol in both ends.

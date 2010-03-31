@@ -490,16 +490,20 @@ void CBTNotifierBase::DoBlockDevice()
     iDevice->DeleteLinkKey();
  
     iBTRegistryQueryState = ESetDeviceBlocked;
+    TInt err = KErrNone;
     if( !iDevMan )
         {
-        iDevMan = CBTEngDevMan::NewL( this );    
+        TRAP(err, iDevMan = CBTEngDevMan::NewL( this ));    
         }
-    TInt devManErr = iDevMan->ModifyDevice( *iDevice );     
-            
-    // if error, complete message, otherwise waiting for devman callback
-    //
-    if(devManErr != KErrNone)
-        CompleteMessage(devManErr); 
+    if( !err )
+        {
+        err = iDevMan->ModifyDevice( *iDevice );
+        }
+    if( err )
+        {
+        // if error, complete message, otherwise waiting for devman callback
+        CompleteMessage(err); 
+        }
     }
 
 void CBTNotifierBase::ChangeAuthorizeState( TBool aTrust )
@@ -511,17 +515,19 @@ void CBTNotifierBase::ChangeAuthorizeState( TBool aTrust )
     iDevice->SetGlobalSecurity(sec);
  
     iBTRegistryQueryState = ESetDeviceAuthorizeState;
+    TInt err = KErrNone;
     if( !iDevMan )
-        {
-        iDevMan = CBTEngDevMan::NewL( this );    
+        {    
+        TRAP(err, iDevMan = CBTEngDevMan::NewL( this ));
         }
-    TInt devManErr = iDevMan->ModifyDevice( *iDevice );     
-            
-    // if error, complete message, otherwise waiting for devman callback
-    //
-    if(devManErr != KErrNone)
+    if( !err )
         {
-        CompleteMessage(devManErr); 
+        err = iDevMan->ModifyDevice( *iDevice );
+        }
+    if( err )
+        {
+        // if error, complete message, otherwise waiting for devman callback        
+        CompleteMessage(err); 
         TBTNotifLockPublish::DeleteNotifLocks( 
                 EBTNotiferLockPairedDeviceSetting, iDevice->BDAddr() );
         }

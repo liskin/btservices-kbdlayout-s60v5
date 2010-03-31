@@ -143,10 +143,10 @@ NONSHARABLE_CLASS(CBTToggle): public CActive
 
     enum TToggleActiveNotifier
       {
-      ENoneQuery = 0,		    
+      ENoneQuery = 0,
       EPowerModeQuery,
       ECloseConnectionQuery, 
-      EFakeNotif
+      EPowerModeChangeNote
       };
 
   private: //Data	
