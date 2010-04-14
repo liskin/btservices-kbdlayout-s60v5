@@ -1157,7 +1157,7 @@ void CHidKeyboardDriver::SendKeyPress(TUint16 aUnicodeKey, TInt aUsagePage,
 #endif
 
     //Number entry to Telephone app is handled differently.
-    if ((IsDigitKey(aScanCode) || IsSpecialHandleKey(aUnicodeKey))
+    if ((IsDigitKey(aScanCode) || IsSpecialHandleKey(aUnicodeKey) || aScanCode == EStdKeyBackspace )
             && IsPhoneAppTopMost())
         return;
 

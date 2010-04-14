@@ -15,7 +15,6 @@
  *
 */
 
-
 #ifndef BTHIDSETTINGCONTAINER_H
 #define BTHIDSETTINGCONTAINER_H
 
@@ -86,7 +85,7 @@ private:
     /**
      * From CCoeControl
      */
-    //void GetHelpContext(TCoeHelpContext& aContext) const;
+    void GetHelpContext(TCoeHelpContext& aContext) const;
 
 private:
     //data

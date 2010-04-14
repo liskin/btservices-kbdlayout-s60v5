@@ -37,7 +37,7 @@
 #include <btextnotifierspartner.h>
 #endif
 
-#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
+#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
 
 #ifdef __SERIES60_HELP
 #include <hlplch.h>

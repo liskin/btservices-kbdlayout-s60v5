@@ -31,7 +31,7 @@
 #include "btnpbappinnotifier.h" // own class definition
 #include "btNotifDebug.h"       // debugging macros
 
-#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
+#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
 
 // ================= MEMBER FUNCTIONS =======================
 

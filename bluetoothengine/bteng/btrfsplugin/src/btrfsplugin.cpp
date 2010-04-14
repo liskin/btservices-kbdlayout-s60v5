@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -77,10 +77,14 @@ void CBTRFSPlugin::RestoreFactorySettingsL( const TRfsReason /*aType*/ )
     TRACE_FUNC_EXIT
     }
 
-void CBTRFSPlugin::GetScriptL( const TRfsReason /*aType*/, TDes& aPath )
+void CBTRFSPlugin::GetScriptL( const TRfsReason aType, TDes& aPath )
     {
     TRACE_FUNC_ENTRY
-    aPath.Copy( KScriptPath);
+    ASSERT(aType == EDeepRfs || aType == ENormalRfs); // ECOM default data specifies only these two types
+    if(aType == EDeepRfs)
+        {
+        aPath.Copy(KScriptPath);
+        }
     TRACE_FUNC_EXIT
     }
 

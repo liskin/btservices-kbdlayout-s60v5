@@ -38,6 +38,7 @@ USERINCLUDE     ../../inc
 USERINCLUDE 	../../common/inc
 USERINCLUDE 	../../manager/inc
 USERINCLUDE     ../../loc
+USERINCLUDE     ../../../btui/inc
 
 SOURCEPATH      ../../common/src
 SOURCE  bthidcenrepwatcher.cpp
@@ -49,6 +50,9 @@ SOURCE          bthidsettingview.cpp
 SOURCE          bthidpluginimplementationtable.cpp btkeysettinglist.cpp btkeyenumtextsettingitem.cpp
 
 APP_LAYER_SYSTEMINCLUDE
+#ifdef __SERIES60_HELP
+SYSTEMINCLUDE   /epoc32/include/cshelp
+#endif
 SYSTEMINCLUDE ../../../../inc ../../../inc
 
 //***********ECOM resource definition******************

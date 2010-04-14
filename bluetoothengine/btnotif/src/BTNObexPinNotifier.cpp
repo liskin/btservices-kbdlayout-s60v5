@@ -23,7 +23,7 @@
 #include "btnobexpinnotifier.h" // Own class definition
 #include "btNotifDebug.h"       // Debugging macros
 
-#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
+#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
 
 // ================= MEMBER FUNCTIONS =======================
 

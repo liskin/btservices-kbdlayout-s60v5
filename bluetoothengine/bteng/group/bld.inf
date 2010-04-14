@@ -29,9 +29,7 @@ PRJ_EXPORTS
 ../inc/btotgpairpub.inl                     |../../inc/btotgpairpub.inl
 ../inc/btengutil.h                          |../../inc/btengutil.h
 ../rom/bteng.iby                            CORE_MW_LAYER_IBY_EXPORT_PATH(bteng.iby)
-../data/10204DA9.xml	/epoc32/release/winscw/udeb/z/private/2000B187/10204DA9.xml
-../data/10204DA9.xml	/epoc32/release/winscw/urel/z/private/2000B187/10204DA9.xml
-../data/10204DA9.xml	/epoc32/data/z/private/2000B187/10204DA9.xml
+../data/10204DA9.xml                        z:/private/2000B187/10204DA9.xml
 
 ../conf/bteng.confml                        MW_LAYER_CONFML(bteng.confml)
 ../conf/bteng_10204DA9.crml 	            MW_LAYER_CRML(bteng_10204DA9.crml)
@@ -39,9 +37,7 @@ PRJ_EXPORTS
 ../conf/bteng_10204DAB.crml 	            MW_LAYER_CRML(bteng_10204DAB.crml)
 ../conf/bteng_10204DAC.crml 	            MW_LAYER_CRML(bteng_10204DAC.crml)
 
-../data/btrfs.txt        /epoc32/data/z/resource/btrfs.txt
-../data/btrfs.txt        /epoc32/release/winscw/udeb/z/resource/btrfs.txt
-../data/btrfs.txt        /epoc32/release/winscw/urel/z/resource/btrfs.txt
+../data/btrfs.txt                           z:/resource/btrfs.txt
 
 
 PRJ_MMPFILES

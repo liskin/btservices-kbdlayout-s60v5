@@ -22,6 +22,11 @@
 #include <AknsBasicBackgroundControlContext.h> //skin
 #include <BthidResource.rsg>
 #include "bthidsettingcontainer.h"
+#ifdef __SERIES60_HELP
+#include <hlplch.h>
+#include <csxhelp/bt.hlp.hrh> // The bt hrh info is needed, for help launching
+#endif
+#include "btui.h"
 #include "debug.h"
 
 // ================= MEMBER FUNCTIONS =======================
@@ -162,4 +167,33 @@ TTypeUid::Ptr CBTHidSettingContainer::MopSupplyObject(TTypeUid aId)
 
     return CCoeControl::MopSupplyObject( aId );
     }
+
+#ifdef __SERIES60_HELP
+
+// ---------------------------------------------------------
+// From CCoeControl
+// CBTHidSettingContainer::GetHelpContext
+// ---------------------------------------------------------
+//
+void CBTHidSettingContainer::GetHelpContext(TCoeHelpContext& aContext) const
+    {
+    TRACE_FUNC_ENTRY
+
+    aContext.iMajor = KBtuiUid3;
+    aContext.iContext = KBTKEYBOARD_HLP_SETTINGS;
+    }
+
+#else
+
+// ---------------------------------------------------------
+// From CCoeControl
+// CBTHidSettingContainer::GetHelpContext
+// ---------------------------------------------------------
+//
+void CBTHidSettingContainer::GetHelpContext(TCoeHelpContext& /*aContext*/) const
+    {
+    TRACE_FUNC_ENTRY    
+    }
+
+#endif
 // End of File

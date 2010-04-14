@@ -29,7 +29,7 @@
 #include "BTUIListedDevicesView.h"
 #include "btuipluginman.h"
 #include "BTUIActive.h"
-#include <SecondaryDisplay/BtuiSecondaryDisplayAPI.h>
+#include <secondarydisplay/BtuiSecondaryDisplayAPI.h>
 #include <gstabbedview.h>
 
 class CAknNavigationControlContainer;

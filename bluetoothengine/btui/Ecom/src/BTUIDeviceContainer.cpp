@@ -76,17 +76,7 @@ void CBTUiDeviceContainer::ConstructL(const TRect& aRect,
 	iDeviceList->SetListBoxObserver( this );    
 
     // Set the empty text at basis of the list
-    HBufC* devEmptyText = NULL ;
-    if(iGroup ==EGroupPaired)
-    	{
-    	devEmptyText=iCoeEnv->AllocReadResourceLC( R_BT_NO_PAIRED_DEVICES);
-    	}    	
-    else
-    	{    
-    	devEmptyText=iCoeEnv->AllocReadResourceLC( R_BT_NO_BLOCKED_DEVICES);
-    	}
-    iDeviceList->View()->SetListEmptyTextL(*devEmptyText );
-    CleanupStack::PopAndDestroy(devEmptyText);
+    iDeviceList->View()->SetListEmptyTextL( KNullDesC );
 
     // Set up filenames for Btui and Avkon bitmaps
     TFileName bmpFilename;
@@ -291,7 +281,21 @@ void CBTUiDeviceContainer::RefreshDeviceListL(const RDeviceArray* aDeviceArray,T
 
 	if(deviceCount >0 )
 		iDeviceList->SetCurrentItemIndex( Max(selectedItem,0 )) ;
-	
+	else
+		{
+		HBufC* devEmptyText = NULL;
+		if(iGroup ==EGroupPaired)
+			{
+			devEmptyText=iCoeEnv->AllocReadResourceLC( R_BT_NO_PAIRED_DEVICES);
+			}    	
+		else
+			{    
+			devEmptyText=iCoeEnv->AllocReadResourceLC( R_BT_NO_BLOCKED_DEVICES);
+			}
+		iDeviceList->View()->SetListEmptyTextL(*devEmptyText );
+		CleanupStack::PopAndDestroy(devEmptyText);
+		}
+		
 	if(addition | removal | previouslySelected!=selectedItem)
     	iDeviceList->DrawDeferred();
 	TRACE_FUNC_EXIT

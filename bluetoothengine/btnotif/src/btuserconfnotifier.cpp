@@ -32,7 +32,7 @@
 #include "btNotifDebug.h"    // Debugging macros
 #include <btotgpairpub.inl>
 #include <btengconnman.h>
-#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
+#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
 #include <bluetoothuiutil.h>
 #include "btnotifnameutils.h"
 

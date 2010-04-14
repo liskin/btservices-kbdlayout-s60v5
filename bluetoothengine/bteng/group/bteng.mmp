@@ -64,10 +64,6 @@ LIBRARY                 featmgr.lib
 LIBRARY                 aknnotify.lib
 LIBRARY                 btfeatures.lib
 
-#ifndef SETLOCALNAME
-LIBRARY                 btengsettings.lib
-#endif
-
 LIBRARY                 btpowercontrol.lib
 #ifndef __WINS__
 LIBRARY                 dutmode.lib

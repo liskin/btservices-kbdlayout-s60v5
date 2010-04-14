@@ -27,7 +27,7 @@
 #include <bluetooth/hci/hcierrors.h>
 #include "btnotifnameutils.h"
 
-#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
+#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
 
 #include <e32cmn.h>
 #include <AknMediatorFacade.h>  // CoverUI 

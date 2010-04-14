@@ -43,7 +43,7 @@
 #include "btui.h" 						// Global declarations
 #include "BTUIPairedDevicesView.h"
 #include "BTUIDeviceContainer.h"
-#include <SecondaryDisplay/BtuiSecondaryDisplayAPI.h>
+#include <secondarydisplay/BtuiSecondaryDisplayAPI.h>
 #include <csxhelp/bt.hlp.hrh>   // Help IDs
 
 #include <gstabhelper.h>
@@ -1232,6 +1232,7 @@ void CBTUIPairedDevicesView::ConnectCompleteL(TInt aError,const TBTDevice& aDevi
        			// Showing a note in this case would always show a note with "%U" in it
        			// so the note is not shown at all
        			TRACE_INFO(_L("KErrAlreadyExists, but no device given, not showing a notification"))
+				CleanupStack::PopAndDestroy(&stringholder);
 	          	break;	
           		}
 

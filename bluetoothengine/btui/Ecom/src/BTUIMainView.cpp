@@ -43,7 +43,7 @@
 #include <AknUtils.h>					// For char filter
 #include <CoreApplicationUIsSDKCRKeys.h>
 #include <hlplch.h>         			// Help launcher
-#include <SecondaryDisplay/BtuiSecondaryDisplayAPI.h>
+#include <secondarydisplay/BtuiSecondaryDisplayAPI.h>
 #include <btengprivatecrkeys.h>
 #include <gstabhelper.h>
 #include <gsfwviewuids.h>

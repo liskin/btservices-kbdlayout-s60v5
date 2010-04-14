@@ -22,7 +22,7 @@
 #include "btNotifDebug.h"    // Debugging macros
 #include <btextnotifiers.h>
 #include <AknMediatorFacade.h> // Cover UI
-#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
+#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
 #include <btengconstants.h>
 #include <btengsettings.h>
 #include <e32cmn.h>
@@ -156,7 +156,11 @@ void CBTAuthNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, const R
         User::LeaveIfError( iNotifLockProp.Attach( 
                 KPSUidBluetoothEnginePrivateCategory, KBTNotifierLocks ) );
         }
-    iLockActive = CBTNotifActive::NewL( this, KBTNotifAuthNotifierLockReq, CActive::EPriorityStandard );
+    
+    if(!iLockActive)
+        {
+        iLockActive = CBTNotifActive::NewL( this, KBTNotifAuthNotifierLockReq, CActive::EPriorityStandard );
+        }
 
     CheckAndSubscribeNotifLocks();
     
@@ -289,11 +293,15 @@ void CBTAuthNotifier::Cancel()
     {
     FLOG(_L("[BTNOTIF]\t CBTAuthNotifier::Cancel()"));
     
-    iLockActive->CancelRequest();
-    delete iLockActive;
-    iLockActive = NULL;    
+    if (iLockActive)
+        {
+        iLockActive->CancelRequest();
+        delete iLockActive;
+        iLockActive = NULL;
+        }
+    
     iNotifLockProp.Close();
-        
+    
 	CBTNotifierBase::Cancel(); 
     
     FLOG(_L("[BTNOTIF]\t CBTAuthNotifier::Cancel() completed"));
@@ -537,6 +545,7 @@ void CBTAuthNotifier::ShowAuthoQueryL()
         DoRejectAuthorizationL();
         }
     }
+
 
 // ----------------------------------------------------------
 // CBTAuthNotifier::DoRejectAuthorizationL

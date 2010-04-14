@@ -247,13 +247,6 @@ private:
     void CheckTemporaryPowerStateL( TBTPowerState& aCurrentState,
                                      TBTPowerState aNewState, TBool aTemporary );
 
-    /**
-     * Set the Class of Device.
-     *
-     * @since Symbian^3
-     */
-    void SetClassOfDeviceL();
-
 private: // data
 
 #ifdef __WINS__

@@ -31,10 +31,6 @@
 #include "btengsrvstate.h"
 #include "debug.h"
 
-#ifndef SETLOCALNAME
-#include <btengsettings.h>
-#endif
-
 /** ID of active object helper */
 const TInt KBTEngSettingsActive = 30;
 /** Constant for converting minutes to microseconds */
@@ -45,14 +41,7 @@ const TInt64 KMinutesInMicroSecs = MAKE_TINT64( 0, 60000000 );
 const TInt64 KBTEngSspDebugModeTimeout = MAKE_TINT64( 0, 1800000000 );
 /**  Timeout for turning BT off automatically. The value is 10.5 seconds. */
 const TInt KBTEngBtAutoOffTimeout = 10500000;
-/**  Default values for Major Service Class */
-const TUint16 KCoDDefaultServiceClass = EMajorServiceTelephony | EMajorServiceObjectTransfer | EMajorServiceNetworking;
-/**  Default values for Major Device Class */
-const TUint8 KCoDDefaultMajorDeviceClass = EMajorDevicePhone;
-/**  Default values for Minor Device Class */
-const TUint8 KCoDDefaultMinorDeviceClass = EMinorDevicePhoneSmartPhone;
-
-
+ 
 // ======== MEMBER FUNCTIONS ========
 
 // ---------------------------------------------------------------------------
@@ -668,31 +657,7 @@ void CBTEngSrvSettingsMgr::RequestCompletedL( CBTEngActive* aActive, TInt aId, T
         // Something went wrong, so we turn BT off again.
         SetPowerStateL( EBTOff, EFalse );
         }
-    else
-        {
-        // Write CoD only when the hardware has fully powered up.
-        TBTPowerState currState ( EBTOff );
-        (void) GetHwPowerState( currState );
-        if ( currState == EBTOn )
-            {
-            SetClassOfDeviceL();
-#ifndef SETLOCALNAME 
-            // the macro SETLOCALNAME is used as a workaround to tackle the BT name 
-            // could not be saved to BT chip before chip initialization completed for the first time,
-            // which is one of the regression after improving the BT boot up time. 
-            // To be removed once the final solution is in place. 
-            CBTEngSettings* settings = CBTEngSettings::NewL();
-            TBTDeviceName localName;           
-            localName.Zero();
-            TInt err = settings->GetLocalName(localName);
-            if (err == KErrNone)
-                {
-                settings->SetLocalName(localName);
-                }
-            delete settings;
-#endif
-            }
-        }
+    
     if ( !iMessage.IsNull())
         {
         iMessage.Complete( aStatus );
@@ -913,31 +878,4 @@ void CBTEngSrvSettingsMgr::CheckTemporaryPowerStateL( TBTPowerState& aCurrentSta
         iAutoOffClients = 0;
         }
     TRACE_FUNC_EXIT 
-    }
-
-
-// ---------------------------------------------------------------------------
-// Set the Class of Device.
-// ---------------------------------------------------------------------------
-//
-void CBTEngSrvSettingsMgr::SetClassOfDeviceL()
-    {
-    TRACE_FUNC_ENTRY
-    TUint16 serviceClass = KCoDDefaultServiceClass;
-        // Check from feature manager if stereo audio is enabled.
-    FeatureManager::InitializeLibL();
-    TBool supported = FeatureManager::FeatureSupported( KFeatureIdBtStereoAudio );
-    FeatureManager::UnInitializeLib();
-    if( supported )
-        {
-        // A2DP spec says we should set this bit as we are a SRC
-        serviceClass |= EMajorServiceCapturing;
-        }
-        // These values may nayway be overridden by HCI
-    TBTDeviceClass cod( serviceClass, KCoDDefaultMajorDeviceClass, 
-                         KCoDDefaultMinorDeviceClass );
-        // Ignore error, it is non-critical
-    (void) RProperty::Set( KPropertyUidBluetoothControlCategory, 
-                            KPropertyKeyBluetoothSetDeviceClass, cod.DeviceClass() );
-    TRACE_FUNC_EXIT
     }

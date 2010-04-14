@@ -21,7 +21,7 @@
 #include <data_caging_path_literals.hrh> 
 #include <AknQueryDialog.h>
 #include <AknWaitDialog.h>
-#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
+#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
 
 // CONSTANTS
 // Literals for resource and bitmap files ( drive, directory, filename(s) )
