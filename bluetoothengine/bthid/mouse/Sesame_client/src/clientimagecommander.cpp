@@ -175,7 +175,7 @@ EXPORT_C void RImageCommander::ImageCommand( TInt aCommand )
     {
     // Could optionally decode the commands here
     DBG(RDebug::Print(_L("RImageCommander::ImageCommand %d"), aCommand));
-    if ( aCommand == KRedrawBTCursorAnim ) 
+    if ( aCommand == KResetBTCursorAnim ) 
         {
         //reset the current location to avoid sudden jumping 
         iCurrentPoint.SetXY(0,0);

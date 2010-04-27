@@ -1725,7 +1725,7 @@ void CBTUIPairedDevicesView::RefreshDeviceList(const RDeviceArray* aDevices,
 			    TRACE_INFO(_L("Device status changed, update menupane"));
 			    iMenuDevice = device;
 			    iActiveMenuPane->Close();
-			    TRAP_IGNORE( this->ProcessCommandL(EAknSoftkeyOptions) );
+			    TRAP_IGNORE( this->ProcessCommandL(EAknSoftkeyContextOptions) );
 			    }
 		    }
 	    }

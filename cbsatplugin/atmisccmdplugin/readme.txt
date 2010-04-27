@@ -1,0 +1,4 @@
+- AT misc commands plugin implements AT commands for AT+CFUN
+- This plugin will not be part of SF and will be moved to ext folder later
+- To test this plugin we need to manually build 
+- Optionally, after building we can generate a sisx file and use it for testing. Look at atmisccmdplugin\sis folder for information

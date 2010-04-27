@@ -203,8 +203,8 @@ public:
      * @since S60 v3.2
      * @param ?arg1 ?description
      */
-    void DisconnectAllL();
-
+    void DisconnectAllForPowerOffL();
+    
     /**
      * ?description
      *

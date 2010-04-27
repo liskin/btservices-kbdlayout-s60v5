@@ -84,7 +84,7 @@ void CImage::ConstructL( TAny* /* aArgs */ )
     iSpriteGc->Reset();
     iSpriteFunctions->SetPosition(TPoint());
     iSpriteFunctions->SizeChangedL();
-
+    iLastUsedPoint = TPoint(0,0);
     // Set the screen visible
     // We are using a timer, not the built in synchronising, so turn it off
     iFunctions->SetSync( MAnimGeneralFunctions::ESyncNone );
@@ -155,13 +155,13 @@ void CImage::DrawCursor(  )
         DBG(RDebug::Print(_L(" CImage::DrawCursor iBitmapMaskDevice")));
         // Draw mask
         iSpriteGc->Activate(iBitmapMaskDevice);
-        iSpriteGc->BitBlt(TPoint(0,0), iCursorBitmapMask);
+        iSpriteGc->BitBlt(iLastUsedPoint, iCursorBitmapMask);
 
         DBG(RDebug::Print(_L(" CImage::DrawCursor iBitmapMaskDevice")));
 
         // Draw bitmap
         iSpriteGc->Activate(iBitmapDevice);
-        iSpriteGc->BitBlt(TPoint(0,0), iCursorBitmap);
+        iSpriteGc->BitBlt(iLastUsedPoint, iCursorBitmap);
         }
     DBG(RDebug::Print(_L(" CImage::DrawCursor END")));
     }
@@ -180,7 +180,6 @@ void CImage::Command( TInt aOpcode, TAny* aArgs )
         case KStartBTCursorAnim:
             {
             iSpriteFunctions->Activate(ETrue);
-            DrawCursor();
             }
         break;
 
@@ -194,23 +193,42 @@ void CImage::Command( TInt aOpcode, TAny* aArgs )
             {
             iSpriteFunctions->Activate(EFalse);
             iSpriteGc->Reset();
-            iSpriteFunctions->SetPosition(TPoint());
+            DBG(RDebug::Print(
+                _L("[BTHID]\tCImage::Command iLastUsedPoint (%d, %d)"), iLastUsedPoint.iX, iLastUsedPoint.iY));
+            iSpriteFunctions->SetPosition(iLastUsedPoint);
             iSpriteFunctions->SizeChangedL();
             iSpriteFunctions->Activate(ETrue);
-            DrawCursor();
+            }
+        break;
+        
+        case KResetBTCursorAnim:
+            {
+            iSpriteFunctions->Activate(EFalse);
+            iSpriteGc->Reset();
+            DBG(RDebug::Print(_L("[BTHID]\tCImage::Command KResetBTCursorAnim") ));
+            iLastUsedPoint.iX = 0;
+            iLastUsedPoint.iY = 0;
+            iSpriteFunctions->SetPosition(iLastUsedPoint);
+            iSpriteFunctions->SizeChangedL();
+            iSpriteFunctions->Activate(ETrue);
             }
         break;
         
         case KChangeCursor:
             {
-            TPoint pos = *(TPoint *)aArgs;
-            iSpriteFunctions->SetPosition(pos);
+            iLastUsedPoint = *(TPoint *)aArgs;
+            DBG(RDebug::Print(
+                _L("[BTHID]\tCImage::Command KChangeCursor *(TPoint *)aArgs (%d, %d)"), iLastUsedPoint.iX, iLastUsedPoint.iY));
+            iSpriteFunctions->SetPosition(iLastUsedPoint);
             }
         break;
         case KSendRawEvent:
             {
             TRawEvent rawEvent = *(TRawEvent *)aArgs;
-            iSpriteFunctions->SetPosition(rawEvent.Pos());
+            iLastUsedPoint = rawEvent.Pos();
+            DBG(RDebug::Print(
+                _L("[BTHID]\tCImage::Command KSendRawEvent rawEvent.Pos() (%d, %d)"), iLastUsedPoint.iX, iLastUsedPoint.iY));
+            iSpriteFunctions->SetPosition(iLastUsedPoint);
             iFunctions->PostRawEvent( rawEvent );
             }
         break;

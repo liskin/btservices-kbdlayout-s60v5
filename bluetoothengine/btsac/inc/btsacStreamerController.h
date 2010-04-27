@@ -249,6 +249,7 @@ NONSHARABLE_CLASS(CBTSACStreamerController) : public CActive, MBTAudioErrorObser
 		TInt iPacketDropDeviation;
 		RArray<TBitpoolData> iBitpoolData;
 		TBitpoolData* iCurrentBitpoolData;
+		TBool iRemoteSupportsOnlyOneValue;
     };
 
 

@@ -60,7 +60,13 @@ public:
     void HideCursor();
 
     void ShowCursor();
-	
+    
+	//Repaint the cursor at last used point 
+    void RedrawCursor();
+    
+	//Repaint the cursor at TPoint(0,0) during orientation change
+    void ResetCursor();
+
 public:
     // from CCoeControl
 

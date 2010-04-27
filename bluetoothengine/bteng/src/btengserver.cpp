@@ -165,7 +165,7 @@ void CBTEngServer::ConstructL()
     iWatcher = CBTEngSrvKeyWatcher::NewL( this );
     iSettingsMgr = CBTEngSrvSettingsMgr::NewL( this );
     iPluginMgr = CBTEngSrvPluginMgr::NewL( this );
-    iBBConnMgr = CBTEngSrvBBConnMgr::NewL( iSocketServ );
+    iBBConnMgr = CBTEngSrvBBConnMgr::NewL( this, iSocketServ );
 
     User::LeaveIfError( iBTRegServ.Connect() );
     iPairMan = CBTEngPairMan::NewL( *this );
@@ -256,12 +256,11 @@ void CBTEngServer::SetPowerStateL(const RMessage2 aMessage )
 // ?implementation_description
 // ---------------------------------------------------------------------------
 //
-void CBTEngServer::DisconnectAllL()
+void CBTEngServer::DisconnectAllForPowerOffL()
     {
     TRACE_FUNC_ENTRY
-    iPluginMgr->DisconnectAllPlugins();
     TCallBack cb( DisconnectAllCallBack, this );
-    iBBConnMgr->DisconnectAllLinksL( cb );
+    iBBConnMgr->DisconnectAllLinksForPowerOffL( cb );
     }
 
 

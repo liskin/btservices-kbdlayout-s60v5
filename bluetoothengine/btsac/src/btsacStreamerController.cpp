@@ -940,10 +940,23 @@ void CBTSACStreamerController::SetBitpoolValues(TSBCCodecCapabilities& aCap)
 	{
 	// Define max bitpool
 	TInt MaxBP = 0;
+	TInt minBitpool = aCap.MinBitpoolValue();
+	TInt maxBitpool = aCap.MaxBitpoolValue();	
 	TBool ProperMaxBitpoolFound = EFalse;
+	
+	if( minBitpool == maxBitpool )
+	    {
+        // Remote supports only one bitpool value
+        iRemoteSupportsOnlyOneValue = ETrue;
+        TRACE_INFO((_L("CBTSACStreamerController::SetBitpoolValues(), remote supports only one bitpool value")))
+        TRACE_INFO((_L("CBTSACStreamerController::SetBitpoolValues(), Max Bitpool: %d"), maxBitpool))
+        TRACE_INFO((_L("CBTSACStreamerController::SetBitpoolValues(), Min Bitpool: %d"), minBitpool))
+        return;
+	    }
+	
 	for(TInt i = 0 ; i < KNumOfBitpoolValues ; i++)
 		{
-		if(aCap.MaxBitpoolValue() >= KMaxBitpoolValues[i])
+		if(maxBitpool >= KMaxBitpoolValues[i])
 			{
 			MaxBP = KMaxBitpoolValues[i];
 			ProperMaxBitpoolFound = ETrue;
@@ -954,11 +967,11 @@ void CBTSACStreamerController::SetBitpoolValues(TSBCCodecCapabilities& aCap)
 		{
 		// None of our proposed max bitpool values weren't suitable for accessory.
 		// Let's use the one which was proposed by the accessory.
-		MaxBP = aCap.MaxBitpoolValue();
+		MaxBP = maxBitpool;
 		}
 	
 	// Define min bitpool. This bitpool value is negotiated with sink.
-	TInt MinBP = (iLocalCap.MinBitpoolValue() < aCap.MinBitpoolValue()) ? aCap.MinBitpoolValue() : iLocalCap.MinBitpoolValue();
+	TInt MinBP = (iLocalCap.MinBitpoolValue() < minBitpool) ? minBitpool : iLocalCap.MinBitpoolValue();
 	
 	// Define bitpool which is used for medium quality streaming (when streaming is interfered for some reason).
 	// This is real lowest bitpool value which is used for streaming.
@@ -975,8 +988,8 @@ void CBTSACStreamerController::SetBitpoolValues(TSBCCodecCapabilities& aCap)
 		iBitpoolData[iBitpoolData.Count()-1].iMaxBitpoolValue = MinBP;
 		}
 	
-	TRACE_INFO((_L("CBTSACStreamerController::SetBitpoolValues(), Remote Max Bitpool: %d"), aCap.MaxBitpoolValue()))
-	TRACE_INFO((_L("CBTSACStreamerController::SetBitpoolValues(), Remote Min Bitpool: %d"), aCap.MinBitpoolValue()))
+	TRACE_INFO((_L("CBTSACStreamerController::SetBitpoolValues(), Remote Max Bitpool: %d"), maxBitpool))
+	TRACE_INFO((_L("CBTSACStreamerController::SetBitpoolValues(), Remote Min Bitpool: %d"), minBitpool))
 	
 	aCap.SetMaxBitpoolValue(MaxBP);
 	TRACE_INFO((_L("CBTSACStreamerController::SetBitpoolValues(), Max Bitpool: %d"), MaxBP))
@@ -1263,6 +1276,7 @@ TBool CBTSACStreamerController::IndexValid(TInt aIndex)
 void CBTSACStreamerController::InitializeBitpoolDataL()
 	{
 	TRACE_FUNC
+	iRemoteSupportsOnlyOneValue = EFalse;
 	TBitpoolData data;
 	iBitpoolData.Reset();
 	for(TInt i = 0 ; i < KNumOfBitpoolValues ; i++)
@@ -1294,38 +1308,70 @@ TBitpoolData* CBTSACStreamerController::GetBitpoolData(TInt aIndex)
 // -----------------------------------------------------------------------------
 //
 void CBTSACStreamerController::ReorganizeBitpoolTable(TInt aNegotiatedMaxBitpool)
-	{
-	TRACE_INFO((_L("CBTSACStreamerController::ReorganizeBitpoolTable(), Negotiated Max Bitpool %d"), aNegotiatedMaxBitpool))
-	// Start checking from the lowest possible bitpool value	
-	for(TInt i = (KNumOfBitpoolValues - 1) ; i > 0 ; i--)
-		{
-		if(aNegotiatedMaxBitpool <= KMaxBitpoolValues[i])
-			{
-			TInt ii;
-			for(ii = 0 ; ii < i ; ii++)
-				{
-				iBitpoolData.Remove(0);				
-				}
-			TRACE_INFO((_L("CBTSACStreamerController::ReorganizeBitpoolTable(), Tables removed: %d"), ii))
-			for(TInt j = 0 ; j < iBitpoolData.Count() ; j++)
-				{
-				if(j == 0)
-					{
-					iBitpoolData[j].iMaxBitpoolValue = aNegotiatedMaxBitpool;
-					}
-				iBitpoolData[j].iIndex = j;
-				iBitpoolData[j].iUpBitpoolIndex = (j == 0) ? j : j - 1;
-				iBitpoolData[j].iDownBitpoolIndex = (j == iBitpoolData.Count() - 1) ? j : j + 1;
-				}
-			break;
-			}
-		}
-	TRACE_INFO((_L("CBTSACStreamerController::ReorganizeBitpoolTable(), Tables left: %d"), iBitpoolData.Count()))
-	for(TInt k = 0 ; k < iBitpoolData.Count() ; k++)
-		{
-		TRACE_INFO((_L("CBTSACStreamerController::ReorganizeBitpoolTable(), Table[%d] MaxBP: %d"), k, iBitpoolData[k].iMaxBitpoolValue))
-		}
-	}
+    {
+    TRACE_INFO((_L("CBTSACStreamerController::ReorganizeBitpoolTable(), Negotiated Max Bitpool %d"), aNegotiatedMaxBitpool))
+            
+    TInt tablesToBeRemoved;
+    if( iRemoteSupportsOnlyOneValue )
+        {
+        // Remote supports only one bitpool value, so we need only one table, remove rest. 
+        tablesToBeRemoved = KNumOfBitpoolValues - 1;
+        }
+    else
+        {
+        // Find proper bitpool value, start checking from the lowest possible bitpool value
+        for(tablesToBeRemoved = (KNumOfBitpoolValues - 1) ; tablesToBeRemoved > 0 ; tablesToBeRemoved--)
+            {
+            if(aNegotiatedMaxBitpool <= KMaxBitpoolValues[tablesToBeRemoved])
+                {            
+                break;
+                }
+            }
+        }
+    if( tablesToBeRemoved >= iBitpoolData.Count() )
+        {
+        // This should never happen.
+        TRACE_INFO((_L("CBTSACStreamerController::ReorganizeBitpoolTable(), Index error!")))
+        tablesToBeRemoved = 0;
+        TRAPD(err, InitializeBitpoolDataL())
+        if(err)
+            {
+            return;
+            }
+        }
+    
+    // Remove tables we don't need
+    TInt idx;
+    for( idx = 0 ; idx < tablesToBeRemoved ; idx++)
+        {
+        iBitpoolData.Remove(0);             
+        }    
+    TRACE_INFO((_L("CBTSACStreamerController::ReorganizeBitpoolTable(), Tables removed: %d"), tablesToBeRemoved))
+    
+    if( tablesToBeRemoved )
+        {
+        for( idx = 0 ; idx < iBitpoolData.Count() ; idx++)
+            {
+            if( idx == 0 )
+                {
+                // Index zero has the highest matching/negotiated bitpool value, update it.
+                // Rest values remains to be according to default table.
+                iBitpoolData[idx].iMaxBitpoolValue = aNegotiatedMaxBitpool;
+                }
+            // Update indexing.
+            iBitpoolData[idx].iIndex = idx;
+            iBitpoolData[idx].iUpBitpoolIndex = (idx == 0) ? idx : idx - 1;
+            iBitpoolData[idx].iDownBitpoolIndex = (idx == iBitpoolData.Count() - 1) ? idx : idx + 1;
+            iBitpoolData[idx].iMinimumMaxBitpool = (idx == iBitpoolData.Count() - 1) ? ETrue : EFalse;
+            }
+        }
+    
+    TRACE_INFO((_L("CBTSACStreamerController::ReorganizeBitpoolTable(), Tables left: %d"), iBitpoolData.Count()))
+    for( idx = 0 ; idx < iBitpoolData.Count() ; idx++)
+        {
+        TRACE_INFO((_L("CBTSACStreamerController::ReorganizeBitpoolTable(), Table[%d] MaxBP: %d"), idx, iBitpoolData[idx].iMaxBitpoolValue))
+        }
+    }
 
 // -----------------------------------------------------------------------------
 // CBTSACStreamerController::DoSelfComplete

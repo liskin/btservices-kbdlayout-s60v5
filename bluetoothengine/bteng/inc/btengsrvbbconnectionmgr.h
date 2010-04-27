@@ -26,7 +26,7 @@
 
 #include "btengactive.h"
 
-class CBTEngActive;
+class CBTEngServer;
 
 /**  ?description */
 //const ?type ?constant_var = ?constant;
@@ -50,7 +50,7 @@ public:
     /**
      * Two-phase constructor
      */
-    static CBTEngSrvBBConnMgr* NewL(RSocketServ& aSockServ);
+    static CBTEngSrvBBConnMgr* NewL(CBTEngServer* aServer, RSocketServ& aSockServ);
 
     /**
      * Destructor
@@ -99,6 +99,9 @@ public:
      */
     void DisconnectAllLinksL( TCallBack& aCallBack );
 
+    void DisconnectAllLinksForPowerOffL( TCallBack& aCallBack );
+
+    
     /**
      * Indicate to turn off BT when idle.
      *
@@ -169,7 +172,7 @@ private:
     /**
      * C++ default constructor
      */
-    CBTEngSrvBBConnMgr(RSocketServ& aSockServ);
+    CBTEngSrvBBConnMgr(CBTEngServer* aServer, RSocketServ& aSockServ);
 
     /**
      * Symbian 2nd-phase constructor
@@ -234,7 +237,13 @@ private: // data
      * Not own.
      */
     TCallBack iCallBack;
-
+    
+    /**
+     * Pointer to our parent.
+     * Not own.
+     */
+    CBTEngServer* iServer;
+    
     };
 
 

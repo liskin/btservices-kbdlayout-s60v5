@@ -39,8 +39,6 @@ const TInt KBTEngLockWatcher = 16;
 /**  Identification for active object */
 const TInt KBTEngSysWatcher = 17;
 /**  Identification for active object */
-const TInt KBTEngPHYCountWatcher = 18;
-/**  Identification for active object */
 const TInt KBTEngBtConnectionWatcher = 19;
 /**  Identification for active object */
 const TInt KBTEngScanningWatcher = 20;
@@ -103,16 +101,7 @@ void CBTEngSrvKeyWatcher::ConstructL()
                                                    CActive::EPriorityStandard );
         iSystemStateKey.Subscribe( iSystemStateWatcher->RequestStatus() );
         iSystemStateWatcher->GoActive();
-        }
-        
-    err = iPHYCountKey.Attach( KPropertyUidBluetoothCategory, KPropertyKeyBluetoothPHYCount );
-    if( !err )
-        {
-        iPHYCountWatcher = CBTEngActive::NewL( *this, KBTEngPHYCountWatcher, 
-                                               CActive::EPriorityStandard );
-        iPHYCountKey.Subscribe( iPHYCountWatcher->RequestStatus() );
-        iPHYCountWatcher->GoActive();
-        }
+        }        
         
     err = iBtConnectionKey.Attach( KPropertyUidBluetoothCategory, KPropertyKeyBluetoothConnecting );
     if( !err )
@@ -224,14 +213,7 @@ CBTEngSrvKeyWatcher::~CBTEngSrvKeyWatcher()
         iSystemStateKey.Cancel();
         }
     delete iSystemStateWatcher;
-    iSystemStateKey.Close();
-    
-    if( iPHYCountKey.Handle() )
-        {
-        iPHYCountKey.Cancel();
-        }
-    delete iPHYCountWatcher;
-    iPHYCountKey.Close();
+    iSystemStateKey.Close();    
      
     if( iBtConnectionKey.Handle() )
         {
@@ -332,16 +314,8 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId,
                  val == ESwStateShuttingDown )
                 {
                 iServer->SettingsManager()->SetVisibilityModeL( EBTVisibilityModeNoScans , 0 );
-                iServer->DisconnectAllL();   
+                iServer->DisconnectAllForPowerOffL();   
                 }
-            }
-            break;   
-        case KBTEngPHYCountWatcher:
-            {
-            TRACE_INFO( ( _L( "PHY count key changed" ) ) )
-            iPHYCountKey.Subscribe( aActive->RequestStatus() );
-            aActive->GoActive();
-            iServer->SettingsManager()->SetUiIndicatorsL();
             }
             break;
         case KBTEngBtConnectionWatcher:

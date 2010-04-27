@@ -31,7 +31,7 @@
 
 void CPaintCursorAppUi::ConstructL()
     {
-    TRACE_INFO(_L("[PaintCursor]\t CPaintCursorAppUi::ConstructL()"));
+    TRACE_INFO(_L("[BTHID]\t CPaintCursorAppUi::ConstructL()"));
     BaseConstructL();
 
     iAppView = CPaintCursorAppView::NewL(ClientRect());
@@ -83,7 +83,7 @@ TKeyResponse CPaintCursorAppUi::HandleKeyEventL(
 
 void CPaintCursorAppUi::HandleCommandL(TInt aCommand)
     {
-    TRACE_INFO((_L("[PaintCursor]\t CPaintCursorAppUi::HandleCommandL(%d)"),aCommand));
+    TRACE_INFO((_L("[BTHID]\tCPaintCursorAppUi::HandleCommandL(%d)"),aCommand));
     switch ( aCommand )
         {
         case EEikCmdExit :
@@ -121,7 +121,7 @@ void CPaintCursorAppUi::SendToBackground()
 
 void CPaintCursorAppUi::MouseCursorStatusChangedL(TInt aStatus)
     {
-    
+    TRACE_INFO((_L("[BTHID]\tCPaintCursorAppUi::MouseCursorStatusChangedL(%d)"),aStatus));
     switch (aStatus)
         {
         case ECursorShow:
@@ -132,12 +132,23 @@ void CPaintCursorAppUi::MouseCursorStatusChangedL(TInt aStatus)
         case ECursorHide:
             {
             iAppView->HideCursor();
-            EndTask();
             break;
             }
         case ECursorNotInitialized:
             {
+            iAppView->HideCursor();
             EndTask();
+            break;
+            }
+        case ECursorRedraw:
+            {
+            iAppView->RedrawCursor();
+            break;
+            }
+        case ECursorReset:
+            {
+            iAppView->ResetCursor();
+            break;
             }
         default:
             {

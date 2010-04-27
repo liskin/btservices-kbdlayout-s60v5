@@ -28,7 +28,9 @@ enum THidMouseCursorState
     {
     ECursorNotInitialized = 0, 
     ECursorShow = 1, 
-    ECursorHide = 2
+    ECursorHide = 2,
+    ECursorRedraw = 3,
+    ECursorReset = 4
     };
 
 #endif /* BTHIDPSKEY_H_ */

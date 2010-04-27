@@ -155,19 +155,33 @@ void CPaintCursorAppView::ShowCursor()
     iMouseInitialized = ETrue;
     }
 
+void CPaintCursorAppView::RedrawCursor()
+    {
+    TRect mainPaneRect;
+    AknLayoutUtils::LayoutMetricsRect( AknLayoutUtils::EMainPane, mainPaneRect );
+    SetRect( mainPaneRect );
+    DrawNow();
+    iClientCommander.ImageCommand( KRedrawBTCursorAnim );
+    iMouseInitialized = ETrue;
+    }
+ 
+ 
+void CPaintCursorAppView::ResetCursor()
+    {   
+    TRect mainPaneRect;
+    AknLayoutUtils::LayoutMetricsRect( AknLayoutUtils::EMainPane, mainPaneRect );
+    SetRect( mainPaneRect );
+    DrawNow();
+    iClientCommander.ImageCommand( KResetBTCursorAnim );
+    iMouseInitialized = ETrue;
+    }
+
 void CPaintCursorAppView::HandleResourceChange( TInt aType )
     {
     CCoeControl::HandleResourceChange( aType );
     if ( aType == KEikDynamicLayoutVariantSwitch )
         {
-        TRect mainPaneRect;
-        AknLayoutUtils::LayoutMetricsRect( AknLayoutUtils::EMainPane, mainPaneRect );
-        SetRect( mainPaneRect );
-        DrawNow();
-        if (iMouseInitialized)
-            {
-            iClientCommander.ImageCommand( KRedrawBTCursorAnim );
-            }
+        ResetCursor();
         }
     }
 

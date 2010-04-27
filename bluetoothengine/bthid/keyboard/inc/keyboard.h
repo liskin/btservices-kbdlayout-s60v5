@@ -310,6 +310,9 @@ private:
     TBool IsSpecialHandleKey(TInt aUniCode);
 
     void LaunchApplicationL(const TDesC& aName);
+    
+    //Redraw cursor
+    void CursorRedraw();
 private:
 
     TKeyboardDriverState iDriverState;

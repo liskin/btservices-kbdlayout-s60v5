@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * All rights reserved.
+ * This component and the accompanying materials are made available
+ * under the terms of "Eclipse Public License v1.0"
+ * which accompanies this distribution, and is available
+ * at the URL "http://www.eclipse.org/legal/epl-v10.html".
+ * Initial Contributors:
+ * Nokia Corporation - initial contribution.
+ *
+ * Contributors:
+ * Description: Collection of uid's
+ *
+ */
+
+#ifndef ATMISCCMDPLUGINUIDS_HRH
+#define ATMISCCMDPLUGINUIDS_HRH
+
+#define KUidATMiscCmdEcomDll   0x2002C3BA
+#define KUidATMiscCmdEcomImpl 0x2002DC6B
+
+#endif // ATMISCCMDPLUGINUIDS_HRH

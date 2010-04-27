@@ -40,7 +40,8 @@ enum KAnimationCommands
     KStopBTCursorAnim = 2,
     KChangeCursor = 3,
     KSendRawEvent = 4,
-    KRedrawBTCursorAnim = 5
+    KRedrawBTCursorAnim = 5,
+    KResetBTCursorAnim = 6
     };
 
 class TPointBuffer

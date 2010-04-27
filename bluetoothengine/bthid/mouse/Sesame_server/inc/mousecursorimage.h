@@ -124,6 +124,7 @@ private:
     CFbsBitGc* iSpriteGc;
     CFbsBitmap* iCursorBitmap;
     CFbsBitmap* iCursorBitmapMask;
+    TPoint    iLastUsedPoint;
     };
 
 #endif // __MOUSECURSORIMAGE_H__

@@ -148,6 +148,13 @@ TInt CBTEngSrvSettingsMgr::SetHwPowerState( TBTPowerState aState )
         iPowerState = EBTOff;
 #endif  //__WINS__
         } 
+    
+#ifdef __WINS__
+    TRequestStatus* status = &(iActive->RequestStatus());
+    iActive->GoActive();
+    User::RequestComplete(status,KErrNone);
+#endif  //__WINS__
+    
     TRACE_FUNC_RES( ( _L( "result: %d" ), err ) )
     return err;
     }

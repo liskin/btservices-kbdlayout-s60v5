@@ -96,9 +96,6 @@ void CHidMouseDriver::ConstructL()
     User::LeaveIfError(iWsSession.Connect());
     }
 
-
-
-
 CHidMouseDriver::~CHidMouseDriver()
     {
     DBG(RDebug::Print(_L("[HID]\t~CHidMouseDriver() 0x%08x"), this));
@@ -107,7 +104,7 @@ CHidMouseDriver::~CHidMouseDriver()
 
     if (iDriverState == EInitialised || iDriverState == EDisabled )
         {
-        RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorHide );
+        RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorNotInitialized );
         }
 
     iWsSession.Close();
@@ -176,7 +173,7 @@ void CHidMouseDriver::InitialiseL(TInt aConnectionId)
 void CHidMouseDriver::Stop()
     {
     iDriverState = EDisabled;
-    RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorHide );
+    RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorNotInitialized );
     }
 
 //----------------------------------------------------------------------------
@@ -225,10 +222,18 @@ TInt CHidMouseDriver::DataIn(
             {
             TInt mouseStatus;
             TInt err = RProperty::Get( KPSUidBthidSrv, KBTMouseCursorState, mouseStatus );
-            if ( !err && (static_cast<THidMouseCursorState>(mouseStatus) == ECursorHide) )
+            if ( !err &&
+                ((static_cast<THidMouseCursorState>(mouseStatus) == ECursorRedraw)|| 
+                 (static_cast<THidMouseCursorState>(mouseStatus) == ECursorReset)) )
                 {
                 err = RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorShow );
+                DBG(RDebug::Print(
+                         _L("[BTHID]\tCHidMouseDriver::DataIn() ECursorRedraw ||ECursorReset ")) );
                 }
+
+
+            CursorRedraw();
+
             InterruptData(aPayload);
             }
         break;
@@ -381,6 +386,7 @@ void CHidMouseDriver::UpdateButtons(TInt aFieldIndex,
             iButton2Down = ETrue;
             TRawEvent rawEvent;
             rawEvent.Set(TRawEvent::EKeyDown, EStdKeyApplication0);
+            CursorRedraw();
             UserSvr::AddEvent(rawEvent);
             }
         }
@@ -391,6 +397,7 @@ void CHidMouseDriver::UpdateButtons(TInt aFieldIndex,
             iButton2Down = EFalse;
             TRawEvent rawEvent;
             rawEvent.Set(TRawEvent::EKeyUp, EStdKeyApplication0);
+            CursorRedraw();
             UserSvr::AddEvent(rawEvent);
             }
         }
@@ -475,5 +482,18 @@ TInt CHidMouseDriver::SupportedFieldCount()
 void CHidMouseDriver::SetInputHandlingReg(CHidInputDataHandlingReg* aHandlingReg)
     {
     iInputHandlingReg = aHandlingReg;
+    }
+
+void CHidMouseDriver::CursorRedraw()
+    {
+    TInt mouseStatus;
+
+    TInt err = RProperty::Get( KPSUidBthidSrv, KBTMouseCursorState, mouseStatus );
+    if ( !err )
+        {
+        err = RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorRedraw );
+        DBG(RDebug::Print(
+             _L("[BTHID]\tCHidMouseDriver::ForegroundEventL() X->ECursorRedraw") ) );
+        }
     }
 // ----------------------------------------------------------------------

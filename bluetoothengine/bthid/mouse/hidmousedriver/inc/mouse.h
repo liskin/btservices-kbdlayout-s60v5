@@ -136,6 +136,9 @@ public:
      */
     virtual void SetInputHandlingReg(CHidInputDataHandlingReg* aHandlingReg);
 
+    //redraw cursor
+    void CursorRedraw();
+
 private:
     // Constructor taking a pointer to the HID layer requesting the driver
     // instance

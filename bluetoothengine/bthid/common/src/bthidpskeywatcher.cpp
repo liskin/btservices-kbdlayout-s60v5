@@ -30,7 +30,7 @@
 // CBTMouseCursorStatusObserver::CBTMouseCursorStatusObserver()
 //----------------------------------------------------------
 //
-CBTMouseCursorStatusObserver::CBTMouseCursorStatusObserver(): CActive(CActive::EPriorityStandard)
+CBTMouseCursorStatusObserver::CBTMouseCursorStatusObserver(): CActive(CActive::EPriorityStandard) 
     {                                
     CActiveScheduler::Add( this );
     }

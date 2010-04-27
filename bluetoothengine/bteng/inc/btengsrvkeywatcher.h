@@ -112,12 +112,6 @@ private: // data
     RProperty iSystemStateKey;
     
      /**
-     * Property containing count of physical BT connections.
-     * When physical connections exists, specific BT UI indicator is shown.
-     */
-    RProperty iPHYCountKey;
-    
-     /**
      * Property containing the BT connecting status.
      * When connecting, specific BT UI indicator is shown.
      */
@@ -176,12 +170,6 @@ private: // data
      * Own.
      */
     CBTEngActive* iSystemStateWatcher;
-    
-    /**
-     * Active object for subscribing to PHYCount property changes.
-     * Own.
-     */    
-    CBTEngActive* iPHYCountWatcher;
     
     /**
      * Active object for subscribing to BT connection property changes.

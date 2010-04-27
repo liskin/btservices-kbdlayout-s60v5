@@ -22,6 +22,8 @@
 #include <featmgr.h>
 
 #include "btengsrvbbconnectionmgr.h"
+#include "btengserver.h"
+#include "btengsrvsettingsmgr.h"
 #include "debug.h"
 
 /**  ?description */
@@ -38,8 +40,8 @@ const TInt KBTEngMaxAddrArraySize = 10;
 // C++ default constructor
 // ---------------------------------------------------------------------------
 //
-CBTEngSrvBBConnMgr::CBTEngSrvBBConnMgr(RSocketServ& aSockServ)
-    : iSockServ(aSockServ)
+CBTEngSrvBBConnMgr::CBTEngSrvBBConnMgr(CBTEngServer* aServer, RSocketServ& aSockServ)
+    : iSockServ(aSockServ), iServer(aServer)
     {
     }
 
@@ -73,9 +75,10 @@ void CBTEngSrvBBConnMgr::ConstructL()
 // NewL
 // ---------------------------------------------------------------------------
 //
-CBTEngSrvBBConnMgr* CBTEngSrvBBConnMgr::NewL(RSocketServ& aSockServ)
+CBTEngSrvBBConnMgr* CBTEngSrvBBConnMgr::NewL(CBTEngServer* aServer,
+                                             RSocketServ& aSockServ)
     {
-    CBTEngSrvBBConnMgr* self = new( ELeave ) CBTEngSrvBBConnMgr(aSockServ);
+    CBTEngSrvBBConnMgr* self = new( ELeave ) CBTEngSrvBBConnMgr(aServer, aSockServ);
     CleanupStack::PushL( self );
     self->ConstructL();
     CleanupStack::Pop( self );
@@ -266,6 +269,37 @@ void CBTEngSrvBBConnMgr::DisconnectAllLinksL( TCallBack& aCallBack )
     TRACE_FUNC_EXIT
     }
 
+// ---------------------------------------------------------------------------
+// Request to disconnect all Bluetooth baseband connections with Power off reason code.
+// ---------------------------------------------------------------------------
+//
+void CBTEngSrvBBConnMgr::DisconnectAllLinksForPowerOffL( TCallBack& aCallBack )
+    {
+    TRACE_FUNC_ENTRY
+    iCallBack = aCallBack;
+    RBTDevAddrArray addrArray;
+    GetConnectedAddressesL( addrArray );
+    TInt err = KErrNone;
+    if( addrArray.Count() > 0 )
+        {
+        err = iPhyLinks->DisconnectAll();
+        // @todo Once fix is in stack, call this API instead
+        // err = iPhyLinks->DisconnectAllForPowerOff();
+        }
+    else
+        {
+        err = KErrNotFound;
+        }
+    addrArray.Close();
+    if( err && err != KErrInUse )
+        {
+            // No connections, or something went wrong; just clean up 
+            // and inform our client.
+        HandleDisconnectAllCompleteL( err );
+        }
+    TRACE_FUNC_EXIT
+    }
+
 
 // ---------------------------------------------------------------------------
 // Request to disconnect all Bluetooth baseband connections.
@@ -345,6 +379,11 @@ void CBTEngSrvBBConnMgr::RequestCompletedL( CBTEngActive* aActive, TInt aId,
         }
     (void) ManageTopology( EFalse );    // Ignore result; nothing to do 
                                         // about it here.
+    if( aId == KBTEngSrvBBConnId )
+        {
+        TRACE_INFO( ( _L( "[BTENG] PHY count key changed, update UI connection status" ) ) )
+        iServer->SettingsManager()->SetUiIndicatorsL();
+        }    
     TRACE_FUNC_EXIT
     }
 

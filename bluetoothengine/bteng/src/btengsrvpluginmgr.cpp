@@ -485,9 +485,17 @@ TInt CBTEngSrvPluginMgr::Disconnect( const TBTDevAddr& aAddr,
     TInt err = KErrNotFound;
     for( TInt i = 0; i < iPluginArray.Count(); i++ )
         {
-            // Should be ignored if the plug-in does not have 
-            // a connection to the address.
-        err = iPluginArray[ i ]->Disconnect( aAddr, aDiscType );
+        // Should be ignored if the plug-in does not have 
+        // a connection to the address.
+        TBTEngConnectionStatus status = iPluginArray[ i ]->IsConnected( aAddr );
+        if( status == EBTEngConnecting || status == EBTEngConnected )
+            {            
+            err = iPluginArray[ i ]->Disconnect( aAddr, aDiscType );
+            if( err )
+                {
+                TRACE_INFO( ( _L( "[BTENG]  ERR! Disconnect failed, plugin index %d with err %d" ), i, err ) )
+                }
+            }
         }
     TRACE_FUNC_RES( ( _L( "result: %d" ), err ) )
     return err;
