@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -39,6 +39,7 @@ enum TRemConMediaBrowsePanic
 	ESearchResultWithoutRequest = 6,
 	/** The value of the media library state cookie must not be zero. */
 	EZeroMediaLibraryStateCookie = 7,
+	EUnexpectedNullMemberField = 8,
 	};
 
 class MediaBrowsePanic

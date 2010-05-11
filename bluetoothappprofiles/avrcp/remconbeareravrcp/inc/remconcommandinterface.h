@@ -51,7 +51,8 @@ public:
 	virtual void MrccciNewNotifyResponse(CControlCommand& aCommand) = 0;
 	
 	virtual void MrccciSetAddressedClient(const TRemConClientId& aClient) = 0;
-
+	virtual void MrccciRegisterForLocalAddressedClientUpdates() = 0;
+	virtual void MrccciUnregisterForLocalAddressedClientUpdates() = 0;
 	};
 
 #endif //REMCONCOMMANDINTERFACE_H

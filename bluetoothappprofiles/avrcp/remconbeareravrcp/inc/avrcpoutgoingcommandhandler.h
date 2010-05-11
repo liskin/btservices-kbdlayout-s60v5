@@ -30,13 +30,13 @@ using namespace SymbianAvctp;
 
 class CControlCommand;
 class CRcpRouter;
-class CRemConBearerAvrcp;
+class MRemConControlCommandInterface;
 class MRemConBearerObserver;
 NONSHARABLE_CLASS(CRcpOutgoingCommandHandler) : public CBase, public MOutgoingCommandHandler
 	{
 public:
 	// Construction/Destruction
-	static CRcpOutgoingCommandHandler* NewL(CRemConBearerAvrcp& aBearer, 
+	static CRcpOutgoingCommandHandler* NewL(MRemConControlCommandInterface& aCommandInterface, 
 		MRemConBearerObserver& aObserver,
 		CRcpRouter& aRouter,
 		CDeltaTimer& aTimer);
@@ -68,7 +68,7 @@ private:
 			const TBTDevAddr& aAddr);
 
 private:
-	CRcpOutgoingCommandHandler(CRemConBearerAvrcp& aBearer, 
+	CRcpOutgoingCommandHandler(MRemConControlCommandInterface& aCommandInterface, 
 		MRemConBearerObserver& aObserver,
 		CRcpRouter& aRouter,
 		CDeltaTimer& aTimer);
@@ -105,14 +105,14 @@ private:
 								CControlCommand* aCommand, 
 								TBool aNotify);
 private:
-	TTransactionLabel		iCurrentTrans;
+	TTransactionLabel			iCurrentTrans;
 	TDblQue<CControlCommand>	iCommandQueue;
 	TDblQue<CControlCommand>	iNotifyCommandQueue;
 	
-	CRemConBearerAvrcp&		iBearer;
-	MRemConBearerObserver&	iObserver;
-	CRcpRouter&				iRouter;
-	CDeltaTimer&			iTimer;
+	MRemConControlCommandInterface& iCommandInterface;
+	MRemConBearerObserver&			iObserver;
+	CRcpRouter&						iRouter;
+	CDeltaTimer&					iTimer;
 	
 	CControlCommand*			iUnreleasedCommand;
 	TBool					iUnreleasedHasResponse;

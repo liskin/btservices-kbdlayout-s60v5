@@ -51,6 +51,14 @@ void CBTInqUI::IssueRequestL()
     {
     FLOG(_L("[BTNOTIF]\t CBTInqUI::IssueRequestL()"));
     
+    if (reinterpret_cast<CBTNotifierBase*>(iDevSearchObserver)->AutoLockOnL())
+        {
+        // Cancel bt inquiry immediately if device is locked.
+        FLOG(_L("[BTNOTIF]\t CBTInqUI::IssueRequestL() Device is locked"));
+        Cancel();
+        return;
+        }
+    
     TUint action = 0; 
     if( !iPageForName )
         {

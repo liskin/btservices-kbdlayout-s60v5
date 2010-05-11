@@ -870,6 +870,54 @@ void CRemConBearerAvrcp::MrccciSetAddressedClient(const TRemConClientId& aClient
 	Observer().SetRemoteAddressedClient(TUid::Uid(KRemConBearerAvrcpImplementationUid), aClientId);
 	}
 
+void CRemConBearerAvrcp::MrccciRegisterForLocalAddressedClientUpdates()
+	{
+	// Addressed player observers are registered with RemCon on a per-bearer basis
+	// so we aggregate interest from remote here
+	iRemotesInterestedInLocalAddressedClient++;
+	if(iRemotesInterestedInLocalAddressedClient == 1)
+		{
+		// Weren't any registered before, tell RemCon we care
+		Observer().RegisterLocalAddressedClientObserver(TUid::Uid(KRemConBearerAvrcpImplementationUid));
+		}
+	
+#ifdef __DEBUG
+	TInt numRemotes = 0;
+	CRcpRemoteDevice* remote = NULL;
+	
+	TDblQueIter<CRcpRemoteDevice> iter(iRemotes);
+	while (iter++)
+		{
+		numRemotes++;
+		}
+	__ASSERT_DEBUG(iRemotesInterestedInLocalAddressedClient <= numRemotes, AVRCP_PANIC(ETooManyRemotesRegisterForLocalAddressedPlayerUpdates));
+#endif
+	}
+
+void CRemConBearerAvrcp::MrccciUnregisterForLocalAddressedClientUpdates()
+	{
+#ifdef __DEBUG
+	TInt numRemotes = 0;
+	CRcpRemoteDevice* remote = NULL;
+	
+	TDblQueIter<CRcpRemoteDevice> iter(iRemotes);
+	while (iter++)
+		{
+		numRemotes++;
+		}
+	__ASSERT_DEBUG(iRemotesInterestedInLocalAddressedClient <= numRemotes, AVRCP_PANIC(ETooManyRemotesRegisterForLocalAddressedPlayerUpdates));
+	__ASSERT_DEBUG(iRemotesInterestedInLocalAddressedClient > 0, AVRCP_PANIC(ETooFewRemotesRegisterForLocalAddressedPlayerUpdates));
+#endif
+
+	iRemotesInterestedInLocalAddressedClient--;
+	if(iRemotesInterestedInLocalAddressedClient == 0)
+		{
+		// No-one left who cares.  Tell RemCon not to bother updating
+		// us anymore.
+		Observer().UnregisterLocalAddressedClientObserver(TUid::Uid(KRemConBearerAvrcpImplementationUid));
+		}
+	}
+
 /** Called from outgoing handlers to notify that a response
 for a notify command is ready for RemCon. 
 

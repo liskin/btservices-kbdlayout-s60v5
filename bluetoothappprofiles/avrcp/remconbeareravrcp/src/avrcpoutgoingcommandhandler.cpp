@@ -45,13 +45,13 @@
 @return A fully constructed CRcpOutgoingCommandHandler.
 @leave System wide error codes.
 */
-CRcpOutgoingCommandHandler* CRcpOutgoingCommandHandler::NewL(CRemConBearerAvrcp& aBearer, 
+CRcpOutgoingCommandHandler* CRcpOutgoingCommandHandler::NewL(MRemConControlCommandInterface& aCommandInterface, 
 	MRemConBearerObserver& aObserver,
 	CRcpRouter& aRouter,
 	CDeltaTimer& aTimer)
 	{
 	LOG_STATIC_FUNC
-	CRcpOutgoingCommandHandler* handler = new(ELeave)CRcpOutgoingCommandHandler(aBearer, aObserver, aRouter, aTimer);
+	CRcpOutgoingCommandHandler* handler = new(ELeave)CRcpOutgoingCommandHandler(aCommandInterface, aObserver, aRouter, aTimer);
 	return handler;
 	}
 
@@ -64,12 +64,12 @@ CRcpOutgoingCommandHandler* CRcpOutgoingCommandHandler::NewL(CRemConBearerAvrcp&
 @return A partially constructed CRcpIncomingCommandHandler.
 @leave System wide error codes.
 */		
-CRcpOutgoingCommandHandler::CRcpOutgoingCommandHandler(CRemConBearerAvrcp& aBearer, 
+CRcpOutgoingCommandHandler::CRcpOutgoingCommandHandler(MRemConControlCommandInterface& aCommandInterface, 
 	MRemConBearerObserver& aObserver,
 	CRcpRouter& aRouter,
 	CDeltaTimer& aTimer) : iCommandQueue(_FOFF(CControlCommand, iHandlingLink)),
 	iNotifyCommandQueue(_FOFF(CControlCommand, iHandlingLink)),
-	iBearer(aBearer), iObserver(aObserver), iRouter(aRouter), iTimer(aTimer)
+	iCommandInterface(aCommandInterface), iObserver(aObserver), iRouter(aRouter), iTimer(aTimer)
 	{
 	LOG_FUNC
 	}
@@ -281,11 +281,11 @@ void CRcpOutgoingCommandHandler::ProcessReceiveResponse(CAVCFrame* aFrame,
 		
 		if ( aNotify )
 		    {//This is a notify command
-		    iBearer.MrccciNewNotifyResponse(*aCommand);
+		    iCommandInterface.MrccciNewNotifyResponse(*aCommand);
 		    }
 		else
 			{
-			iBearer.MrccciNewResponse(*aCommand);
+			iCommandInterface.MrccciNewResponse(*aCommand);
 			}
 		}
 
@@ -331,7 +331,7 @@ void CRcpOutgoingCommandHandler::MessageSent(CAvrcpCommand& aCommand, TInt aSend
 		if(command)
 			{
 			command->SetNotifyVolumeChangeResult(command->Frame());
-			iBearer.MrccciNewNotifyResponse(*command);
+			iCommandInterface.MrccciNewNotifyResponse(*command);
 			}
 		else
 			{
@@ -353,7 +353,7 @@ void CRcpOutgoingCommandHandler::MessageSent(CAvrcpCommand& aCommand, TInt aSend
 					}
 				}
 			
-			iBearer.MrccciNewResponse(*command);
+			iCommandInterface.MrccciNewResponse(*command);
 			}
 		
 		command->iHandlingLink.Deque();
@@ -578,7 +578,7 @@ void CRcpOutgoingCommandHandler::GenerateFailureResult(CControlCommand& aCommand
 				aCommand.SetCoreButtonAction(ERemConCoreApiButtonRelease, ETrue);
 				}
 
-			iBearer.MrccciNewResponse(aCommand);
+			iCommandInterface.MrccciNewResponse(aCommand);
            }
 		}	
 	}

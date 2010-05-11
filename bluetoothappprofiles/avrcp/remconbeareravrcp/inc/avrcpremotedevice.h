@@ -24,7 +24,7 @@
 
 #include <e32std.h>
 
-class CRemConBearerAvrcp;
+class MRemConControlCommandInterface;
 class MIncomingCommandHandler;
 class MOutgoingCommandHandler;
 class CRcpIncomingCommandHandler;
@@ -41,7 +41,7 @@ NONSHARABLE_CLASS(CRcpRemoteDevice) : public CBase
 public:
 	static CRcpRemoteDevice* NewL(const TBTDevAddr& aAddr,
 		CRcpRouter& aRouter, 
-		CRemConBearerAvrcp& aBearer,
+		MRemConControlCommandInterface& aCommandInterface,
 		MRemConBearerObserver& aObserver,
 		CDeltaTimer& aTimer,
 		CAvrcpPlayerInfoManager& aPlayerInfoManager);
@@ -58,7 +58,7 @@ public:
 private:
 	CRcpRemoteDevice(const TBTDevAddr& aAddr,
 		CRcpRouter& aRouter, 
-		CRemConBearerAvrcp& aBearer,
+		MRemConControlCommandInterface& aCommandInterface,
 		CDeltaTimer& aTimer);
 		
 	void ConstructL(MRemConBearerObserver& aObserver,
@@ -73,7 +73,7 @@ private:
 	CRcpOutgoingCommandHandler*		iOutgoing;
 
 	CRcpRouter&						iRouter;
-	CRemConBearerAvrcp&				iBearer;
+	MRemConControlCommandInterface& iCommandInterface;
 	CDeltaTimer&					iTimer;
 	};
 

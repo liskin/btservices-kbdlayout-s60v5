@@ -901,11 +901,16 @@ TInt CControlCommand::GenerateMetadataGetCapabilitiesResponsePayloadL(MRemConBea
 			eventsBuf.Append(ERegisterNotificationUidsChanged );
 			}
 		
-		// Always mark support for stuff that's handled internally rather than
-		// by the player
-		count+= 2;
-		eventsBuf.Append(ERegisterNotificationAvailablePlayersChanged );
-		eventsBuf.Append(ERegisterNotificationAddressedPlayerChanged );
+		// If there are any browsing clients then mark support for the player addressing
+		// events.  Without browsing support the remote will not be able to see the 
+		// information about the players so it is better not to let them see events
+		// relating to the them
+		if(iPlayerInfoManager->BrowsingSupportedL(KNullClientId))
+			{
+			count+= 2;
+			eventsBuf.Append(ERegisterNotificationAvailablePlayersChanged );
+			eventsBuf.Append(ERegisterNotificationAddressedPlayerChanged );
+			}
 		
 		responseData[1] += count;
 

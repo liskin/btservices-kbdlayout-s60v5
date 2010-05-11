@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -176,11 +176,11 @@ public:
 	
 	inline const TDesC8& FeatureBitmask() const;
 
-	void SetCoreApiFeatures(RArray<TUint> aOperation);
-	void SetAbsoluteVolumeApiFeatures(RArray<TUint> aOperation);
-	void SetGroupNavigationApiFeatures(RArray<TUint> aOperation);
-	void SetNowPlayingApiFeatures(RArray<TUint> aOperation);
-	void SetMediaBrowseApiFeatures(RArray<TUint> aOperation);
+	void SetCoreApiFeatures(const RArray<TUint>& aOperation);
+	void SetAbsoluteVolumeApiFeatures(const RArray<TUint>& aOperation);
+	void SetGroupNavigationApiFeatures(const RArray<TUint>& aOperation);
+	void SetNowPlayingApiFeatures(const RArray<TUint>& aOperation);
+	void SetMediaBrowseApiFeatures(const RArray<TUint>& aOperation);
 
 private:
 	void SetCoreApiFeatures();

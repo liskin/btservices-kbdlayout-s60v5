@@ -54,7 +54,7 @@
 @return A fully constructed CRcpIncomingCommandHandler.
 @leave System wide error codes.
 */
-CRcpIncomingCommandHandler* CRcpIncomingCommandHandler::NewL(CRemConBearerAvrcp& aBearer,
+CRcpIncomingCommandHandler* CRcpIncomingCommandHandler::NewL(MRemConControlCommandInterface& aCommandInterface,
 	MRemConBearerObserver& aObserver,
 	CRcpRouter& aRouter,
 	CDeltaTimer& aTimer,
@@ -62,7 +62,7 @@ CRcpIncomingCommandHandler* CRcpIncomingCommandHandler::NewL(CRemConBearerAvrcp&
 	TBTDevAddr& aDevice) 
 	{
 	LOG_STATIC_FUNC
-	CRcpIncomingCommandHandler* handler = new(ELeave)CRcpIncomingCommandHandler(aBearer, aObserver, aRouter, aTimer, aPlayerInfoManager, aDevice);
+	CRcpIncomingCommandHandler* handler = new(ELeave)CRcpIncomingCommandHandler(aCommandInterface, aObserver, aRouter, aTimer, aPlayerInfoManager, aDevice);
 	CleanupStack::PushL(handler);
 	handler->ConstructL();
 	CleanupStack::Pop(handler);
@@ -78,7 +78,7 @@ CRcpIncomingCommandHandler* CRcpIncomingCommandHandler::NewL(CRemConBearerAvrcp&
 @return A partially constructed CRcpIncomingCommandHandler.
 @leave System wide error codes.
 */	
-CRcpIncomingCommandHandler::CRcpIncomingCommandHandler(CRemConBearerAvrcp& aBearer, 
+CRcpIncomingCommandHandler::CRcpIncomingCommandHandler(MRemConControlCommandInterface& aCommandInterface, 
 	MRemConBearerObserver& aObserver,
 	CRcpRouter& aRouter,
 	CDeltaTimer& aTimer,
@@ -87,7 +87,7 @@ CRcpIncomingCommandHandler::CRcpIncomingCommandHandler(CRemConBearerAvrcp& aBear
 	: iCommandQueue(_FOFF(CControlCommand, iHandlingLink))
 	, iInternalCommandQueue(_FOFF(CControlCommand, iHandlingLink))
 	, iFragmenter(NULL)
-	, iBearer(aBearer)
+	, iCommandInterface(aCommandInterface)
 	, iObserver(aObserver)
 	, iRouter(aRouter)
 	, iTimer(aTimer)
@@ -121,7 +121,7 @@ void CRcpIncomingCommandHandler::ConstructL()
 	
 	CleanupStack::PopAndDestroy(&players);
 	
-	iPassthroughHelper = CPassthroughHelper::NewL(iRouter, iBearer, iTimer);
+	iPassthroughHelper = CPassthroughHelper::NewL(iRouter, iCommandInterface, iTimer);
 	}
 
 /** Destructor.
@@ -130,6 +130,7 @@ CRcpIncomingCommandHandler::~CRcpIncomingCommandHandler()
 	{
 	LOG_FUNC
 
+	iCommandInterface.MrccciUnregisterForLocalAddressedClientUpdates();
 	iPlayerInfoManager.RemoveObserver( *this );
 	delete iFragmenter;
 	delete iPassthroughHelper;
@@ -207,7 +208,7 @@ void CRcpIncomingCommandHandler::ReceiveCommandL(const TDesC8& aMessageInformati
 	{
 	LOG_FUNC
 		
-	TUint id = iBearer.MrcciNewTransactionId();
+	TUint id = iCommandInterface.MrcciNewTransactionId();
 	
 	// If there's nothing beyond a header this is bobs.  Dump it now.
 	if(aMessageInformation.Length() <= KAVCFrameHeaderLength)
@@ -508,11 +509,11 @@ void CRcpIncomingCommandHandler::HandleRemConCommand(CControlCommand& aCommand)
 		// can go directly to client (unlike passthrough which may need to map 2 commands to 1 click
 		if (aCommand.Frame().Type() == AVC::ENotify)
 			{
-			iBearer.MrccciNewNotifyCommand(aCommand, aCommand.ClientId());
+			iCommandInterface.MrccciNewNotifyCommand(aCommand, aCommand.ClientId());
 			}
 		else
 			{
-			iBearer.MrcciNewCommand(aCommand, aCommand.ClientId());
+			iCommandInterface.MrcciNewCommand(aCommand, aCommand.ClientId());
 			}
 		}
 	}
@@ -522,7 +523,7 @@ TInt CRcpIncomingCommandHandler::HandleSetAddressedPlayer(TUint aId, RBuf8& aCom
 	LOG_FUNC
 	
 	// Once we respond to this we've told the remote that we're using a particular player
-	iAddressedMode = ETrue;
+	EnterAddressedMode();
 	
 	// SetAddressedPlayer involves not just responding to this command but
 	// also rejecting a bunch of notifies and completing the addressed player
@@ -568,7 +569,7 @@ TInt CRcpIncomingCommandHandler::HandleSetAddressedPlayer(TUint aId, RBuf8& aCom
 			};
 	
 		SendInternalResponse(aId, responseBuf);
-		iBearer.MrccciSetAddressedClient(iClientId);
+		iCommandInterface.MrccciSetAddressedClient(iClientId);
 	
 		responseBuf.Close();
 		}
@@ -662,7 +663,7 @@ TInt CRcpIncomingCommandHandler::HandleRegisterAddressedPlayerNotification(CCont
 	LOG_FUNC
 
 	// Once we respond to this we've told the remote that we're using a particular player
-	iAddressedMode = ETrue;
+	EnterAddressedMode();
 	
 	RBuf8 responseBuf;
 	TRAPD(err, DoHandleRegisterAddressedPlayerNotificationL(responseBuf, aCommand));
@@ -720,7 +721,7 @@ TInt CRcpIncomingCommandHandler::HandleUidChangedNotification(CControlCommand& a
 
 	// Although we haven't strictly told the remote which player we're using this is 
 	// a 1.4 command, and implies use of a specific player so switch into addressed mode
-	iAddressedMode = ETrue;
+	EnterAddressedMode();
 
 	RBuf8 responseBuf;
 	TUint16 uidCounter = 0;
@@ -821,6 +822,12 @@ void CRcpIncomingCommandHandler::SendResponse(TDblQue<CControlCommand>& aCommand
 	// already removed from our queue.  We're telling RemCon that we dealt ok
 	// with this so we have resonsibility for tidying up the data.
 	aData.Close();
+	}
+
+void CRcpIncomingCommandHandler::EnterAddressedMode()
+	{
+	iAddressedMode = ETrue;
+	iCommandInterface.MrccciRegisterForLocalAddressedClientUpdates();
 	}
 
 TBool CRcpIncomingCommandHandler::DuplicateNotify(TDblQue<CControlCommand>& aCommandQueue, const CControlCommand& aCommand) const

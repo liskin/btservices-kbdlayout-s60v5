@@ -67,6 +67,7 @@ LIBRARY ATCodec.lib
 LIBRARY	customapi.lib
 LIBRARY bluetooth.lib
 LIBRARY atextclient.lib
+LIBRARY charconv.lib
 
 LIBRARY mmfdevsound.lib 
 LIBRARY telephonyservice.lib

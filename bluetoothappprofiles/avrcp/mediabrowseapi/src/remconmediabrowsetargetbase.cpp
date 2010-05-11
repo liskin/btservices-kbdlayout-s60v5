@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -73,12 +73,16 @@ CRemConMediaBrowseTargetBase::CRemConMediaBrowseTargetBase(CRemConInterfaceSelec
 	{
 	}
 
-CRemConMediaBrowseTargetBase::~CRemConMediaBrowseTargetBase()
+CRemConMediaBrowseTargetBase::~CRemConMediaBrowseTargetBase()		// codescanner::destructor
 	{
 	iMediaAttributeIds.Close();
 	iNullArray.Close();
 	iOutBuf.Close();
 	iSearchString.Close();
+
+	// iGetPathResponse, iGiaResponse and iGflResponse are instantiated in CRemConMediaBrowseTargetBase::BaseConstructL() and
+	// so should have the same lifetime as this CRemConMediaBrowseTargetBase instance
+	__ASSERT_DEBUG(iGetPathResponse && iGiaResponse && iGflResponse, MediaBrowsePanic::Panic(EUnexpectedNullMemberField));
 	iGetPathResponse->Close();
 	iGiaResponse->Close();
 	iGflResponse->Close();

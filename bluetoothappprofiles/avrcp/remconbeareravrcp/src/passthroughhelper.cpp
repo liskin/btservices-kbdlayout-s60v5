@@ -21,9 +21,9 @@
 #include "controlbearer.h"
 
 
-CPassthroughHelper* CPassthroughHelper::NewL(CRcpRouter& aRouter, CRemConBearerAvrcp& aBearer, CDeltaTimer& aTimer)
+CPassthroughHelper* CPassthroughHelper::NewL(CRcpRouter& aRouter, MRemConControlCommandInterface& aCommandInterface, CDeltaTimer& aTimer)
 	{
-	CPassthroughHelper* helper = new(ELeave)CPassthroughHelper(aRouter, aBearer, aTimer);
+	CPassthroughHelper* helper = new(ELeave)CPassthroughHelper(aRouter, aCommandInterface, aTimer);
 	CleanupStack::PushL(helper);
 	helper->ConstructL();
 	CleanupStack::Pop(helper);
@@ -34,9 +34,9 @@ CPassthroughHelper::~CPassthroughHelper()
 	{
 	}
 	
-CPassthroughHelper::CPassthroughHelper(CRcpRouter& aRouter, CRemConBearerAvrcp& aBearer, CDeltaTimer& aTimer)
+CPassthroughHelper::CPassthroughHelper(CRcpRouter& aRouter, MRemConControlCommandInterface& aCommandInterface, CDeltaTimer& aTimer)
 	: iRouter(aRouter)
-	, iBearer(aBearer)
+	, iCommandInterface(aCommandInterface)
 	, iTimer(aTimer)
 	{
 	}
@@ -164,7 +164,7 @@ void CPassthroughHelper::HandlePassthrough(CControlCommand& aCommand)
 					{
 					iPreviousPassthrough->SetClick(EFalse);
 					iPreviousPassthrough->SetCoreButtonAction(ERemConCoreApiButtonPress, ETrue);
-					iBearer.MrcciNewCommand(*iPreviousPassthrough, iPreviousPassthrough->ClientId());
+					iCommandInterface.MrcciNewCommand(*iPreviousPassthrough, iPreviousPassthrough->ClientId());
 					}
 				StartReleaseTimer(*iPreviousPassthrough);
 				}
@@ -174,7 +174,7 @@ void CPassthroughHelper::HandlePassthrough(CControlCommand& aCommand)
 				// to RemCon then start waiting for click.
 				iPreviousPassthrough->CancelTimer(iTimer);
 				iPreviousPassthrough->SetCoreButtonAction(ERemConCoreApiButtonClick, ETrue);
-				iBearer.MrcciNewCommand(*iPreviousPassthrough, iPreviousPassthrough->ClientId());
+				iCommandInterface.MrcciNewCommand(*iPreviousPassthrough, iPreviousPassthrough->ClientId());
 				
 				HandledCommand(*iPreviousPassthrough);
 									
@@ -214,7 +214,7 @@ void CPassthroughHelper::HandlePassthrough(CControlCommand& aCommand)
 				// Cancel hold timer and send the previous command as a click.
 				iPreviousPassthrough->CancelTimer(iTimer); 
 				iPreviousPassthrough->SetCoreButtonAction(ERemConCoreApiButtonClick, ETrue);
-				iBearer.MrcciNewCommand(*iPreviousPassthrough, iPreviousPassthrough->ClientId());
+				iCommandInterface.MrcciNewCommand(*iPreviousPassthrough, iPreviousPassthrough->ClientId());
 				
 				HandledCommand(*iPreviousPassthrough);
 				}
@@ -228,7 +228,7 @@ void CPassthroughHelper::HandlePassthrough(CControlCommand& aCommand)
 					{
 					aCommand.SetCoreButtonAction(ERemConCoreApiButtonRelease, ETrue);
 					}
-				iBearer.MrcciNewCommand(aCommand, aCommand.ClientId());
+				iCommandInterface.MrcciNewCommand(aCommand, aCommand.ClientId());
 				aCommand.DecrementUsers();
 				}
 			}
@@ -267,7 +267,7 @@ void CPassthroughHelper::NewPress(CControlCommand& aCommand)
 		}
 	else
 		{
-		iBearer.MrcciNewCommand(aCommand, aCommand.ClientId());
+		iCommandInterface.MrcciNewCommand(aCommand, aCommand.ClientId());
 		StartReleaseTimer(aCommand);
 		}
 	}
@@ -303,7 +303,7 @@ void CPassthroughHelper::BalanceHandledCommand(CControlCommand& aCommand)
 			TRAPD(err, aCommand.ReSetCoreButtonActionL(ERemConCoreApiButtonRelease, ETrue));
 			if (err == KErrNone)
 				{
-				iBearer.MrcciNewCommand(aCommand, aCommand.ClientId());
+				iCommandInterface.MrcciNewCommand(aCommand, aCommand.ClientId());
 				}
 				else
 				{
@@ -386,7 +386,7 @@ void CPassthroughHelper::HoldExpiry(CControlCommand& aCommand)
 	aCommand.CancelTimer(iTimer);
 	aCommand.SetClick(EFalse);
 	aCommand.SetCoreButtonAction(ERemConCoreApiButtonPress, ETrue);
-	iBearer.MrcciNewCommand(aCommand, aCommand.ClientId());
+	iCommandInterface.MrcciNewCommand(aCommand, aCommand.ClientId());
 	StartReleaseTimer(aCommand);
 	}
 

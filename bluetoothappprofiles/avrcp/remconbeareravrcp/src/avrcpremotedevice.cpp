@@ -31,13 +31,13 @@
 */
 CRcpRemoteDevice* CRcpRemoteDevice::NewL(const TBTDevAddr& aAddr, 
 	CRcpRouter& aRouter, 
-	CRemConBearerAvrcp& aBearer,
+	MRemConControlCommandInterface& aCommandInterface,
 	MRemConBearerObserver& aObserver,
 	CDeltaTimer& aTimer,
 	CAvrcpPlayerInfoManager& aPlayerInfoManager)
 	{
 	LOG_STATIC_FUNC
-	CRcpRemoteDevice* engine = new(ELeave) CRcpRemoteDevice(aAddr, aRouter, aBearer, aTimer);
+	CRcpRemoteDevice* engine = new(ELeave) CRcpRemoteDevice(aAddr, aRouter, aCommandInterface, aTimer);
 	CleanupStack::PushL(engine);
 	engine->ConstructL(aObserver, aPlayerInfoManager);
 	CleanupStack::Pop(engine);
@@ -56,9 +56,9 @@ CRcpRemoteDevice* CRcpRemoteDevice::NewL(const TBTDevAddr& aAddr,
 */
 CRcpRemoteDevice::CRcpRemoteDevice(const TBTDevAddr& aAddr,
 	CRcpRouter& aRouter, 
-	CRemConBearerAvrcp& aBearer,
+	MRemConControlCommandInterface& aCommandInterface,
 	CDeltaTimer& aTimer) : 
-	iDevice(aAddr), iRouter(aRouter), iBearer(aBearer), iTimer(aTimer)
+	iDevice(aAddr), iRouter(aRouter), iCommandInterface(aCommandInterface), iTimer(aTimer)
 	{
 	LOG_FUNC
 	}
@@ -72,8 +72,8 @@ void CRcpRemoteDevice::ConstructL(MRemConBearerObserver& aObserver,
 	CAvrcpPlayerInfoManager& aPlayerInfoManager)
 	{
 	LOG_FUNC	
-	iIncoming = CRcpIncomingCommandHandler::NewL(iBearer, aObserver, iRouter, iTimer, aPlayerInfoManager, iDevice);
-	iOutgoing = CRcpOutgoingCommandHandler::NewL(iBearer, aObserver, iRouter, iTimer);
+	iIncoming = CRcpIncomingCommandHandler::NewL(iCommandInterface, aObserver, iRouter, iTimer, aPlayerInfoManager, iDevice);
+	iOutgoing = CRcpOutgoingCommandHandler::NewL(iCommandInterface, aObserver, iRouter, iTimer);
 	}
 
 /** Destructor.

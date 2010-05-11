@@ -290,7 +290,7 @@ void CBtmcProtocol::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
        		{
        		TBuf8<RMobilePhone::KIMSISize> buf;
        		buf.Copy(iId);
-            CATResult* cimi = CATResult::NewLC(EATCIMI, EATReadResult, TATParam(buf));
+            CATResult* cimi = CATResult::NewLC(EATCIMI, EATActionResult, TATParam(buf));
             SendResponseL(*cimi);
 	        CleanupStack::PopAndDestroy(cimi);
 	        CATResult* ok = CATResult::NewLC(EATOK);
@@ -789,56 +789,7 @@ void CBtmcProtocol::HandleReadCommandL(const CATCommand& aCmd)
                     break;  
                 };
             break;  
-            }
-        case EATCSQ:
-            {
-            TRACE_INFO(_L("Requesting Signal strength"));
-            LEAVE_IF_ERROR(params.Append(TATParam(iPhoneStatus->GetRssiStrength())))
-            LEAVE_IF_ERROR(params.Append(TATParam(KBerUnknown)))
-            code = CATResult::NewL(EATCSQ, EATReadResult, &params);
-            TRACE_INFO(_L("done"));
-            break;
-            }
-
-        case EATCGSN:
-            {
-            TBuf8<RMobilePhone::KPhoneSerialNumberSize> buf;
-            buf.Copy(iIdentity.iSerialNumber);
-            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
-            code = CATResult::NewL(EATCGSN, EATReadResult, &params);
-            break;
-            }
-        case EATCGMI:
-            {
-            TBuf8<RMobilePhone::KPhoneManufacturerIdSize> buf;
-            buf.Copy(iIdentity.iManufacturer);
-            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
-            code = CATResult::NewL(EATCGMI, EATReadResult, &params);
-            break;
-            }
-        case EATCGMM:
-            {
-            TBuf8<RMobilePhone::KPhoneModelIdSize> buf;
-            buf.Copy(iIdentity.iModel);
-            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
-            code = CATResult::NewL(EATCGMM, EATReadResult, &params);
-            break;      
-            }
-        case EATCGMR:
-            {
-            TBuf8<RMobilePhone::KPhoneRevisionIdSize> buf;
-            buf.Copy(iIdentity.iRevision);
-            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
-            code = CATResult::NewL(EATCGMR, EATReadResult, &params);
-            break;      
-            }
-        case EATCIMI:
-            {
-            iEtelQuery->SetServiceId(KQueryIMSI);
-            iPhone.GetSubscriberId(iEtelQuery->iStatus, iId);
-            iEtelQuery->GoActive();
-            break;
-            }
+            }        
         case EATCOLP:
             {
             LEAVE_IF_ERROR(params.Append(TATParam(TInt(iProtocolStatus->iOutgoingCallNotif))))
@@ -1040,7 +991,11 @@ void CBtmcProtocol::HandleWriteCommandL(const CATCommand& aCmd)
 void CBtmcProtocol::HandleActionCommandL(const CATCommand& aCmd)
     {
     TRACE_FUNC
-    
+    RATResultPtrArray resarr;
+    ATObjArrayCleanupResetAndDestroyPushL(resarr);    
+    CATResult* code = NULL;
+    RATParamArray params;
+    CleanupClosePushL(params);
     switch (aCmd.Id())
         {
         case EATCNUM:
@@ -1054,33 +1009,71 @@ void CBtmcProtocol::HandleActionCommandL(const CATCommand& aCmd)
             iCallStatus->HandleClccL();
             break;
             }
+        case EATCSQ:
+            {
+            TRACE_INFO(_L("Requesting Signal strength"));
+            LEAVE_IF_ERROR(params.Append(TATParam(iPhoneStatus->GetRssiStrength())))
+            LEAVE_IF_ERROR(params.Append(TATParam(KBerUnknown)))
+            code = CATResult::NewL(EATCSQ, EATActionResult, &params);
+            TRACE_INFO(_L("done"));
+            break;
+            }
+        case EATCGMI:
+            {
+            TBuf8<RMobilePhone::KPhoneManufacturerIdSize> buf;
+            buf.Copy(iIdentity.iManufacturer);
+            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
+            code = CATResult::NewL(EATCGMI, EATActionResult, &params);
+            break;
+            }
+        case EATCGMM:
+            {
+            TBuf8<RMobilePhone::KPhoneModelIdSize> buf;
+            buf.Copy(iIdentity.iModel);
+            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
+            code = CATResult::NewL(EATCGMM, EATActionResult, &params);
+            break;      
+            }
+        case EATCGMR:
+            {
+            TBuf8<RMobilePhone::KPhoneRevisionIdSize> buf;
+            buf.Copy(iIdentity.iRevision);
+            LEAVE_IF_ERROR(params.Append(TATParam(buf)))
+            code = CATResult::NewL(EATCGMR, EATActionResult, &params);
+            break;      
+            }
+        case EATCIMI:
+            {
+            iEtelQuery->SetServiceId(KQueryIMSI);
+            iPhone.GetSubscriberId(iEtelQuery->iStatus, iId);
+            iEtelQuery->GoActive();
+            break;
+            }
         case EATCGSN:
             {
-            CATResult* code = NULL;
-            RATResultPtrArray resarr;
-            ATObjArrayCleanupResetAndDestroyPushL(resarr);              
-            RATParamArray params;
-            CleanupClosePushL(params);
             TBuf8<RMobilePhone::KPhoneSerialNumberSize> buf;
             buf.Copy(iIdentity.iSerialNumber);
             LEAVE_IF_ERROR(params.Append(TATParam(buf)))
             code = CATResult::NewL(EATCGSN, EATActionResult, &params);
-            CleanupStack::PopAndDestroy(&params);
-            CleanupStack::PushL(code);
-            resarr.AppendL(code);
-            CleanupStack::Pop(code);
-            CATResult* ok = CATResult::NewL(EATOK);
-            CleanupStack::PushL(ok);
-            resarr.AppendL(ok);
-            CleanupStack::Pop(ok);
-            SendResponseL(resarr);
-            CleanupStack::PopAndDestroy(&resarr);
-            CmdHandlingCompletedL();
             break;
             }
         default:
             LEAVE(KErrNotSupported);
+        }    
+    CleanupStack::PopAndDestroy(&params);
+    if (code)
+        {
+        CleanupStack::PushL(code);
+        resarr.AppendL(code);
+        CleanupStack::Pop(code);
+        CATResult* ok = CATResult::NewL(EATOK);
+        CleanupStack::PushL(ok);
+        resarr.AppendL(ok);
+        CleanupStack::Pop(ok);
+        SendResponseL(resarr);
+        CmdHandlingCompletedL();
         }
+    CleanupStack::PopAndDestroy(&resarr);
     }
 
 void CBtmcProtocol::DoSendProtocolDataL()

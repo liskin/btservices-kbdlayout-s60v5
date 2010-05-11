@@ -62,6 +62,8 @@ public:	// Interface to command handlers, from MRemConCommandInterface
     void MrcciCommandExpired(TUint aTransactionId);
     
 	void MrccciSetAddressedClient(const TRemConClientId& aClient);
+	void MrccciRegisterForLocalAddressedClientUpdates();
+	void MrccciUnregisterForLocalAddressedClientUpdates();
 
 private: // MRemConBearerInterfaceV3 functions called from RemCon
 	virtual TInt GetResponse(TUid& aInterfaceUid, 
@@ -184,6 +186,8 @@ private:
 	CAvrcpBulkBearer*			iBulkBearer;
 	
 	RAvctp						iAvctp;
+	
+	TInt						iRemotesInterestedInLocalAddressedClient;
 	};
 
 #endif //CONTROLBEARER_H

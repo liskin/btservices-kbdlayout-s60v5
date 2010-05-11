@@ -80,6 +80,8 @@ enum TAvrcpPanic
 	ECommandAlreadyQueuedForSending = 52,
 	EPassthroughQueueNotEmptyAfterDisconnect = 53,
 	EPreviousPassthroughNonNullReplacing = 54,
+	ETooManyRemotesRegisterForLocalAddressedPlayerUpdates = 55,
+	ETooFewRemotesRegisterForLocalAddressedPlayerUpdates = 56,
 	};
 
 template <typename XAny>

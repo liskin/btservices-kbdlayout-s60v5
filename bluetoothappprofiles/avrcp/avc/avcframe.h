@@ -1,4 +1,4 @@
-// Copyright (c) 2004-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2004-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -512,26 +512,26 @@ private:
 // Factory pattern stuff - these are useful to do donkey work,
 // but have existing clients treat them as the base class
 
-class CAVCVendorDependentResponse
+class CAVCVendorDependentResponse			// codescanner::missingcclass
 	{
 public:
 	IMPORT_C static CAVCFrame* NewL(TUint aVendorId);
 	};
 
-class CAVCPassthroughCommand
+class CAVCPassthroughCommand				// codescanner::missingcclass
 	{
 public:
 	};
 
 // likely not have newl because dont allocate on parse pattern
-class CAVCVendorDependentCommand
+class CAVCVendorDependentCommand			// codescanner::missingcclass
 	{
 public:
 	IMPORT_C static TPtrC8 GetPayloadAndVID(const CAVCFrame& aFrame, TUint& aVID);
 	};
 	
 // likely not have newl because dont allocate on parse pattern
-class CAVCVendorUniquePassthroughCommand
+class CAVCVendorUniquePassthroughCommand	// codescanner::missingcclass
 	{
 public:
 	IMPORT_C static TPtrC8 GetPayloadAndVID(const CAVCFrame& aFrame, TUint& aVID);

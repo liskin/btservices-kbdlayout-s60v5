@@ -141,14 +141,14 @@ const SResultCodeParamDef KResultCodeParamTable[] =
     {EATCIEV,   EATUnsolicitedResult, 2, KIntList2},
     {EATCREG, EATReadResult,          2, KIntList2},
     {EATCREG, EATUnsolicitedResult,   2, KIntList1},
-    {EATCGSN, EATReadResult,          1, KStrList1},
-    {EATCSQ, EATReadResult,						2, KIntList2},
-    {EATCIMI, EATReadResult,					1, KStrList1},
-    {EATCGMI, EATReadResult,					1, KStrList1},
-    {EATCGMM, EATReadResult,					1, KStrList1},
-    {EATCGMR, EATReadResult,					1, KStrList1},
-    {EATCOLP, EATReadResult,					1, KIntList1},
-    {EATCOLP, EATUnsolicitedResult,		2, KDQStrIntList2},    
+    {EATCGSN, EATActionResult,        1, KStrList1},
+    {EATCSQ,  EATActionResult,	      2, KIntList2},
+    {EATCIMI, EATActionResult,        1, KStrList1},
+    {EATCGMI, EATActionResult,        1, KStrList1},
+    {EATCGMM, EATActionResult,        1, KStrList1},
+    {EATCGMR, EATActionResult,        1, KStrList1},
+    {EATCOLP, EATReadResult,          1, KIntList1},
+    {EATCOLP, EATUnsolicitedResult,   2, KDQStrIntList2},    
     };
 
 const TInt KResultCodeParamTableSize = (sizeof(KResultCodeParamTable) / sizeof(SResultCodeParamDef));

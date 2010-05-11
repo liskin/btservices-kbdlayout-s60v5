@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -33,7 +33,7 @@ TPlayerFeatureBitmask::TPlayerFeatureBitmask(const TPlayerFeatureBitmask& aFeatu
 	iFeatureBitmask.Copy(aFeatureBitmask.FeatureBitmask());
 	}
 
-void TPlayerFeatureBitmask::SetCoreApiFeatures(RArray<TUint> aOperation)
+void TPlayerFeatureBitmask::SetCoreApiFeatures(const RArray<TUint>& aOperation)
 	{
 	if(aOperation.Count() > 0)
 		{
@@ -282,7 +282,7 @@ void TPlayerFeatureBitmask::SetCoreApiFeatures()
 	iFeatureBitmask[EF5ByteOffset]|= (1<<EF5BitOffset);
 	}
 
-void TPlayerFeatureBitmask::SetAbsoluteVolumeApiFeatures(RArray<TUint> aOperation)
+void TPlayerFeatureBitmask::SetAbsoluteVolumeApiFeatures(const RArray<TUint>& aOperation)
 	{
 	if(aOperation.Count())
 		{
@@ -290,7 +290,7 @@ void TPlayerFeatureBitmask::SetAbsoluteVolumeApiFeatures(RArray<TUint> aOperatio
 		}
 	}
 
-void TPlayerFeatureBitmask::SetGroupNavigationApiFeatures(RArray<TUint> aOperation)
+void TPlayerFeatureBitmask::SetGroupNavigationApiFeatures(const RArray<TUint>& aOperation)
 	{
 	if(aOperation.Count())
 		{
@@ -299,7 +299,7 @@ void TPlayerFeatureBitmask::SetGroupNavigationApiFeatures(RArray<TUint> aOperati
 		}
 	}
 
-void TPlayerFeatureBitmask::SetNowPlayingApiFeatures(RArray<TUint> aOperation)
+void TPlayerFeatureBitmask::SetNowPlayingApiFeatures(const RArray<TUint>& aOperation)
 	{
 	if(aOperation.Count())
 		{
@@ -313,7 +313,7 @@ void TPlayerFeatureBitmask::SetNowPlayingApiFeatures(RArray<TUint> aOperation)
 		}
 	}
 
-void TPlayerFeatureBitmask::SetMediaBrowseApiFeatures(RArray<TUint> aOperation)
+void TPlayerFeatureBitmask::SetMediaBrowseApiFeatures(const RArray<TUint>& aOperation)
 	{
 	if(aOperation.Count())
 		{

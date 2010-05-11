@@ -19,19 +19,19 @@
 #include <e32base.h>
 
 class CRcpRouter;
-class CRemConBearerAvrcp;
+class MRemConControlCommandInterface;
 class CControlCommand;
 NONSHARABLE_CLASS(CPassthroughHelper) : public CBase
 	{
 public:
-	static CPassthroughHelper* NewL(CRcpRouter& aRouter, CRemConBearerAvrcp& aBearer, CDeltaTimer& aTimer);
+	static CPassthroughHelper* NewL(CRcpRouter& aRouter, MRemConControlCommandInterface& aCommandInterface, CDeltaTimer& aTimer);
 	~CPassthroughHelper();
 	
 	void Disconnect();
 	
 	void HandlePassthrough(CControlCommand& aCommand); // FIXME for now
 private:
-	CPassthroughHelper(CRcpRouter& aRouter, CRemConBearerAvrcp& aAvrcp, CDeltaTimer& aTimer);
+	CPassthroughHelper(CRcpRouter& aRouter, MRemConControlCommandInterface& aCommandInterface, CDeltaTimer& aTimer);
 	void ConstructL();
 	
 	void Respond(CControlCommand& aCommand, TInt aErr);
@@ -52,7 +52,7 @@ private:
 
 private:
 	CRcpRouter& iRouter;
-	CRemConBearerAvrcp& iBearer;
+	MRemConControlCommandInterface& iCommandInterface;
 	CDeltaTimer& iTimer;
 	CControlCommand* iPreviousPassthrough;
 	};

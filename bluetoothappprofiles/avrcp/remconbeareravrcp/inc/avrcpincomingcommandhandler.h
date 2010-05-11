@@ -32,13 +32,13 @@
 
 class CPassthroughHelper;
 class CRcpRouter;
-class CRemConBearerAvrcp;
+class MRemConControlCommandInterface;
 class CAVCFrame;
 class TBTDevAddr;
 NONSHARABLE_CLASS(CRcpIncomingCommandHandler) : public CBase, public MPlayerChangeObserver, public MIncomingCommandHandler
 	{
 public:
-	static CRcpIncomingCommandHandler* NewL(CRemConBearerAvrcp& aBearer, 
+	static CRcpIncomingCommandHandler* NewL(MRemConControlCommandInterface& aCommandInterface, 
 		MRemConBearerObserver& aObserver,
 		CRcpRouter& aRouter,
 		CDeltaTimer& aTimer,
@@ -59,7 +59,7 @@ private: // from MIncomingCommandHandler
 	void SendReject(TUid aInterfaceUid, TUint aId);
 
 private:
-	CRcpIncomingCommandHandler(CRemConBearerAvrcp& aBearer, 
+	CRcpIncomingCommandHandler(MRemConControlCommandInterface& aCommandInterface, 
 		MRemConBearerObserver& aObserver,
 		CRcpRouter& aRouter,
 		CDeltaTimer& aTimer,
@@ -92,6 +92,8 @@ private:
 
 	void SendInternalResponse(TUint aId, RBuf8& aData);
 	void SendResponse(TDblQue<CControlCommand>& aCommandQueue, TUint aId, RBuf8& aData);
+	
+	void EnterAddressedMode();
 
 	// Timer functions
 	TBool DuplicateNotify(TDblQue<CControlCommand>& aCommandQueue, const CControlCommand& aCommand) const;
@@ -100,15 +102,15 @@ private:
 	TDblQue<CControlCommand>	iCommandQueue;
 	TDblQue<CControlCommand>	iInternalCommandQueue;
 	
-	CAVRCPFragmenter*		iFragmenter;
-	CRemConBearerAvrcp&		iBearer;
-	MRemConBearerObserver&	iObserver;
-	CRcpRouter&				iRouter;
-	CDeltaTimer& 			iTimer;
-	TRemConClientId			iClientId; // We store the client id even if we aren't
-									   // in addressed mode as we may switch into
-									   // it and need to know the current local
-									   // addressed player
+	CAVRCPFragmenter*					iFragmenter;
+	MRemConControlCommandInterface&		iCommandInterface;
+	MRemConBearerObserver&				iObserver;
+	CRcpRouter&							iRouter;
+	CDeltaTimer& 						iTimer;
+	TRemConClientId						iClientId;	// We store the client id even if we aren't
+													// in addressed mode as we may switch into
+													// it and need to know the current local
+													// addressed player
 	TBool					iAddressedMode;
 	
 	CAvrcpPlayerInfoManager&	iPlayerInfoManager;

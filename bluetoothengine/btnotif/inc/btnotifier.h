@@ -67,6 +67,13 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         */
         virtual ~CBTNotifierBase();
 
+        /**
+        * A utility function for checking whether autolock is on.
+        * @param None.
+        * @return A boolean according to autolock state.
+        */
+        TBool AutoLockOnL();
+        
     protected: // Constructors and destructor
 
         /**
@@ -78,6 +85,8 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         * Symbian 2nd phase constructor.
         */
         virtual void ConstructL();
+        
+
 
     protected: // New functions
 
@@ -92,13 +101,6 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         virtual void GetParamsL(const TDesC8& aBuffer, 
                                 TInt aReplySlot, 
                                 const RMessagePtr2& aMessage)=0;
-
-        /**
-        * A utility function for checking whether autolock is on.
-        * @param None.
-        * @return A boolean according to autolock state.
-        */
-        TBool AutoLockOnL();
 
         /**
         * A utility function for setting the power status of Bluetooth.
