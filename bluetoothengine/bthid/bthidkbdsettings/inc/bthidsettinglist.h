@@ -33,7 +33,7 @@ public:
     CAknSettingItem* CreateSettingItemL(TInt identifier);
 
     // handles the listbox events
-    virtual void HandleListBoxEventL(CEikListBox* aListBox,
+    void HandleListBoxEventL(CEikListBox* aListBox,
             TListBoxEvent aEventType);
 
     void EditCurrentItemL(TInt aCommand);

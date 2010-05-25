@@ -91,6 +91,7 @@ public:
     virtual TInt ConnectionStatus(const TBTDevAddr& aAddr) = 0;
     
     virtual TBool IsAvrcpVolCTSupported() = 0;
+    virtual TBool IsAvrcpLegacyVolCTSupported() = 0;
     virtual TBool IsAbsoluteVolumeSupported(const TBTDevAddr& aAddr) = 0;
     
     /**

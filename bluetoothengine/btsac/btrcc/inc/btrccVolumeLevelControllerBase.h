@@ -92,6 +92,8 @@ NONSHARABLE_CLASS(CBTRCCVolumeLevelControllerBase) : public CBase, public MBTRCC
         TInt GetLocalMaxVolume();  
         
         TInt GetCurrentLocalVolume();
+        
+        TInt GetCurrentRemoteVolume();
 
         void AccessoryChangedVolume(TInt aVolumeInPhoneScale);  
 
@@ -106,18 +108,18 @@ NONSHARABLE_CLASS(CBTRCCVolumeLevelControllerBase) : public CBase, public MBTRCC
         virtual void RegisterVolumeChangeNotification(); 
         
     private:
-        void SetPhoneVolume();
+        void SetPhoneVolume(TInt aRemoteVol);
+        TInt GetPhoneVolume(TInt &aVol);
         
     private: // New methods
 
         /**
         * To be implemented by the specialization class. 
         */
-        virtual void AdjustRemoteVolume(TInt aVolume) = 0; 
-    
-    protected:    
-        virtual TInt GetPhoneVolume(TInt &aVol);
-
+        virtual void AdjustRemoteVolume(TInt aVolume) = 0;
+        virtual TInt RoundRemoteVolume(TInt aPrevPhVol);
+        virtual void ScalePhoneVolume(TInt& aVolume);
+        
     private:    // Data
         RProperty iVolLevelProperty; // owned
         RProperty iVolKeyEventProperty; // owned

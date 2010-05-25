@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  Implementation of an accessory management.
-*  Version     : %version:  14.1.10 %
+*  Version     : %version:  14.1.11 %
 *
 */
 
@@ -53,17 +53,21 @@ void CBasrvAccMan::ConstructL()
     CRepository* cenrep = NULL;
     TRAP_IGNORE(cenrep = CRepository::NewL(KCRUidBluetoothEngine));
     TInt avrcpVol = EBTAvrcpVolCTNotSupported;
+    TInt avrcpLegacyVol = EBTAvrcpLegacyVolCTNotSupported;
     TInt autoDisconnect = EBTDisconnectIfAudioOpenFails;
     if (cenrep)
         {
         cenrep->Get(KBTAvrcpVolCTLV, avrcpVol);
+        cenrep->Get(KBTAvrcpLegacyVolCTLV, avrcpLegacyVol);
         cenrep->Get(KBTDisconnectIfAudioOpenFailsLV, autoDisconnect);
         delete cenrep;
         }
     iAvrcpVolCTSupported = (avrcpVol == EBTAvrcpVolCTSupported);
+    iAvrcpLegacyVolCTSupported = (avrcpLegacyVol == EBTAvrcpLegacyVolCTSupported);
     iDisconnectIfAudioOpenFails = (autoDisconnect == EBTDisconnectIfAudioOpenFails);
     TRACE_INFO((_L("[AVRCP_Vol_CT] %d [DisconnectIfAudioOpenFails] %d"), 
         iAvrcpVolCTSupported, iDisconnectIfAudioOpenFails))
+    TRACE_INFO((_L("[EBTAvrcpLegacyVolCTSupported] %d"), iAvrcpLegacyVolCTSupported))
     LoadServicesL();
     }
 
@@ -531,6 +535,11 @@ TBTEngConnectionStatus CBasrvAccMan::ConnectionStatus4Client(const TBTDevAddr& a
 TBool CBasrvAccMan::IsAvrcpVolCTSupported()
     {
     return iAvrcpVolCTSupported;
+    }
+
+TBool CBasrvAccMan::IsAvrcpLegacyVolCTSupported()
+    {
+    return iAvrcpLegacyVolCTSupported;
     }
     
 TBool CBasrvAccMan::IsAbsoluteVolumeSupported(const TBTDevAddr& aAddr)

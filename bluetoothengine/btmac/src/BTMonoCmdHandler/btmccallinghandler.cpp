@@ -94,7 +94,7 @@ void CBtmcCallingHandler::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
             TInt result = KErrNone;
             if (!aErr)
                 {
-                TBuf8<KMaxATSize> buf;
+                TBuf8<KDefaultCmdBufLength> buf;
                 aErr = iRespProperty.Get(buf);
                 if (!aErr && buf.Length() >= sizeof(TInt))
                     {

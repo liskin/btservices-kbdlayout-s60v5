@@ -137,7 +137,7 @@ const TUint32 KBTProductID = 0x00000006;
  * Indicates if supports remote volume control over AVRCP Controller.
  *
  * Possible integer values:
- * 0  supported
+ * 0  not supported
  * 1  supported
  *
  * Default value: 1
@@ -151,14 +151,29 @@ enum TBTAvrcpVolCTSupported
     EBTAvrcpVolCTSupported
     };
     
+/**
+ * CenRep key for storing Bluetooth feature settings.
+ * Indicates if supports legacy remote volume control over AVRCP Controller.
+ *
+ * Possible integer values:
+ * 0  not supported
+ * 1  supported
+ *
+ * Default value: 0
+ */
+const TUint32 KBTAvrcpLegacyVolCTLV = 0x00000008;
+
+/**  Enumeration for remote volume control AVRCP Controller support */
+enum TBTAvrcpLegacyVolCTSupported
+    {
+    EBTAvrcpLegacyVolCTNotSupported = 0,
+    EBTAvrcpLegacyVolCTSupported
+    };
     
 /**
  * CenRep key for default folder for file receiving.
  * Indicates where receving files will be saved.
  
- * Possible integer values:
- * 0  supported
- * 1  supported
  *
  * Default value: Received files\\
  */

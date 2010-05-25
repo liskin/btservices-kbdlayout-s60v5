@@ -18,7 +18,7 @@
 #include "cpincommandhandler.h"
 
 #include <mmretrieve.h>         // define AO wrapper
-#include <EXTERROR.H>           // Additional RMobilePhone error code
+#include <exterror.h>           // Additional RMobilePhone error code
 
 #include "debug.h"
 

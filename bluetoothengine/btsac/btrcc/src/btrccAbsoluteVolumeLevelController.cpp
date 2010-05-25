@@ -28,6 +28,7 @@
 
 const TInt KAbsoluteVolumeLevelSetServiceId = 0x02; 
 const TInt KMaxRetries = 3;
+const TInt KDefaultStep = 1000;
 
 // MODULE DATA STRUCTURES
 
@@ -53,7 +54,7 @@ CBTRCCAbsoluteVolumeLevelController* CBTRCCAbsoluteVolumeLevelController::NewL(C
 // -----------------------------------------------------------------------------
 //
 CBTRCCAbsoluteVolumeLevelController::CBTRCCAbsoluteVolumeLevelController(MBTRCCVolumeControllerObserver& aObserver)
-: CBTRCCVolumeLevelControllerBase(aObserver)
+: CBTRCCVolumeLevelControllerBase(aObserver), iStep(KDefaultStep)
 	{
 	}
 
@@ -153,13 +154,48 @@ void CBTRCCAbsoluteVolumeLevelController::RegisterVolumeChangeNotification()
     }
 
 // -----------------------------------------------------------------------------
-// CBTRCCAbsoluteVolumeLevelController::GetPhoneVolume
+// CBTRCCAbsoluteVolumeLevelController::RoundRemoteVolume
 // -----------------------------------------------------------------------------
 //
-TInt CBTRCCAbsoluteVolumeLevelController::GetPhoneVolume(TInt &aVol)
+TInt CBTRCCAbsoluteVolumeLevelController::RoundRemoteVolume(TInt aPrevPhVol)
     {
     TRACE_FUNC
-    return CBTRCCVolumeLevelControllerBase::GetPhoneVolume(aVol);
+    TInt phoneVol = GetCurrentLocalVolume();
+    TInt remoteVol = GetCurrentRemoteVolume();
+    TRACE_INFO((_L("Volume to be rounded %d"), remoteVol))
+    // Update step
+    if( phoneVol != -1 && aPrevPhVol != -1 )
+        {
+        TInt step = Abs( phoneVol - aPrevPhVol );
+        if( step )
+            {
+            TRACE_INFO((_L("Step %d"), step))
+            // Only update step value if it is not equal to zero
+            iStep = step;
+            }
+        }    
+    if( remoteVol >= 0 && remoteVol <= iLocalMaxVolume )
+        {        
+        TInt lowLimit = 0;
+        TInt highLimit = 0;
+        
+        for( TInt i = 0 ; highLimit < iLocalMaxVolume ; i++ )
+            {
+            lowLimit = i*iStep;
+            highLimit = (i+1)*iStep;
+            // Find the correct low and high value pair in which volume
+            // belongs.
+            if( remoteVol >= lowLimit && remoteVol <= highLimit )
+                {
+                break;
+                }
+            }
+        TInt diff1 = Abs( remoteVol - lowLimit );
+        TInt diff2 = Abs( remoteVol - highLimit );
+        remoteVol = diff1 <= diff2 ? lowLimit : highLimit;
+        }
+    TRACE_INFO((_L("Rounded volume %d"), remoteVol))
+    return remoteVol;
     }
 
 // -----------------------------------------------------------------------------

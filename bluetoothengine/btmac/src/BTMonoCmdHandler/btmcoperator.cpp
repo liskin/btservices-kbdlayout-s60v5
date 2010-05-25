@@ -92,7 +92,7 @@ void CBtmcOperator::RunL()
         LEAVE_IF_ERROR(params.Append(TATParam(0)));
         TBuf8<KMaxOperatorNameLength> buf8;
         buf8.Copy(iInfo.iName); //  Unicode convert:		
-		TBuf16<KMaxOperatorNameLength> buf16;
+        TBuf16<KMaxOperatorNameLength> buf16;
         TBuf8<KMaxOperatorNameLength> buf8Copy;        
         LEAVE_IF_ERROR(CnvUtfConverter::ConvertToUnicodeFromUtf8(buf16,buf8));
         buf8Copy.Copy(buf16);

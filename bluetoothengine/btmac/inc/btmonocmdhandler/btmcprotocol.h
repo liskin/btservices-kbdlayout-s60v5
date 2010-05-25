@@ -104,7 +104,7 @@ NONSHARABLE_CLASS(CBtmcProtocol) : public CBase,
 
 		// From MATExtObserver
 			
-        void ATExtHandleCommandCompletedL(TInt aErr, const TDesC8& aReply);
+        void ATExtHandleReplyReceivedL(TInt aErr, const TDesC8& aReply);
         
         void UnsolicitedResultFromATExtL(TInt aErr, const TDesC8& aAT);
 

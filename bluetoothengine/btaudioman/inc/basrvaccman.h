@@ -16,7 +16,7 @@
 *  Name        : basrvaccman.h
 *  Part of     : BTEng / Bluetooth Accessory Server
 *  Description : 
-*  Version     : %version: 3.1.4.1.2.2.13 %
+*  Version     : %version: 3.1.4.1.2.2.14 %
 *
 */
 
@@ -101,6 +101,7 @@ public:
     TBTEngConnectionStatus ConnectionStatus4Client(const TBTDevAddr& aAddr) const;
 
     TBool IsAvrcpVolCTSupported();
+    TBool IsAvrcpLegacyVolCTSupported(); 
     TBool IsAbsoluteVolumeSupported(const TBTDevAddr& aAddr);
     TBool DisconnectIfAudioOpenFails();
 
@@ -223,6 +224,7 @@ protected:
     CBasrvActive* iAsyncHandlingActive;
     
     TBool iAvrcpVolCTSupported;
+    TBool iAvrcpLegacyVolCTSupported;
     TBool iDisconnectIfAudioOpenFails;
     };
 

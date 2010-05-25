@@ -399,7 +399,7 @@ void CBtmcProtocol::DoHandleCommandL()
         {
         return;
         }
-    TBuf8<KMaxATSize> cmddes;
+    TBuf8<KDefaultCmdBufLength> cmddes;
     if (iInDataBuf.NextCommand(cmddes))
         {
         return;
@@ -410,7 +410,7 @@ void CBtmcProtocol::DoHandleCommandL()
         }
     TRACE_INFO_SEG(
         {
-        TBuf8<KMaxATSize> buf;
+        TBuf8<KDefaultCmdBufLength> buf;
         buf = cmddes;
         buf.Trim();
         Trace(_L8("[HFP] [I] %S"), &buf);
@@ -1083,7 +1083,7 @@ void CBtmcProtocol::DoSendProtocolDataL()
     for (TInt i = 0; iCredit >0 && i < count; i++)
         {
         iCredit--;
-        TBuf8<KMaxATSize> buf;
+        TBuf8<KDefaultCmdBufLength> buf;
         buf.Copy(iOutgoPacketQueue->MdcaPoint(0));
         iObserver.SendProtocolDataL(buf);
         iOutgoPacketQueue->Delete(0);
@@ -1199,7 +1199,7 @@ void CBtmcProtocol::UnsolicitedResultFromATExtL(TInt aErr, const TDesC8& aAT)
   		}
     }
 
-void CBtmcProtocol::ATExtHandleCommandCompletedL(TInt aErr, const TDesC8& aReply)
+void CBtmcProtocol::ATExtHandleReplyReceivedL(TInt aErr, const TDesC8& aReply)
 		{
 		TRACE_FUNC
 		if(aErr)

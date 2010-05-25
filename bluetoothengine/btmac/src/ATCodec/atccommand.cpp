@@ -125,7 +125,7 @@ EXPORT_C void CATBase::InternalizeL(RReadStream& aStream)
     
     if (version == KStreamVersion1)
         {
-        iText.CreateL(KMaxATSize);
+        iText.CreateL(KDefaultCmdBufLength);
         aStream >> iText;
         iId = static_cast<TATId>(aStream.ReadInt32L());
         iType = static_cast<TATType>(aStream.ReadInt32L());
@@ -491,7 +491,7 @@ CATResult::CATResult()
 TInt CATResult::Parse(TATId aId, TATType aType, const RATParamArray* aParams)
     {
     TRACE_FUNC
-    TInt err = iText.Create(KMaxATSize);
+    TInt err = iText.Create(KDefaultCmdBufLength);
 
     if (err != KErrNone)
         {
@@ -541,14 +541,14 @@ TInt CATResult::Parse(TATId aId, TATType aType, const RATParamArray* aParams)
                         {
                         return err;
                         }
-                    if (iText.Length() + (*aParams)[j].Des().Length() > KMaxATSize)
+                    if (iText.Length() + (*aParams)[j].Des().Length() > KDefaultCmdBufLength)
                         {
                         return KErrArgument;
                         }
                     iText.Append((*aParams)[j].Des());
                     if (j != aParams->Count() - 1)
                         {
-                        if (iText.Length() + comma.Length() > KMaxATSize)
+                        if (iText.Length() + comma.Length() > KDefaultCmdBufLength)
                             {
                             return KErrArgument;
                             }
@@ -565,11 +565,11 @@ TInt CATResult::Parse(TATId aId, TATType aType, const RATParamArray* aParams)
     
 TInt CATResult::AddCRLF(TDes8& aText)
     {
-    if (aText.Length() + KCRLFSize > KMaxATSize)
+    if (aText.Length() + KCRLFSize > KDefaultCmdBufLength)
         {
         return KErrOverflow;
         }
-    TBuf8<KMaxATSize> buf(aText);
+    TBuf8<KDefaultCmdBufLength> buf(aText);
     aText.Format(KCRLFFormat, &buf);
     return KErrNone;
     }

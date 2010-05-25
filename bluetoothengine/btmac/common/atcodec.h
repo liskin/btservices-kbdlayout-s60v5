@@ -21,6 +21,7 @@
 
 //  INCLUDES
 #include <e32base.h>
+#include <atext.h>
 
 enum TATId
     {
@@ -88,7 +89,6 @@ enum TATParamType
     EATIntParam
     };
     
-const TInt KMaxATSize = 512;
 const TInt KMaxATParamSize = 256;
 
 class RReadStream;

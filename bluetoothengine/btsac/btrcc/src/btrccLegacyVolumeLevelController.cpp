@@ -247,23 +247,21 @@ void CBTRCCLegacyVolumeLevelController::DoRemoteControl()
     }
 
 // -----------------------------------------------------------------------------
-// CBTRCCLegacyVolumeLevelController::GetPhoneVolume
+// CBTRCCLegacyVolumeLevelController::ScalePhoneVolume
 // -----------------------------------------------------------------------------
 //
-TInt CBTRCCLegacyVolumeLevelController::GetPhoneVolume(TInt &aVol)
+void CBTRCCLegacyVolumeLevelController::ScalePhoneVolume(TInt &aVolume)
     {
-    TRACE_FUNC
-    TInt err = CBTRCCVolumeLevelControllerBase::GetPhoneVolume(aVol); 
-        
+    TRACE_FUNC        
     // Converts volume level scale used in DevSound Audio (0 - 10000) into 0 - KVolumeScaleMax.
-    if( aVol <= 0 )
+    if( aVolume <= 0 )
         {
         // 0 level and -1 (no stream) don't need adjustment. 
-        return err;
+        return;
         }
     
     TReal tgt;
-    TReal src(aVol);    
+    TReal src(aVolume);    
     TReal maxScale(KVolumeScaleMax);    
     TReal maxDevSound(iLocalMaxVolume);
     TReal scale = maxScale/maxDevSound;
@@ -275,9 +273,8 @@ TInt CBTRCCLegacyVolumeLevelController::GetPhoneVolume(TInt &aVol)
         // values have to be upgraded to level 1.
         tgt = 1;
         }
-    TRACE_INFO((_L("Volume scaled: original %d, scaled %d"), aVol, TInt(tgt)))
-    aVol = TInt(tgt);
-    return err;
+    TRACE_INFO((_L("Volume scaled: original %d, scaled %d"), aVolume, TInt(tgt)))
+    aVolume = TInt(tgt);
     }
 
 // -----------------------------------------------------------------------------

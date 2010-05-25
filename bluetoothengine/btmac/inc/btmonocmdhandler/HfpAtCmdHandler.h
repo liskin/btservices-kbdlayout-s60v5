@@ -31,7 +31,7 @@ class CBtmcActive;
 class MATExtObserver
     {
 public:
-    virtual void ATExtHandleCommandCompletedL(TInt aErr, const TDesC8& aReply) = 0;
+    virtual void ATExtHandleReplyReceivedL(TInt aErr, const TDesC8& aReply) = 0;
 
     virtual void UnsolicitedResultFromATExtL(TInt aErr, const TDesC8& aAT) = 0;
     };

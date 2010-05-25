@@ -82,6 +82,7 @@ void CBTRCCVolumeLevelControllerBase::Start()
     iBtrccActive->GoActive(); 
 
     (void) GetPhoneVolume(iPhoneVolume);
+    ScalePhoneVolume(iPhoneVolume);
     if( iPhoneVolume > -1)
         {
         DoStart( iPhoneVolume );
@@ -152,10 +153,13 @@ void CBTRCCVolumeLevelControllerBase::AccessoryChangedVolume(TInt aVolumeInPhone
     iRemoteVolume = aVolumeInPhoneScale;
     TInt vol;
     TInt err = GetPhoneVolume(vol);
+    ScalePhoneVolume(iPhoneVolume);
     if(!err)
         {
+        TInt prevPhVol = iPhoneVolume;
         iPhoneVolume = vol;
-        SetPhoneVolume();
+        TInt remoteVol = RoundRemoteVolume(prevPhVol);
+        SetPhoneVolume(remoteVol);
         }
     }
 
@@ -163,24 +167,18 @@ void CBTRCCVolumeLevelControllerBase::AccessoryChangedVolume(TInt aVolumeInPhone
 // CBTRCCVolumeLevelControllerBase::SetPhoneVolume
 // -----------------------------------------------------------------------------
 //
-void CBTRCCVolumeLevelControllerBase::SetPhoneVolume()
+void CBTRCCVolumeLevelControllerBase::SetPhoneVolume(TInt aRemoteVol)
     {
     TRACE_FUNC
-    TRACE_INFO((_L("iRemoteVolume = %d, iPhoneVolume = %d"), iRemoteVolume, iPhoneVolume))
-    if (iRemoteVolume != iPhoneVolume)
+    TRACE_INFO((_L("Remote Volume = %d, iPhoneVolume = %d"), aRemoteVol, iPhoneVolume))
+    TInt err( KErrNotFound );
+    if (aRemoteVol != iPhoneVolume)
         {
-        TInt event = (iRemoteVolume > iPhoneVolume) ? KPSVolumeUpClicked : KPSVolumeDownClicked;
-        TInt err = iVolKeyEventProperty.Set(event);
-        if (err)
-            {
-            TRACE_ERROR((_L("Set KMediaKeysVolumeKeyEvent err %d"), err));
-            }
-        iState = ESetPhoneVolume;
+        TInt event = (aRemoteVol > iPhoneVolume) ? KPSVolumeUpClicked : KPSVolumeDownClicked;
+        err = iVolKeyEventProperty.Set(event);
+        TRACE_INFO((_L("Set KMediaKeysVolumeKeyEvent click %d err %d"), event, err));
         }    
-    else
-        {
-        iState = ESubscribePhoneVolume;
-        } 
+    iState = err ? ESubscribePhoneVolume : ESetPhoneVolume;
     }
 
 // -----------------------------------------------------------------------------
@@ -205,6 +203,36 @@ TInt CBTRCCVolumeLevelControllerBase::GetCurrentLocalVolume()
     }
 
 // -----------------------------------------------------------------------------
+// CBTRCCVolumeLevelControllerBase::GetCurrentRemoteVolume
+// -----------------------------------------------------------------------------
+//
+TInt CBTRCCVolumeLevelControllerBase::GetCurrentRemoteVolume()
+    {
+    return iRemoteVolume;
+    }
+
+// -----------------------------------------------------------------------------
+// CBTRCCVolumeLevelControllerBase::RoundRemoteVolume
+// -----------------------------------------------------------------------------
+//
+TInt CBTRCCVolumeLevelControllerBase::RoundRemoteVolume(TInt /*aPrevPhVol*/)
+    {
+    TRACE_FUNC
+    // default implementation
+    return iRemoteVolume;
+    }
+
+// -----------------------------------------------------------------------------
+// CBTRCCVolumeLevelControllerBase::ScalePhoneVolume
+// -----------------------------------------------------------------------------
+//
+void CBTRCCVolumeLevelControllerBase::ScalePhoneVolume(TInt& /*aVolume*/)
+    {
+    TRACE_FUNC
+    // default implementation
+    }
+
+// -----------------------------------------------------------------------------
 // CBTRCCVolumeLevelControllerBase::RequestCompletedL
 // -----------------------------------------------------------------------------
 //
@@ -213,7 +241,9 @@ void CBTRCCVolumeLevelControllerBase::RequestCompletedL(CBTRCCActive& aActive, T
     TRACE_FUNC
     if(aActive.ServiceId() == KVolumeChangeListenerServiceId)
         {
+        TInt prevPhVol = iPhoneVolume;
         TInt err = GetPhoneVolume(iPhoneVolume);
+        ScalePhoneVolume(iPhoneVolume);
                 
         if(!err && !aErr && iPhoneVolume > -1)
             {
@@ -224,7 +254,8 @@ void CBTRCCVolumeLevelControllerBase::RequestCompletedL(CBTRCCActive& aActive, T
                     AdjustRemoteVolume(iPhoneVolume); 
                     break;
                 case ESetPhoneVolume:
-                    SetPhoneVolume();
+                    TInt remoteVol = RoundRemoteVolume(prevPhVol);
+                    SetPhoneVolume(remoteVol);
                     break;
                 }
             }

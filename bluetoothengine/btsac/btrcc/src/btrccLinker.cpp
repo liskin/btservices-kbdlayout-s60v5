@@ -25,6 +25,7 @@
 #include <apacmdln.h>
 #include <apgcli.h>
 #include "btaudioremconpskeys.h"
+#include "btrccLegacyVolumeLevelController.h"
 #include "btrccAbsoluteVolumeLevelController.h"
 #include "btrccLinker.h"
 #include "btrccplayerstarter.h"
@@ -86,6 +87,14 @@ void CBTRCCLinker::ConstructL()
     if (iAccObserver.IsAvrcpVolCTSupported())
         {
         iAbsoluteVolController = CBTRCCAbsoluteVolumeLevelController::NewL(*iInterfaceSelector, *this);
+        TRACE_INFO((_L("CBTRCCLinker::ConstructL, absolute volume controller created.")))
+
+        // If also legacy is configured into use, prepare to use it with legacy devices. 
+        if(iAccObserver.IsAvrcpLegacyVolCTSupported())
+            {
+            iLegacyVolController = CBTRCCLegacyVolumeLevelController::NewL(*iInterfaceSelector, *this);
+            TRACE_INFO((_L("CBTRCCLinker::ConstructL, legacy volume controller created.")))
+        	}
         }
     else 
    		{
@@ -125,6 +134,7 @@ CBTRCCLinker::~CBTRCCLinker()
         User::RequestComplete(iClientRequest, KErrAbort);
 	
     delete iAbsoluteVolController;
+    delete iLegacyVolController;
 	delete iPlayerStarter;
 	Cancel();
     iStateArray.ResetAndDestroy();
@@ -432,7 +442,7 @@ void CBTRCCLinker::StartRemoteVolumeControl()
     if (iAccObserver.IsAvrcpVolCTSupported())
         {
         // Choose based on SDP result whether to create 
-        // absolute controller or not.
+        // absolute controller or legacy controller.
         if(!iVolController)
             {
             if (iAccObserver.IsAbsoluteVolumeSupported(iRemoteAddr))
@@ -440,10 +450,10 @@ void CBTRCCLinker::StartRemoteVolumeControl()
                 iVolController = iAbsoluteVolController;
                 TRACE_INFO(_L("Absolute volume supported, taking it into use."))
                 }
-            else 
-            	{
-                TRACE_INFO(_L("No absolute volume supported, so no volume control."))
-            	}
+           	else 
+                {
+                iVolController = iLegacyVolController; // iLegacyVolController may be NULL, depends on the configuration. 
+                }
             }
         }
     if (iVolController)

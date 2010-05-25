@@ -87,7 +87,7 @@ NONSHARABLE_CLASS(CBTRCCAbsoluteVolumeLevelController) :
 
         void AdjustRemoteVolume(TInt aVolume); 
         
-        TInt GetPhoneVolume(TInt &aVol);
+        TInt RoundRemoteVolume(TInt aPrevPhVol);        
 
 	public: // New methods
 
@@ -121,6 +121,8 @@ NONSHARABLE_CLASS(CBTRCCAbsoluteVolumeLevelController) :
 		TUint iNumRemotes; // not used, but needed for the remote controlling API.
 		
 		TInt iRetryCounter;
+		
+        TInt iStep;
     };
 
 #endif      // BTRCCABSOLUTEVOLUMELEVELCONTROLLER_H

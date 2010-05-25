@@ -43,7 +43,7 @@ NONSHARABLE_CLASS(TBtmcProtDataBuf)
 
     private:
 
-	    TBuf8<KMaxATSize> iBuf;
+	    TBuf8<KDefaultCmdBufLength> iBuf;
     };
 
 

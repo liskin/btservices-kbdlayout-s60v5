@@ -63,7 +63,7 @@ void CHFPAtCmdHandler::HandleCommand(const TDesC8& aAT, const TDesC8& aReply)
         }
     iATExtClient.HandleCommand(iCommander->iStatus, 
             iCmdBuffer, iReplyBuffer, iRemainingReplyLengthPckg, iReplyTypePckg);
-    iCommander->GoActive();
+    iCommander->GoActive(); 
     }
 
 void CHFPAtCmdHandler::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
@@ -74,32 +74,37 @@ void CHFPAtCmdHandler::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
         {
         case EHandleCommandRequest:
             {
-        	if(err == KErrNone)
-        		{
-        		if (iRemainingReplyLengthPckg())
-        		    {
-                    /*RBuf8 reply2;
-                    reply2.CreateL(iRemainingReplyLengthPckg() + iReplyBuffer.Length());
-                    err = iATExtClient.GetNextPartOfReply(reply2, iRemainingReplyLengthPckg);
-                    if (!err)
-                        {
-                        reply2.Insert(0, iReplyBuffer);
-                        }
-                    TRACE_INFO((_L8("reply '%S'"), &reply2))
-                    iObserver.ATExtHandleCommandCompletedL(err, reply2);
-                    reply2.Close();*/
-        		    iATExtClient.GetNextPartOfReply( iRecvBuffer,
-        		            iRemainingReplyLength );
-        		    }
-        		else
-        		    {
+            if(err == KErrNone)
+                {
+                if (iRemainingReplyLengthPckg())
+                    {
                     TRACE_INFO((_L8("reply '%S'"), &iReplyBuffer))
-                    iObserver.ATExtHandleCommandCompletedL(err, iReplyBuffer);
-        		    }
-        		}
+                    iObserver.ATExtHandleReplyReceivedL(err, iReplyBuffer);
+                    do 
+                        {
+                        TRACE_INFO((_L8("iRemainingReplyLength '%d'"), iRemainingReplyLengthPckg()))
+                        RBuf8 reply;
+                        reply.CreateL(iRemainingReplyLengthPckg());
+                        err = iATExtClient.GetNextPartOfReply(iRecvBuffer, iRemainingReplyLengthPckg());
+                        if (!err)
+                            {
+                            reply.Insert(0, iRecvBuffer);
+                            }
+                        TRACE_INFO((_L8("reply '%S'"), &reply))
+                        iObserver.ATExtHandleReplyReceivedL(err, reply);
+                        reply.Close();
+                        }
+                    while (iRemainingReplyLengthPckg());
+                    }
+                else
+                    {
+                    TRACE_INFO((_L8("reply '%S'"), &iReplyBuffer))
+                    iObserver.ATExtHandleReplyReceivedL(err, iReplyBuffer);
+                    }
+                }
             else
                 {
-                iObserver.ATExtHandleCommandCompletedL(err, iSystemReply);
+                iObserver.ATExtHandleReplyReceivedL(err, iSystemReply);
                 }
             break;
             }

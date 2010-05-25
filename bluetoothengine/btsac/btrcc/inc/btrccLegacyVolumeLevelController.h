@@ -97,7 +97,7 @@ NONSHARABLE_CLASS(CBTRCCLegacyVolumeLevelController) :
     
 	private: // From CBTRCCVolumeLevelControllerBase
         void AdjustRemoteVolume(TInt aVolume); 
-        TInt GetPhoneVolume(TInt &aVol);
+        void ScalePhoneVolume(TInt& aVolume);
 
     private:  // From MRemConCoreApiControllerObserver
 		TInt MrccacoResponse(); 

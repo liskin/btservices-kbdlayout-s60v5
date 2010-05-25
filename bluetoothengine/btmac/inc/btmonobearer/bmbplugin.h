@@ -202,7 +202,7 @@ class CBmbPlugin
     private: // owned
 
     	// Last received and corrected-decoded message.
-		TBuf8<KMaxATSize> iInData;       
+		TBuf8<KDefaultCmdBufLength> iInData;       
     	TUid iInterfaceUid;
     	TUint iTransactionId;
     	TUint iOperationId;

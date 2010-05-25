@@ -28,7 +28,7 @@
 #include "atmisccmdpluginconsts.h"
 #include "debug.h"
 
-#include <EXTERROR.H>           // Additional RMobilePhone error code
+#include <exterror.h>           // Additional RMobilePhone error code
 
 
 // +CME error code
