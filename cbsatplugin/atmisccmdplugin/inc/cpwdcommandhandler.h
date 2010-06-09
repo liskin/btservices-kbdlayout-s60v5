@@ -19,7 +19,7 @@
 #include <e32base.h>
 #include <etelmm.h>
 
-#include "atmisccmdplugin.h"
+#include "atcmdasyncbase.h"
 
 /**
  *  This class implements an AO for AT+CPWD command using ATExt plugin framework.
@@ -39,14 +39,8 @@ private:
     virtual void DoCancel();
     // RunError is not required because RunL doesn't leave.
     
-    /**
-     * @see CATCmdAsyncBase::HandleCommand
-     */
+    // method from CATCmdAsyncBase::MATCmdBase
     virtual void HandleCommand( const TDesC8& aCmd, RBuf8& aReply, TBool aReplyNeeded );
-    /**
-     * @see CATCmdAsyncBase::HandleCommandCancel
-     */
-    virtual void HandleCommandCancel();
     
     CCPWDCommandHandler(MATMiscCmdPlugin* aCallback, TAtCommandParser& aATCmdParser, RMobilePhone& aPhone);
     void ConstructL();

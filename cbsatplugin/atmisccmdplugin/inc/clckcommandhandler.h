@@ -18,7 +18,7 @@
 
 #include <mmretrieve.h>
 
-#include "atmisccmdplugin.h"
+#include "atcmdasyncbase.h"
 
 class CSecurityCodeVerifier;
 class CSecurityEventHandler;
@@ -84,10 +84,9 @@ private: // methods from CActive
     virtual void DoCancel();
     // RunError not needed as RunL does not leave
 
-private: // methods from CATCmdAsyncBase    
+private: // method from CATCmdAsyncBase::MATCmdBase    
     virtual void HandleCommand( const TDesC8& aCmd, RBuf8& aReply, TBool aReplyNeeded );
-    virtual void HandleCommandCancel();
-    
+   
 private:
     CCLCKCommandHandler(MATMiscCmdPlugin* aCallback, TAtCommandParser& aATCmdParser, RMobilePhone& aPhone);
     void ConstructL();

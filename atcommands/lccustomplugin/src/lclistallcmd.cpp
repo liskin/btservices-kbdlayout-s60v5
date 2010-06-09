@@ -142,13 +142,6 @@ void CLcListAllCmd::HandleCommand( const TDesC8& /*aCmd*/,
         return;
         }
     RBuf8 reply;
-    if ( quietMode )
-        {
-        iCallback->CreateReplyAndComplete( EReplyTypeOther, reply );
-        reply.Close();
-        TRACE_FUNC_EXIT
-        return;
-        }
     TBool error = CreateSupportedList( reply );
     if ( error )
         {

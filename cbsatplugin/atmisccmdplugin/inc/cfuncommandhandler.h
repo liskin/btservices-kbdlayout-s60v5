@@ -19,7 +19,9 @@
 #ifndef CFUNCOMMANDHANDLER_H
 #define CFUNCOMMANDHANDLER_H
 
-#include "atmisccmdplugin.h"
+#include <e32property.h> 
+
+#include "atcmdasyncbase.h"
 
 const TInt KGeneralProfileId = 0;
 const TInt KOfflineProfileId = 5;
@@ -39,16 +41,15 @@ private: // methods from CActive
     virtual void RunL();
     virtual void DoCancel();
     // RunError not needed as RunL does not leave
-
-private: // methods from CATCmdAsyncBase    
+    
+private: // method from CATCmdAsyncBase::MATCmdBase    
     virtual void HandleCommand( const TDesC8& aCmd, RBuf8& aReply, TBool aReplyNeeded );
-    virtual void HandleCommandCancel();
     
 private:
     CCFUNCommandHandler(MATMiscCmdPlugin* aCallback, TAtCommandParser& aATCmdParser, RMobilePhone& aPhone);
     void ConstructL();
     
-    TInt ActivateProfile(TInt aFunc, TInt aReset);
+    TInt ActivateProfile(TInt aFunc);
     TInt SetActiveProfile(TInt aProfileId);
     TInt RestartDevice();
     
@@ -56,6 +57,9 @@ private:
     RBuf8 iReply;
     
     MProfileEngine* iProfileEngine;
+    RProperty iProperty;
+    TInt iExpectedState;
+    TInt iReset; // default 0 - do not reset the MT before setting it to <fun> power level
     };
 
 #endif /* CFUNCOMMANDHANDLER_H */

@@ -25,8 +25,6 @@
 #include "atmisccmdpluginconsts.h"
 #include "debug.h"
 
-const TInt KSCPMaxHashLength( 32 );
-
 CCLCKCommandHandler* CCLCKCommandHandler::NewL(MATMiscCmdPlugin* aCallback, TAtCommandParser& aATCmdParser, RMobilePhone& aPhone)
     {
     TRACE_FUNC_ENTRY
@@ -304,13 +302,6 @@ TInt CCLCKCommandHandler::ReceiveCBList()
     return KErrNone;
     }
 
-void CCLCKCommandHandler::HandleCommandCancel()
-    {
-    TRACE_FUNC_ENTRY
-    Cancel();
-    TRACE_FUNC_EXIT
-    }
-
 void CCLCKCommandHandler::IssueCLCKCommand()
     {
     TRACE_FUNC_ENTRY
@@ -327,7 +318,7 @@ void CCLCKCommandHandler::IssueCLCKCommand()
             }
         case (CCLCKCommandHandler::ECLCKLockSet):
             {
-            if (iPassword.Compare(KNullDesC8) == 0)
+            if (iPassword.Length() == 0)
                 {
                 iCallback->CreateReplyAndComplete( EReplyTypeError);
                 }
@@ -336,15 +327,14 @@ void CCLCKCommandHandler::IssueCLCKCommand()
                 // Set the property to ignore security events in other clients
                 // it allows to avoid GUI promt for security code
                 TInt  ret = KErrNone;
-                // TODO: reenable when KIgnoreSecurityEvent propety definition is submitted to codeline
-//                if (iLockType == RMobilePhone::ELockICC)
-//                    {
-//                    ret = RProperty::Set(KPSUidStartup, KIgnoreSecurityEvent, EPSIgnoreSecurityEventEPin1Required);
-//                    }
-//                else
-//                    {
-//                    ret = RProperty::Set(KPSUidStartup, KIgnoreSecurityEvent, EPSIgnoreSecurityEventEPhonePasswordRequired);
-//                    }
+                if (iLockType == RMobilePhone::ELockICC)
+                    {
+                    ret = RProperty::Set(KPSUidStartup, KIgnoreSecurityEvent, EPSIgnoreSecurityEventEPin1Required);
+                    }
+                else
+                    {
+                    ret = RProperty::Set(KPSUidStartup, KIgnoreSecurityEvent, EPSIgnoreSecurityEventEPhonePasswordRequired);
+                    }
                 Trace(KDebugPrintD, "RProperty::Set: ", ret);
                 if (ret == KErrNone)
                     {
@@ -373,7 +363,7 @@ void CCLCKCommandHandler::IssueCLCKCommand()
             }
         case (CCLCKCommandHandler::ECLCKBarringSet):
             {
-            if (iPassword.Compare(KNullDesC8) == 0)
+            if (iPassword.Length() == 0)
                 {
                 iCallback->CreateReplyAndComplete(EReplyTypeError);
                 }
@@ -546,98 +536,97 @@ void CCLCKCommandHandler::HandleSecurityEvent(TInt aError, RMobilePhone::TMobile
 TInt CCLCKCommandHandler::ParseCCLCKCommand()
     {
     TRACE_FUNC_ENTRY
-    TCmdFacilityType facilityType = ECmdFacilityTypeUnknown;
+    TPtrC8 command;
+    TInt ret = iATCmdParser.NextTextParam(command);
+    if (ret != KErrNone)
+        {
+        TRACE_FUNC_EXIT
+        return KErrArgument;
+        }
+    
     TInt mode = 0;
-    TInt ret = KErrNone;
-
-    TPtrC8 command = iATCmdParser.NextTextParam(ret);
-    if (!command.Compare(KNullDesC8) || ret != KErrNone)
-        {
-        TRACE_FUNC_EXIT
-        return KErrArgument;
-        }
-    
     ret = iATCmdParser.NextIntParam(mode);
-    if (!command.Compare(KNullDesC8) || ret != KErrNone)
+    if (ret != KErrNone)
         {
         TRACE_FUNC_EXIT
         return KErrArgument;
         }
     
-    iPassword.Create(iATCmdParser.NextTextParam(ret));
-    Trace(KDebugPrintD, "NextTextParam returned: ", ret);
+    TPtrC8 tmpPwd;
+    ret = iATCmdParser.NextTextParam(tmpPwd);
     if (ret != KErrNone && ret != KErrNotFound)
         {
         TRACE_FUNC_EXIT
         return KErrArgument;
         }
     
-    if (iPassword.Compare(KNullDesC8) != 0)
+    iPassword.Create(tmpPwd);
+    if (iPassword.Length() != 0)
         {
-        ret = iATCmdParser.NextIntParam(iInfoClass);
-        Trace(KDebugPrintD, "NextIntParam(iInfoClass): ", ret);
+        ret = iATCmdParser.NextIntParam(iInfoClass);;
         if (ret == KErrNotFound)
             {
-            iInfoClass = 7;
+            iInfoClass = 7; // Default value, see ETSI TS 127 007 V6.9.0 (2007-06)
             }
-        if ((ret != KErrNone && ret != KErrNotFound ) || 
-            iATCmdParser.NextParam().Compare(KNullDesC8) != 0)
+        else if (ret != KErrNone || iATCmdParser.NextParam().Length() != 0)
             {
             TRACE_FUNC_EXIT
             return KErrArgument;
             }
         }
     
-    if (command.Compare(KATCLCKPS) == 0)
+    TCmdFacilityType facilityType = ECmdFacilityTypeUnknown;
+    
+    if (command.CompareF(KATCLCKPS) == 0)
         {
         // Lock phone to SIM on/off
         iSecurityCode = RMobilePhone::ESecurityCodePhonePassword;
         iLockType = RMobilePhone::ELockPhoneToICC;
         facilityType = ECmdFacilityTypeLock;
         }
-    else if (command.Compare(KATCLCKSC) == 0)
+    else if (command.CompareF(KATCLCKSC) == 0)
         {
         // PIN on/off
         iSecurityCode = RMobilePhone::ESecurityCodePin1;
         iLockType = RMobilePhone::ELockICC;
         facilityType = ECmdFacilityTypeLock;
         }
-    else if (command.Compare(KATCLCKAO) == 0)
+    else if (command.CompareF(KATCLCKAO) == 0)
         {
         iCondition = RMobilePhone::EBarAllOutgoing;
         facilityType = ECmdFacilityTypeBarring;
         }
-    else if (command.Compare(KATCLCKOI) == 0)
+    else if (command.CompareF(KATCLCKOI) == 0)
         {
         iCondition = RMobilePhone::EBarOutgoingInternational;
         facilityType = ECmdFacilityTypeBarring;
         }
-    else if (command.Compare(KATCLCKOX) == 0)
+    else if (command.CompareF(KATCLCKOX) == 0)
         {
         iCondition = RMobilePhone::EBarOutgoingInternationalExHC;
         facilityType = ECmdFacilityTypeBarring;
         }
-    else if (command.Compare(KATCLCKAI) == 0)
+    else if (command.CompareF(KATCLCKAI) == 0)
         {
         iCondition = RMobilePhone::EBarAllIncoming;
         facilityType = ECmdFacilityTypeBarring;
         }
-    else if (command.Compare(KATCLCKIR) == 0)
+    else if (command.CompareF(KATCLCKIR) == 0)
         {
         iCondition = RMobilePhone::EBarIncomingRoaming;
         facilityType = ECmdFacilityTypeBarring;
         }
-    else if (command.Compare(KATCLCKAB) == 0)
+    else if (command.CompareF(KATCLCKAB) == 0)
         {
         iCondition = RMobilePhone::EBarAllCases;
         facilityType = ECmdFacilityTypeAllBarring;
         }
-    else if (command.Compare(KATCLCKAG) == 0)
+    else if (command.CompareF(KATCLCKAG) == 0)
         {
         iCondition = RMobilePhone::EBarAllOutgoingServices;
         facilityType = ECmdFacilityTypeAllBarring;
         }
-    else if (command.Compare(KATCLCKAC) == 0)
+    else if (command.CompareF(KATCLCKAC) == 0)
         {
         iCondition = RMobilePhone::EBarAllIncomingServices;
         facilityType = ECmdFacilityTypeAllBarring;
@@ -682,10 +671,6 @@ TInt CCLCKCommandHandler::ParseCCLCKCommand()
         case (ECmdFacilityTypeBarring):
             {
             iCBInfo.iPassword.Copy(iPassword);
-            if (iInfoClass == 0)
-                {
-                iInfoClass = 7; // Default value, see ETSI TS 127 007 V6.9.0 (2007-06)
-                }
             switch (mode)
                 {
                 case 0: // AT+CLCK="AO",0

@@ -283,14 +283,7 @@ TInt CModemAtPlugin::CreateReplyAndComplete( TATExtensionReplyType aReplyType,
     switch ( aReplyType )
         {
         case EReplyTypeOther:
-            if ( iQuietMode )  //  In quite mode there should be no response at all. 
-                {
-                iReplyBuffer.Create( KNullDesC8 );
-                }
-            else
-                {
-                iReplyBuffer.Create( aSrcBuffer ); 
-                }
+            iReplyBuffer.Create( aSrcBuffer );
             break;
         case EReplyTypeOk:
             CreateOkOrErrorReply( iReplyBuffer, ETrue );

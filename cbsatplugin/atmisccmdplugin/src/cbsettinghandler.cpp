@@ -61,7 +61,6 @@ void CCBSettingHandler::Start(TRequestStatus& aReqStatus, TInt aInfoClass,
         {
         iClassArray.Append(RMobilePhone::ETelephony);
         }
-   // TODO: confirm ECircuitDataService is not needed 
     if ((aInfoClass & EInfoClassData) == EInfoClassData)
         {
         iClassArray.Append(RMobilePhone::EAllBearer);
@@ -150,9 +149,11 @@ void CCBSettingHandler::DoCancel()
 
 void CCBSettingHandler::Complete(TInt aError)
     {
+    TRACE_FUNC_ENTRY
     if (iQueuedStatus != NULL)
         {
         User::RequestComplete(iQueuedStatus, aError);
         iQueuedStatus = NULL;
         }
+    TRACE_FUNC_EXIT
     }

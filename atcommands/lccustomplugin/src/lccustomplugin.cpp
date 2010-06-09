@@ -278,14 +278,7 @@ TInt CLcCustomPlugin::CreateReplyAndComplete( TATExtensionReplyType aReplyType,
     switch ( aReplyType )
         {
         case EReplyTypeOther:
-            if ( iQuietMode )
-                {
-                iReplyBuffer.Create( KNullDesC8 );
-                }
-            else
-                {
-                iReplyBuffer.Create( aSrcBuffer );
-                }
+            iReplyBuffer.Create( aSrcBuffer );
             break;
         case EReplyTypeOk:
             CreateOkOrErrorReply( iReplyBuffer, ETrue );

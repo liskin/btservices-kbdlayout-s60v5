@@ -42,6 +42,7 @@ const TInt KBTAllPurposeBufferLength = 266;
 const TInt KBTNotifNonPairedUsedDevicesMaxNumber= 5;
 // RSSI value range: -127dB ~ +20dB
 const TInt KRssiRangeOffset = 127 + 1;  // Offset for getting a non-zero positive value
+const TInt KMinimumStrength = 1;
 const TInt KMediumStrength = 53;
 const TInt KHighStrength = 82;
 const TUint32 ExcludePairedDeviceMask = 0x800000;
@@ -67,7 +68,7 @@ CBTInqUI::CBTInqUI( MBTNDeviceSearchObserver* aObserver,
         iDesiredDeviceClass (aDesiredDevClass),
         iSystemCancel (EFalse), 
         iPageForName ( EFalse ),
-        iIndex (0),
+        iCurrentlyResolvingUnnamedDeviceIndex (0),
         iDevSearchObserver (aObserver)
     {
 	iBTRegistryQueryState=ENoQuery;
@@ -230,8 +231,11 @@ CBTInqUI::~CBTInqUI()
         iLastSeenDevicesArray->ResetAndDestroy();
         delete iLastSeenDevicesArray; 
         }
+
+    iLastSeenDevicesNameComplete.Close();
+
     if( iAdjustedUsedDeviceArray )
-        {  
+        {
         iAdjustedUsedDeviceArray->ResetAndDestroy();
         delete iAdjustedUsedDeviceArray; 
         }
@@ -307,7 +311,7 @@ void CBTInqUI::DisplayDevicesFrontListL()
     // Add devices into device list.
     for( TInt index = 0; index < iAdjustedUsedDeviceArray->Count(); index++ )
     	{        
-   	    UpdateDeviceListL ( iAdjustedUsedDeviceArray->At(index) );  
+   	    AddToDeviceListBoxL ( iAdjustedUsedDeviceArray->At(index) );  
         }  
 
     // Add "more devices" command as first item of list
@@ -438,7 +442,7 @@ void CBTInqUI::DeviceSearchUiL()
     // Inquiry completed, show final device list 
     FLOG(_L("[BTNOTIF]\t CBTInqUI::DeviceSearchUiL Displaying final devicelist"));          
     CreatePopupListL( R_AVKON_SOFTKEYS_SELECT_CANCEL__SELECT, R_BT_FOUND_DEVS_POPUP_TITLE );
-   
+
     //cancel iPeriodicTimer after the final list is shown
     iPeriodicTimer->Cancel();
     User::ResetInactivityTime();
@@ -540,7 +544,7 @@ TSearchFlowState CBTInqUI::InitInquiryL(TInt& aReason)
 // Bluetooth device has been received.
 // ----------------------------------------------------------
 //
-void CBTInqUI::DeviceAvailableL( const TNameRecord& aNameRecord, const TDesC& aDevName )
+void CBTInqUI::DeviceAvailableL( const TNameRecord& aNameRecord, const TDesC& aDevName, TBool aIsNameComplete )
     {
     FLOG(_L("[BTNOTIF]\t CBTInqUI::DeviceAvailableL()"));
 
@@ -567,17 +571,167 @@ void CBTInqUI::DeviceAvailableL( const TNameRecord& aNameRecord, const TDesC& aD
         rssi = sa.Rssi() + KRssiRangeOffset;
         }
 
-    BtNotifNameUtils::SetDeviceNameL(aDevName, *newDevice);
-
-    // Update device popup list with newDevice
-    UpdateDeviceListL( newDevice, rssi );
+    TBTDeviceName name(aDevName);
+    if (!aIsNameComplete)
+        {
+        // Append a little "..." to partial names.
+        _LIT(KToBeContd, "...");
+        if (name.MaxLength() - name.Length() >= KToBeContd().Length())
+            {
+            name.Append(KToBeContd);
+            }
+        }
+    BtNotifNameUtils::SetDeviceNameL(name, *newDevice);
 
     // Append newDevice in the bottom of the "last seen" device array.
     iLastSeenDevicesArray->AppendL(newDevice);
+    iLastSeenDevicesNameComplete.AppendL(aIsNameComplete);
     CleanupStack::Pop(); // new device is under iLastSeenDevicesArray control now
+
+    __ASSERT_DEBUG(iLastSeenDevicesArray->Count() == iLastSeenDevicesNameComplete.Count(),
+                   User::Panic(_L("BTNotifInqUI - device array and name resolution status array out of sync"), KErrCorrupt));
+
+    // Update device popup list with newDevice
+    AddToDeviceListBoxL( newDevice, rssi );
+
+    __ASSERT_DEBUG(iLastSeenDevicesArray->Count() == iDeviceListRows->Count(),
+                   User::Panic(_L("BTNotifInqUI - device array and UI list out of sync"), KErrCorrupt));
 
     FLOG(_L("[BTNOTIF]\t CBTInqUI::DeviceAvailableL() completed"));
     }
+
+void CBTInqUI::DeviceNameUpdatedL(const TNameRecord& aNameRecord, TInt aLastSeenIndex)
+    {
+    FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::DeviceUpdatedL() Name found: %S"), &(aNameRecord.iName) ));
+
+    TInquirySockAddr& sa = TInquirySockAddr::Cast( iEntry().iAddr );
+
+    TInt rssi = 0;
+    if( sa.ResultFlags() & TInquirySockAddr::ERssiValid )
+        {
+        rssi = sa.Rssi() + KRssiRangeOffset;
+        }
+
+    BtNotifNameUtils::SetDeviceNameL(aNameRecord.iName, *iLastSeenDevicesArray->At(aLastSeenIndex));
+    DeviceUpdatedL(rssi, aLastSeenIndex);
+
+    FLOG(_L("[BTNOTIF]\t CBTInqUI::DeviceUpdatedL() completed"));
+    }
+
+void CBTInqUI::PageTimeoutOnDeviceWithPartialNameL(TInt aLastSeenIndex)
+    {
+    FLOG(_L("[BTNOTIF]\t CBTInqUI::PageTimeoutOnDeviceWithPartialNameL()"));
+    DeviceUpdatedL(KMinimumStrength, aLastSeenIndex);
+    FLOG(_L("[BTNOTIF]\t CBTInqUI::PageTimeoutOnDeviceWithPartialNameL() completed"));
+    }
+
+
+void CBTInqUI::DeviceUpdatedL(TInt aSignalStrength, TInt aLastSeenIndex)
+    {
+    FLOG(_L("[BTNOTIF]\t CBTInqUI::DeviceUpdatedL()"));
+
+    HBufC* formatString = HBufC::NewLC( KBTAllPurposeBufferLength );
+    FormatListBoxEntryL(*iLastSeenDevicesArray->At(aLastSeenIndex), aSignalStrength, formatString->Des());
+
+    // The assumption here is that iLastSeenDevicesArray is always accurately reflected
+    // in iDeviceListRows so device indexes match.
+    __ASSERT_DEBUG(iLastSeenDevicesArray->Count() == iDeviceListRows->Count(),
+                   User::Panic(_L("BTNotifInqUI - device array and UI dev list out of sync not created"), KErrCorrupt));
+
+    iDeviceListRows->Delete(aLastSeenIndex);
+    iDeviceListRows->InsertL(aLastSeenIndex, *formatString);
+    CleanupStack::PopAndDestroy();  // formatString
+
+    __ASSERT_DEBUG(iDeviceListBox,
+                   User::Panic(_L("BTNotifInqUI - UI list non-existant on name update"), KErrCorrupt));
+    iDeviceListBox->HandleItemAdditionL();
+
+    FLOG(_L("[BTNOTIF]\t CBTInqUI::DeviceUpdatedL()"));
+    }
+
+void CBTInqUI::FormatListBoxEntryL(CBTDevice& aDevice, const TInt aSignalStrength, TPtr aFormatString)
+    {
+    FLOG(_L("[BTNOTIF]\t CBTInqUI::FormatListBoxEntryL()"));
+
+    TInt iconIndex (EDeviceIconDefault);
+    TInt defNameIndex (EBTDeviceNameIndexDefault);
+
+    // Check whether the device is already in registry.
+    TInt index = LookupFromDevicesArray(iPairedDevicesArray, &aDevice );
+    if( index >= 0 )
+        {
+        // Update device's link key and friendly name 
+        // with those found from registry.
+        aDevice.UpdateL( *( iPairedDevicesArray->At( index ) ) );
+        }
+
+    for (TInt i = 0; i < KDeviceRowLayoutTableSize; i++)
+        {
+        if ( ( aDevice.DeviceClass().MajorDeviceClass() == KDeviceRowLayoutTable[i].iMajorDevClass ) &&
+            ( (aDevice.DeviceClass().MinorDeviceClass() == KDeviceRowLayoutTable[i].iMinorDevClass ) ||
+                    KDeviceRowLayoutTable[i].iMinorDevClass == 0 ) )
+            {
+            iconIndex = KDeviceRowLayoutTable[i].iIconIndex;
+            defNameIndex = KDeviceRowLayoutTable[i].iDefaultNameIndex;
+            break;
+            }
+        }
+    
+    if ( !aDevice.IsValidFriendlyName() && !aDevice.IsValidDeviceName() )
+        {
+        BtNotifNameUtils::SetDeviceNameL(iDefaultDeviceNamesArray->MdcaPoint(defNameIndex), aDevice);
+        }
+
+    //Convert device name to Unocode for display
+    if ( aDevice.IsValidFriendlyName() )
+        {
+        aFormatString.Copy( aDevice.FriendlyName() );
+        }
+    else 
+        {
+        aFormatString.Copy( BTDeviceNameConverter::ToUnicodeL(aDevice.DeviceName()));
+        }
+
+    TPtrC iconFormat (KDeviceIconFormatTable[iconIndex].iFormat);
+    
+    aFormatString.Insert( 0, iconFormat );
+
+    if( aSignalStrength > 0)
+        {
+        if( aSignalStrength <= KMediumStrength )
+            {
+            aFormatString.Append( TPtrC(KDeviceIconFormatTable[EDeviceIconRssiLow].iFormat ) );
+            }
+        else if( aSignalStrength <= KHighStrength )
+            {
+            aFormatString.Append( TPtrC(KDeviceIconFormatTable[EDeviceIconRssiMed].iFormat ) );
+            }
+        else
+            {
+            aFormatString.Append( TPtrC(KDeviceIconFormatTable[EDeviceIconRssiGood].iFormat ) );
+            }
+        }
+    
+    // If the device is paired, add paired icon to format list
+    // Paired device using JustWork file transfering mode is not shown as paired here. 
+    if( index >= 0 && IsUserAwarePaired ( aDevice.AsNamelessDevice() ) )
+        {
+        aFormatString.Append( TPtrC(KDeviceIconFormatTable[EDeviceIconPaired].iFormat ) );
+        }
+    else
+        {
+        // if device is blocked, add blocked icon to format list
+        
+        TInt indexB = LookupFromDevicesArray(iLastUsedDevicesArray, &aDevice );
+        
+        if ( indexB>=0 && iLastUsedDevicesArray->At( indexB )->GlobalSecurity().Banned())
+            {
+            aFormatString.Append( TPtrC(KDeviceIconFormatTable[EDeviceIconBlocked].iFormat ) );
+            }
+        }
+    FLOG(_L("[BTNOTIF]\t CBTInqUI::FormatListBoxEntryL() completed"));
+    }
+
 
 // ----------------------------------------------------------
 // CBTInqUI::InquiryComplete
@@ -757,96 +911,19 @@ void CBTInqUI::CreatePopupListL(TInt aSoftkeysResourceId, TInt aTitleResourceId 
 // CBTInqUI::UpdateDeviceListL
 // ----------------------------------------------------------
 //
-void CBTInqUI::UpdateDeviceListL( CBTDevice* aDevice, const TInt aSignalStrength )
+void CBTInqUI::AddToDeviceListBoxL( CBTDevice* aDevice, const TInt aSignalStrength )
     {
-    FLOG(_L("[BTNOTIF]\t CBTInqUI::UpdateDeviceListL()")); 
-    
-    TInt iconIndex (EDeviceIconDefault);
-    TInt defNameIndex (EBTDeviceNameIndexDefault);
+    FLOG(_L("[BTNOTIF]\t CBTInqUI::AddToDeviceListBoxL()")); 
     
     HBufC* formatString = HBufC::NewLC( KBTAllPurposeBufferLength );
-
-    // Check whether the device is already in registry.
-    TInt index = LookupFromDevicesArray(iPairedDevicesArray, aDevice );
-
-    if( index >= 0 )
-        {
-        // Update device's link key and friendly name 
-        // with those found from registry.
-        aDevice->UpdateL( *( iPairedDevicesArray->At( index ) ) );
-        }
-
-	for (TInt i = 0; i < KDeviceRowLayoutTableSize; i++)
-	    {
-	    if ( ( aDevice->DeviceClass().MajorDeviceClass() == KDeviceRowLayoutTable[i].iMajorDevClass ) &&
-	        ( (aDevice->DeviceClass().MinorDeviceClass() == KDeviceRowLayoutTable[i].iMinorDevClass ) ||
-	                KDeviceRowLayoutTable[i].iMinorDevClass == 0 ) )
-            {
-            iconIndex = KDeviceRowLayoutTable[i].iIconIndex;
-            defNameIndex = KDeviceRowLayoutTable[i].iDefaultNameIndex;
-            break;
-            }
-	    }
-    
-	if ( !aDevice->IsValidFriendlyName() && !aDevice->IsValidDeviceName() )
-		{
-        BtNotifNameUtils::SetDeviceNameL(iDefaultDeviceNamesArray->MdcaPoint(defNameIndex), *aDevice);
-		}
-
-	//Convert device name to Unocode for display
-	if ( aDevice->IsValidFriendlyName() )
-		{
-        formatString->Des().Copy( aDevice->FriendlyName() );
-		}
-	else 
-		{
-		formatString->Des().Copy( BTDeviceNameConverter::ToUnicodeL(aDevice->DeviceName()));
-		}
-
-	TPtrC iconFormat (KDeviceIconFormatTable[iconIndex].iFormat);
-	
-    formatString->Des().Insert( 0, iconFormat );
-
-    if( aSignalStrength > 0)
-        {
-        if( aSignalStrength <= KMediumStrength )
-            {
-            formatString->Des().Append( TPtrC(KDeviceIconFormatTable[EDeviceIconRssiLow].iFormat ) );
-            }
-        else if( aSignalStrength <= KHighStrength )
-            {
-            formatString->Des().Append( TPtrC(KDeviceIconFormatTable[EDeviceIconRssiMed].iFormat ) );
-            }
-        else
-            {
-            formatString->Des().Append( TPtrC(KDeviceIconFormatTable[EDeviceIconRssiGood].iFormat ) );
-            }
-        }
-    
-    // If the device is paired, add paired icon to format list
-    // Paired device using JustWork file transfering mode is not shown as paired here. 
-    if( index >= 0 && IsUserAwarePaired ( aDevice->AsNamelessDevice() ) )
-        {
-        formatString->Des().Append( TPtrC(KDeviceIconFormatTable[EDeviceIconPaired].iFormat ) );
-        }
-    else
-    	{
-    	// if device is blocked, add blocked icon to format list
-    	
-    	TInt indexB = LookupFromDevicesArray(iLastUsedDevicesArray, aDevice );
-    	
-    	if ( indexB>=0 && iLastUsedDevicesArray->At( indexB )->GlobalSecurity().Banned())
-    		{
-        	formatString->Des().Append( TPtrC(KDeviceIconFormatTable[EDeviceIconBlocked].iFormat ) );
-    		}
-    	}
+    FormatListBoxEntryL(*aDevice, aSignalStrength, formatString->Des());
 
     // Add device format string into device items
     //
     TInt deviceCount = iDeviceListRows->Count();
 	iDeviceListRows->InsertL( deviceCount, *formatString );      
     CleanupStack::PopAndDestroy();  // formatString
-	
+
     TInt currentItemIndex = 0;
 	if(deviceCount != 0 && iDeviceListBox)
 		{
@@ -860,7 +937,7 @@ void CBTInqUI::UpdateDeviceListL( CBTDevice* aDevice, const TInt aSignalStrength
         iDeviceListBox->HandleItemAdditionL();
         
 		if(deviceCount != 0 )	
-			{        
+			{
 			//set highligh back to user selected one.       
 			iDeviceListBox->SetCurrentItemIndex(currentItemIndex); 
 			}
@@ -875,10 +952,10 @@ void CBTInqUI::UpdateDeviceListL( CBTDevice* aDevice, const TInt aSignalStrength
 		if( (currentItemIndex != topIndex  && deviceCount > 5 ) && (currentItemIndex+1 < deviceCount ) )
 			{
 			iDeviceListBox->SetTopItemIndex( topIndex+1 ); //scroll up
-			}	     
+			}
         }
-		
-    FLOG(_L("[BTNOTIF]\t CBTInqUI::UpdateDeviceListL() completed"));
+
+    FLOG(_L("[BTNOTIF]\t CBTInqUI::AddToDeviceListBoxL() completed"));
     }
 
 // ----------------------------------------------------------
@@ -1022,13 +1099,13 @@ void CBTInqUI::AdjustDeviceArrayL(CBTDeviceArray* aDeviceArray)
 			//append it to the end of the list.
 	        if (j == sSize) 
 	            {
-							if ( iExcludePairedDevices )
-								 {                
-			            // Add device to list if device is not paired and iExcludePairedDevices is not set. 
-			            if ( !IsUserAwarePaired( iPairedDevicesArray->At(i)->AsNamelessDevice() ) )
-			                {                                      
-			                aDeviceArray->AppendL(iPairedDevicesArray->At(i)->CopyL());
-			                }			           
+				if ( iExcludePairedDevices )
+				    {                
+                    // Add device to list if device is not paired and iExcludePairedDevices is not set. 
+                    if ( !IsUserAwarePaired( iPairedDevicesArray->At(i)->AsNamelessDevice() ) )
+                        {                                      
+                        aDeviceArray->AppendL(iPairedDevicesArray->At(i)->CopyL());
+                        }			           
 	               }
 	            else
 	            	{
@@ -1336,6 +1413,22 @@ void CBTInqUI::AllowDialerAndAppKeyPress( TBool aAllow )
         (void) static_cast<CAknNotifierAppServerAppUi*>(eikAppUi)->SuppressAppSwitching(ETrue); 
         }
     FTRACE( FPrint( _L( "CBTInqUI::AllowDialerAndAppKeyPress : %d" ), aAllow ) );
+    }
+
+TBool CBTInqUI::HaveDevsWithPartialName(TInt& aFirstFoundIndex )
+    {
+    FLOG(_L("[BTNOTIF]\t CBTInqUI::HaveDevsWithPartialName()."));
+    for (TInt i = 0; i < iLastSeenDevicesNameComplete.Count(); i++)
+        {
+        if (!iLastSeenDevicesNameComplete[i])
+            {
+            FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::HaveDevsWithPartialName() index %d is partial."), i));
+
+            aFirstFoundIndex = i;
+            return ETrue;
+            }
+        }
+    return EFalse;
     }
 
 // End of File

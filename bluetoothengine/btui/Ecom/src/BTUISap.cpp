@@ -25,7 +25,7 @@
 #include <btengconnman.h>       // for disconnect type and connection observer
 #include <btengsettings.h>
 #include <btengdevman.h>
-#include <secondarydisplay/BtuiSecondaryDisplayAPI.h>
+#include <SecondaryDisplay/BtuiSecondaryDisplayAPI.h>
 #include <btfeaturescfg.h>					// For EnterpriseEnablementL()
 #include <btnotif.h>
 #include <utf.h>

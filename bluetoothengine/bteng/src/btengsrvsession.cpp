@@ -190,6 +190,8 @@ void CBTEngSrvSession::DispatchMessageL( const RMessage2& aMessage )
         {
         case EBTEngSetPowerState:
             {
+            // Store auto off information
+            iAutoSwitchOff = (TBool) aMessage.Int1();
             Server()->SetPowerStateL( aMessage );
             }
             break;

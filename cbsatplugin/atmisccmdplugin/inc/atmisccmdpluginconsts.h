@@ -31,7 +31,6 @@ _LIT8(KCFUNSupportedCmdsList, "+CFUN: (0,1,4),(0,1)\r\n\r\nOK\r\n");
 _LIT8(KCBCSupportedCmdsList, "+CBC: (0,1,2,3),(1...100)\r\n\r\nOK\r\n");
 _LIT8(KCUSDSupportedCmdsList, "+CUSD: (0,1)\r\n\r\nOK\r\n");
 
-
 _LIT8(KATCLCKPS, "PS");
 _LIT8(KATCLCKSC, "SC");
 _LIT8(KATCLCKAO, "AO");
@@ -42,5 +41,8 @@ _LIT8(KATCLCKIR, "IR");
 _LIT8(KATCLCKAB, "AB");
 _LIT8(KATCLCKAG, "AG");
 _LIT8(KATCLCKAC, "AC");
+
+// Max buffer length for an MD5 digest - originally defined in SCPServerInterface.h
+const TInt KSCPMaxHashLength( 32 );
 
 #endif // ATMISCCMDPLUGINCONSTS_H

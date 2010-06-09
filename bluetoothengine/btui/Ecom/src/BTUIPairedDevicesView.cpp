@@ -43,7 +43,7 @@
 #include "btui.h" 						// Global declarations
 #include "BTUIPairedDevicesView.h"
 #include "BTUIDeviceContainer.h"
-#include <secondarydisplay/BtuiSecondaryDisplayAPI.h>
+#include <SecondaryDisplay/BtuiSecondaryDisplayAPI.h>
 #include <csxhelp/bt.hlp.hrh>   // Help IDs
 
 #include <gstabhelper.h>

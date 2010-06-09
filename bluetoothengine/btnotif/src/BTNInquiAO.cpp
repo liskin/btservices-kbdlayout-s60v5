@@ -66,10 +66,22 @@ void CBTInqUI::IssueRequestL()
         }
     else
         {
-        if( iIndex < iDevsWithoutName.Count() )
+        TInt firstPartialNameDevIndex;
+        if (HaveDevsWithPartialName(firstPartialNameDevIndex))
             {
+            FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::IssueRequestL() looking up device index %d (have partial name already)"), firstPartialNameDevIndex));
+
             action = KHostResName + KHostResIgnoreCache;
-            TInquirySockAddr& sa = TInquirySockAddr::Cast( iDevsWithoutName[iIndex].iAddr );
+            TInquirySockAddr sa;
+            sa.SetBTAddr(iLastSeenDevicesArray->At(firstPartialNameDevIndex)->BDAddr());
+            iInquirySockAddr.SetBTAddr( sa.BTAddr() );            
+            }
+        else if( iCurrentlyResolvingUnnamedDeviceIndex < iDevsWithoutName.Count() )
+            {
+            FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::IssueRequestL() looking up device index %d (currently anonymous)"), iCurrentlyResolvingUnnamedDeviceIndex));
+
+            action = KHostResName + KHostResIgnoreCache;
+            TInquirySockAddr& sa = TInquirySockAddr::Cast( iDevsWithoutName[iCurrentlyResolvingUnnamedDeviceIndex].iAddr );
             iInquirySockAddr.SetBTAddr( sa.BTAddr() );            
             }
         }
@@ -84,7 +96,7 @@ void CBTInqUI::IssueRequestL()
         {
         FLOG(_L("[BTNOTIF]\t CBTInqUI::RunL() All name inquiries complete ."));
         iPageForName = EFalse;
-        iIndex = 0;
+        iCurrentlyResolvingUnnamedDeviceIndex = 0;
         InquiryComplete( KErrNone );
         }
     FLOG(_L("[BTNOTIF]\t CBTInqUI::IssueRequestL() completed"));
@@ -101,13 +113,28 @@ void CBTInqUI::RequestCompletedL( CBTNotifActive* aActive, TInt aId, TInt aStatu
     FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::RequestCompletedL() status: %d >>"), aStatus ));
     ASSERT( aId == KBTNotifInquiryNotifierReq);
     (void) aActive;
-    
+
+    TInt firstPartialNameDevIndex = -1;
+    const TBool haveDevsWithPartialName = HaveDevsWithPartialName(firstPartialNameDevIndex);
+
     if( aStatus == KErrNone )
         {
         if( iPageForName )
             {
-            HandleFoundNameL();
-            iIndex++;
+            FLOG(_L("[BTNOTIF]\t CBTInqUI::RequestCompletedL() in name request state."));
+
+            if (haveDevsWithPartialName)
+                {
+                // We resolve names in chronological order so it must be the first device
+                // with an incomplete name we can find on the last seen list.
+                HandleUpdatedNameL(firstPartialNameDevIndex);
+                }
+            else
+                {
+                // Must be the current index in iDevsWithoutName.
+                HandleFoundNameL();
+                iCurrentlyResolvingUnnamedDeviceIndex++;
+                }
             IssueRequestL();
             }
         else
@@ -120,16 +147,26 @@ void CBTInqUI::RequestCompletedL( CBTNotifActive* aActive, TInt aId, TInt aStatu
     else if( aStatus == (KHCIErrorBase - EPageTimedOut) && iPageForName )
         {
         FLOG(_L("[BTNOTIF]\t CBTInqUI::RequestCompletedL() HCI:EPageTimeOut, page next one."));
-        iIndex++;
+        if (haveDevsWithPartialName)
+            {
+            // A device with incomplete name has probably gone out of range. Just removing
+            // it from the UI may be a bit confusing, so let's just update its RSSI indicator
+            // to minimum.
+            PageTimeoutOnDeviceWithPartialNameL(firstPartialNameDevIndex);
+            }
+        else
+            {
+            iCurrentlyResolvingUnnamedDeviceIndex++;            
+            }
         IssueRequestL();
         }
     else
         {
-        if( !iPageForName && iDevsWithoutName.Count()>0 )
+        if( !iPageForName && (iDevsWithoutName.Count() > 0 || haveDevsWithPartialName) )
             {
-            FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::RequestCompletedL() nameless devices %d, paging for name."), 
-                    iDevsWithoutName.Count() ));
-            iIndex = 0;
+            FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::RequestCompletedL() have devs with incomplete name = %d, nameless devices %d, paging for name."), 
+                    haveDevsWithPartialName, iDevsWithoutName.Count() ));
+            iCurrentlyResolvingUnnamedDeviceIndex = 0;
             iPageForName = ETrue;
             IssueRequestL();
             }
@@ -188,15 +225,16 @@ void CBTInqUI::HandleInquiryDeviceL()
     FTRACE(FPrint(_L("[BTNOTIF]\t BT Address: %S"), &devAddrString));
 #endif
         TBTDeviceName devName;
-        TBool nameGotten = CheckEirDeviceName( iEntry, devName );
-        FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::HandleInquiryDeviceL() EIR device name? %d, %S"), nameGotten, &devName ));
+        TBool isNameComplete(EFalse);
+        TBool nameGotten = CheckEirDeviceName( iEntry, devName, isNameComplete );
+        FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::HandleInquiryDeviceL() EIR device name? %d, %S, complete = %d"), nameGotten, &devName, isNameComplete ));
         if( nameGotten )
             {
-            DeviceAvailableL( iEntry(), devName );
+            DeviceAvailableL( iEntry(), devName, isNameComplete );
             }
         else
             {
-            iDevsWithoutName.Append( iEntry() );
+            iDevsWithoutName.AppendL( iEntry() );
             }
         }
     }
@@ -217,29 +255,45 @@ void CBTInqUI::HandleFoundNameL()
     if( iEntry().iName != KNullDesC )
         {
         FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::HandleFoundNameL() Name found: %S"), &(iEntry().iName) ));
-
-        DeviceAvailableL( iDevsWithoutName[iIndex], iEntry().iName );
+        DeviceAvailableL( iDevsWithoutName[iCurrentlyResolvingUnnamedDeviceIndex], iEntry().iName, ETrue );
         }
-    
+
     FLOG(_L("[BTNOTIF]\t CBTInqUI::HandleFoundNameL() Complete"));
     }
+
+void CBTInqUI::HandleUpdatedNameL(TInt aLastSeenIndex)
+    {
+#ifdef _DEBUG
+    TBuf<12> devAddrString;
+    TInquirySockAddr& sa = TInquirySockAddr::Cast( iEntry().iAddr );
+    sa.BTAddr().GetReadable(devAddrString);
+    FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::HandleUpdatedNameL() BT Address: %S"), &devAddrString));
+#endif
+    iLastSeenDevicesNameComplete[aLastSeenIndex] = ETrue;
+    if( iEntry().iName != KNullDesC )
+        {
+        DeviceNameUpdatedL(iEntry(), aLastSeenIndex);
+        }
+
+    FTRACE(FPrint(_L("[BTNOTIF]\t CBTInqUI::HandleUpdatedNameL() Complete")));
+    }
+
 
 // ----------------------------------------------------------
 // CBTInqUI::CheckEirDeviceName
 // Check if the retrieved the device info contains device name.  
 // ----------------------------------------------------------
 //
-TBool CBTInqUI::CheckEirDeviceName( TNameEntry& aEntry, TBTDeviceName& aName )
+TBool CBTInqUI::CheckEirDeviceName( TNameEntry& aEntry, TBTDeviceName& aName, TBool& aIsComplete )
     {
     TBluetoothNameRecordWrapper eir( aEntry() );
     TInt length = eir.GetDeviceNameLength();
-    
-    TBool isComplete( EFalse );
+
     TInt err( KErrNone );
-        
+
     if( length > 0 )
         {            
-        err = eir.GetDeviceName( aName, isComplete);
+        err = eir.GetDeviceName( aName, aIsComplete);
         return (!err);
         }
     return EFalse;

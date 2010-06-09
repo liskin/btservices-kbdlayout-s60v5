@@ -25,7 +25,7 @@
 #include <btengsettings.h>
 #include <ctsydomainpskeys.h>
 #include <CoreApplicationUIsSDKCRKeys.h>
-#include <secondarydisplay/BtuiSecondaryDisplayAPI.h>
+#include <SecondaryDisplay/BtuiSecondaryDisplayAPI.h>
 
 #include "BTUIViewsCommonUtils.h"
 #include "debug.h"

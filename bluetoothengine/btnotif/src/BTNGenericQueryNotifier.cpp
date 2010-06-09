@@ -19,7 +19,7 @@
 // INCLUDE FILES
 
 #include <StringLoader.h>       // Localisation stringloader
-#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
+#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
 #include <e32cmn.h>
 #include <BTNotif.rsg>          // Own resources
 #include <btengsettings.h>

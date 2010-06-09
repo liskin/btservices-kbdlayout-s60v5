@@ -27,7 +27,7 @@
 #include <StringLoader.h>   // Series 60 localisation stringloader
 #include <aknnavi.h>
 #include <hlplch.h>         // Help launcher
-#include <secondarydisplay/BtuiSecondaryDisplayAPI.h>
+#include <SecondaryDisplay/BtuiSecondaryDisplayAPI.h>
 
 #include "BTUIBlockedDevicesView.h"
 #include "BTUIDeviceContainer.h"

@@ -26,7 +26,8 @@ UID             0x10009D8D 0x2002C3BA
 SOURCEPATH      ../src
 SOURCE          main.cpp
 SOURCE          atmisccmdplugin.cpp 
-SOURCE          atmisccmdpluginbase.cpp 
+SOURCE          atcmdasyncbase.cpp
+SOURCE          atcmdsyncbase.cpp  
 SOURCE          atcommandparser.cpp
 SOURCE          clckcommandhandler.cpp 
 SOURCE          securitycodeverifier.cpp
@@ -38,7 +39,9 @@ SOURCE          cusdcommandhandler.cpp
 SOURCE          cnumcommandhandler.cpp
 SOURCE          cfuncommandhandler.cpp 
 SOURCE          cbccommandhandler.cpp
-SOURCE          cusdreadwriteimp.cpp
+SOURCE          ussdreadmessageimpl.cpp
+SOURCE          ussdsendmessageimpl.cpp
+
 
 USERINCLUDE     ../inc
 
@@ -59,6 +62,11 @@ LIBRARY         hash.lib
 LIBRARY         ProfileEng.lib
 LIBRARY         StarterClient.lib 
 
-DEBUGLIBRARY    flogger.lib
+LIBRARY			etel3rdparty.lib
+LIBRARY			sysutil.lib 
 
+LIBRARY		    flogger.lib
+
+MACRO _DEBUG
+MACRO USE_FILE_LOGGING
 // End of File

@@ -98,11 +98,13 @@ RESOURCE MENU_PANE r_btkeyboard_setting_menu
             command=EBTKeyCmdAppChange;
             txt = qtn_hid_change;
             },
+#ifdef __SERIES60_HELP
         MENU_ITEM 
             { 
-            command=EBTKeyCmdAppHelp;
-            txt = qtn_hid_help;
+            command = EBTKeyCmdAppHelp; 
+            txt = qtn_options_help; 
             },
+#endif
         MENU_ITEM 
             {
             command=EEikCmdExit; 

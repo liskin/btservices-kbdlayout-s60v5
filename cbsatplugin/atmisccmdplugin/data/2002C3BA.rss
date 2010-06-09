@@ -31,7 +31,7 @@ RESOURCE REGISTRY_INFO theInfo
 	                implementation_uid = 0x2002DC6B;// KUidATMiscCmdEcomImpl;
 	                version_no = 1;
 	                display_name = "Miscellaneous AT commands Implementation";
-	                default_data = "MAT+CLCK|MAT+CPWD|MAT+CUSD|MAT+CPIN|MAT+CNUM|MAT+CFUN|MAT+CBC";
+	                default_data = "MAT+CLCK|MAT+CPWD|MAT+CUSD|MAT+CPIN|MAT+CNUM|MAT+CFUN|MAT+CBC|OAT+CMEE";
 	                opaque_data = "";
 	                }
 				};

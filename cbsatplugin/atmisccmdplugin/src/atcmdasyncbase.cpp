@@ -15,7 +15,7 @@
 *
 */
 
-#include "atmisccmdplugin.h"
+#include "atcmdasyncbase.h"
 
 #include "debug.h"
 
@@ -31,3 +31,9 @@ CATCmdAsyncBase::CATCmdAsyncBase(MATMiscCmdPlugin* aCallback, TAtCommandParser& 
     TRACE_FUNC_EXIT
     }
 
+void CATCmdAsyncBase::HandleCommandCancel()
+    {
+    TRACE_FUNC_ENTRY
+    Cancel();
+    TRACE_FUNC_EXIT
+    }

@@ -18,7 +18,7 @@
 #include "cpincommandhandler.h"
 
 #include <mmretrieve.h>         // define AO wrapper
-#include <exterror.h>           // Additional RMobilePhone error code
+#include <EXTERROR.H>           // Additional RMobilePhone error code
 
 #include "debug.h"
 
@@ -82,48 +82,39 @@ void CCPINCommandHandler::HandleCommand(const TDesC8& /*aCmd*/,
     TRACE_FUNC_EXIT
     }
 
-void CCPINCommandHandler::HandleCommandCancel()
-    {
-    TRACE_FUNC_ENTRY
-    Cancel();
-    TRACE_FUNC_EXIT
-    }
-
 void CCPINCommandHandler::ChangePassword()
     {
     TRACE_FUNC_ENTRY
-    TRequestStatus status;
-
+    TPtrC8 pukCode8;
+    TPtrC8 pinCode8;
+    
     // Get parameters from AT command
-    TInt ret1;
-    TInt ret2; 
-    TPtrC8 pukCode8 = iATCmdParser.NextTextParam(ret1);
-    TPtrC8 pinCode8 = iATCmdParser.NextTextParam(ret2);
+    TInt ret1 = iATCmdParser.NextTextParam(pukCode8);
+    TInt ret2 = iATCmdParser.NextTextParam(pinCode8);
+    
     if(ret1 != KErrNone || ret2 != KErrNone
-            || iATCmdParser.NextParam().Compare(KNullDesC8) != 0)
+            || iATCmdParser.NextParam().Length() != 0)
         {
         iCallback->CreateReplyAndComplete( EReplyTypeError);
-        TRACE_FUNC_EXIT
-        return;
+        }
+    else
+        {
+        RMobilePhone::TMobilePassword pukCode;
+        RMobilePhone::TMobilePassword pinCode;
+        pukCode.Copy(pukCode8);
+        pinCode.Copy(pinCode8);
+        iPhone.VerifySecurityCode(iStatus, RMobilePhone::ESecurityCodePuk1, pinCode, pukCode);
+        // re-use the AO for VerifySecurityCode 
+        iPendingEvent = EMobilePhoneVerifySecurityCode; 
+        SetActive();
         }
     
-    RMobilePhone::TMobilePassword pukCode;
-    RMobilePhone::TMobilePassword pinCode;
-    pukCode.Copy(pukCode8);
-    pinCode.Copy(pinCode8);
-    iPhone.VerifySecurityCode(iStatus, RMobilePhone::ESecurityCodePuk1, pinCode, pukCode);
-    // re-use the AO for VerifySecurityCode 
-    iPendingEvent = EMobilePhoneVerifySecurityCode; 
-    SetActive();
-    
     TRACE_FUNC_EXIT
-    return;
     }
 
 void CCPINCommandHandler::RunL()
     {
     TRACE_FUNC_ENTRY
-
     if( iPendingEvent == EMobilePhoneGetLockInfo)
         { // after calling GetLockInfo
         HandleGetLockInfo();

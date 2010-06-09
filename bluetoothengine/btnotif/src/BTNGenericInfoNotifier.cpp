@@ -22,7 +22,7 @@
 #include <BTNotif.rsg>          // Own resources
 #include "BTNGenericInfoNotifier.h"      // Own class definition
 #include "btNotifDebug.h"       // Debugging macros
-#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
+#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
 #include <e32cmn.h>
 #include <bluetoothuiutil.h>
 #include "btnotifnameutils.h"

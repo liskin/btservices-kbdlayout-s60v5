@@ -111,9 +111,10 @@ NONSHARABLE_CLASS(CBTInqUI) : public CBase, public MBTEngDevManObserver, public 
          * Check if Eir device name available.
          * @param TNameEntry    Decode it to get device name
          * @param TBTDeviceName Device name returned
+         * @param TBool         Is the name returned complete
          * @return ETrue if Eir data contains name.
          */
-        static TBool CheckEirDeviceName( TNameEntry& aEntry, TBTDeviceName& aName );
+        static TBool CheckEirDeviceName( TNameEntry& aEntry, TBTDeviceName& aName, TBool& aIsComplete );
 
     private: // Functions from base classes
         
@@ -193,7 +194,7 @@ NONSHARABLE_CLASS(CBTInqUI) : public CBase, public MBTEngDevManObserver, public 
         * @param aSignalStrength The signal bar for RSSI
         * @return None.
         */
-        void UpdateDeviceListL(CBTDevice* aDevice, const TInt aSignalStrength = 0 );             
+        void AddToDeviceListBoxL(CBTDevice* aDevice, const TInt aSignalStrength = 0 );             
 		
 		/**
         * Creates and adds local bitmap to icon array.
@@ -282,7 +283,7 @@ NONSHARABLE_CLASS(CBTInqUI) : public CBase, public MBTEngDevManObserver, public 
          * Adds found Bluetooth device into popup list.
          * @param aInquiryResultRecord TNameEntry and flag, which indicates if Eir device.
          */
-        void DeviceAvailableL( const TNameRecord& aNameRecord, const TDesC& aDevName);
+        void DeviceAvailableL( const TNameRecord& aNameRecord, const TDesC& aDevName, TBool aIsNameComplete );
         
         /**
         * The inquiry has been completed.
@@ -296,18 +297,45 @@ NONSHARABLE_CLASS(CBTInqUI) : public CBase, public MBTEngDevManObserver, public 
          * which passes the search filter. Its name will be retrived later
          */
         void HandleInquiryDeviceL();
-        
-        void HandleFoundNameL();   
-        
+
+        /**
+         * Name lookup complete for the current device in the unnamed devices queue.
+         */
+        void HandleFoundNameL();  
+
+        /**
+         * Name lookup complete for device aLastSeenIndex in the last seen array
+         * (this is done for devices with partial names returned by EIR).
+         */
+        void HandleUpdatedNameL(TInt aLastSeenIndex);
+
         /**
          * Allow/Disallow dialer and app key presses.
          * @param aAllow ETrue to allow  key press; EFalse to disallow.
          */
         void AllowDialerAndAppKeyPress( TBool aAllow );
 
+        /**
+         * Update the inquiry list box with a new (complete) device name
+         * (this is done for devices with partial names returned by EIR).
+         */
+        void DeviceNameUpdatedL(const TNameRecord& aNameRecord, TInt aLastSeenIndex);
+        void DeviceUpdatedL(TInt aSignalStrength, TInt aLastSeenIndex);
+
+        /**
+         * React to page timeout on a device that's already in the inquiry list box
+         * (which can happen for devices with partial names returned by EIR).
+         */
+        void PageTimeoutOnDeviceWithPartialNameL(TInt aLastSeenIndex);
+
+        void FormatListBoxEntryL(CBTDevice& aDevice, const TInt aSignalStrength, TPtr aFormatString);
+
+        TBool HaveDevsWithPartialName(TInt& aFirstFoundIndex);
+
     private:  // Data
         CBTNotifUIUtil*         iUiUtil;
-        CBTDeviceArray*         iLastSeenDevicesArray;            // Last seen devices array from BTInqNotifier
+        CBTDeviceArray*         iLastSeenDevicesArray;           // Last seen devices array from BTInqNotifier
+        RArray<TBool>           iLastSeenDevicesNameComplete;    // Is the name in corresponding cell of iLastSeenDevicesArray complete ?
         CBTDeviceArray*         iLastUsedDevicesArray;           // Used devices from BT registry
         CBTDeviceArray*         iPairedDevicesArray;             // Paired devices from Bluetooth registry
         CBTDeviceArray*         iAdjustedUsedDeviceArray;         // 5 Lately used devices + All the Paired devices 
@@ -342,7 +370,7 @@ NONSHARABLE_CLASS(CBTInqUI) : public CBase, public MBTEngDevManObserver, public 
         TNameEntry          iEntry;             // Inquiry results record
         TBool               iPageForName;    // Flag for inquiry name
         RArray<TNameRecord> iDevsWithoutName;    // Devices without dev name 
-        TInt                iIndex;             // Current btdevice to inquiry its name 
+        TInt                iCurrentlyResolvingUnnamedDeviceIndex;             // Current btdevice to inquiry its name 
         MBTNDeviceSearchObserver* iDevSearchObserver;
 
 		TBool               iExcludePairedDevices;

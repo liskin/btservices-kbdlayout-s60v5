@@ -20,10 +20,10 @@
 #include <mmretrieve.h>
 #include <gsmuelem.h>
 
-#include "atmisccmdplugin.h"
+#include "atcmdsyncbase.h"
 
-class CCUSSDSendMessageImpl;
-class CCUSSDReadMessageImpl;
+class CUSSDSendMessageImpl;
+class CUSSDReadMessageImpl;
 /**
  *  Class for accessing plugin information and common functionality
  */
@@ -31,34 +31,31 @@ NONSHARABLE_CLASS( MUSSDCallback )
     {
 public:
     /**
-     * Creates an AT command reply based on the reply type and completes the
-     * request to ATEXT.
+     * Callback method for handling received USSD messages
+     * @param aError - the result code from the read operation
      */
-    virtual void HandleReadMessageComplete(TInt aResult) = 0;
+    virtual void HandleReadMessageComplete(TInt aError) = 0;
 
     /**
-      * Creates an AT command reply based on the reply type and completes the
-      * request to ATEXT.
+      * Callback method for handling sent USSD messages
+      * @param aError - the result code from the send operation
       */
-    virtual void HandleSendMessageComplete(TInt aResult) = 0;
+    virtual void HandleSendMessageComplete(TInt aError) = 0;
     };
 
-
-NONSHARABLE_CLASS( CCUSDCommandHandler ) : public CATCmdAsyncBase,
+/**
+ *  Class for handling USSD requests
+ */
+NONSHARABLE_CLASS( CCUSDCommandHandler ) : public CATCmdSyncBase,
                                            public MUSSDCallback
 {
 public:
     static CCUSDCommandHandler* NewL(MATMiscCmdPlugin* aCallback, TAtCommandParser& aATCmdParser, RMobilePhone& aPhone);
     ~CCUSDCommandHandler();
-    
-private: // methods from CActive
-    virtual void RunL();
-    virtual void DoCancel();
-    // RunError not needed as RunL does not leave
- 
+     
 private: // methods from MUSSDCallback
-    virtual void HandleSendMessageComplete(TInt aResult);
-    virtual void HandleReadMessageComplete(TInt aResult);
+    virtual void HandleSendMessageComplete(TInt aError);
+    virtual void HandleReadMessageComplete(TInt aError);
     
 private: // methods from CATCmdAsyncBase    
     virtual void HandleCommand( const TDesC8& aCmd, RBuf8& aReply, TBool aReplyNeeded );
@@ -68,7 +65,7 @@ private:
     CCUSDCommandHandler(MATMiscCmdPlugin* aCallback, TAtCommandParser& aATCmdParser, RMobilePhone& aPhone);
     void ConstructL();
     
-    TInt ParseCUSDCmd(const TDesC8& aCmd);
+    TInt ParseCUSDCmd();
     void CCUSDCommandHandler::FindFirstCarriageReturnL( 
          const TDesC& aBuffer ,
          TUint& aSkipChars , 
@@ -86,11 +83,11 @@ private:
 
     RMobileUssdMessaging iUssdMessaging;
 
-    CCUSSDSendMessageImpl* iUSSDSender;
+    CUSSDSendMessageImpl* iUSSDSender;
     RMobileUssdMessaging::TMobileUssdAttributesV1 iSendAttributes;
     RBuf8 iUSSDCommand;
 
-    CCUSSDReadMessageImpl* iUSSDReader;
+    CUSSDReadMessageImpl* iUSSDReader;
     RMobileUssdMessaging::TGsmUssdMessageData iReceivedData;
     TInt iDisplayRetMessage;
     RMobileUssdMessaging::TMobileUssdAttributesV1 iReceiveAttributes;

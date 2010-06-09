@@ -28,15 +28,14 @@
 #include "atmisccmdpluginconsts.h"
 #include "debug.h"
 
-#include <exterror.h>           // Additional RMobilePhone error code
-
+#include <EXTERROR.H>           // Additional RMobilePhone error code
 
 // +CME error code
-_LIT8(KCMEIncorrectPassword, "+CME: 16\r\n"); // Incorrect password.\r\n
-_LIT8(KCMEPUKRequired, "+CME: 12\r\n"); // PUK required.\r\n
-_LIT8(KCMENotAllowed, "+CME: 3\r\n"); // Operation not allowed.\r\n
-_LIT8(KCMEPhoneError, "+CME: 0\r\n"); // Phone failure.\r\n
-_LIT8(KCMEPhoneUnknown, "+CME: 100\r\n"); // unknown error
+_LIT8(KCMEIncorrectPassword, "+CME ERROR: 16\r\n"); // Incorrect password.\r\n
+_LIT8(KCMEPUKRequired, "+CME ERROR: 12\r\n"); // PUK required.\r\n
+_LIT8(KCMENotAllowed, "+CME ERROR: 3\r\n"); // Operation not allowed.\r\n
+_LIT8(KCMEPhoneError, "+CME ERROR: 0\r\n"); // Phone failure.\r\n
+_LIT8(KCMEPhoneUnknown, "+CME ERROR: 100\r\n"); // unknown error
 
 const TInt KErrorReplyLength = 9;  // CR+LF+"ERROR"+CR+LF
 
@@ -149,6 +148,11 @@ TBool CATMiscCmdPlugin::IsCommandSupported( const TDesC8& aCmd )
             iCurrentHandler = iCBCHandler;
             break;
             }
+        case (TAtCommandParser::ECmdAtCmee):
+            {
+            iCurrentHandler = NULL;
+            break;
+            }
         case (TAtCommandParser::EUnknown):
         default:
             {
@@ -170,10 +174,17 @@ void CATMiscCmdPlugin::HandleCommand( const TDesC8& aCmd,
 	{
 	TRACE_FUNC_ENTRY
 	
-	if (iCurrentHandler != NULL)
+	if(iCommandParser.Command() == TAtCommandParser::ECmdAtCmee)
+	    {
+        HandleCMEECommand();
+        HandleCommandCompleted( KErrNone, EReplyTypeOk);
+	    }
+	else if (iCurrentHandler != NULL)
 	    {
 	    iHcCmd = &aCmd;
 	    iHcReply = &aReply;
+	    // No need to parse the command again as assumed that
+	    // it is always called from CATMiscCmdPlugin::IsCommandSupported()
 	    iCurrentHandler->HandleCommand( aCmd, aReply, aReplyNeeded );
 	    }
 	TRACE_FUNC_EXIT
@@ -456,57 +467,92 @@ void CATMiscCmdPlugin::CreateCMEReplyAndComplete(TInt aError)
     {
     TRACE_FUNC_ENTRY
     
-    // TODO should return CME error according to CME state (and quiet mode?)
-    RBuf8 response;
-    response.Create(KDefaultCmdBufLength);
+    // currently only support +CME error level 0 and 1
+    ASSERT(iErrorLevel == 0 || iErrorLevel == 1 );
     
-    // log error code
-    response.AppendNum(aError);
-    Trace(KDebugPrintD, "complete with error ", &response);
+    // Log error code
+    Trace(KDebugPrintD, "complete with error ", aError);
     
-    // return error code to AT client
-    response.Zero(); // reuse RBuf
-    response.Append(KCRLF);
-    switch(aError)
+    if(iErrorLevel == 1 && !iQuietMode)
         {
-        case KErrGsm0707IncorrectPassword:
-        case KErrAccessDenied:
-            {    
-            // code was entered erroneously
-            response.Append(KCMEIncorrectPassword);
-            break;
-            }    
-        case KErrGsmSSPasswordAttemptsViolation:
-        case KErrLocked:
+        // return error code to AT client
+        RBuf8 response;
+        response.Create(KDefaultCmdBufLength);
+        response.Append(KCRLF);
+        switch(aError)
             {
-            // Pin blocked 
-            response.Append(KCMEPUKRequired);
-            break;
+            case KErrGsm0707IncorrectPassword:
+            case KErrAccessDenied:
+                {    
+                // code was entered erroneously
+                response.Append(KCMEIncorrectPassword);
+                break;
+                }
+            case KErrGsmSSPasswordAttemptsViolation:
+            case KErrLocked:
+                {
+                // Pin blocked 
+                response.Append(KCMEPUKRequired);
+                break;
+                }
+            case KErrGsm0707OperationNotAllowed:
+                {
+                // not allowed with this sim
+                response.Append(KCMENotAllowed);
+                break;
+                }
+            case KErrUnknown:
+                {
+                // unknown error
+                response.Append(KCMEPhoneUnknown);
+                break;
+                }
+            default:
+                {
+                response.Append(KCMEPhoneError);
+                break;
+                }
             }
-        case KErrGsm0707OperationNotAllowed:
-            {
-            // not allowed with this sim
-            response.Append(KCMENotAllowed);
-            break;
-            }
-        case KErrUnknown:
-            {
-            // unknown error
-            response.Append(KCMEPhoneUnknown);
-            break;
-            }
-        default:
-            response.Append(KCMEPhoneError);
+        CreateReplyAndComplete( EReplyTypeError, response );
+        response.Close();
         }
-    CreateReplyAndComplete( EReplyTypeError, response );
-    response.Close();
+    else
+        {
+        CreateReplyAndComplete( EReplyTypeError);
+        }
+
     TRACE_FUNC_EXIT
     }
 
-
 TInt CATMiscCmdPlugin::HandleUnsolicitedRequest(const TDesC8& aAT )
     {
+    TRACE_FUNC_ENTRY
+    TRACE_FUNC_EXIT
     return SendUnsolicitedResult(aAT);
+    }
+
+void CATMiscCmdPlugin::HandleCMEECommand()
+    {
+    TRACE_FUNC_ENTRY
+    TAtCommandParser::TCommandHandlerType cmdHandlerType = iCommandParser.CommandHandlerType();
+    
+    if (cmdHandlerType == TAtCommandParser::ECmdHandlerTypeSet)
+        {
+        // +CMEE=n
+        TInt errLevel;
+        TInt ret = iCommandParser.NextIntParam(errLevel);
+        TPtrC8 param = iCommandParser.NextParam();
+        _LIT8(KCMEDbg, "CME : NextIntParam returned %d, NextParam Length is %d, errLevel %d\r\n");
+        Trace(KCMEDbg, ret, param.Length(), errLevel);
+        if (ret == KErrNone && param.Length() == 0 &&
+           (errLevel == 0 || errLevel == 1))
+            {
+            iErrorLevel = errLevel;
+            _LIT8(KCMEErrorLevel, "CME error level: %d\r\n");
+            Trace(KCMEErrorLevel, iErrorLevel);
+            }
+        }
+    TRACE_FUNC_EXIT
     }
 
 void CATMiscCmdPlugin::ConnectToEtelL(RTelServer& aTelServer, RMobilePhone& aPhone)
@@ -521,9 +567,10 @@ void CATMiscCmdPlugin::ConnectToEtelL(RTelServer& aTelServer, RMobilePhone& aPho
     User::LeaveIfError(aTelServer.EnumeratePhones(phoneCount));  
     if (phoneCount < 1)
         {
-        User::Leave(KErrNotFound); // TODO: appropriate error code
+        User::Leave(KErrNotFound);
         }
     User::LeaveIfError(aTelServer.GetPhoneInfo(0, info));
     User::LeaveIfError(aPhone.Open(aTelServer, info.iName));
     TRACE_FUNC_EXIT
     }
+

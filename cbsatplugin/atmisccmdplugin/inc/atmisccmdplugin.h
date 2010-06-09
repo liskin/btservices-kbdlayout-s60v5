@@ -23,6 +23,10 @@
 
 #include "atcommandparser.h"
 
+class MATCmdBase;
+class CATCmdAsyncBase;
+class CATCmdSyncBase;
+
 /** Character types: carriage return, line feed or backspace */
 enum TCharacterTypes
     {
@@ -38,36 +42,6 @@ enum TModeTypes
     EModeTypeVerbose  // Verbose mode
     };
 
-
-class MATMiscCmdPlugin;
-
-
-/**
- *  Class for common AT command handler interface
- */
-NONSHARABLE_CLASS( CATCmdAsyncBase ) : public CActive 
-    {
-public:
-    virtual ~CATCmdAsyncBase() {};
-    CATCmdAsyncBase(MATMiscCmdPlugin* aCallback, TAtCommandParser& aATCmdParser, RMobilePhone& aPhone);
-
-    /**
-     * @see CATExtPluginBase::HandleCommand
-     */
-    virtual void HandleCommand( const TDesC8& aCmd,
-                                RBuf8& aReply,
-                                TBool aReplyNeeded ) = 0;
-
-    /**
-     * @see CATExtPluginBase::HandleCommandCancel
-     */
-    virtual void HandleCommandCancel() = 0;
-
-protected:
-    MATMiscCmdPlugin* iCallback;
-    TAtCommandParser& iATCmdParser;
-    RMobilePhone& iPhone;
-    };
 
 /**
  *  Class for accessing plugin information and common functionality
@@ -173,6 +147,7 @@ private:
     void ConstructL();
     
     TInt CreatePartOfReply( RBuf8& aBuffer );
+    void HandleCMEECommand();
     
     /*
      * Utility function that connect to Etel server and establish a subsession to RMobilePhone
@@ -191,12 +166,12 @@ private:
      * Current AT command handler in.
      * Used when IsCommandSupported() detects a matching handler class.
      */
-    CATCmdAsyncBase* iCurrentHandler;
+    MATCmdBase* iCurrentHandler;
     
     CATCmdAsyncBase* iCLCKHandler;
     CATCmdAsyncBase* iCPWDHandler;
     CATCmdAsyncBase* iCPINHandler;
-    CATCmdAsyncBase* iCUSDHandler;
+    CATCmdSyncBase* iCUSDHandler;
     CATCmdAsyncBase* iCNUMHandler;
     CATCmdAsyncBase* iCFUNHandler;
     CATCmdAsyncBase* iCBCHandler;
@@ -217,6 +192,11 @@ private:
      * Global reply buffer for the AT command replies
      */
     RBuf8 iReplyBuffer;
+    
+    /**
+     * +CME error level
+     */
+    TInt iErrorLevel;
     };
 
 #endif  // ATMISCCMDPLUGIN_H

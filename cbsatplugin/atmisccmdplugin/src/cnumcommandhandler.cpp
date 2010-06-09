@@ -126,13 +126,6 @@ void CCNUMCommandHandler::HandleCommand( const TDesC8& /*aCmd*/,
     TRACE_FUNC_EXIT
     }
 
-void CCNUMCommandHandler::HandleCommandCancel()
-    {
-    TRACE_FUNC_ENTRY
-    Cancel();
-    TRACE_FUNC_EXIT
-    }
-
 void CCNUMCommandHandler::RunL()
     {
     TRACE_FUNC_ENTRY
@@ -162,7 +155,7 @@ void CCNUMCommandHandler::RunL()
         {
         ASSERT(iPendingEvent == EMobilePhoneStoreRead);
         // step 5 append a phone number entry to the reply buffer
-        if(iOwnNumberEntry.iNumber.iTelNumber.Compare(KNullDesC) != 0)
+        if(iOwnNumberEntry.iNumber.iTelNumber.Length() != 0)
             {
             // 129 is the type of address octet in interger format
             _LIT8(KATNumReply, "\r\n+CNUM: ,\"%S\",129");

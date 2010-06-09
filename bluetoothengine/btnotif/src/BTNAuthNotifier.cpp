@@ -22,7 +22,7 @@
 #include "btNotifDebug.h"    // Debugging macros
 #include <btextnotifiers.h>
 #include <AknMediatorFacade.h> // Cover UI
-#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
+#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
 #include <btengconstants.h>
 #include <btengsettings.h>
 #include <e32cmn.h>

@@ -15,13 +15,12 @@
 // 
 //
 
-
-#include <mmretrieve.h>         // AO
-
 #include "cpwdcommandhandler.h"
 
-#include "debug.h"
+#include <mmretrieve.h> 
 
+#include "atmisccmdpluginconsts.h"
+#include "debug.h"
 
 // password types
 _LIT8(KATCPWDPS, "PS"); // Phone lock
@@ -29,18 +28,12 @@ _LIT8(KATCPWDP2, "P2"); // PIN2
 _LIT8(KATCPWDSC, "SC"); // PIN
 _LIT8(KATCPWDAB, "AB"); // All Barring code
 
-
-
 // strings for debugging trace
 _LIT8(KDbgStr, "+CPWD: %s \r\n");
 _LIT8(KDbgTDes, "+CPWD: %s%S\r\n");
 
 // constant for Set All barring code service - originally defined in mw/PSetConstants.h
 const TInt KPsetAllSSServices = 0;
-// Max buffer length for an MD5 digest - originally defined in SCPServerInterface.h
-const TInt KSCPMaxHashLength( 32 );
-
-
 
 CCPWDCommandHandler* CCPWDCommandHandler::NewL(MATMiscCmdPlugin* aCallback, TAtCommandParser& aATCmdParser, RMobilePhone& aPhone)
     {
@@ -94,28 +87,20 @@ void CCPWDCommandHandler::HandleCommand( const TDesC8& /*aCmd*/,
     TRACE_FUNC_EXIT
     }
 
-void CCPWDCommandHandler::HandleCommandCancel()
-    {
-    TRACE_FUNC_ENTRY
-    Cancel();
-    TRACE_FUNC_EXIT
-    }
-
-
 void CCPWDCommandHandler::ChangePassword()
     {
     TRACE_FUNC_ENTRY
 
     // Get parameters from AT command
-    TInt ret1;
-    TInt ret2; 
-    TInt ret3;
-    TPtrC8 passwordType = iATCmdParser.NextTextParam(ret1);
-    TPtrC8 oldPassword = iATCmdParser.NextTextParam(ret2);
-    TPtrC8 newPassword = iATCmdParser.NextTextParam(ret3);
+    TPtrC8 passwordType;
+    TPtrC8 oldPassword;
+    TPtrC8 newPassword;
+    TInt ret1 = iATCmdParser.NextTextParam(passwordType);
+    TInt ret2 = iATCmdParser.NextTextParam(oldPassword);
+    TInt ret3 = iATCmdParser.NextTextParam(newPassword);
     
     if(ret1 != KErrNone || ret2 != KErrNone || ret3 != KErrNone
-            || iATCmdParser.NextParam().Compare(KNullDesC8) != 0)
+            || iATCmdParser.NextParam().Length() != 0)
         {
         Trace(KDbgStr, "invalid arguments");
         iCallback->CreateReplyAndComplete( EReplyTypeError);
@@ -123,11 +108,11 @@ void CCPWDCommandHandler::ChangePassword()
         return;
         }
     
-    if(passwordType.Compare(KATCPWDPS) == 0) // Phone lock
+    if(passwordType.CompareF(KATCPWDPS) == 0) // Phone lock
         {
-    // "PS" PH-SIM (lock PHone to SIM/UICC card) (MT asks password when other than current SIM/UICC card
-    // inserted; MT may remember certain amount of previously used cards thus not requiring password when they
-    // are inserted)
+        // "PS" PH-SIM (lock PHone to SIM/UICC card) (MT asks password when other than current SIM/UICC card
+        // inserted; MT may remember certain amount of previously used cards thus not requiring password when they
+        // are inserted)
         RMobilePhone::TMobilePhonePasswordChangeV1 passwordChange;
         
         // Phone lock password is hashed in RSPClient and NokiaTSY. See CSCPServer::HashISACode() for details.
@@ -138,7 +123,7 @@ void CCPWDCommandHandler::ChangePassword()
 
         ChangeSecurityCode(RMobilePhone::ESecurityCodePhonePassword, hashOldPwd, hashNewPwd);
         }
-    else if(passwordType.Compare(KATCPWDSC) == 0) // SIM pin
+    else if(passwordType.CompareF(KATCPWDSC) == 0) // SIM pin
         {
         // "SC" SIM (lock SIM/UICC card) (SIM/UICC asks password in MT power-up and when this lock command
         // issued)
@@ -147,11 +132,11 @@ void CCPWDCommandHandler::ChangePassword()
         // should check SIM Lock is on here and return an error if it is off.
         ChangeSecurityCode(RMobilePhone::ESecurityCodePin1, oldPassword, newPassword);
         }
-    else if(passwordType.Compare(KATCPWDP2) == 0) // SIM pin2
+    else if(passwordType.CompareF(KATCPWDP2) == 0) // SIM pin2
         {
         ChangeSecurityCode(RMobilePhone::ESecurityCodePin2, oldPassword, newPassword);
         }
-    else if(passwordType.Compare(KATCPWDAB) == 0) // All Barring services
+    else if(passwordType.CompareF(KATCPWDAB) == 0) // All Barring services
         {
         // "AB" All Barring services (refer 3GPP TS 22.030 [19]) (applicable only for <mode>=0)
         RMobilePhone::TMobilePhonePasswordChangeV2 passwordChange;
@@ -171,9 +156,7 @@ void CCPWDCommandHandler::ChangePassword()
         Trace(KDbgTDes, "unknown password type:", &passwordType);
         iCallback->CreateCMEReplyAndComplete(KErrUnknown);
         }
-    
     TRACE_FUNC_EXIT
-    return;
     }
 
 void CCPWDCommandHandler::RunL()
@@ -203,10 +186,12 @@ void CCPWDCommandHandler::DoCancel()
 
 void CCPWDCommandHandler::ChangeSecurityCode(RMobilePhone::TMobilePhoneSecurityCode aType, TDesC8& aOldPassword, TDesC8& aNewPassword)
     {
+    TRACE_FUNC_ENTRY
     RMobilePhone::TMobilePhonePasswordChangeV1 passwordChange;
     passwordChange.iOldPassword.Copy(aOldPassword);
     passwordChange.iNewPassword.Copy(aNewPassword);
     iPhone.ChangeSecurityCode(iStatus, aType, passwordChange);
     iPendingEvent = EMobilePhoneChangeSecurityCode;
     SetActive();
+    TRACE_FUNC_EXIT
     }

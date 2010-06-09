@@ -53,6 +53,7 @@ CCBCCommandHandler::~CCBCCommandHandler()
 
 void CCBCCommandHandler::HandleCommand(const TDesC8& /*aCmd*/, RBuf8& /*aReply*/, TBool /*aReplyNeeded*/)
     {
+    TRACE_FUNC_ENTRY
     iReply.Zero();
  
     TAtCommandParser::TCommandHandlerType cmdHandlerType = iATCmdParser.CommandHandlerType();
@@ -78,14 +79,6 @@ void CCBCCommandHandler::HandleCommand(const TDesC8& /*aCmd*/, RBuf8& /*aReply*/
         }
     TRACE_FUNC_EXIT
     }
-
-void CCBCCommandHandler::HandleCommandCancel()
-    {
-    TRACE_FUNC_ENTRY
-    Cancel();
-    TRACE_FUNC_EXIT
-    }
-
 
 void CCBCCommandHandler::RunL()
     {

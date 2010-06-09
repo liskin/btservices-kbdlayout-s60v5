@@ -17,6 +17,7 @@
 
 #include <MProfileEngine.h>
 #include <starterclient.h>
+#include <ssm/startupdomainpskeys.h>
 
 #include <Profile.hrh>
 
@@ -53,6 +54,7 @@ CCFUNCommandHandler::~CCFUNCommandHandler()
     {
     TRACE_FUNC_ENTRY
     Cancel();
+    iProperty.Close();
     if (iProfileEngine != NULL)
         {
         iProfileEngine->Release();
@@ -62,6 +64,15 @@ CCFUNCommandHandler::~CCFUNCommandHandler()
 
 void CCFUNCommandHandler::HandleCommand(const TDesC8& /*aCmd*/, RBuf8& /*aReply*/, TBool /*aReplyNeeded*/)
     {
+    TRACE_FUNC_ENTRY
+    
+    if (IsActive())
+        {
+        iCallback->CreateReplyAndComplete(EReplyTypeError);
+        TRACE_FUNC_EXIT
+        return;
+        }
+    
     TInt ret = KErrNone;
     iReply.Zero();
     TAtCommandParser::TCommandHandlerType cmdHandlerType = iATCmdParser.CommandHandlerType();
@@ -94,8 +105,7 @@ void CCFUNCommandHandler::HandleCommand(const TDesC8& /*aCmd*/, RBuf8& /*aReply*
         case (TAtCommandParser::ECmdHandlerTypeSet):
             {
             TInt func = 0;
-            TInt reset = 0; // default 0 - do not reset the MT before setting it to <fun> power level
-            
+
             ret = iATCmdParser.NextIntParam(func);
             if (ret != KErrNone && ret != KErrNotFound)
                 {
@@ -103,73 +113,136 @@ void CCFUNCommandHandler::HandleCommand(const TDesC8& /*aCmd*/, RBuf8& /*aReply*
                 TRACE_FUNC_EXIT
                 return;
                 }
-            ret = iATCmdParser.NextIntParam(reset);
+			iReset = 0; // default 0 - do not reset the MT before setting it to <fun> power level
+            ret = iATCmdParser.NextIntParam(iReset);
             
             // second parameter is optional, but only 0 and 1 are valid if it is specified
-            if (ret != KErrNone && ret != KErrNotFound && (reset != 0 || reset != 1))
+            if (!(ret == KErrNone || ret == KErrNotFound) || !(iReset == 0 || iReset == 1))
                 {
                 iCallback->CreateReplyAndComplete(EReplyTypeError);
                 TRACE_FUNC_EXIT
                 return;
                 }
-            ret = ActivateProfile(func, reset);
-           
+            
+            ret = ActivateProfile(func);       
             break;
             }
         default:
             {
             iCallback->CreateReplyAndComplete(EReplyTypeError);
+            break;
             }
         }
     
-    if (ret != KErrNone)
+    if (!IsActive())
         {
-        iCallback->CreateReplyAndComplete(EReplyTypeError);
-        }
-    else
-        {
-        iCallback->CreateReplyAndComplete( EReplyTypeOther, iReply );
+        if (ret != KErrNone)
+            {
+            iCallback->CreateReplyAndComplete(EReplyTypeError);
+            }
+        else
+            {
+            iCallback->CreateReplyAndComplete( EReplyTypeOther, iReply );
+            }
         }
     TRACE_FUNC_EXIT
     }
-
-void CCFUNCommandHandler::HandleCommandCancel()
-    {
-    TRACE_FUNC_ENTRY
-    // no asyc requests are made in when using AT+CFUN
-    TRACE_FUNC_EXIT
-    }
-
 
 void CCFUNCommandHandler::RunL()
     {
     TRACE_FUNC_ENTRY
-    // no asyc requests are made in when using AT+CFUN
+    TInt systemState;
+    
+    TInt ret = iProperty.Get(systemState);
+    if (ret != KErrNone)
+        {
+        if (systemState != iExpectedState)
+            {
+            iProperty.Subscribe(iStatus);
+            SetActive();
+            }
+        else if (iReset == 1)
+            {
+            ret = RestartDevice();
+            }
+        }
+    if (!IsActive())
+        {
+        if (ret != KErrNone)
+            {
+            iCallback->CreateReplyAndComplete(EReplyTypeError);
+            }
+        else
+            {
+            iCallback->CreateReplyAndComplete( EReplyTypeOther, iReply );
+            }
+        }
     TRACE_FUNC_EXIT
     }
 
 void CCFUNCommandHandler::DoCancel()
     {
     TRACE_FUNC_ENTRY
-    // no asyc requests are made in when using AT+CFUN
+    iProperty.Cancel();
     TRACE_FUNC_EXIT
     }
 
-TInt CCFUNCommandHandler::ActivateProfile(TInt aFunc, TInt aReset)
+TInt CCFUNCommandHandler::ActivateProfile(TInt aFunc)
     {
-    TInt err = KErrNone;
+    TRACE_FUNC_ENTRY
+    TInt systemState;
+    
+    //Listen to the property KPSGlobalSystemState for profile change.
+    TInt err = iProperty.Attach(KPSUidStartup, KPSGlobalSystemState);
+    if (err != KErrNone)
+        {
+        TRACE_FUNC_EXIT
+        return err;
+        }
+
+    err = iProperty.Get(systemState);
+    if (err != KErrNone)
+        {
+        TRACE_FUNC_EXIT
+        return err;
+        }
     
     switch (aFunc)
         {
         case (0):
         case (4):
             {
-            err = SetActiveProfile(KOfflineProfileId);
+            // check of KPSGlobalSystemState is not already set to ESwStateNormalRfOff,
+            // issue the profile change request and start monitoring the property
+            if (systemState != ESwStateNormalRfOff)
+                {
+                err = SetActiveProfile(KOfflineProfileId);
+                
+                
+                if (err == KErrNone)
+                    {
+                    iExpectedState = ESwStateNormalRfOff;
+                    iProperty.Subscribe(iStatus);
+                    SetActive();
+                    }           
+                }
             break;
             }
         case (1):
             {
-            err = SetActiveProfile(KGeneralProfileId);
+            // check of KPSGlobalSystemState is not already set to ESwStateNormalRfOn,
+            // issue the profile change request and start monitoring the property
+            if (systemState != ESwStateNormalRfOn)
+                {
+                err = SetActiveProfile(KGeneralProfileId);
+                
+                if (err == KErrNone)
+                    {
+                    iExpectedState = ESwStateNormalRfOn;
+                    iProperty.Subscribe(iStatus);
+                    SetActive();
+                    }
+                }
             break;
             }
         default:
@@ -178,29 +251,26 @@ TInt CCFUNCommandHandler::ActivateProfile(TInt aFunc, TInt aReset)
             break;
             }
         }
-    
-    if (err == KErrNone && aReset == 1)
-        {
-        err = RestartDevice();
-        }
-    
+    TRACE_FUNC_EXIT
     return err;
     }
 
 TInt CCFUNCommandHandler::SetActiveProfile(TInt aProfileId)
     {
+    TRACE_FUNC_ENTRY
     TInt err = KErrNone;
 
     if(iProfileEngine)
         {
         TRAP(err, iProfileEngine->SetActiveProfileL( aProfileId ));
         }
-
+    TRACE_FUNC_EXIT
     return err;
     }
 
 TInt CCFUNCommandHandler::RestartDevice()
     {
+    TRACE_FUNC_ENTRY
     RStarterSession session;
     TInt err = session.Connect();
 
@@ -209,6 +279,6 @@ TInt CCFUNCommandHandler::RestartDevice()
         session.Reset(RStarterSession::EUnknownReset);
         session.Close();
         }
-
+    TRACE_FUNC_EXIT
     return err;
     }

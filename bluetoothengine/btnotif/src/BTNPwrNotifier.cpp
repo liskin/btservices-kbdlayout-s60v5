@@ -21,7 +21,7 @@
 #include "btnpwrnotifier.h"  // Own class definition
 #include "btNotifDebug.h"    // Debugging macros
 #include <bt_subscribe.h>
-#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
+#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
 
 
 // ================= MEMBER FUNCTIONS =======================

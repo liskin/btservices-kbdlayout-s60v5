@@ -19,23 +19,22 @@
 #include <hash.h>
 
 #include "debug.h"
-
-
-// Max buffer length for an MD5 digest
-const TInt KSCPMaxHashLength( 32 );
-
+#include "atmisccmdpluginconsts.h"
 
 TAtCommandParser::TAtCommandParser()
     : iCmdType(EUnknown), iCmdHandlerType(ECmdHandlerTypeUndefined)  
     {
+    TRACE_FUNC_ENTRY
+    TRACE_FUNC_EXIT
     }
 
 TAtCommandParser::TAtCommandParser(const TDesC8& aCmd)
     : iCmdType(EUnknown), iCmdHandlerType(ECmdHandlerTypeUndefined)  
     {
+    TRACE_FUNC_ENTRY
     ParseAtCommand(aCmd);
+    TRACE_FUNC_EXIT
     }
-
 
 void TAtCommandParser::ParseAtCommand(const TDesC8& aCmd)
     {
@@ -59,36 +58,41 @@ void TAtCommandParser::ParseAtCommand(const TDesC8& aCmd)
     _LIT8(KAtCpin, "AT+CPIN");
     _LIT8(KAtCusd, "AT+CUSD");
     _LIT8(KAtCnum, "AT+CNUM");
+    _LIT8(KAtCmee, "AT+CMEE");
     
     Trace(KDebugPrintS, "token: ", &token);
     // Determine the AT command type
-    if(!token.Compare(KAtCfun))
+    if(!token.CompareF(KAtCfun))
         {
         iCmdType = ECmdAtCfun;
         }
-    else if(!token.Compare(KAtCbc))
+    else if(!token.CompareF(KAtCbc))
         {
         iCmdType = ECmdAtCbc;
         }
-    else if(!token.Compare(KAtClck))
+    else if(!token.CompareF(KAtClck))
         {
         iCmdType = ECmdAtClck;
         }
-    else if(!token.Compare(KAtCpwd))
+    else if(!token.CompareF(KAtCpwd))
         {
         iCmdType = ECmdAtCpwd;
         }
-    else if(!token.Compare(KAtCpin))
+    else if(!token.CompareF(KAtCpin))
         {
         iCmdType = ECmdAtCpin;
         }
-    else if(!token.Compare(KAtCusd))
+    else if(!token.CompareF(KAtCusd))
         {
         iCmdType = ECmdAtCusd;
         }
-    else if(!token.Compare(KAtCnum))
+    else if(!token.CompareF(KAtCnum))
         {
         iCmdType = ECmdAtCnum;
+        }
+    else if(!token.Compare(KAtCmee))
+        {
+        iCmdType = ECmdAtCmee;
         }
     else
         {
@@ -128,11 +132,15 @@ void TAtCommandParser::ParseAtCommand(const TDesC8& aCmd)
 
 TAtCommandParser::TCommandType TAtCommandParser::Command() const
     {
+    TRACE_FUNC_ENTRY
+    TRACE_FUNC_EXIT
     return iCmdType;
     }
 
 TAtCommandParser::TCommandHandlerType TAtCommandParser::CommandHandlerType() const
     {
+    TRACE_FUNC_ENTRY
+    TRACE_FUNC_EXIT
     return iCmdHandlerType;
     }
 
@@ -166,25 +174,29 @@ TPtrC8 TAtCommandParser::NextParam()
     return retVal;
     }
 
-TPtrC8 TAtCommandParser::NextTextParam(TInt& aError)
+TInt TAtCommandParser::NextTextParam(TPtrC8& aParam)
     {
+    TRACE_FUNC_ENTRY
+    TInt ret = KErrNone;
     TPtrC8 param = NextParam();
     
-    if (param.Compare(KNullDesC8) == 0)
+    if (param.Length() == 0)
         {
-        aError = KErrNotFound;
-        return param; 
+        aParam.Set(NULL,0);
+        ret = KErrNotFound;
         }
-    
-    if(param.Length()<2 
-            || param[0] != '"'
+    else if(param.Length() < 2 || param[0] != '"'
             || param[param.Length()-1] != '"')
         {
-        aError = KErrArgument;
-        return param.Left(0);
+        aParam.Set(NULL,0);
+        ret = KErrArgument;
         }
-    aError = KErrNone;
-    return param.Mid(1, param.Length() - 2);
+    else
+        {
+        aParam.Set(param.Mid(1, param.Length() - 2));
+        }
+    TRACE_FUNC_EXIT
+    return ret;
     }
 
 TInt TAtCommandParser::NextIntParam(TInt& aValue)
@@ -192,7 +204,7 @@ TInt TAtCommandParser::NextIntParam(TInt& aValue)
     TRACE_FUNC_ENTRY
     TInt retVal =KErrNone;
     TPtrC8 param = NextParam();
-    if (param.Compare(KNullDesC8) == 0)
+    if (param.Length() == 0)
         {
         retVal = KErrNotFound;
         }

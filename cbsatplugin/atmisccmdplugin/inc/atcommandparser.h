@@ -52,7 +52,8 @@ public:
         ECmdAtCpwd,
         ECmdAtCpin,
         ECmdAtCusd,
-        ECmdAtCnum
+        ECmdAtCnum,
+        ECmdAtCmee
         };
 public:
     TAtCommandParser();
@@ -96,10 +97,10 @@ public:
      * This function validate the parameter is a valid string.
      * if the parameter is absent, it returns KErrNotFound.
      * if the parameter is an invalid string such as not in a pair of double quotes, it returns KErrArgument
-     * @param aError return the error code. 
-     * @return Next text parameter when aError is not KErrNone; 
+     * @param aParam the text string without quotes
+     * @return  Symbian system wide error codes
      */
-    TPtrC8 NextTextParam(TInt& aError);
+    TInt NextTextParam(TPtrC8& aParam);
 
     /**
      * Get ISA hash code for security code

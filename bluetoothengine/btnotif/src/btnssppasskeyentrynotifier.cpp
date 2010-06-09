@@ -30,7 +30,7 @@
 #include <btextnotifierspartner.h>
 #endif
 #include <BTNotif.rsg>       // Own resources
-#include <secondarydisplay/BTnotifSecondaryDisplayAPI.h>
+#include <SecondaryDisplay/BTnotifSecondaryDisplayAPI.h>
 #include <bluetoothuiutil.h>
 #include "btnotif.hrh"       // Own resource header
 #include "btnssppasskeyentrynotifier.h"  // Own class definition
