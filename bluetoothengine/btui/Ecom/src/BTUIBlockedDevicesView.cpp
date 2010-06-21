@@ -266,6 +266,10 @@ void CBTUIBlockedDevicesView::DoActivateL(const TVwsViewId& /*aPrevViewId*/,
             (iBaseView->TabbedViews()) ); 
         }
         
+
+    MenuBar()->SetContextMenuTitleResourceId(
+            R_BTUI_MENUBAR_BLOCK_DEVICES_VIEW); 
+        
 	// notify observer   
     if( iActivationObserver  && iConstructAsGsPlugin == EFalse)
     {    	    
@@ -349,19 +353,17 @@ void CBTUIBlockedDevicesView::DynInitMenuPaneL(TInt aResId, CEikMenuPane* aMenu)
 		  !FeatureManager::FeatureSupported( KFeatureIdHelp ) );
 		}
     
-    // do not show "unblock" and "unblock all" commands 
+    // do not "unblock all" commands 
     // if there is nothing to unblock
 	if (aResId == R_BTUI_BLOCK_DEVICES_VIEW_MENU)
 	    {
         if( iContainer->CountItems() == 0) 
             {        
-            aMenu->SetItemDimmed(EBTUICmdUnblock, ETrue);
             aMenu->SetItemDimmed(EBTUICmdUnblockAll, ETrue);            
             }
         else
             {
             aMenu->SetItemDimmed(EBTUICmdUnblockAll, EFalse);
-            aMenu->SetItemDimmed(EBTUICmdUnblock, ETrue);
             }
 	    }
 	TRACE_FUNC_EXIT        

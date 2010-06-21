@@ -101,7 +101,7 @@ CBTHidServer::~CBTHidServer()
     
     delete iHidSdpClient;
     
-    RProperty::Delete( KPSUidBthidSrv, KBTMouseCursorState );
+
     }
 
 CBTHidServer* CBTHidServer::NewL()
@@ -210,13 +210,8 @@ void CBTHidServer::ConstructL()
         }
 
     TRACE_INFO(_L("[BTHID]\tCBTHidServer::ConstructL(): Starting the server"));
-
-    User::LeaveIfError( RProperty::Define( KPSUidBthidSrv,
-                                            KBTMouseCursorState,
-                                            RProperty::EInt,
-                                            KBTHIDPSKeyReadPolicy,
-                                            KBTHIDPSKeyWritePolicy) );
-
+    
+    
     StartL(KBTHidSrvName);
 
     iActiveState = EFalse;

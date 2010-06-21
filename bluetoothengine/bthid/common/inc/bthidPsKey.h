@@ -20,7 +20,9 @@
 #ifndef BTHIDPSKEY_H_
 #define BTHIDPSKEY_H_
 
-const TUid KPSUidBthidSrv = {0x2001E301};
+
+
+const TUid KPSUidBthidSrv = { 0x2001FE5C };
  
 const TUint KBTMouseCursorState = 0x00000001;
 

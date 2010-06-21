@@ -183,10 +183,7 @@ void CHidMouseDriver::Stop()
 void CHidMouseDriver::LaunchApplicationL(const TDesC& aName)
     {
     //Check if application is already running in the background
-    TApaTaskList tasks( iWsSession );
-    TApaTask task = tasks.FindApp( aName );
-
-    if ( task.Exists() )
+    if (IsAlreadyRunning())
         {
         // Application is active, so just bring to foreground
         }
@@ -208,6 +205,32 @@ void CHidMouseDriver::LaunchApplicationL(const TDesC& aName)
         CleanupStack::PopAndDestroy(2);
         }
     }
+
+TBool CHidMouseDriver::IsAlreadyRunning()
+    {
+    TFindProcess processFinder(_L("*[2001fe5c]*")); //search by paintcursor.exe UID3  
+
+    TBool found = EFalse;
+    TFullName result;
+    if (processFinder.Next(result) == KErrNone)
+        {
+        DBG(RDebug::Print(_L("[BTHID] CHidMouseDriver::IsAlreadyRunning - process found Inside while")) );
+        found = ETrue;
+        }
+
+    if (found)
+        {
+        DBG(RDebug::Print(_L("[BTHID] CHidMouseDriver::IsAlreadyRunning - Process found ")) );
+        }
+    else
+        {
+        DBG(RDebug::Print(_L("[BTHID] CHidMouseDriver::IsAlreadyRunning - Process was never found")) );
+        }
+        
+    return found;
+}
+
+
 // ----------------------------------------------------------------------
 // CHidDriver mandatory functions:
 
@@ -231,6 +254,7 @@ TInt CHidMouseDriver::DataIn(
                          _L("[BTHID]\tCHidMouseDriver::DataIn() ECursorRedraw ||ECursorReset ")) );
                 }
 
+            LaunchApplicationL(KAppName);
 
             CursorRedraw();
 

@@ -176,7 +176,8 @@ private:
     TInt SendButtonEvent(TBool aButtonDown);
 
     void LaunchApplicationL(const TDesC& aName);
-    //void LaunchApplicationL(TInt aAppUid);
+    
+    TBool IsAlreadyRunning();
 
 private:
     // The Generic HID layer

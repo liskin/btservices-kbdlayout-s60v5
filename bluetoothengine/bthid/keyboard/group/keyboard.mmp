@@ -22,7 +22,7 @@ TARGET        hidkeyboard.dll
 TARGETTYPE    PLUGIN
 UID           ECOM_UID KEYBOARD_UID
 
-CAPABILITY    CAP_APPLICATION
+CAPABILITY    CAP_APPLICATION CommDD ProtServ
 VENDORID      VID_DEFAULT
 
 USERINCLUDE   ../inc
@@ -60,4 +60,5 @@ LIBRARY       generichid.lib
 LIBRARY       apgrfx.lib
 LIBRARY       apparc.lib 
 LIBRARY       bthidsettings.lib
+//LIBRARY       avkon.lib
 DEBUGLIBRARY       flogger.lib

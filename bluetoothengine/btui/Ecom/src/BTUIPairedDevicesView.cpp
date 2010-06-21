@@ -415,7 +415,7 @@ void CBTUIPairedDevicesView::DoDeactivate()
 void CBTUIPairedDevicesView::DynInitMenuPaneL(TInt aResId, CEikMenuPane* aMenu)
     {
 	TRACE_FUNC_ENTRY
-	iActiveMenuPane = aMenu;
+	
 	// dim help if it exists and is not supported	
 	TInt tmp;	
 	if (  aMenu->MenuItemExists(EAknCmdHelp,tmp ) )			
@@ -426,31 +426,24 @@ void CBTUIPairedDevicesView::DynInitMenuPaneL(TInt aResId, CEikMenuPane* aMenu)
 	
 	if ( aResId == R_BTUI_OTHER_DEVICES_VIEW_MENU  )
 	    {
-        TInt index = iContainer->CurrentItemIndex();
 
-        // we only show "new pair device", "help" , "Exit" and "Delete All" if view contains device(s).  
-        aMenu->SetItemDimmed(EBTUICmdSetTrusted, ETrue);   
-        aMenu->SetItemDimmed(EBTUICmdDelete,ETrue);
-        aMenu->SetItemDimmed(EBTUICmdSetTrusted,ETrue);
-        aMenu->SetItemDimmed(EBTUICmdSetUnTrusted,ETrue);
-        aMenu->SetItemDimmed(EBTUICmdConnect,ETrue);
-        aMenu->SetItemDimmed(EBTUICmdConnectAudio,ETrue); 
-        aMenu->SetItemDimmed(EBTUICmdDisconnect,ETrue);
-        aMenu->SetItemDimmed(EBTUICmdSetBlocked,ETrue);
-        aMenu->SetItemDimmed(EBTUICmdSettings,ETrue);
-        aMenu->SetItemDimmed(EBTUICmdGiveNickname, ETrue);         
-        
+        TInt index = iContainer->CurrentItemIndex();
+    
         if ( index < 0 ) // No devices at list. Hide all device related commands.
             {
             aMenu->SetItemDimmed(EBTUICmdDeleteAll, ETrue); 
             }
-        
+        else
+            {
+            SetupMenuCmd(index, aMenu);             
+            }        
 	    }
 	
     if ( aResId == R_BTUI_OTHER_DEVICES_VIEW_MENU_CONTEXT )
         {
+        iActiveMenuPane = aMenu;
         TInt index = iContainer->CurrentItemIndex();
-          
+   
         // If user is fast enough to click the RSK option between 
         // bt discovery view and device found view,  bt ui will crash.
         // Therefore, we disable commands if bt discovery is onging.
@@ -485,51 +478,8 @@ void CBTUIPairedDevicesView::DynInitMenuPaneL(TInt aResId, CEikMenuPane* aMenu)
             }
         else // There are devices at list
             {
-	        TBTDevice device;
-            device.iIndex = index;
-    	    iModel->GetDevice(device);
-            iMenuDevice = device;    	    
-            
-            TRACE_INFO(_L("there are device in list"))
-          
-            TBool dim = (device.iStatus & EStatusTrusted) == EStatusTrusted;
-            
-            aMenu->SetItemDimmed(EBTUICmdSetTrusted, dim);
-            aMenu->SetItemDimmed(EBTUICmdSetUnTrusted, !dim);
-             
-            // Check if device can be connected or disconnected
-			dim = (! (device.iStatus & EStatusConnectable) 
-			|| device.iStatus & EStatusBtuiConnected);
-			
-			if (dim) 
-				{
-            	aMenu->SetItemDimmed(EBTUICmdConnect, dim);
-            	aMenu->SetItemDimmed(EBTUICmdConnectAudio, dim);
-				}
-			else
-				{
-				if ( device.iDeviceClass.MajorDeviceClass() == EMajorDeviceComputer) 
-            		{
-            		aMenu->SetItemDimmed(EBTUICmdConnect, ETrue);
-            		}
-            	else 
-            		{
-            		aMenu->SetItemDimmed(EBTUICmdConnectAudio, ETrue);
-            		}
-				}
-			dim = (device.iStatus & EStatusBtuiConnected) != EStatusBtuiConnected;
-            aMenu->SetItemDimmed(EBTUICmdDisconnect, dim);
-
-            if ( !iBTPluginMan->IsPluginAvaiable(device.iDeviceClass) ) 
-                {
-                aMenu->SetItemDimmed(EBTUICmdSettings, ETrue);
-                }
-            else
-                {                
-                dim = (device.iStatus & EStatusBtuiConnected) != EStatusBtuiConnected;
-                aMenu->SetItemDimmed(EBTUICmdSettings, dim);
-                }
-            //Hide New pair device
+            SetupMenuCmd(index, aMenu);
+            //Hide New pair device in context menu
             aMenu->SetItemDimmed(EBTUICmdNewPairedDevice, ETrue);
             }
         }
@@ -1899,6 +1849,56 @@ CGulIcon* CBTUIPairedDevicesView::CreateTabIconL()
           
     return icon;
     }   
+
+
+void CBTUIPairedDevicesView::SetupMenuCmd(TInt aIndex, CEikMenuPane* aMenu)
+    {
+    TBTDevice device;
+    device.iIndex = aIndex;
+    iModel->GetDevice(device);
+    iMenuDevice = device;           
+                    
+    TRACE_INFO(_L("there are device in list"))
+    
+    TBool dim = (device.iStatus & EStatusTrusted) == EStatusTrusted;
+                    
+    aMenu->SetItemDimmed(EBTUICmdSetTrusted, dim);
+    aMenu->SetItemDimmed(EBTUICmdSetUnTrusted, !dim);
+                     
+    // Check if device can be connected or disconnected
+    dim = (! (device.iStatus & EStatusConnectable) 
+            || device.iStatus & EStatusBtuiConnected);
+                    
+    if (dim) 
+        {
+        aMenu->SetItemDimmed(EBTUICmdConnect, dim);
+        aMenu->SetItemDimmed(EBTUICmdConnectAudio, dim);
+        }
+    else
+        {
+        if ( device.iDeviceClass.MajorDeviceClass() == EMajorDeviceComputer) 
+            {
+            aMenu->SetItemDimmed(EBTUICmdConnect, ETrue);
+            }
+        else 
+            {
+            aMenu->SetItemDimmed(EBTUICmdConnectAudio, ETrue);
+            }
+        }
+    dim = (device.iStatus & EStatusBtuiConnected) != EStatusBtuiConnected;
+    aMenu->SetItemDimmed(EBTUICmdDisconnect, dim);
+    
+    if ( !iBTPluginMan->IsPluginAvaiable(device.iDeviceClass) ) 
+        {
+        aMenu->SetItemDimmed(EBTUICmdSettings, ETrue);
+        }
+    else
+        {                
+        dim = (device.iStatus & EStatusBtuiConnected) != EStatusBtuiConnected;
+        aMenu->SetItemDimmed(EBTUICmdSettings, dim);
+        }                    
+    }
+
     
 // End of File
 

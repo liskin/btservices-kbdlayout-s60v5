@@ -23,8 +23,8 @@
 #include <eiksvdef.h>
 #include <apgcli.h>
 #include <apgtask.h>
-#include <apacmdln.h>
-#include <e32property.h>
+#include <e32keys.h>
+#include <avkondomainpskeys.h>
 
 #include "hidtranslate.h"
 #include "finder.h"
@@ -52,7 +52,28 @@ const TInt KRepeatEndTimeout = 5000000; // 5 seconds
 
 const TInt KKeyRepeatDelay = 500000;
 const TInt KKeyRepeatInterval = 75000;
-_LIT(KAppName, "PaintCursor.exe");
+
+// The bitmap of modifier byte is defined in the HID spec.
+// 8.3 Report Format for Array Items (HID1_11.pdf p56)
+// 
+// bit  description     mask
+// -------------------------
+// 0    LEFT CTRL     = 0x01
+// 1    LEFT SHIFT    = 0x02
+// 2    LEFT ALT      = 0x04
+// 3    LEFT GUI      = 0x08
+// 4    RIGHT CTRL    = 0x10
+// 5    RIGHT SHIFT   = 0x20
+// 6    RIGHT ALT     = 0x40
+// 7    RIGHT GUI     = 0x80
+
+const TUint KHidModifierCtrl = 0x01;
+const TUint KHidModifierCtrlRight = 0x10;
+const TUint KHidModifierAlt = 0x04;
+const TUint KHidModifierAltRight = 0x40;
+const TUint KHidModifierShift = 0x02;
+const TUint KHidModifierShiftRight = 0x20;
+
 //----------------------------------------------------------------------------
 // CHidKeyboardDriver::CHidKeyboardDriver
 //----------------------------------------------------------------------------
@@ -112,9 +133,12 @@ void CHidKeyboardDriver::ConstructL()
     iPhoneAppId = PhoneAppId();
     iIdleAppId = IdleAppId();
 
-    iComboDevice = EFalse;
-
     iSettings = CBtHidSettings::NewL();
+    
+    // create a keylock session
+/*    TInt err = iKeyLock.Connect();
+    TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::ConstructL: key lock err = %d"), err));
+    User::LeaveIfError(err);    */
     }
 
 //----------------------------------------------------------------------------
@@ -136,58 +160,12 @@ CHidKeyboardDriver::~CHidKeyboardDriver()
         iKeys[i].Reset();
         }
 
-    iPointBufQueue.Close();
-
-    if (iComboDevice)
-        {
-        RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorNotInitialized );
-        }
-
     if (iSettings)
         delete iSettings;
+
+//    iKeyLock.Close();
     }
 
-void CHidKeyboardDriver::MoveCursor(const TPoint& aPoint)
-    {
-    DBG(RDebug::Print(
-                    _L("CHidKeyboard::MoveCursor")));
-
-    PostPointer(aPoint);
-    }
-// ---------------------------------------------------------------------------
-// CHidMouseDriver::PostPointer
-// Save the event to the buffer
-// ---------------------------------------------------------------------------
-//
-TInt CHidKeyboardDriver::PostPointer(const TPoint& aPoint)
-    {
-    DBG(RDebug::Print(_L("CHidKeyboard::PostPointer")));
-    iPointerBuffer.iPoint[iPointerBuffer.iNum] = aPoint;
-    iPointerBuffer.iType[iPointerBuffer.iNum] = KBufferPlainPointer;
-    iPointerBuffer.iNum++;
-    TInt ret = KErrNone;
-
-    if (iPointerBuffer.iNum > KPMaxEvent)
-        {
-        ret = iPointBufQueue.Send(iPointerBuffer);
-        iPointerBuffer.iNum = 0;
-        }
-    return ret;
-    }
-
-TInt CHidKeyboardDriver::SendButtonEvent(TBool aButtonDown)
-    {
-    DBG(RDebug::Print(
-                    _L("CHidKeyboard::SendButtonEvent")));
-    iPointerBuffer.iPoint[iPointerBuffer.iNum] = TPoint(0, 0);
-    iPointerBuffer.iType[iPointerBuffer.iNum] = aButtonDown
-                                                            ? KBufferPenDown
-                                                               : KBufferPenUp;
-    iPointerBuffer.iNum++;
-    TInt ret = iPointBufQueue.Send(iPointerBuffer);
-    iPointerBuffer.iNum = 0;
-    return ret;
-    }
 //----------------------------------------------------------------------------
 // CHidKeyboardDriver:::StartL
 //----------------------------------------------------------------------------
@@ -196,6 +174,7 @@ void CHidKeyboardDriver::StartL(TInt aConnectionId)
     {
         TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::StartL")));
     aConnectionId = aConnectionId;
+
     // No keys are pressed:
     iModifiers = 0;
     for (TInt i = 0; i < KNumInputFieldTypes; ++i)
@@ -233,24 +212,9 @@ void CHidKeyboardDriver::StartL(TInt aConnectionId)
         //Used the layoutID from CenRep
         iLayoutMgr.SetLayout(iLastSelectedLayout);
         }
-    TInt err = iPointBufQueue.OpenGlobal(KMsgBTMouseBufferQueue);   
-    if (err == KErrNotFound)
-        {
-        User::LeaveIfError(iPointBufQueue.CreateGlobal(KMsgBTMouseBufferQueue, KPointQueueLen));    
-        }
-    else
-        {
-        User::LeaveIfError( err );
-        }    
 
     // Ready to process keyboard events:
     iDriverState = EInitialised;
-
-    if (iComboDevice)
-        {
-        LaunchApplicationL(KAppName);
-        RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorShow );
-        }
 
     }
 
@@ -286,41 +250,6 @@ void CHidKeyboardDriver::Stop()
     {
     iDriverState = EDisabled;
     CancelAllKeys();
-    if (iComboDevice)
-        {
-        RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorNotInitialized );
-        }
-    }
-
-//----------------------------------------------------------------------------
-// CHidMouseDriver::LaunchApplicationL
-//----------------------------------------------------------------------------
-//
-void CHidKeyboardDriver::LaunchApplicationL(const TDesC& aName)
-    {
-    //Check if application is already running in the background
-    TApaTaskList tasks(iWsSession);
-    TApaTask task = tasks.FindApp(aName);
-    if (task.Exists())
-        {
-        // Application is active, so just bring to foreground
-        }
-    else
-        {
-        // If application is not running, then create a new one
-        CApaCommandLine* cmd = CApaCommandLine::NewLC();
-        cmd->SetExecutableNameL(aName);
-        cmd->SetCommandL(EApaCommandBackground); // EApaCommandRun
-
-        RApaLsSession arcSession;
-        //connect to AppArc server
-        User::LeaveIfError(arcSession.Connect());
-        CleanupClosePushL(arcSession);
-        User::LeaveIfError(arcSession.StartApp(*cmd));
-        arcSession.Close();
-        CleanupStack::PopAndDestroy(2);
-        }
-
     }
 
 // ----------------------------------------------------------------------
@@ -339,21 +268,6 @@ TInt CHidKeyboardDriver::DataIn(CHidTransport::THidChannelType aChannel,
         case CHidTransport::EHidChannelInt:
             if (EInitialised == iDriverState)
                 {
-                if (iComboDevice)
-                    {
-                    TInt mouseStatus;
-                    TInt err = RProperty::Get( KPSUidBthidSrv, KBTMouseCursorState, mouseStatus );
-                    if ( !err &&
-                        ((static_cast<THidMouseCursorState>(mouseStatus) == ECursorRedraw)|| 
-                         (static_cast<THidMouseCursorState>(mouseStatus) == ECursorReset)) )
-                        {
-                        err = RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorShow );
-                        DBG(RDebug::Print(
-                                 _L("[BTHID]\tCHidKeyboardDriver::DataIn() ECursorRedraw ||ECursorReset ")) );
-                        }
-
-                    CursorRedraw();
-                    }
                 InterruptData(aPayload);
                 }
             break;
@@ -386,127 +300,6 @@ void CHidKeyboardDriver::Disconnected(TInt aReason)
     Stop();
     }
 
-void CHidKeyboardDriver::UpdateXY(TInt aFieldIndex, const TDesC8& aReport)
-    {
-    //    DBG(RDebug::Print(_L("[HID]\tCHidMouseDriver::UpdateModifiers()")));
-
-    // Translate the HID usage values into a boot protocol style
-    // modifier bitmask:
-    //
-    TReportTranslator report(aReport, iMouseField[aFieldIndex]);
-
-    TInt Xvalue = 0;
-    TInt Yvalue = 0;
-
-    TInt errX = report.GetValue(Xvalue, EGenericDesktopUsageX);
-    TInt errY = report.GetValue(Yvalue, EGenericDesktopUsageY);
-
-    DBG(RDebug::Print(_L("[HID]\tCHidMouseDriver::UpdateXY (%d,%d)"), Xvalue, Yvalue));
-    if ((Xvalue != 0) || (Yvalue != 0))
-        {
-        MoveCursor(TPoint(Xvalue, Yvalue));
-        }
-    }
-
-void CHidKeyboardDriver::UpdateWheel(TInt aFieldIndex, const TDesC8& aReport)
-    {
-    TReportTranslator report(aReport, iMouseField[aFieldIndex]);
-
-    TInt Yvalue = 0;
-
-    TInt errY = report.GetValue(Yvalue, EGenericDesktopUsageWheel);
-    DBG(RDebug::Print(_L("[HID]\tCHidMouseDriver::UpdateWheel (%d)"), Yvalue));
-    TInt absValue(Abs(Yvalue));
-    if ((errY == KErrNone) && (absValue >= 1))
-        {
-        TRawEvent rawEvent;
-        for (TInt ii = 0; ii < absValue; ii++)
-            {
-            rawEvent.Set(TRawEvent::EKeyDown,
-                    (Yvalue > 0) ? EStdKeyUpArrow : EStdKeyDownArrow);
-            UserSvr::AddEvent(rawEvent);
-            rawEvent.Set(TRawEvent::EKeyUp,
-                    (Yvalue > 0) ? EStdKeyUpArrow : EStdKeyDownArrow);
-            UserSvr::AddEvent(rawEvent);
-            }
-        }
-    DBG(RDebug::Print(_L("[HID]\t  new iModifiers = %02x"), iModifiers));
-    }
-
-void CHidKeyboardDriver::UpdateButtons(TInt aFieldIndex,
-        const TDesC8& aReport)
-    {
-    DBG(RDebug::Print(_L("[HID]\tCHidMouseDriver::UpdateButtons()")));
-    // Translate the HID usage values into a boot protocol style
-    // modifier bitmask:
-    //
-    const TInt KButton1 = 1;
-    const TInt KButton2 = 2;
-    const TInt KButton3 = 3;
-
-    TBool buttonPressed(EFalse);
-
-    DBG(RDebug::Print(_L("[HID]\tCHidMouseDriver::UpdateButtons() %d, %d, %d"),
-                    iMouseField[aFieldIndex]->UsagePage(),
-                    iMouseField[aFieldIndex]->UsageMin(),
-                    iMouseField[aFieldIndex]->UsageMax()));
-    (void) aFieldIndex;
-    // Hack but works
-    // We dont come here if the report is wrong?
-    TInt buttonByte = aReport[1];
-    if (KButton1 == buttonByte)
-        {
-        DBG(RDebug::Print(_L("[HID]\tCHidMouseDriver::UpdateButtons() Button1")));
-        buttonPressed = ETrue;
-        }
-
-    if (KButton2 == buttonByte)
-        {
-        DBG(RDebug::Print(_L("[HID]\tCHidMouseDriver::UpdateButtons() Button2")));
-        if (!iButton2Down)
-            {
-            iButton2Down = ETrue;
-            TRawEvent rawEvent;
-            rawEvent.Set(TRawEvent::EKeyDown, EStdKeyApplication0);
-            CursorRedraw();
-            UserSvr::AddEvent(rawEvent);
-            }
-        }
-    else
-        {
-        if (iButton2Down)
-            {
-            iButton2Down = EFalse;
-            TRawEvent rawEvent;
-            rawEvent.Set(TRawEvent::EKeyUp, EStdKeyApplication0);
-            CursorRedraw();
-            UserSvr::AddEvent(rawEvent);
-            }
-        }
-
-    if (KButton3 == buttonByte)
-        {
-        DBG(RDebug::Print(_L("[HID]\tCHidMouseDriver::UpdateButtons() Button3")));
-        buttonPressed = ETrue;
-        }
-
-    if (buttonPressed)
-        {
-        if (!iButtonDown)
-            {
-            iButtonDown = ETrue;
-            SendButtonEvent(ETrue);//Send Mouse Button Down
-            }
-        }
-    else
-        {
-        if (iButtonDown)
-            {
-            iButtonDown = EFalse;
-            SendButtonEvent(EFalse); //Send Mouse Button Up
-            }
-        }
-    }
 //----------------------------------------------------------------------------
 // CHidKeyboardDriver::InterruptData
 //----------------------------------------------------------------------------
@@ -531,30 +324,6 @@ void CHidKeyboardDriver::InterruptData(const TDesC8& aPayload)
                         ii, nextByte));
         }
 #endif
-    TBool mouseEvent(EFalse);
-    if (iMouseField[EMouseXY] && iMouseField[EMouseXY]->IsInReport(firstByte))
-        {
-        UpdateXY(EMouseXY, aPayload);
-        mouseEvent = ETrue;
-        }
-
-    if (iMouseField[EMouseButtons] && iMouseField[EMouseButtons]->IsInReport(
-            firstByte))
-        {
-        UpdateButtons(EMouseButtons, aPayload);
-        mouseEvent = ETrue;
-        }
-    if (iMouseField[EMouseXY] && iMouseField[EMouseXY]->IsInReport(firstByte))
-        {
-        UpdateWheel(EMouseWheel, aPayload);
-        mouseEvent = ETrue;
-        }
-    DBG(RDebug::Print(_L("[HID]\tCHidKeyboardDriver::InterruptData()  mouseevent %d"),
-                    mouseEvent));
-    if (mouseEvent)
-        {
-        return;
-        }
     // First check for any rollover errors:
     //
     TInt i;
@@ -758,8 +527,7 @@ void CHidKeyboardDriver::KeyEvent(TBool aIsKeyDown, TInt aHidKey,
 
         //check if the key is multimedia key that needs to be sent as RawEvent and send it.
         // if key event is consumed don't send it anymore.
-        if (!HandleMultimediaKeys(decodedKeys.iScanCode, aIsKeyDown,
-                iModifiers)) //check if the key is multimedia key that needs to be sent as RawEvent and send it.
+        if (!HandleKeyMapping(decodedKeys, aIsKeyDown, iModifiers))
             {
             if (decodedKeys.iScanCode != EStdKeyNull)
                 {
@@ -778,7 +546,8 @@ void CHidKeyboardDriver::KeyEvent(TBool aIsKeyDown, TInt aHidKey,
                 //Send key codes differently to idle app
                 if ((IsDigitKey(decodedKeys.iScanCode) || IsSpecialHandleKey(
                         unikey) || decodedKeys.iScanCode == EStdKeyYes
-                        || decodedKeys.iScanCode == EStdKeyBackspace)
+                        || decodedKeys.iScanCode == EStdKeyBackspace
+                        || decodedKeys.iScanCode == EStdKeyNo)
                         && IsPhoneAppTopMost())
                     {
                         TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::KeyEvent: Send event %c to idle editor"), unikey));
@@ -1523,18 +1292,6 @@ TInt CHidKeyboardDriver::CanHandleReportL(CReportRoot* aReportRoot)
         {
         valid = KErrNone;
         }
-
-    TMouseFinder mousefinder;
-    search.SearchL(aReportRoot, &mousefinder);
-    iMouseField[EMouseButtons] = mousefinder.ButtonsField();
-    iMouseField[EMouseXY] = mousefinder.XYField();
-    iMouseField[EMouseWheel] = mousefinder.WheelField();
-
-    if ((iMouseField[EMouseButtons] != 0) && (iMouseField[EMouseXY] != 0))
-        {
-        iComboDevice = ETrue;
-        }
-
         TRACE_INFO( (
                         _L("CHidKeyboard::CanHandleReport() returning %d"), valid));
 
@@ -1674,17 +1431,589 @@ void CHidKeyboardDriver::LaunchApplicationL(TInt aAppUid)
 //----------------------------------------------------------------------------
 //
 
-TBool CHidKeyboardDriver::HandleMultimediaKeys(TUint16 aScancodeKey,
-        TBool aIsKeyDown, TUint8 aHIDModifiers)
+TBool CHidKeyboardDriver::HandleKeyMapping(TDecodedKeyInfo& aKey,
+    TBool aIsKeyDown,
+    TUint8 aHIDModifiers)
     {
-    TBool ret = HandleMultimediaKeysForNokia(aScancodeKey, aIsKeyDown,
-            aHIDModifiers);
-
-    if (!ret)
+    TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleKeyMapping")));
+    
+    TBool ret = EFalse;
+    
+    switch (aKey.iScanCode)
         {
-        ret = HandleMultimediaKeysForStandard(aScancodeKey, aIsKeyDown,
-                aHIDModifiers);
+        case EStdKeyUpArrow:
+            {
+            ret = HandleKeyMappingUp(aKey, aIsKeyDown, aHIDModifiers);
+            break;
+            }
+        case EStdKeyDownArrow:
+            {
+            ret = HandleKeyMappingDown(aKey, aIsKeyDown, aHIDModifiers);
+            break;
+            }
+        case EStdKeyLeftArrow:
+            {
+            ret = HandleKeyMappingLeft(aKey, aIsKeyDown, aHIDModifiers);
+            break;
+            }
+        case EStdKeyRightArrow:
+            {
+            ret = HandleKeyMappingRight(aKey, aIsKeyDown, aHIDModifiers);
+            break;
+            }
+        case EStdKeyEscape:
+            // fall through
+        case EStdKeyF8:
+            // fall through
+        case EStdKeyApplication2:
+            // fall through
+        case EStdKeyApplication3:
+            // fall through
+        case EStdKeyF9:
+            // break;
+        case EStdKeyApplication4:
+            // fall through
+        case EStdKeyF7:
+            // fall through
+        case EStdKeyApplication5:
+            // fall through
+        case EStdKeyF12:
+            // fall through
+        case EStdKeyIncVolume:
+            // fall through
+        case EStdKeyF11:
+            // fall through
+        case EStdKeyDecVolume:
+            // fall through
+        case EStdKeyF10:
+            {
+            ret = HandleKeyMappingOther(aKey, aIsKeyDown, aHIDModifiers);
+            break;
+            }
+        default:
+            {
+            // no actions for these keys
+            break;
+            }
         }
+    
+    return ret;
+    }
+
+// ----------------------------------------------------------------------
+// CHidKeyboardDriver::HandleKeyMappingUp
+// Handle key mapping gor UP + MODIFIER
+// ----------------------------------------------------------------------
+//
+TBool CHidKeyboardDriver::HandleKeyMappingUp(TDecodedKeyInfo& aKey,
+    TBool aIsKeyDown,
+    TUint8 aHIDModifiers)
+    {
+    TRACE_INFO((_L("[HID]\tCHidKeyboardDriver::HandleKeyMappingUp")));
+    
+    TBool ret = EFalse;
+    TInt scancode = 0;
+    TUint modifier = 0;
+    TBool isMmKey = EFalse;
+    TMmKeyDown bitmapToReset = ENone;
+    
+    switch (aKey.iScanCode)
+        {
+        case EStdKeyUpArrow:
+            {
+            // Key up and send key was emulated
+            if (!aIsKeyDown &&
+                iNavKeyDown & ESend)
+                {
+                TRACE_INFO((_L("[HID]\tCTRL + UP >>> SEND KEY UP")));
+
+                aKey.iScanCode = EStdKeyYes;
+                TTranslatedKey& key = aKey.iEvent[0];
+                key.iIsRepeatingKey = aIsKeyDown;
+                key.iScanCode = EStdKeyYes;
+                key.iUnicode = EKeyYes;
+                
+                iNavKeyDown = (iNavKeyDown & !ESend);
+                }
+            
+            //CTRL = Send key
+            else if (aIsKeyDown &&
+                aHIDModifiers & (KHidModifierCtrl | KHidModifierCtrlRight))
+                {
+                TRACE_INFO((_L("[HID]\tCTRL + UP >>> SEND KEY DOWN")));
+                
+                aKey.iScanCode = EStdKeyYes;
+                aKey.iCount = 1;
+                TTranslatedKey& key = aKey.iEvent[0];
+                key.iIsRepeatingKey = aIsKeyDown;
+                key.iScanCode = EStdKeyYes;
+                key.iUnicode = EKeyYes;
+                
+                iNavKeyDown = (iNavKeyDown | ESend);
+                }
+            
+            //ALT = Stop
+            else if (aHIDModifiers & (KHidModifierAlt | KHidModifierAltRight) ||
+                iMmKeyDown & EStop)
+                {
+                TRACE_INFO((_L("[HID]\tALT + UP >>> STOP")));
+                
+                scancode = EStdKeyApplication3;
+                isMmKey = ETrue;
+                bitmapToReset = EStop;
+                }
+
+            //SHIFT = Volume up
+            else if (aHIDModifiers & (KHidModifierShift | KHidModifierShiftRight) ||
+                iMmKeyDown & EVolUp)
+                {
+                TRACE_INFO((_L("[HID]\tSHIFT + UP >>> VOLUME UP")));
+                
+                scancode = EStdKeyIncVolume;
+                isMmKey = ETrue;
+                bitmapToReset = EVolUp;
+                }
+            break;
+            }
+        default:
+            {
+            // no actions
+            break;
+            }
+        }
+
+    if (isMmKey)
+        {
+        if (bitmapToReset)
+            {
+            ResetBitmap(aIsKeyDown, bitmapToReset);
+            }
+        SendRawEvent(scancode, aIsKeyDown, modifier);
+        ret = ETrue;
+        }
+    
+    return ret;
+    }
+
+// ----------------------------------------------------------------------
+// CHidKeyboardDriver::HandleKeyMappingDown
+// Handle key mapping gor DOWN + MODIFIER
+// ----------------------------------------------------------------------
+//
+TBool CHidKeyboardDriver::HandleKeyMappingDown(TDecodedKeyInfo& aKey,
+    TBool aIsKeyDown,
+    TUint8 aHIDModifiers)
+    {
+    TRACE_INFO((_L("[HID]\tCHidKeyboardDriver::HandleKeyMappingDown")));
+
+    TBool ret = EFalse;
+    TInt scancode = 0;
+    TUint modifier = 0;
+    TBool isMmKey = EFalse;
+    TMmKeyDown bitmapToReset = ENone;
+    
+    switch (aKey.iScanCode)
+        {
+        case EStdKeyDownArrow:
+            {
+            // Key up and end key was emulated
+            if (!aIsKeyDown &&
+                iNavKeyDown & EEnd)
+                {
+                TRACE_INFO((_L("[HID]\tCTRL + DOWN >>> END KEY UP")));
+
+                aKey.iScanCode = EStdKeyNo;
+                TTranslatedKey& key = aKey.iEvent[0];
+                key.iIsRepeatingKey = aIsKeyDown;
+                key.iScanCode = EStdKeyNo;
+                key.iUnicode = EKeyNo;
+                
+                iNavKeyDown = (iNavKeyDown & !EEnd);
+                }
+            
+            //CTRL = End key
+            else if (aIsKeyDown &&
+                aHIDModifiers & (KHidModifierCtrl | KHidModifierCtrlRight))
+                {
+                TRACE_INFO((_L("[HID]\tCTRL + DOWN >>> END KEY DOWN")));
+                
+                aKey.iScanCode = EStdKeyNo;
+                aKey.iCount = 1;
+                TTranslatedKey& key = aKey.iEvent[0];
+                key.iIsRepeatingKey = aIsKeyDown;
+                key.iScanCode = EStdKeyNo;
+                key.iUnicode = EKeyNo;
+                
+                iNavKeyDown = (iNavKeyDown | EEnd);
+                }
+
+            //ALT = Stop
+            else if (aHIDModifiers & (KHidModifierAlt | KHidModifierAltRight) ||
+                iMmKeyDown & EPlay)
+                {
+                TRACE_INFO((_L("[HID]\tALT + DOWN >>> PLAY / PAUSE")));
+                
+                scancode = EStdKeyApplication2;
+                isMmKey = ETrue;
+                bitmapToReset = EPlay;
+                }
+
+            //SHIFT = Volume down
+            else if (aHIDModifiers & (KHidModifierShift | KHidModifierShiftRight) ||
+                iMmKeyDown & EVolDown)
+                {
+                TRACE_INFO((_L("[HID]\tSHIFT + DOWN >>> VOLUME DOWN")));
+                
+                scancode = EStdKeyDecVolume;
+                isMmKey = ETrue;
+                bitmapToReset = EVolDown;
+                }
+            break;
+            }
+        default:
+            {
+            // no actions
+            break;
+            }
+        }
+
+    if (isMmKey)
+        {
+        if (bitmapToReset)
+            {
+            ResetBitmap(aIsKeyDown, bitmapToReset);
+            }
+        SendRawEvent(scancode, aIsKeyDown, modifier);
+        ret = ETrue;
+        }
+    
+    return ret;
+    }
+
+// ----------------------------------------------------------------------
+// CHidKeyboardDriver::HandleKeyMappingLeft
+// Handle key mapping gor LEFT + MODIFIER
+// ----------------------------------------------------------------------
+//
+TBool CHidKeyboardDriver::HandleKeyMappingLeft(TDecodedKeyInfo& aKey,
+    TBool aIsKeyDown,
+    TUint8 aHIDModifiers)
+    {
+    TRACE_INFO((_L("[HID]\tCHidKeyboardDriver::HandleKeyMappingLeft")));
+
+    TBool ret = EFalse;
+    TInt scancode = 0;
+    TUint modifier = 0;
+    TBool isMmKey = EFalse;
+    TMmKeyDown bitmapToReset = ENone;
+    
+    switch (aKey.iScanCode)
+        {
+        case EStdKeyLeftArrow:
+            {
+            // Key up and LSK was simulated
+            if (!aIsKeyDown &&
+                iNavKeyDown & ELsk)
+                {
+                TRACE_INFO((_L("[HID]\tCTRL + LEFT >>> LEFT SOFTKEY UP")));
+                
+                aKey.iScanCode = EStdKeyDevice0;
+                TTranslatedKey& key = aKey.iEvent[0];
+                key.iIsRepeatingKey = aIsKeyDown;
+                key.iScanCode = EStdKeyDevice0;
+                key.iUnicode = EKeyDevice0;
+                
+                iNavKeyDown = (iNavKeyDown & !ELsk); 
+                }
+            
+            //CTRL = LSK
+            else if (aIsKeyDown &&
+                aHIDModifiers & (KHidModifierCtrl | KHidModifierCtrlRight))
+                {
+                TRACE_INFO((_L("[HID]\tCTRL + LEFT >>> LEFT SOFTKEY DOWN")));
+                
+                aKey.iScanCode = EStdKeyDevice0;
+                aKey.iCount = 1;
+                TTranslatedKey& key = aKey.iEvent[0];
+                key.iIsRepeatingKey = aIsKeyDown;
+                key.iScanCode = EStdKeyDevice0;
+                key.iUnicode = EKeyDevice0;
+                
+                iNavKeyDown = (iNavKeyDown | ELsk);
+                }
+
+            //ALT (short) = Previous
+            //ALT (long) = Backwards
+            else if (aHIDModifiers & (KHidModifierAlt | KHidModifierAltRight) ||
+                iMmKeyDown & EPrev)
+                {
+                TRACE_INFO((_L("[HID]\tALT + LEFT >>> PREVIOUS / REW")));
+                
+                scancode = EStdKeyApplication5;
+                isMmKey = ETrue;
+                bitmapToReset = ENext;
+                }
+
+            //SHIFT = Mute toggle
+            else if (aHIDModifiers & (KHidModifierShift | KHidModifierShiftRight) ||
+                iMmKeyDown & EPlay)
+                {
+                TRACE_INFO((_L("[HID]\tSHIFT + LEFT >>> MUTE / UNMUTE")));
+                
+                scancode = EStdKeyApplication2;
+                isMmKey = ETrue;
+                bitmapToReset = EPlay;
+                }
+            break;
+            }
+        default:
+            {
+            // no actions
+            break;
+            }
+        }
+
+    if (isMmKey)
+        {
+        if (bitmapToReset)
+            {
+            ResetBitmap(aIsKeyDown, bitmapToReset);
+            }
+        SendRawEvent(scancode, aIsKeyDown, modifier);
+        ret = ETrue;
+        }
+    
+    return ret;
+    }
+
+// ----------------------------------------------------------------------
+// CHidKeyboardDriver::HandleKeyMappingRight
+// Handle key mapping gor RIGHT + MODIFIER
+// ----------------------------------------------------------------------
+//
+TBool CHidKeyboardDriver::HandleKeyMappingRight(TDecodedKeyInfo& aKey,
+    TBool aIsKeyDown,
+    TUint8 aHIDModifiers)
+    {
+    TRACE_INFO((_L("[HID]\tCHidKeyboardDriver::HandleKeyMappingRight")));
+
+    TBool ret = EFalse;
+    TInt scancode = 0;
+    TUint modifier = 0;
+    TBool isMmKey = EFalse;
+    TMmKeyDown bitmapToReset = ENone;
+    
+    switch (aKey.iScanCode)
+        {
+        case EStdKeyRightArrow:
+            {
+            // Key up and RSK was simulated
+            if (!aIsKeyDown &&
+                iNavKeyDown & ERsk)
+                {
+                TRACE_INFO((_L("[HID]\tCTRL + LEFT >>> RIGHT SOFTKEY UP")));
+                
+                aKey.iScanCode = EStdKeyDevice1;
+                TTranslatedKey& key = aKey.iEvent[0];
+                key.iIsRepeatingKey = aIsKeyDown;
+                key.iScanCode = EStdKeyDevice1;
+                key.iUnicode = EKeyDevice1;
+                
+                iNavKeyDown = (iNavKeyDown & !ERsk); 
+                }
+            
+            //CTRL = RSK
+            else if (aIsKeyDown &&
+                aHIDModifiers & (KHidModifierCtrl | KHidModifierCtrlRight))
+                {
+                TRACE_INFO((_L("[HID]\tCTRL + RIGHT >>> RIGHT SOFTKEY DOWN")));
+                
+                aKey.iScanCode = EStdKeyDevice1;
+                aKey.iCount = 1;
+                TTranslatedKey& key = aKey.iEvent[0];
+                key.iIsRepeatingKey = aIsKeyDown;
+                key.iScanCode = EStdKeyDevice1;
+                key.iUnicode = EKeyDevice1;
+                
+                iNavKeyDown = (iNavKeyDown | ERsk);
+                }
+
+            //ALT (short) = Next
+            //ALT (long)  = Forward
+            else if (aHIDModifiers & (KHidModifierAlt | KHidModifierAltRight) ||
+                iMmKeyDown & EPrev)
+                {
+                TRACE_INFO((_L("[HID]\tALT + RIGHT >>> NEXT / FF")));
+                
+                scancode = EStdKeyApplication4;
+                isMmKey = ETrue;
+                bitmapToReset = EPrev;
+                }
+
+            //SHIFT = Mute toggle (currently just toggle play / pause)
+            else if (aHIDModifiers & (KHidModifierShift | KHidModifierShiftRight) ||
+                iMmKeyDown & EPlay)
+                {
+                TRACE_INFO((_L("[HID]\tSHIFT + RIGHT >>> MUTE / UNMUTE")));
+                
+                scancode = EStdKeyApplication2;
+                isMmKey = ETrue;
+                bitmapToReset = EPlay;
+                }
+            break;
+            }
+        default:
+            {
+            // no actions
+            break;
+            }
+        }
+
+    if (isMmKey)
+        {
+        if (bitmapToReset)
+            {
+            ResetBitmap(aIsKeyDown, bitmapToReset);
+            }
+        SendRawEvent(scancode, aIsKeyDown, modifier);
+        ret = ETrue;
+        }
+    
+    return ret;
+    }
+
+// ----------------------------------------------------------------------
+// CHidKeyboardDriver::HandleKeyMappingOther
+// Handle key mapping gor OTHER + MODIFIER
+// ----------------------------------------------------------------------
+//
+TBool CHidKeyboardDriver::HandleKeyMappingOther(TDecodedKeyInfo& aKey,
+    TBool aIsKeyDown,
+    TUint8 /*aHIDModifiers*/)
+    {
+    TRACE_INFO((_L("[HID]\tCHidKeyboardDriver::HandleKeyMappingOther")));
+
+    TBool ret = EFalse;
+    TInt scancode = 0;
+    TUint modifier = 0;
+    TBool isMmKey = EFalse;
+    
+    switch (aKey.iScanCode)
+        {
+        case EStdKeyEscape:
+            {
+            // ESC is released and keys were locked, eat the key press
+            if (!aIsKeyDown &&
+                iNavKeyDown & EEsc)
+                {
+                TRACE_INFO((_L("[HID]\tESC >>> DISBALE KEY LOCK UP")));
+                
+                ret = ETrue;
+                iNavKeyDown = (iNavKeyDown & !EEsc);
+                }
+            
+            // ESC when keylock enabled >>> Disabled key lock
+/*            else if (aIsKeyDown &&
+                iKeyLock.IsKeyLockEnabled())
+                {
+                TRACE_INFO((_L("[HID]\tESC >>> DISBALE KEY LOCK DOWN")));
+                
+                iKeyLock.DisableKeyLock();
+
+                ret = ETrue;
+                iNavKeyDown = (iNavKeyDown | EEsc);
+                }
+*/
+            break;
+            }
+        case EStdKeyF8:
+            // fall through
+        case EStdKeyApplication2:
+            {
+            TRACE_INFO((_L("[HID]\tF8 / APPLICATION2 >>> PLAY / PAUSE")));
+            
+            // PLAY / PAUSE
+            if (aKey.iScanCode != EStdKeyApplication2)
+                {
+                scancode = EStdKeyApplication2;
+                isMmKey = ETrue;
+                }
+            break;
+            }
+        case EStdKeyApplication3:
+            {
+            TRACE_INFO((_L("[HID]\tAPPLICATION3 >>> STOP")));
+            
+            // STOP
+            scancode = EStdKeyApplication3;
+            isMmKey = ETrue;
+            break;
+            }
+        case EStdKeyF9:
+            // break;
+        case EStdKeyApplication4:
+            {
+            TRACE_INFO((_L("[HID]\tF9 / APPLICATION4 >>> NEXT / FF")));
+            
+            // NEXT
+            scancode = EStdKeyApplication4;
+            isMmKey = ETrue;
+            break;
+            }
+        case EStdKeyF7:
+            // fall through
+        case EStdKeyApplication5:
+            {
+            TRACE_INFO((_L("[HID]\tF7 / APPLICATION5 >>> PREVIOUS / REW")));
+            
+            // PREVIOUS
+            scancode = EStdKeyApplication5;
+            isMmKey = ETrue;
+            break;
+            }
+        case EStdKeyF12:
+            // fall through
+        case EStdKeyIncVolume:
+            {
+            TRACE_INFO((_L("[HID]\tF12 / INCVOLUME >>> VOLUME UP")));
+            
+            // VOLUME UP
+            scancode = EStdKeyIncVolume;
+            isMmKey = ETrue;
+            break;
+            }
+        case EStdKeyF11:
+            // fall through
+        case EStdKeyDecVolume:
+            {
+            TRACE_INFO((_L("[HID]\tF11 / DECVOLUME >>> VOLUME DOWN")));
+            
+            // VOLUME DOWN
+            scancode = EStdKeyDecVolume;
+            isMmKey = ETrue;
+            break;
+            }
+        case EStdKeyF10:
+            {
+            TRACE_INFO((_L("[HID]\tF10 >>> MUTE")));
+            
+            // MUTE (currently just toggle play / pause)
+            scancode = EStdKeyApplication2;
+            isMmKey = ETrue;
+            break;
+            }
+        default:
+            {
+            break;
+            }
+        }
+
+    if (isMmKey)
+        {
+        SendRawEvent(scancode, aIsKeyDown, modifier);
+        ret = ETrue;
+        }
+    
     return ret;
     }
 
@@ -1699,184 +2028,6 @@ void CHidKeyboardDriver::ResetBitmap(TBool aIsKeyDown,
         {
         iMmKeyDown = (iMmKeyDown & !aBitmapToReset);
         }
-    }
-
-TBool CHidKeyboardDriver::HandleMultimediaKeysForNokia(TUint16 aScancodeKey,
-        TBool aIsKeyDown, TUint8 aHIDModifiers)
-    {
-    const TUint KHidModifierCtrl = 0x01;
-    const TUint KHidModifierCtrlRight = 0x10;
-    const TUint KHidModifierAlt = 0x04;
-
-    //	const TUint KHidModifierAltGr = 0x64;
-    TInt scancode = 0;
-    TUint modifier = 0;
-    TBool isMmKey = EFalse;
-
-    TMmKeyDown bitmapToReset;
-
-        TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: scancode 0x%08x, HIDmodifiers 0x%08x"), aScancodeKey, aHIDModifiers));
-
-    switch (aScancodeKey)
-        {
-
-        // Mappings for Nokia SU-8W
-        // Key down events are stored into bitmap in order to detect if keys are released in reverse order, which caused jamming.
-        // For example: control key released before arrow key.
-
-        case EStdKeyUpArrow:
-            {
-            if (aHIDModifiers & (KHidModifierCtrl | KHidModifierCtrlRight)
-                    || iMmKeyDown & EVolUp)
-                {
-                scancode = EStdKeyIncVolume; //Volume Up = Ctrl + ArrowUp
-                isMmKey = ETrue;
-                // Set or reset flag bit
-
-                bitmapToReset = EVolUp;
-                    TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Volume up %d"), aIsKeyDown));
-                }
-            break;
-            }
-
-        case EStdKeyDownArrow:
-            {
-            if (aHIDModifiers & (KHidModifierCtrl | KHidModifierCtrlRight)
-                    || iMmKeyDown & EVolDown)
-                {
-                scancode = EStdKeyDecVolume; //Volume Down = Ctrl + ArrowDown
-                isMmKey = ETrue;
-                bitmapToReset = EVolDown;
-                    TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Volume down %d"), aIsKeyDown));
-                }
-            break;
-            }
-
-        case EStdKeyRightArrow:
-            {
-            if (aHIDModifiers & KHidModifierAlt || iMmKeyDown & EPlay)
-                {
-                scancode = EStdKeyApplication2; //Play = Alt + ArrowRight
-                isMmKey = ETrue;
-                bitmapToReset = EPlay;
-
-                    TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Play %d"), aIsKeyDown));
-                }
-            else if (aHIDModifiers & (KHidModifierCtrl
-                    | KHidModifierCtrlRight) || iMmKeyDown & ENext)
-                {
-                scancode = EStdKeyApplication4; //Next = Ctrl + ArrowRight
-                isMmKey = ETrue;
-                bitmapToReset = ENext;
-                    TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Next %d"), aIsKeyDown));
-                }
-            break;
-            }
-
-        case EStdKeyLeftArrow:
-            {
-            if (aHIDModifiers & KHidModifierAlt || iMmKeyDown & EStop)
-                {
-                scancode = EStdKeyApplication3; //Stop	= Alt + ArrowLeft
-                isMmKey = ETrue;
-                bitmapToReset = EStop;
-                    TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Stop %d"), aIsKeyDown));
-                }
-            else if (aHIDModifiers & (KHidModifierCtrl
-                    | KHidModifierCtrlRight) || iMmKeyDown & EPrev)
-                {
-                scancode = EStdKeyApplication5; //Prev	= Ctrl + ArrowLeft
-                isMmKey = ETrue;
-                bitmapToReset = EPrev;
-                    TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Prev %d"), aIsKeyDown));
-                }
-            break;
-            }
-
-        default:
-            break;
-        }
-
-    if (isMmKey)
-        {
-        ResetBitmap(aIsKeyDown, bitmapToReset);
-        SendRawEvent(scancode, aIsKeyDown, modifier);
-        }
-    return isMmKey;
-    }
-
-TBool CHidKeyboardDriver::HandleMultimediaKeysForStandard(
-        TUint16 aScancodeKey, TBool aIsKeyDown, TUint8 aHIDModifiers)
-    {
-    TInt scancode = 0;
-    TUint modifier = 0;
-    TBool isMmKey = EFalse;
-
-        TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: scancode 0x%08x, HIDmodifiers 0x%08x"), aScancodeKey, aHIDModifiers));
-    //please complier...
-    (void) aHIDModifiers;
-
-    switch (aScancodeKey)
-        {
-        // Mappings for standard keyboards
-
-        case EStdKeyApplication2: //Play
-            {
-            scancode = EStdKeyApplication2;
-            isMmKey = ETrue;
-                TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Play %d"), aIsKeyDown));
-            break;
-            }
-
-        case EStdKeyApplication3: //Stop
-            {
-            scancode = EStdKeyApplication3;
-            isMmKey = ETrue;
-                TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Stop %d"), aIsKeyDown));
-            break;
-            }
-
-        case EStdKeyApplication4: //Next
-            {
-            scancode = EStdKeyApplication4;
-            isMmKey = ETrue;
-                TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Next %d"), aIsKeyDown));
-            break;
-            }
-
-        case EStdKeyApplication5: //Prev
-            {
-            scancode = EStdKeyApplication5;
-            isMmKey = ETrue;
-                TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Prev %d"), aIsKeyDown));
-            break;
-            }
-
-        case EStdKeyIncVolume: //Volume up
-            {
-            scancode = EStdKeyIncVolume;
-            isMmKey = ETrue;
-                TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Volume up %d"), aIsKeyDown));
-            break;
-            }
-
-        case EStdKeyDecVolume: //Volume down
-            {
-            scancode = EStdKeyDecVolume;
-            isMmKey = ETrue;
-                TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::HandleNokiaMultimediaKeys: Volume down %d"), aIsKeyDown));
-            break;
-            }
-
-        default:
-            break;
-        }
-
-    if (isMmKey)
-        {
-        SendRawEvent(scancode, aIsKeyDown, modifier);
-        }
-    return isMmKey;
     }
 
 // ----------------------------------------------------------------------
@@ -1935,19 +2086,6 @@ void CHidKeyboardDriver::TimerExpired()
     {
     DBG(RDebug::Print(_L("[HID]\tCHidKeyboardDriver::TimerExpired, cancel all key presses")));
     CancelAllKeys();
-    }
-
-void CHidKeyboardDriver::CursorRedraw()
-    {
-    TInt mouseStatus;
-
-    TInt err = RProperty::Get( KPSUidBthidSrv, KBTMouseCursorState, mouseStatus );
-    if ( !err )
-        {
-        err = RProperty::Set( KPSUidBthidSrv, KBTMouseCursorState, ECursorRedraw );
-        DBG(RDebug::Print(
-             _L("[BTHID]\tCHidKeyboardDriver::CursorRedraw() X->ECursorRedraw") ) );
-        }
     }
 
 // ----------------------------------------------------------------------

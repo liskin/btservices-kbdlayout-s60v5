@@ -16,9 +16,18 @@
 */
 
 #include <coecntrl.h>
+#include <e32property.h> 
+#include <bthidPsKey.h>
 #include "paintcursorappview.h"
 #include "pointmsgqueue.h"
 #include "debug.h"
+
+
+/**  PubSub key read and write policies */
+_LIT_SECURITY_POLICY_C2( KBTHIDPSKeyReadPolicy, 
+                          ECapabilityLocalServices, ECapabilityReadDeviceData );
+_LIT_SECURITY_POLICY_C2( KBTHIDPSKeyWritePolicy, 
+                          ECapabilityLocalServices, ECapabilityWriteDeviceData );
 
 
 CPaintCursorAppView* CPaintCursorAppView::NewL(const TRect& aRect)
@@ -38,6 +47,13 @@ CPaintCursorAppView* CPaintCursorAppView::NewLC(const TRect& aRect)
 
 void CPaintCursorAppView::ConstructL(const TRect& aRect)
     {
+    
+    User::LeaveIfError( RProperty::Define( KPSUidBthidSrv,
+                                            KBTMouseCursorState,
+                                            RProperty::EInt,
+                                            KBTHIDPSKeyReadPolicy,
+                                            KBTHIDPSKeyWritePolicy) );
+                                                
     // Create a window for this application view
     CreateWindowL();
 
@@ -110,6 +126,8 @@ CPaintCursorAppView::~CPaintCursorAppView()
 
     // Close the animation server
     iMouseCursorDll.Close();
+    
+    RProperty::Delete( KPSUidBthidSrv, KBTMouseCursorState );
     }
 
 void CPaintCursorAppView::SizeChanged()

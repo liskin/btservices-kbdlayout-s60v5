@@ -319,6 +319,14 @@ class CBTUIPairedDevicesView : public CBTUIListedDevicesView,
 		 */
 		void LaunchSettingViewL();
 
+		/** Setup device specific menu options
+		 * 
+		 * @param None.
+		 * @return None.
+		 */
+		void SetupMenuCmd(TInt aIndex, CEikMenuPane* aMenu);
+		
+		
 	public:	// Inherited from MBTEngSdpResultReceiver
 		
 		

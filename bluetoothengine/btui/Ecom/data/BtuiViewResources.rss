@@ -339,15 +339,15 @@ RESOURCE MENU_PANE r_btui_other_devices_view_menu
     items =
         {
         MENU_ITEM { command = EBTUICmdNewPairedDevice;    txt = qtn_bt_new_paired_device; },
-        MENU_ITEM { command = EBTUICmdConnect;            txt = qtn_bt_gen_connect; },
-        MENU_ITEM { command = EBTUICmdConnectAudio;       txt = qtn_bt_connect; },
-        MENU_ITEM { command = EBTUICmdDisconnect;         txt = qtn_bt_disconnect; },
-        MENU_ITEM { command = EBTUICmdGiveNickname;       txt = qtn_bt_give_nickname; },
-        MENU_ITEM { command = EBTUICmdSetTrusted;         txt = qtn_bt_set_as_trusted; },
-        MENU_ITEM { command = EBTUICmdSetUnTrusted;       txt = qtn_bt_set_as_untrusted; },
-        MENU_ITEM { command = EBTUICmdSetBlocked;         txt = qtn_bt_block; },        
-        MENU_ITEM { command = EBTUICmdDelete;             txt = qtn_bt_delete; },
-        MENU_ITEM { command = EBTUICmdSettings;           txt = qtn_bt_settings; },
+        MENU_ITEM { command = EBTUICmdConnect;            txt = qtn_bt_gen_connect; flags = EEikMenuItemSpecific; },
+        MENU_ITEM { command = EBTUICmdConnectAudio;       txt = qtn_bt_connect; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdDisconnect;         txt = qtn_bt_disconnect; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdGiveNickname;       txt = qtn_bt_give_nickname; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdSetTrusted;         txt = qtn_bt_set_as_trusted; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdSetUnTrusted;       txt = qtn_bt_set_as_untrusted; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdSetBlocked;         txt = qtn_bt_block; flags = EEikMenuItemSpecific; },        
+        MENU_ITEM { command = EBTUICmdDelete;             txt = qtn_bt_delete; flags = EEikMenuItemSpecific; },
+        MENU_ITEM { command = EBTUICmdSettings;           txt = qtn_bt_settings;  flags = EEikMenuItemSpecific;},
         MENU_ITEM { command = EBTUICmdDeleteAll;          txt = qtn_bt_delete_all; }
         };
     }
@@ -1328,7 +1328,7 @@ RESOURCE MENU_PANE r_btui_block_devices_view_menu
     {
     items =
         {
-        MENU_ITEM { command = EBTUICmdUnblock;    	txt = qtn_bt_delete;},
+        MENU_ITEM { command = EBTUICmdUnblock;    	txt = qtn_bt_delete; flags = EEikMenuItemSpecific;},
         MENU_ITEM { command = EBTUICmdUnblockAll;   txt = qtn_bt_delete_all; }
         };
     }
