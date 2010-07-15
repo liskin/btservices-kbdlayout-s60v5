@@ -154,7 +154,7 @@ void CCFUNCommandHandler::RunL()
     TInt systemState;
     
     TInt ret = iProperty.Get(systemState);
-    if (ret != KErrNone)
+    if (ret == KErrNone)
         {
         if (systemState != iExpectedState)
             {
@@ -166,6 +166,7 @@ void CCFUNCommandHandler::RunL()
             ret = RestartDevice();
             }
         }
+    
     if (!IsActive())
         {
         if (ret != KErrNone)
@@ -206,7 +207,7 @@ TInt CCFUNCommandHandler::ActivateProfile(TInt aFunc)
         TRACE_FUNC_EXIT
         return err;
         }
-    
+   
     switch (aFunc)
         {
         case (0):
@@ -216,15 +217,17 @@ TInt CCFUNCommandHandler::ActivateProfile(TInt aFunc)
             // issue the profile change request and start monitoring the property
             if (systemState != ESwStateNormalRfOff)
                 {
-                err = SetActiveProfile(KOfflineProfileId);
-                
-                
+                err = SetActiveProfile(KOfflineProfileId);                
                 if (err == KErrNone)
                     {
                     iExpectedState = ESwStateNormalRfOff;
                     iProperty.Subscribe(iStatus);
                     SetActive();
-                    }           
+                    }       
+                }
+            else if (iReset)
+                {
+                err = RestartDevice();
                 }
             break;
             }
@@ -242,6 +245,10 @@ TInt CCFUNCommandHandler::ActivateProfile(TInt aFunc)
                     iProperty.Subscribe(iStatus);
                     SetActive();
                     }
+                }
+            else if (iReset)
+                {
+                err = RestartDevice();
                 }
             break;
             }

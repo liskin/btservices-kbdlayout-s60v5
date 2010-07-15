@@ -39,7 +39,7 @@ const TUid KBTObexPINChannel            = {0x00000605}; // Channel for OBEX PIN 
 const TUid KBTPowerModeChannel          = {0x00000606}; // Channel for power mode notifier
 const TUid KBTAudioAccessoryChannel     = {0x00000607}; // Channel for audio accessory notifier
 const TUid KBTLowMemoryChannel          = {0x00000608}; // Channel for low memory notifier
-const TUid KBTPairedDeviceSettingChannel  = {0x00000610}; 
+const TUid KBTPairedDeviceSettingChannel  = {0x00000610};
 
 // FORWARD DECLARATIONS
 class CBTEngSettings;
@@ -73,7 +73,7 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         * @return A boolean according to autolock state.
         */
         TBool AutoLockOnL();
-        
+
     protected: // Constructors and destructor
 
         /**
@@ -81,25 +81,23 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         */
         CBTNotifierBase();
 
+    protected: // New functions
+
         /**
         * Symbian 2nd phase constructor.
         */
         virtual void ConstructL();
-        
-
-
-    protected: // New functions
 
         /**
-        * Used in asynchronous notifier launch to store received parameters 
-        * into members variables and make needed initializations.        
+        * Used in asynchronous notifier launch to store received parameters
+        * into members variables and make needed initializations.
         * @param aBuffer A buffer containing received parameters
         * @param aReturnVal The return value to be passed back.
         * @param aMessage Should be completed when the notifier is deactivated.
         * @return None.
         */
-        virtual void GetParamsL(const TDesC8& aBuffer, 
-                                TInt aReplySlot, 
+        virtual void GetParamsL(const TDesC8& aBuffer,
+                                TInt aReplySlot,
                                 const RMessagePtr2& aMessage)=0;
 
         /**
@@ -108,15 +106,15 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         * @return ETrue if BT is turned on successfully; EFalse otherwise
         */
         TBool CheckAndSetPowerOnL();
-		
+
 		/**
-		* A function for setting BT name 
+		* A function for setting BT name
 		* @return ETrue if BT name is set successfully; EFalse otherwise
 		*/
 		TBool AskLocalBTNameQueryL();
 
         /**
-		* Check if there is any existing connection to audio profiles from 
+		* Check if there is any existing connection to audio profiles from
 		* the same device
 		* @return ETrue if the device is connected.
 		*/
@@ -135,16 +133,16 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         * @return None
         */
         void CompleteMessage(TInt aValueToReplySlot, TInt aErr);
-        
+
        /**
         * Complete Client/Server message and Nulled the reply slot.
         * @param aErr  Error code for client notification.
         * @return None
         */
         void CompleteMessage(const TDesC8& aDesToReplySlot, TInt aErr);
-        
+
 		/**
-		* Checks from central repository whether the Bluetooth friendly name 
+		* Checks from central repository whether the Bluetooth friendly name
         * has been modified .
 		* @return ETure if the name has been modified.
 		*/
@@ -154,12 +152,12 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
 		 * Get the device information from BT Registry by the given address.
 		 */
 		void GetDeviceFromRegL(const TBTDevAddr& aAddr);
-		
+
 		/**
 		 * virtual function to be ovewritten by sub-classes.
 		 * Will be called when Getting Device by BTEng DevMan is completed.
 		 * @param aDev the device from registry if it is not null. indicates either a failure
-		 *             or the device is not available in registry. 
+		 *             or the device is not available in registry.
 		 */
 		virtual void HandleGetDeviceCompletedL(const CBTDevice* aDev);
 
@@ -191,21 +189,21 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         void CheckAndHandleQueryIntervalL();
 
     private:
-        
+
         void DoHandleGetDevicesCompleteL(TInt aErr, CBTDeviceArray* aDeviceArray );
-		
+
     protected: // Functions from base classes
 
         /**
-        * From MEikSrvNotifierBase2 Called when a notifier is first loaded 
+        * From MEikSrvNotifierBase2 Called when a notifier is first loaded
         * to allow any initial construction that is required.
         * @param None.
         * @return A structure containing priority and channel info.
         */
         virtual TNotifierInfo RegisterL()=0;
-        
+
         /**
-        * From MEikSrvNotifierBase2 The notifier has been deactivated 
+        * From MEikSrvNotifierBase2 The notifier has been deactivated
         * so resources can be freed and outstanding messages completed.
         * @param None.
         * @return None.
@@ -219,12 +217,12 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
 		 * @return KErrNone
 		 */
 		static TInt LaunchHelp(TAny *TCoeHelpContext=NULL);
-#endif        
+#endif
 
-    private: // Functions from base classes        
-        
+    private: // Functions from base classes
+
         /**
-        * From MEikSrvNotifierBase2 Called when all resources allocated 
+        * From MEikSrvNotifierBase2 Called when all resources allocated
         * by notifiers should be freed.
         * @param None.
         * @return None.
@@ -232,7 +230,7 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         virtual void Release();
 
         /**
-        * From MEikSrvNotifierBase2 Return the priority a notifier takes 
+        * From MEikSrvNotifierBase2 Return the priority a notifier takes
         * and the channels it acts on.
         * @param None.
         * @return A structure containing priority and channel info.
@@ -240,12 +238,12 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         virtual TNotifierInfo Info() const;
 
         /**
-        * From MEikSrvNotifierBase2 Synchronic notifier launch.        
+        * From MEikSrvNotifierBase2 Synchronic notifier launch.
         * @param aBuffer Received parameter data.
         * @return A pointer to return value.
         */
         virtual TPtrC8 StartL(const TDesC8& aBuffer);
-        
+
         /**
         * From MEikSrvNotifierBase2 Asynchronic notifier launch.
         * @param aBuffer A buffer containing received parameters
@@ -254,26 +252,26 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         * @return A pointer to return value.
         */
         virtual void StartL(const TDesC8& aBuffer, TInt aReplySlot, const RMessagePtr2& aMessage);
-        
+
         /**
         * From MEikSrvNotifierBase2 Updates a currently active notifier.
         * @param aBuffer The updated data.
         * @return A pointer to return value.
         */
-        virtual TPtrC8 UpdateL(const TDesC8& aBuffer);        
-		
+        virtual TPtrC8 UpdateL(const TDesC8& aBuffer);
+
         /**
          * From MBTEngDevManObserver
-         * Indicates to the caller that adding, deleting or modifying a device 
+         * Indicates to the caller that adding, deleting or modifying a device
          * has completed.
          */
         virtual void HandleDevManComplete(TInt aErr);
-        
+
         /**
          * From MBTEngDevManObserver
          * Call back function when GetDevices() request is completed.
          * @param aErr Status information, if there is an error.
-         * @param aDeviceArray Array of devices that match the given criteria 
+         * @param aDeviceArray Array of devices that match the given criteria
          *                     (the array provided by the calller).
          */
         void HandleGetDevicesComplete( TInt aErr, CBTDeviceArray* aDeviceArray );
@@ -301,7 +299,7 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         CBTEngDevMan*               iDevMan;  // for BT registry manipulation
 
 
-        
+
     };
 
 #endif

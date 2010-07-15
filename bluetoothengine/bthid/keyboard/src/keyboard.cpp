@@ -136,9 +136,9 @@ void CHidKeyboardDriver::ConstructL()
     iSettings = CBtHidSettings::NewL();
     
     // create a keylock session
-/*    TInt err = iKeyLock.Connect();
+    TInt err = iKeyLock.Connect();
     TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::ConstructL: key lock err = %d"), err));
-    User::LeaveIfError(err);    */
+    User::LeaveIfError(err);    
     }
 
 //----------------------------------------------------------------------------
@@ -163,7 +163,7 @@ CHidKeyboardDriver::~CHidKeyboardDriver()
     if (iSettings)
         delete iSettings;
 
-//    iKeyLock.Close();
+    iKeyLock.Close();
     }
 
 //----------------------------------------------------------------------------
@@ -1913,7 +1913,7 @@ TBool CHidKeyboardDriver::HandleKeyMappingOther(TDecodedKeyInfo& aKey,
                 }
             
             // ESC when keylock enabled >>> Disabled key lock
-/*            else if (aIsKeyDown &&
+            else if (aIsKeyDown &&
                 iKeyLock.IsKeyLockEnabled())
                 {
                 TRACE_INFO((_L("[HID]\tESC >>> DISBALE KEY LOCK DOWN")));
@@ -1923,7 +1923,7 @@ TBool CHidKeyboardDriver::HandleKeyMappingOther(TDecodedKeyInfo& aKey,
                 ret = ETrue;
                 iNavKeyDown = (iNavKeyDown | EEsc);
                 }
-*/
+
             break;
             }
         case EStdKeyF8:

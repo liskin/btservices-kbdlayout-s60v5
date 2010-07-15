@@ -60,5 +60,5 @@ LIBRARY       generichid.lib
 LIBRARY       apgrfx.lib
 LIBRARY       apparc.lib 
 LIBRARY       bthidsettings.lib
-//LIBRARY       avkon.lib
+LIBRARY       avkon.lib
 DEBUGLIBRARY       flogger.lib

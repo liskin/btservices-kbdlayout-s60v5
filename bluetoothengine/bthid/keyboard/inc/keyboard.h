@@ -22,7 +22,7 @@
 #include <e32std.h>
 #include <w32std.h>
 #include <e32event.h>
-//#include <aknkeylock.h>
+#include <aknkeylock.h>
 
 #include "hidinterfaces.h"
 #include "hidkeys.h"
@@ -360,7 +360,7 @@ private:
     CTimeOutTimer* iRepeatEndTimer;
     
     TUint8 iNavKeyDown;
-//    RAknKeyLock iKeyLock;
+    RAknKeyLock iKeyLock;
     };
 
 // ----------------------------------------------------------------------
