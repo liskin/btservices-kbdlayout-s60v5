@@ -399,21 +399,23 @@ void CBtmcProtocol::DoHandleCommandL()
         {
         return;
         }
-    TBuf8<KDefaultCmdBufLength> cmddes;
-    if (iInDataBuf.NextCommand(cmddes))
+    RBuf8 cmddes;
+    cmddes.CreateL(KDefaultCmdBufLength);
+    CleanupClosePushL(cmddes);
+    if (iInDataBuf.NextCommand(cmddes) || cmddes.Length() == 0)
         {
+        CleanupStack::PopAndDestroy(&cmddes);
         return;
         }
-    if (cmddes.Length() == 0)
-        {
-        return;
-        }
+    
     TRACE_INFO_SEG(
         {
-        TBuf8<KDefaultCmdBufLength> buf;
+        RBuf8 buf;
+        buf.CreateL(KDefaultCmdBufLength);
         buf = cmddes;
         buf.Trim();
         Trace(_L8("[HFP] [I] %S"), &buf);
+        buf.Close();
         })
 
     CATCommand* cmd = NULL;
@@ -423,13 +425,16 @@ void CBtmcProtocol::DoHandleCommandL()
       	if(iAtExt)
         	{
       		iAtExt->HandleCommand(cmddes, _L8("\n\rERROR\n\r"));
+      		CleanupStack::PopAndDestroy(&cmddes);
         	return;
         	}
         CATResult* nok = CATResult::NewLC(EATERROR);
         SendResponseL(*nok);
         CleanupStack::PopAndDestroy(nok);
+        CleanupStack::PopAndDestroy(&cmddes);
         return;
         }
+    CleanupStack::PopAndDestroy(&cmddes);
     CleanupStack::PushL(cmd);
     iHandleCmdPending = ETrue;
 	TATId id = cmd->Id();
@@ -1080,14 +1085,17 @@ void CBtmcProtocol::DoSendProtocolDataL()
     {
     TRACE_INFO((_L("credit %d"), iCredit))
     TInt count = iOutgoPacketQueue->MdcaCount();
+    RBuf8 buf;
+    buf.CreateL(KDefaultCmdBufLength);
+    CleanupClosePushL(buf);
     for (TInt i = 0; iCredit >0 && i < count; i++)
         {
         iCredit--;
-        TBuf8<KDefaultCmdBufLength> buf;
         buf.Copy(iOutgoPacketQueue->MdcaPoint(0));
         iObserver.SendProtocolDataL(buf);
         iOutgoPacketQueue->Delete(0);
         }
+    CleanupStack::PopAndDestroy(&buf);
     }
 
 void CBtmcProtocol::StartTimerL(TInt aService, TInt aTimeout)

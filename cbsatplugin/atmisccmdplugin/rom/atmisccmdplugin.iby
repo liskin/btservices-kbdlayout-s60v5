@@ -16,7 +16,11 @@
 #ifndef ATMISCCMDPLUGIN_IBY
 #define ATMISCCMDPLUGIN_IBY
 
+#ifdef PROTOCOL_TDSCDMA
+ECOM_PLUGIN(atmisccmdplugin_td.dll, atmisccmdplugin_td.rsc)
+#else
 ECOM_PLUGIN(atmisccmdplugin.dll, atmisccmdplugin.rsc)
+#endif
 
 #endif // ATMISCCMDPLUGIN_IBY
 

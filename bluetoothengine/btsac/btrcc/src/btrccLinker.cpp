@@ -86,14 +86,35 @@ void CBTRCCLinker::ConstructL()
     iRegisterVolumeChangeNotificationCounter = 0;
     if (iAccObserver.IsAvrcpVolCTSupported())
         {
-        iAbsoluteVolController = CBTRCCAbsoluteVolumeLevelController::NewL(*iInterfaceSelector, *this);
-        TRACE_INFO((_L("CBTRCCLinker::ConstructL, absolute volume controller created.")))
+        TInt err = KErrNone;
+        TRAP(err, iAbsoluteVolController = CBTRCCAbsoluteVolumeLevelController::NewL(*iInterfaceSelector, *this));
+        if( err )
+            {
+            // Absolute volume controller creation failed, this means that we don't have volume controller
+            // but continue construct linker.
+            iAbsoluteVolController = NULL;
+            TRACE_INFO((_L("CBTRCCLinker::ConstructL, absolute volume controller creation failed %d, continue anyway."), err))
+            }
+        else
+            {
+            TRACE_INFO((_L("CBTRCCLinker::ConstructL, absolute volume controller created.")))
+            }
 
         // If also legacy is configured into use, prepare to use it with legacy devices. 
         if(iAccObserver.IsAvrcpLegacyVolCTSupported())
             {
-            iLegacyVolController = CBTRCCLegacyVolumeLevelController::NewL(*iInterfaceSelector, *this);
-            TRACE_INFO((_L("CBTRCCLinker::ConstructL, legacy volume controller created.")))
+            TRAP(err, iLegacyVolController = CBTRCCLegacyVolumeLevelController::NewL(*iInterfaceSelector, *this));
+            if( err )
+                {
+                // Legacy volume controller creation failed, this means that we don't have volume controller
+                // but continue construct linker.
+                iLegacyVolController = NULL;
+                TRACE_INFO((_L("CBTRCCLinker::ConstructL, legacy volume controller creation failed %d, continue anyway."), err))
+                }
+            else
+                {
+                TRACE_INFO((_L("CBTRCCLinker::ConstructL, legacy volume controller created.")))
+                }
         	}
         }
     else 
@@ -108,7 +129,7 @@ void CBTRCCLinker::ConstructL()
 
     iRemConBatteryTgt = CRemConBatteryApiTarget::NewL(*iInterfaceSelector, *this);
 
-    if (iAccObserver.IsAvrcpVolCTSupported()) 
+    if (iAbsoluteVolController || iLegacyVolController) 
         {
         iInterfaceSelector->OpenControllerL();
         }
@@ -445,6 +466,12 @@ void CBTRCCLinker::StartRemoteVolumeControl()
         // absolute controller or legacy controller.
         if(!iVolController)
             {
+            // iAbsoluteVolController may be NULL, if creation of devsound has
+            // been failed or local max volume provided by devsound is zero.
+            
+            // iLegacyVolController may be NULL, depends on the configuration and
+            // if creation of devsound has been failed or local max volume provided
+            // by devsound is zero.
             if (iAccObserver.IsAbsoluteVolumeSupported(iRemoteAddr))
                 {
                 iVolController = iAbsoluteVolController;
@@ -452,7 +479,7 @@ void CBTRCCLinker::StartRemoteVolumeControl()
                 }
            	else 
                 {
-                iVolController = iLegacyVolController; // iLegacyVolController may be NULL, depends on the configuration. 
+                iVolController = iLegacyVolController; 
                 }
             }
         }

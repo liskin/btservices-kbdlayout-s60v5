@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -50,7 +50,7 @@ CBtsacState::~CBtsacState()
 CBtsacState* CBtsacState::ErrorOnEntryL(TInt /*aReason*/)
     {
     TRACE_FUNC
-    return CBtsacListening::NewL(iParent, EGavdpResetReasonNone, KErrNone);
+    return CBtsacListening::NewL(iParent);
     }
 
 // -----------------------------------------------------------------------------
@@ -221,7 +221,7 @@ void CBtsacState::GAVDP_AbortStreamConfirm()
 	{
 	TRACE_INFO((_L("CBtsacState::GAVDP_AbortStreamConfirm(), state %d"), GetStateIndex()))
 	Parent().CompletePendingRequests(KCompleteAllReqs, KErrAbort);
-	TRAPD(err, Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected)));
+	TRAPD(err, Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, KErrDisconnected)));
 	if (err)
 		{
 		TRACE_INFO((_L("CBtsacState::GAVDP_AbortStreamConfirm() Couldn't change state.")))
@@ -333,7 +333,7 @@ void CBtsacState::GAVDP_AbortIndication(TSEID aSEID)
 	TRACE_INFO((_L("CBtsacState::GAVDP_AbortIndication(), state %d, SEID:%d"), GetStateIndex(), aSEID.SEID()))
 	(void)aSEID;
 	Parent().CompletePendingRequests(KCompleteAllReqs, KErrDisconnected);
-	TRAPD(err, Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected)))
+	TRAPD(err, Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, KErrDisconnected)))
 	if(err)
 		{
 		TRACE_INFO((_L("CBtsacState::GAVDP_AbortIndication(), error! Couldn't change state")))

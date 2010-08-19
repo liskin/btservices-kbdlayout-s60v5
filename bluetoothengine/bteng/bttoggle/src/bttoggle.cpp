@@ -303,9 +303,9 @@ void CBTToggle::DoCancel()
     iNotifier.CancelNotifier(KBTGenericQueryNotifierUid); 
     }  
   else if ( EPowerModeChangeNote == iActiveNotifier ) 
-      {
-      iNotifier.CancelNotifier(KBTGenericQueryNotifierUid); 
-      }
+    {
+    iNotifier.CancelNotifier(KBTGenericInfoNotifierUid); 
+    }
 
   // For all cancels, we must reset iActiveNotifier back to ENoneQuery
   // to permit another request to be made.
@@ -330,8 +330,8 @@ void CBTToggle::RunL()
   switch (iActiveNotifier)
     {							
     case EPowerModeQuery:
-      iActiveNotifier = ENoneQuery;
-      ShowNotification(ETrue);    
+      ShowNotification(ETrue);   
+      iActiveNotifier = EPowerModeChangeNote ;
       SetActive();
       break; 			
     case ECloseConnectionQuery:							

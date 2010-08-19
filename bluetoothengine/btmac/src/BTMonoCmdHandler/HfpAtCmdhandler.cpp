@@ -49,20 +49,24 @@ CHFPAtCmdHandler::~CHFPAtCmdHandler()
         {
         iATExtClient.Close();
         }
+   iCmdBuffer.Close();
+   iSystemReply.Close();
+   delete iRecvBuffer;
+   delete iReplyBuffer;
 }
 
 void CHFPAtCmdHandler::HandleCommand(const TDesC8& aAT, const TDesC8& aReply)
     {
     TRACE_INFO((_L8("default reply '%S'"), &aReply))
     iCmdBuffer.Copy(aAT);
-    iReplyBuffer.Zero();
+    iReplyBuffer->Zero();
     if (aReply.Length())
         {
-        iReplyBuffer.Copy(aReply);
+        iReplyBuffer->Copy(aReply);
         iSystemReply.Copy(aReply);
-        }
+        } 
     iATExtClient.HandleCommand(iCommander->iStatus, 
-            iCmdBuffer, iReplyBuffer, iRemainingReplyLengthPckg, iReplyTypePckg);
+            iCmdBuffer, *iReplyBuffer, iRemainingReplyLengthPckg, iReplyTypePckg);
     iCommander->GoActive(); 
     }
 
@@ -79,16 +83,16 @@ void CHFPAtCmdHandler::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
                 if (iRemainingReplyLengthPckg())
                     {
                     TRACE_INFO((_L8("reply '%S'"), &iReplyBuffer))
-                    iObserver.ATExtHandleReplyReceivedL(err, iReplyBuffer);
+                    iObserver.ATExtHandleReplyReceivedL(err, *iReplyBuffer);
                     do 
                         {
                         TRACE_INFO((_L8("iRemainingReplyLength '%d'"), iRemainingReplyLengthPckg()))
                         RBuf8 reply;
                         reply.CreateL(iRemainingReplyLengthPckg());
-                        err = iATExtClient.GetNextPartOfReply(iRecvBuffer, iRemainingReplyLengthPckg());
+                        err = iATExtClient.GetNextPartOfReply(*iRecvBuffer, iRemainingReplyLengthPckg());
                         if (!err)
                             {
-                            reply.Insert(0, iRecvBuffer);
+                            reply.Insert(0, *iRecvBuffer);
                             }
                         TRACE_INFO((_L8("reply '%S'"), &reply))
                         iObserver.ATExtHandleReplyReceivedL(err, reply);
@@ -98,8 +102,8 @@ void CHFPAtCmdHandler::RequestCompletedL(CBtmcActive& aActive, TInt aErr)
                     }
                 else
                     {
-                    TRACE_INFO((_L8("reply '%S'"), &iReplyBuffer))
-                    iObserver.ATExtHandleReplyReceivedL(err, iReplyBuffer);
+                    TRACE_INFO((_L8("reply '%S'"), iReplyBuffer))
+                    iObserver.ATExtHandleReplyReceivedL(err, *iReplyBuffer);
                     }
                 }
             else
@@ -159,6 +163,10 @@ void CHFPAtCmdHandler::ConstructL()
     
     StartUrc();
     iCommander = CBtmcActive::NewL(*this, CActive::EPriorityStandard, EHandleCommandRequest);
+    iCmdBuffer.CreateL(KDefaultCmdBufLength);
+    iRecvBuffer = new (ELeave) TBuf8<KDefaultCmdBufLength>();
+    iReplyBuffer = new (ELeave) TBuf8<KDefaultCmdBufLength>();
+    iSystemReply.CreateL(KDefaultUrcBufLength);
     TRACE_FUNC_EXIT
     }
     

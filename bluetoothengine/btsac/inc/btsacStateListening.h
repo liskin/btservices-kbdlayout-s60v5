@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -40,7 +40,9 @@ class CBtsacListening : public CBtsacState, public MBtsacActiveObserver
     
 public:
 
-    static CBtsacListening* NewL(CBTSAController& aParent, TBTSACGavdpResetReason aGavdpResetReason, TInt aDisconnectReason);
+    static CBtsacListening* NewL(CBTSAController& aParent, 
+		TBTSACResetGavdp aResetGavdp = EDontResetGavdp, 
+		TInt aDisconnectReason = KErrNone);
     
     virtual ~CBtsacListening();
     
@@ -117,15 +119,14 @@ private:
 
 private:
 	
-    CBtsacListening(CBTSAController& aParent, TBTSACGavdpResetReason aGavdpResetReason, TInt aDisconnectReason);
+    CBtsacListening(CBTSAController& aParent, TBTSACResetGavdp aResetGavdp, TInt aDisconnectReason);
     void ConstructL();
     
 private:
-	TBTSACGavdpResetReason iGavdpResetReason;
+	TBTSACResetGavdp iResetGavdp;
 	TInt iDisconnectReason;
 	TInt iPendingRequests;
 	TBTInitProcedure iInitializationProcedure;
-	TBool iUnfinishedGavdpError;
 	 
 	 /**
      * AO for self completing.

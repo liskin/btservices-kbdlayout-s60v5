@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -184,7 +184,7 @@ void CBtsacConnected::CancelActionL(TInt aError)
     TRACE_FUNC
     StopTimer();
 	Parent().CompletePendingRequests((KConnectReq | KOpenAudioReq), aError);
-	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, aError));
+	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, aError));
     }
 
 // -----------------------------------------------------------------------------
@@ -552,7 +552,7 @@ void CBtsacConnected::GAVDP_BearerReady(RSocket aNewSocket, const TAvdtpSockAddr
 		TRACE_INFO((_L("[SOCKET] created.")))
 		Parent().iStreamingSockets.Append(aNewSocket);
 		Parent().CompletePendingRequests(KCompleteAllReqs, KErrCancel);
-		TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrNone)));
+		TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, KErrNone)));
 		}
 	}
 

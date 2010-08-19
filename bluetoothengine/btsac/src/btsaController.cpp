@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2005 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2005-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -448,11 +448,16 @@ TInt CBTSAController::AbortStream()
 void CBTSAController::NewAccessory(const TBTDevAddr& aAddr)
 	{
  	TRACE_FUNC
- 	TInt connectedProfiles = Observer().ConnectionStatus( aAddr );
- 	if( !(connectedProfiles & EStereo) )
- 	    {
- 	    Observer().NewAccessory( aAddr, EStereo );
- 	    } 
+	TRACE_INFO((_L("\tiNotifiedObserverOfNewAccessory = %d"), iNotifiedObserverOfNewAccessory))
+	if ( !iNotifiedObserverOfNewAccessory )
+		{
+	 	TInt connectedProfiles = Observer().ConnectionStatus( aAddr );
+	 	if( !(connectedProfiles & EStereo) )
+	 	    {
+	 	    Observer().NewAccessory( aAddr, EStereo );
+	 	    iNotifiedObserverOfNewAccessory = ETrue;
+	 	    } 
+		}
 	}
 
 // -----------------------------------------------------------------------------
@@ -462,7 +467,12 @@ void CBTSAController::NewAccessory(const TBTDevAddr& aAddr)
 void CBTSAController::DisconnectedFromRemote(const TBTDevAddr& aAddr, TInt /*aError*/)
 	{
 	TRACE_FUNC
-	Observer().AccessoryDisconnected(aAddr, EStereo );
+	TRACE_INFO((_L("\tiNotifiedObserverOfNewAccessory = %d"), iNotifiedObserverOfNewAccessory))
+	if ( iNotifiedObserverOfNewAccessory )
+		{
+		Observer().AccessoryDisconnected(aAddr, EStereo );
+		iNotifiedObserverOfNewAccessory = EFalse;
+		}
 	}
 
 // -----------------------------------------------------------------------------
@@ -533,6 +543,11 @@ void CBTSAController::CompletePendingRequests(TUint aCompleteReq, TInt aError)
 //
 void CBTSAController::SetRemoteAddr(const TBTDevAddr& aRemoteAddr)
 	{
+#ifdef PRJ_ENABLE_TRACE
+	TBuf<12> buf;
+	aRemoteAddr.GetReadable(buf);
+	TRACE_INFO((_L("CBTSAController::SetRemoteAddr aRemoteAddr = %S"), &buf))
+#endif
 	iRemoteAddr = aRemoteAddr;
 	}
 	
@@ -542,6 +557,11 @@ void CBTSAController::SetRemoteAddr(const TBTDevAddr& aRemoteAddr)
 //
 TBTDevAddr CBTSAController::GetRemoteAddr() const
 	{
+#ifdef PRJ_ENABLE_TRACE
+	TBuf<12> buf;
+	iRemoteAddr.GetReadable(buf);
+	TRACE_INFO((_L("CBTSAController::GetRemoteAddr iRemoteAddr = %S"), &buf))
+#endif
 	return iRemoteAddr;
 	}
 
@@ -615,7 +635,7 @@ void CBTSAController::NotifyError(TInt /*aError*/)
 		}
 	else
 		{
-		TRAPD(err, ChangeStateL(CBtsacListening::NewL(*this, EGavdpResetReasonGeneral, EFalse)));
+		TRAPD(err, ChangeStateL(CBtsacListening::NewL(*this, EResetGavdp, KErrNone)));
 		if (err)
 			{
 			TRACE_INFO((_L("CBTSAController::NotifyError() Couldn't change state.")))

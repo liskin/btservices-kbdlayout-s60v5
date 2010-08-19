@@ -122,23 +122,21 @@ void CBTRCCVolumeLevelControllerBase::RegisterVolumeChangeNotification()
     }
 
 // -----------------------------------------------------------------------------
-// CBTRCCVolumeLevelControllerBase::GetLocalMaxVolume
+// CBTRCCVolumeLevelControllerBase::GetLocalMaxVolumeL
 // -----------------------------------------------------------------------------
 //
-TInt CBTRCCVolumeLevelControllerBase::GetLocalMaxVolume() 
+TInt CBTRCCVolumeLevelControllerBase::GetLocalMaxVolumeL() 
     {
     TRACE_FUNC
-    if(iLocalMaxVolume == 0)
+    // fetch max volume from adaptation and cache it.
+    CMMFDevSound* devSound = CMMFDevSound::NewL();
+    iLocalMaxVolume = devSound->MaxVolume();
+    TRACE_INFO((_L("Maximum volume is %d"), iLocalMaxVolume))
+    delete devSound; // This is not needed for anything else.
+    if( iLocalMaxVolume <= 0 )
         {
-        // fetch max volume from adaptation and cache it.
-        CMMFDevSound* devSound = NULL;
-        TRAPD( err, devSound  = CMMFDevSound::NewL() );
-        if(!err)
-            {
-            iLocalMaxVolume = devSound->MaxVolume();
-            TRACE_INFO((_L("Maximum volume is %d"), iLocalMaxVolume))
-            delete devSound; // This is not needed for anything else.
-            }
+        TRACE_INFO((_L("Error, Maximum volume value is invalid")))
+        User::Leave(KErrNotSupported);
         }
     return iLocalMaxVolume; 
     }

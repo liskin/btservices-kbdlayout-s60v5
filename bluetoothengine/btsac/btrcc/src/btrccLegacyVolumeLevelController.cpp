@@ -80,7 +80,7 @@ void CBTRCCLegacyVolumeLevelController::ConstructL(CRemConInterfaceSelector& aIn
     TRACE_INFO((_L("CBTRCCActive created")))
     iCtrlRTimer.CreateLocal();    
     TRACE_INFO((_L("RTimer created")))
-    iLocalMaxVolume = GetLocalMaxVolume();
+    iLocalMaxVolume = GetLocalMaxVolumeL();
 	}
 
 // -----------------------------------------------------------------------------

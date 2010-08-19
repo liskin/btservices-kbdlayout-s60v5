@@ -71,6 +71,7 @@ void CBtmPageScanParametersManager::ConstructL()
                                                    KPageScanParametersListenerService);
 
     iTimerActive = CBtmActive::NewL(*this, CActive::EPriorityStandard, KFastConnectionService);
+    LEAVE_IF_ERROR(iTimer.CreateLocal());
     TRACE_FUNC_EXIT
     }
 
@@ -89,7 +90,6 @@ void CBtmPageScanParametersManager::StartTimer(TInt aService, TInt aTimeout)
     if (!iTimerActive->IsActive())
         {
         TRACE_FUNC_ENTRY
-        iTimer.CreateLocal();
         iTimer.After(iTimerActive->iStatus, aTimeout);
         iTimerActive->SetRequestId(aService);
         iTimerActive->GoActive();
@@ -107,7 +107,6 @@ void CBtmPageScanParametersManager::StopTimer()
         {
         TRACE_FUNC_ENTRY
         iTimerActive->Cancel();
-        iTimer.Close();
         TRACE_FUNC_EXIT
         }
     }

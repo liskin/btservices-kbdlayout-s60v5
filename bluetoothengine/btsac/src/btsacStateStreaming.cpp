@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -99,7 +99,7 @@ void CBtsacStreaming::CancelActionL(TInt aError)
 		TRACE_INFO((_L("CBtsacStreaming::Cancel() iStreamer.StopStream() returned error(%d) !!!"), ret))
 		}
 	Parent().CompletePendingRequests(KCompleteAllReqs, aError);
-	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, aError));
+	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, aError));
 	}
 
 // -----------------------------------------------------------------------------
@@ -151,7 +151,7 @@ void CBtsacStreaming::CancelCloseAudioLink(const TBTDevAddr& /*aAddr*/)
 	TRACE_FUNC
 	// For safety sake complete all pending requests
 	Parent().CompletePendingRequests(KCompleteAllReqs, KErrNone);
-	TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected)));
+	TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, KErrDisconnected)));
 	}
 
 
@@ -171,7 +171,7 @@ void CBtsacStreaming::StartRecording()
 			{
 			TRACE_INFO((_L("CBtsacStreaming::StartRecording() Couldn't abort stream.")))	
 			}
-		TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected)));
+		TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, KErrDisconnected)));
 	 	}
 	}
 
@@ -188,7 +188,7 @@ void CBtsacStreaming::DisconnectL()
 		TRACE_INFO((_L("CBtsacStreaming::DisconnectL() StopStream() returned error: %d"), ret))	
 		}
 	Parent().CompletePendingRequests(KDisconnectReq, ret);
-	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrNone));
+	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, KErrNone));
 	}
 
 // -----------------------------------------------------------------------------
@@ -220,7 +220,7 @@ void CBtsacStreaming::GAVDP_AbortIndication(TSEID aSEID)
 	
 	// It is possible the remote disconnected while we have active close audio request.
 	Parent().CompletePendingRequests(KCompleteAllReqs, KErrNone);
-    TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected)));
+    TRAP_IGNORE(Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, KErrDisconnected)));
 	}
 
 // -----------------------------------------------------------------------------
@@ -339,7 +339,7 @@ void CBtsacStreaming::HandleGavdpErrorL(TInt aError)
 			else
 				{
 				Parent().CompletePendingRequests(KCompleteAllReqs, aError);
-				Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected));
+				Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, KErrDisconnected));
 				}
 			break;
 			}
@@ -347,7 +347,7 @@ void CBtsacStreaming::HandleGavdpErrorL(TInt aError)
 		case KErrDisconnected: // -36
 			{
 			Parent().CompletePendingRequests(KCompleteAllReqs, aError);
-			Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, aError));
+			Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, aError));
 			break;
 			}
 		default:
@@ -355,7 +355,7 @@ void CBtsacStreaming::HandleGavdpErrorL(TInt aError)
 			// Unknown error. For safety's sake let's disconnect a2dp link and inform btaudioman
 			TRACE_INFO((_L("CBtsacStreaming::HandleGavdpErrorL() Unknown error, goes to listening")))
 			Parent().CompletePendingRequests(KCompleteAllReqs, aError);
-			Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrDisconnected));
+			Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, KErrDisconnected));
 			break;
 			}
 		}

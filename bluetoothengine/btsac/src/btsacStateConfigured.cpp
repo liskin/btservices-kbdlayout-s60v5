@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -173,7 +173,7 @@ void CBtsacConfigured::CancelActionL(TInt aError)
     {
     TRACE_FUNC
 	Parent().CompletePendingRequests(KOpenAudioReq, aError);
-	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, aError));
+	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, aError));
     }
 
 // -----------------------------------------------------------------------------
@@ -237,7 +237,7 @@ void CBtsacConfigured::DisconnectL()
 	Parent().CompletePendingRequests(KDisconnectReq, KErrNone);
 	// Cancel all other requests
 	Parent().CompletePendingRequests(KCompleteAllReqs, KErrCancel);
-	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EGavdpResetReasonGeneral, KErrNone));
+	Parent().ChangeStateL(CBtsacListening::NewL(Parent(), EResetGavdp, KErrNone));
 	}
 
 // -----------------------------------------------------------------------------

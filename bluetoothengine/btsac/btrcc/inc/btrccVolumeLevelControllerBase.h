@@ -89,7 +89,7 @@ NONSHARABLE_CLASS(CBTRCCVolumeLevelControllerBase) : public CBase, public MBTRCC
 
         void Reset(); // Reset the volume level.  
 
-        TInt GetLocalMaxVolume();  
+        TInt GetLocalMaxVolumeL();  
         
         TInt GetCurrentLocalVolume();
         

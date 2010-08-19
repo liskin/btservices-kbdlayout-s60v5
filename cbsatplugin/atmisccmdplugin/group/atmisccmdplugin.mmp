@@ -13,13 +13,19 @@
  *
  */
 
+FEATUREVARIANT
+
 #include <platform_paths.hrh>
 #include <data_caging_paths.hrh>
 #include "../inc/atmisccmdpluginuids.hrh"
 
 CAPABILITY 	    CAP_ECOM_PLUGIN 
 VENDORID        VID_DEFAULT
+#ifdef PROTOCOL_TDSCDMA
+TARGET          atmisccmdplugin_td.dll
+#else
 TARGET          atmisccmdplugin.dll
+#endif
 TARGETTYPE	    PLUGIN
 UID             0x10009D8D 0x2002C3BA
 
@@ -42,14 +48,32 @@ SOURCE          cbccommandhandler.cpp
 SOURCE          ussdreadmessageimpl.cpp
 SOURCE          ussdsendmessageimpl.cpp
 
+#ifdef PROTOCOL_TDSCDMA
+SOURCE          hvercommandhandler.cpp 
+SOURCE          cgsncommandhandler.cpp 
+SOURCE          cgmrcommandhandler.cpp 
+SOURCE          cmgwcommandhandler.cpp 
+SOURCE          cgmicommandhandler.cpp
+SOURCE			cmgdcommandhandler.cpp
+SOURCE			telephonywrapper.cpp
+SOURCE			cgmmcommandhandler.cpp 
+SOURCE			scpbrcommandhandler.cpp
+SOURCE			scpbwcommandhandler.cpp
+#endif
 
 USERINCLUDE     ../inc
 
 MW_LAYER_SYSTEMINCLUDE
 
+// Resources - inclusion controlled by iby
 START RESOURCE  ../data/2002C3BA.rss
 TARGET          atmisccmdplugin.rsc
 END
+
+START RESOURCE  ../data/2002C3BA_TDSCDMA.rss
+TARGET          atmisccmdplugin_td.rsc
+END
+
 
 LIBRARY	        ecom.lib
 LIBRARY         euser.lib
@@ -65,8 +89,10 @@ LIBRARY         StarterClient.lib
 LIBRARY			etel3rdparty.lib
 LIBRARY			sysutil.lib 
 
-LIBRARY		    flogger.lib
+#ifdef PROTOCOL_TDSCDMA
+LIBRARY			customapi.lib
+#endif
 
-MACRO _DEBUG
-MACRO USE_FILE_LOGGING
+DEBUGLIBRARY	flogger.lib
+
 // End of File

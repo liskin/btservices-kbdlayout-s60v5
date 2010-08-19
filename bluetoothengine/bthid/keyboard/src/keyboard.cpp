@@ -25,6 +25,7 @@
 #include <apgtask.h>
 #include <e32keys.h>
 #include <avkondomainpskeys.h>
+#include <coreapplicationuisdomainpskeys.h>
 
 #include "hidtranslate.h"
 #include "finder.h"
@@ -1188,17 +1189,6 @@ TInt CHidKeyboardDriver::WindowGroupForKeyEvent(const TKeyEvent& aKeyEvent,
         TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::WindowGroupForKeyEvent: type %d, kc 0x%08x, sc 0x%08x, mod 0x%06x, rep %d]"),
                         aType, aKeyEvent.iCode, aKeyEvent.iScanCode,
                         aKeyEvent.iModifiers, aKeyEvent.iRepeats));
-    _LIT(KBackDrop, "*EiksrvBackdrop*");
-
-    if (EStdKeyApplication0 == aKeyEvent.iScanCode && (EEventKeyDown == aType
-            || EEventKeyUp == aType))
-        {
-        // Application key up/down events go to the Eikon server
-        // Use this old way for application key
-        TInt result = iWsSession.FindWindowGroupIdentifier(0, KBackDrop); //This was in A2.x __EIKON_SERVER_NAME
-        DBG(if (KErrNotFound == result) RDebug::Print(_L("[HID]\tCHidKeyboardDriver::WindowGroupForKeyEvent(): BackDropWindowGroup Name not found!")));
-        return result;
-        }
 
     if (EKeyDevice2 == aKeyEvent.iCode && EEventKey == aType)
         {
@@ -1379,7 +1369,33 @@ void CHidKeyboardDriver::HandleApplicationLaunchKeysL(TUint16 aScancodeKey,
 void CHidKeyboardDriver::LaunchApplicationL(TInt aAppUid)
     {
         TRACE_INFO( (_L("[HID]\tCHidKeyboardDriver::LaunchApplication: UID 0x%08x"), aAppUid));
-
+    
+    //KeyLock or phone auto lock is on, refuse to continue    
+    if (iKeyLock.IsKeyLockEnabled())
+        {        
+        TRACE_INFO( _L("[HID]\tCHidKeyboardDriver::LaunchApplicationL() SKIPPED BECAUSE OF KEYLOCK"));
+        return;
+        }
+    
+    TInt devLockStatus( EAutolockStatusUninitialized );
+    TInt err = RProperty::Get(  KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, devLockStatus );
+                    
+    if (!err)
+        {
+        if ( EAutolockOff != devLockStatus && EAutolockStatusUninitialized != devLockStatus)
+            {
+            //Auto lock is on, refuse to continue
+            TRACE_INFO( _L("[HID]\tCHidKeyboardDriver::LaunchApplicationL() SKIPPED BECAUSE OF AUTO LOCK"));
+            return;
+            }
+        }
+    else
+        {
+        //failed to get AUTO LOCK status
+        TRACE_INFO( _L("[HID]\tCHidKeyboardDriver::LaunchApplicationL() SKIPPED BECAUSE OF FAILED TO GET AUTO LOCK STATUS"));
+        return;
+        }
+    
     TApaTaskList taskList(iWsSession);
     TUid uid = TUid::Uid(aAppUid);
     TApaTask task = taskList.FindApp(uid);
@@ -1464,6 +1480,8 @@ TBool CHidKeyboardDriver::HandleKeyMapping(TDecodedKeyInfo& aKey,
         case EStdKeyEscape:
             // fall through
         case EStdKeyF8:
+            // fall through
+        case EStdKeyApplication0: 	 
             // fall through
         case EStdKeyApplication2:
             // fall through
@@ -1916,16 +1934,41 @@ TBool CHidKeyboardDriver::HandleKeyMappingOther(TDecodedKeyInfo& aKey,
             else if (aIsKeyDown &&
                 iKeyLock.IsKeyLockEnabled())
                 {
-                TRACE_INFO((_L("[HID]\tESC >>> DISBALE KEY LOCK DOWN")));
+                TInt devLockStatus( EAutolockStatusUninitialized );
+                TInt err = RProperty::Get(	KPSUidCoreApplicationUIs, KCoreAppUIsAutolockStatus, devLockStatus );
                 
-                iKeyLock.DisableKeyLock();
+                if (!err)
+                    {
+                    if (EAutolockOff == devLockStatus || EAutolockStatusUninitialized == devLockStatus)
+                        {
+                        TRACE_INFO((_L("[HID]\tESC >>> AUTO LOCK IS OFF, DISBALE KEY LOCK DOWN ")));                                       
+                        iKeyLock.DisableKeyLock();
+                        ret = ETrue;
+                        iNavKeyDown = (iNavKeyDown | EEsc);
+                        }
+                    else
+                        {
+                        TRACE_INFO((_L("[HID]\tESC >>> AUTO LOCK IS ON, DISBALE KEY LOCK DOWN SKIPPED")));
+                        }
+                    }
+                else
+                    {
+                    TRACE_INFO((_L("[HID]\tESC >>> FAILED to get AUTO LOCK status, DISBALE KEY LOCK DOWN SKIPPED")));
+                    }
 
-                ret = ETrue;
-                iNavKeyDown = (iNavKeyDown | EEsc);
                 }
 
             break;
             }
+        case EStdKeyApplication0:
+			{ 	  	 
+			TRACE_INFO((_L("[HID]\tAPPLICATION KEY(Alt+Tab) >>> TSW"))); 	  	 
+					 
+			// Dedicated Application key 	  	 
+			scancode = EStdKeyApplication0; 	  	 
+			isMmKey = ETrue; 	  	 
+			break; 	  	 
+			}            
         case EStdKeyF8:
             // fall through
         case EStdKeyApplication2:

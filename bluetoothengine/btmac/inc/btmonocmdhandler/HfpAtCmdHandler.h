@@ -133,10 +133,11 @@ private:
     MATExtObserver& iObserver;
     
     RATExt iATExtClient;
-    TBuf8<KDefaultCmdBufLength> iCmdBuffer;
-    TBuf8<KDefaultCmdBufLength> iRecvBuffer;
-    TBuf8<KDefaultCmdBufLength> iReplyBuffer;
-    TBuf8<512> iSystemReply;
+    // reserve buffers from the heap
+    RBuf8 iCmdBuffer;
+    RBuf8 iSystemReply;
+    TBuf8<KDefaultCmdBufLength> *iRecvBuffer;
+    TBuf8<KDefaultCmdBufLength> *iReplyBuffer;
     
     TInt iRemainingReplyLength;
     TPckg<TInt> iRemainingReplyLengthPckg;

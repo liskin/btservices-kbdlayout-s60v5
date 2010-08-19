@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2002-2005 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -35,9 +35,10 @@
 // -----------------------------------------------------------------------------
 //
 CBtsacListening* CBtsacListening::NewL(CBTSAController& aParent,
-	TBTSACGavdpResetReason aGavdpResetReason, TInt aDisconnectReason)
+									TBTSACResetGavdp aResetGavdp, 
+									TInt aDisconnectReason)
     {
-    CBtsacListening* self = new( ELeave ) CBtsacListening(aParent, aGavdpResetReason, aDisconnectReason);
+    CBtsacListening* self = new( ELeave ) CBtsacListening(aParent, aResetGavdp, aDisconnectReason);
     CleanupStack::PushL(self);
     self->ConstructL();
     CleanupStack::Pop(self);
@@ -49,10 +50,10 @@ CBtsacListening* CBtsacListening::NewL(CBTSAController& aParent,
 // -----------------------------------------------------------------------------
 //
 CBtsacListening::CBtsacListening(CBTSAController& aParent,
-	TBTSACGavdpResetReason aGavdpResetReason, TInt aDisconnectReason)
-: 	CBtsacState(aParent, EStateListening), iGavdpResetReason(aGavdpResetReason),
+	TBTSACResetGavdp aResetGavdp, TInt aDisconnectReason)
+: 	CBtsacState(aParent, EStateListening), iResetGavdp(aResetGavdp),
 	iDisconnectReason(aDisconnectReason), iPendingRequests(KRequestNone),
-	iInitializationProcedure(EInitProcedureOngoing), iUnfinishedGavdpError(EFalse)
+	iInitializationProcedure(EInitProcedureOngoing)
     {
     }
 
@@ -262,12 +263,13 @@ void CBtsacListening::RequestCompletedL(CBtsacActive& aActive)
 		case KRequestIdSelfComplete:
 			{
 			TBTDevAddr remoteAddr = Parent().GetRemoteAddr();
-			if(iUnfinishedGavdpError)
-				{
-				// We have unfinished gavdp error, force gavdp reset
-				iGavdpResetReason = EGavdpResetReasonGeneral;
-				}
-			if(iGavdpResetReason != EGavdpResetReasonNone)
+#ifdef PRJ_ENABLE_TRACE
+			TBuf<12> buf;
+			remoteAddr.GetReadable(buf);
+			TRACE_INFO((_L("\tremoteAddr = %S"), &buf))
+#endif
+			TRACE_INFO((_L("\tiResetGavdp = %d"), iResetGavdp))
+			if(iResetGavdp == EResetGavdp)
 				{
 				ResetGavdp();
 				}
@@ -275,11 +277,12 @@ void CBtsacListening::RequestCompletedL(CBtsacActive& aActive)
 				{
 				GoListen();
 				}				
-			if((iDisconnectReason == KErrDisconnected || iDisconnectReason == KErrHCILinkDisconnection) &&
-			    iPendingRequests == KRequestNone)
+			TRACE_INFO((_L("\tiPendingRequests = %d"), iPendingRequests))
+			if(iPendingRequests == KRequestNone)
 				{
 				if(remoteAddr != TBTDevAddr())
 					{						
+					TRACE_INFO((_L("\tcalling DisconnectedFromRemote with iDisconnectReason = %d"), iDisconnectReason))
 					Parent().DisconnectedFromRemote(remoteAddr, iDisconnectReason);
 					}
 				Parent().SetResetAudioInput(ETrue);
@@ -397,7 +400,7 @@ void CBtsacListening::HandleGavdpErrorL(TInt aError)
     if(iInitializationProcedure != EInitProcedureDone)
 	    {
 	    TRACE_INFO((_L("CBtsacListening::HandleGavdpErrorL() error ignored, initialization procedure ongoing.")))
-	    iUnfinishedGavdpError = ETrue;	    
+	    iResetGavdp = EResetGavdp;
 	    return;
 	    }
 	switch(aError)

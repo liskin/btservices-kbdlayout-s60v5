@@ -81,6 +81,13 @@ public:
      */
     virtual void CreateCMEReplyAndComplete(TInt aError) = 0;
 
+    /*
+     * Complete the AT command request with AT CMS error code according to given Symbian error code
+     * @param aError Symbian error code 
+     */
+    
+    virtual void CreateCMSReplyAndComplete(TInt aError) = 0;
+
     /**
      * Returns plugin's character value settings (from CATExtPluginBase)
      *
@@ -137,6 +144,10 @@ private: // methods from base class MATMiscCmdPlugin
 
     virtual TInt CreateOkOrErrorReply( RBuf8& aReplyBuffer,
                                TBool aOkReply );
+
+    virtual TInt CreateEditModeBuffer( RBuf8& aReplyBuffer );
+    virtual void CreateCMSReplyAndComplete(TInt aError);
+
     virtual void CreateCMEReplyAndComplete(TInt aError);
     virtual TInt GetCharacterValue( TCharacterTypes aCharType, TChar& aChar );
     virtual TInt GetModeValue( TModeTypes aModeType, TBool& aMode );    
@@ -148,7 +159,8 @@ private:
     
     TInt CreatePartOfReply( RBuf8& aBuffer );
     void HandleCMEECommand();
-    
+    void HandleCMGFCommand();
+
     /*
      * Utility function that connect to Etel server and establish a subsession to RMobilePhone
      * Caller must close session and subsession after use.
@@ -175,7 +187,18 @@ private:
     CATCmdAsyncBase* iCNUMHandler;
     CATCmdAsyncBase* iCFUNHandler;
     CATCmdAsyncBase* iCBCHandler;
-    
+
+    // TDSCDMA only
+	CATCmdSyncBase* iHVERHandler;
+    CATCmdSyncBase* iCGSNHandler;
+    CATCmdSyncBase* iCGMRHandler;
+    CATCmdSyncBase* iCGMIHandler;
+    CATCmdAsyncBase* iCMGWHandler;
+    CATCmdAsyncBase* iCMGDHandler;
+    CATCmdSyncBase* iCGMMHandler;
+	CATCmdAsyncBase* iSCPBRHandler;
+    CATCmdAsyncBase* iSCPBWHandler;
+ 
     /**
      * Buffer for handle command's command
      * Not own.

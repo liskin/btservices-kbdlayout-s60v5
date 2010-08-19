@@ -67,7 +67,7 @@ void CBTRCCAbsoluteVolumeLevelController::ConstructL(CRemConInterfaceSelector& a
 	{
    	TRACE_FUNC
    	CBTRCCVolumeLevelControllerBase::ConstructL();
-   	iLocalMaxVolume = GetLocalMaxVolume();  
+   	iLocalMaxVolume = GetLocalMaxVolumeL();  
     iInterfaceSelector = &aInterfaceSelector;
    	
     iRemConAbsoluteVolumeController = CRemConAbsoluteVolumeController::NewL(aInterfaceSelector, 

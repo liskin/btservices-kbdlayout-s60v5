@@ -58,7 +58,29 @@ void TAtCommandParser::ParseAtCommand(const TDesC8& aCmd)
     _LIT8(KAtCpin, "AT+CPIN");
     _LIT8(KAtCusd, "AT+CUSD");
     _LIT8(KAtCnum, "AT+CNUM");
-    _LIT8(KAtCmee, "AT+CMEE");
+	_LIT8(KAtCmee, "AT+CMEE");
+#ifdef PROTOCOL_TDSCDMA
+    _LIT8(KAtHver, "AT^HVER");
+    _LIT8(KAtCgsn, "AT+CGSN");
+    _LIT8(KAtCgmr, "AT+CGMR");
+    _LIT8(KAtCgmi, "AT+CGMI");
+    _LIT8(KAtCmgw, "AT+CMGW");
+	_LIT8(KAtCmgd, "AT+CMGD");
+	_LIT8(KAtCmgf, "AT+CMGF");
+	_LIT8(KAtiBase, "ATI");
+	_LIT8(KAti0, "ATI0");
+	_LIT8(KAti1, "ATI1");
+	_LIT8(KAti2, "ATI2");
+	_LIT8(KAti3, "ATI3");
+	_LIT8(KAti4, "ATI4");
+	_LIT8(KAtGmr, "AT+GMR");
+	_LIT8(KAtGmi, "AT+GMI");
+	_LIT8(KAtGsn, "AT+GSN");
+	_LIT8(KAtCgmm, "AT+CGMM");
+	_LIT8(KAtGmm, "AT+GMM");
+	_LIT8(KAtScpbr, "AT^SCPBR");
+	_LIT8(KAtScpbw, "AT^SCPBW");
+#endif
     
     Trace(KDebugPrintS, "token: ", &token);
     // Determine the AT command type
@@ -90,10 +112,92 @@ void TAtCommandParser::ParseAtCommand(const TDesC8& aCmd)
         {
         iCmdType = ECmdAtCnum;
         }
-    else if(!token.Compare(KAtCmee))
+    else if(!token.CompareF(KAtCmee))
         {
         iCmdType = ECmdAtCmee;
+		}
+#ifdef PROTOCOL_TDSCDMA
+    else if(!token.CompareF(KAtHver))
+        {
+        iCmdType = ECmdAtHver;
         }
+    else if(!token.CompareF(KAtCgsn))
+        {
+        iCmdType = ECmdAtCgsn;
+        }
+    else if(!token.CompareF(KAtGsn))
+        {
+        iCmdType = ECmdAtGsn;
+        }
+    else if(!token.CompareF(KAtCgmr))
+        {
+        iCmdType = ECmdAtCgmr;
+        }
+    else if(!token.CompareF(KAtGmr))
+        {
+        iCmdType = ECmdAtGmr;
+        }
+    else if(!token.CompareF(KAtCgmi))
+        {
+        iCmdType = ECmdAtCgmi;
+        }    
+    else if(!token.CompareF(KAtGmi))
+        {
+        iCmdType = ECmdAtGmi;
+        } 
+    else if(!token.CompareF(KAtCmgw))
+        {
+        iCmdType = ECmdAtCmgw;
+        }
+    else if(!token.CompareF(KAtCmgd))
+        {
+        iCmdType = ECmdAtCmgd;
+        }
+    else if(!token.CompareF(KAtCmgf))
+        {
+        iCmdType = ECmdAtCmgf;
+        }
+    else if(!token.CompareF(KAtCgmm))
+        {
+        iCmdType = ECmdAtCgmm;
+        }
+    else if(!token.CompareF(KAtGmm))
+        {
+        iCmdType = ECmdAtGmm;
+        }
+    else if(!token.CompareF(KAtiBase))
+        {
+        iCmdType = ECmdAtI;
+        }
+    else if(!token.CompareF(KAti0))
+        {
+        iCmdType = ECmdAtI0;
+        }
+    else if(!token.CompareF(KAti1))
+        {
+        iCmdType = ECmdAtI1;
+        }
+    else if(!token.CompareF(KAti2))
+        {
+        iCmdType = ECmdAtI2;
+        }
+    else if(!token.CompareF(KAti3))
+        {
+        iCmdType = ECmdAtI3;
+        }
+    else if(!token.CompareF(KAti4))
+        {
+        iCmdType = ECmdAtI4;
+        }
+	else if(!token.CompareF(KAtScpbr))
+        {
+        iCmdType = ECmdAtScpbr;
+        } 
+    else if(!token.CompareF(KAtScpbw))
+        {
+        iCmdType = ECmdAtScpbw;
+        }
+#endif    
     else
         {
         iCmdType = EUnknown;
@@ -164,12 +268,14 @@ TPtrC8 TAtCommandParser::NextParam()
     // Extract the token at this point            
     TPtrC8 retVal = iCmd.MarkedToken();
     
-    // Skip comma, space and control chars
-    while(!iCmd.Eos() && (chr == ',' || chr.IsSpace() || chr.IsControl()))
-        {
-        iCmd.Inc();
-        chr = iCmd.Peek();
-        }
+    // Skip the first delimiter and any further space and control chars
+    do
+      {
+      iCmd.Inc();
+      chr = iCmd.Peek();
+      }
+    while(!iCmd.Eos() && (chr.IsSpace() || chr.IsControl()));
+    
     TRACE_FUNC_EXIT
     return retVal;
     }
