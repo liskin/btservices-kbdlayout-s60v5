@@ -29,6 +29,7 @@
 #include "btengactive.h"
 
 class CBTEngServer;
+class CHbIndicatorSymbian;
 
 
 /**
@@ -112,12 +113,13 @@ public:
     void StopBTStackL();
 
     /**
-     * Update the central repository key for Bluetooth power state.
+     * Handles a power event that HW power is going to turn off or
+     * has been changed turned on.
      *
-     * @since Symbian^3
-     * @param aValue The new Bluetooth power state.
+     * @since Symbian^4
+     * @param aValue The new Bluetooth HW power state.
      */
-    void UpdateCenRepPowerKeyL( TBTPowerState aValue );
+    void HandleHwPowerChangeL( TBTPowerState aValue );
 
     /**
     * ?description
@@ -129,12 +131,11 @@ public:
     
     /**
     * ?description
-    *
-    * @since S60 v3.2
-    * @param ?arg1 ?description
+    * 
+    * @param aState Current State of the Bluetooth
     */
-    void SetIndicatorStateL( const TInt aIndicator, const TInt aState );
-
+    void SetIndicatorStateL( const TInt aState );
+    
     /**
      * Update the Bluetooth visibility mode.
      *
@@ -199,21 +200,26 @@ private:
      *
      * @since Symbian^3
      * @param aActive Pointer to the active object that completed.
-     * @param aId The ID that identifies the outstanding request.
      * @param aStatus The status of the completed request.
      */
-    virtual void RequestCompletedL( CBTEngActive* aActive, TInt aId, TInt aStatus );
-
+    virtual void RequestCompletedL( CBTEngActive* aActive, TInt aStatus );
+    
+    /**
+     * Callback for handling cancelation of an outstanding request.
+     *
+     * @param aId The ID that identifies the outstanding request.
+     */
+    virtual void CancelRequest( TInt aRequestId );
+    
     /**
      * From MBTEngActiveObserver.
      * Callback to notify that an error has occurred in RunL.
      *
      * @since Symbian^3
      * @param aActive Pointer to the active object that completed.
-     * @param aId The ID that identifies the outstanding request.
      * @param aStatus The status of the completed request.
      */
-    virtual void HandleError( CBTEngActive* aActive, TInt aId, TInt aError );
+    virtual void HandleError( CBTEngActive* aActive, TInt aError );
 
 private:
 
@@ -245,7 +251,7 @@ private:
      * @param aTemporary Indicates if this is about a tempororary state change.
      */
     void CheckTemporaryPowerStateL( TBTPowerState& aCurrentState,
-                                     TBTPowerState aNewState, TBool aTemporary );
+                                     TBTPowerState aNewState, TBool aTemporary );  
 
 private: // data
 
@@ -299,6 +305,15 @@ private: // data
      */
     RMessage2 iMessage;
     
+    /**
+     *  Orbit Indicator to display Bluetooth Status
+     */
+    CHbIndicatorSymbian* iBTIndicator;
+    
+    /*
+     *  Indicator State
+     */
+    TInt iIndicatorState;
     };
 
 

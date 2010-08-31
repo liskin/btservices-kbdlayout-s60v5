@@ -1,4 +1,4 @@
-// Copyright (c) 2004-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2004-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -697,6 +697,19 @@ TInt CRemConBearerAvrcp::SetLocalAddressedClient(TRemConClientId& aId)
 	
 	return iPlayerInfoManager->SetLocalAddressedClient(aId);
 	}
+
+void CRemConBearerAvrcp::TargetFeaturesUpdated(const TRemConClientId& aId, TPlayerType aPlayerType, TPlayerSubType aPlayerSubType, const TDesC8& aName)
+    {
+    LOG_FUNC
+    
+    if (!iConstructionComplete)
+        {
+        // Object only partially constructed, swallow the request
+        return;
+        }
+    
+    iPlayerInfoManager->TargetFeaturesUpdated(aId, aPlayerType, aPlayerSubType, aName);
+    }
 
 void CRemConBearerAvrcp::ControllerFeaturesUpdated(RArray<TUid>& aSupportedInterfaces)
 	{

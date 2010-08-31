@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -88,6 +88,7 @@ public:
 	void ClientStatus(TBool aControllerPresent, TBool aTargetPresent);	
 	TInt SetLocalAddressedClient(const TRemConClientId& aId);
 	void ControllerFeaturesUpdatedL(RArray<TUid>& aSupportedInterfaces);
+	void TargetFeaturesUpdated(const TRemConClientId& aId, TPlayerType aPlayerType, TPlayerSubType aPlayerSubType, const TDesC8& aName);
 	MIncomingCommandHandler& InternalCommandHandler();
 
 	// Interface to command handler
@@ -106,7 +107,10 @@ private:
 	void MpsoPlayStatusChanged(TRemConClientId aId, MPlayerEventsObserver::TPlaybackStatus aPlaybackStatus);
 	void MpsoError(TRemConClientId aId);
 
-
+	// Helper function for ClientAvailable and TargetFeaturesUpdated
+	TInt SetItemDetails(TAvrcpMediaPlayerItem& aItem, TPlayerType aPlayerType, TPlayerSubType aPlayerSubType, const TDesC8& aName);
+	void UpdateSdpRecord(const TAvrcpMediaPlayerItem& aItem);
+	
 //---------------------------------------------------------
 // Bulk thread only functions
 //---------------------------------------------------------

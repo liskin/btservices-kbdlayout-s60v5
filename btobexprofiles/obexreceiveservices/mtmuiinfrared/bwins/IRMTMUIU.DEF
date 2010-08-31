@@ -1,0 +1,4 @@
+EXPORTS
+	?NewMtmUiDataLayerL@@YAPAVCBaseMtmUiData@@AAVCRegisteredMtmDll@@@Z @ 1 NONAME ; class CBaseMtmUiData * __cdecl NewMtmUiDataLayerL(class CRegisteredMtmDll &)
+	?NewMtmUiL@@YAPAVCBaseMtmUi@@AAVCBaseMtm@@AAVCRegisteredMtmDll@@@Z @ 2 NONAME ; class CBaseMtmUi * __cdecl NewMtmUiL(class CBaseMtm &,class CRegisteredMtmDll &)
+

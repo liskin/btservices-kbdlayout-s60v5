@@ -1,0 +1,5 @@
+EXPORTS
+	?CancelManageUSBServices@CObexUSB@@QAEXXZ @ 1 NONAME ; void CObexUSB::CancelManageUSBServices(void)
+	?ManageUSBServices@CObexUSB@@QAEXHAAVTRequestStatus@@@Z @ 2 NONAME ; void CObexUSB::ManageUSBServices(int, class TRequestStatus &)
+	?NewL@CObexUSB@@SAPAV1@XZ @ 3 NONAME ; class CObexUSB * CObexUSB::NewL(void)
+

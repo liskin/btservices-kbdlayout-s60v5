@@ -1,0 +1,31 @@
+/*
+* Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
+
+#ifndef __BTCPPLUGIN_RESOURCES_IBY__
+#define __BTCPPLUGIN_RESOURCES_IBY__
+
+#include <data_caging_paths_for_iby.hrh>
+#include <bldvariant.hrh>
+#ifdef __BT
+
+//For localization resource
+data=DATAZ_/QT_TRANSLATIONS_DIR/btviews.qm QT_TRANSLATIONS_DIR/btviews.qm
+data=DATAZ_/QT_TRANSLATIONS_DIR/btdialogs.qm QT_TRANSLATIONS_DIR/btdialogs.qm
+data=DATAZ_/QT_TRANSLATIONS_DIR/btindimenu.qm QT_TRANSLATIONS_DIR/btindimenu.qm
+
+#endif //__BT
+#endif // __BTCPPLUGIN_RESOURCES_IBY__

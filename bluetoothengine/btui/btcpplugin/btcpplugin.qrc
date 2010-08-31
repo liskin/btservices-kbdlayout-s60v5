@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>icons/qgn_graf_blid_det_circle.svg</file>
+        <file>icons/qgn_graf_blid_time.svg</file>
+        <file>icons/qgn_indi_bt_blocked.svg</file>
+        <file>icons/qgn_indi_bt_paired_add.svg</file>
+        <file>icons/qgn_indi_bt_trusted_add.svg</file>
+        <file>icons/qgn_prop_bt_audio.svg</file>
+        <file>icons/qgn_prop_bt_blocked_tab3.svg</file>
+        <file>icons/qgn_prop_bt_car_kit.svg</file>
+        <file>icons/qgn_prop_bt_carkit.svg</file>
+        <file>icons/qgn_prop_bt_computer.svg</file>
+        <file>icons/qgn_prop_bt_headset.svg</file>
+        <file>icons/qgn_prop_bt_keyboard.svg</file>
+        <file>icons/qgn_prop_bt_misc.svg</file>
+        <file>icons/qgn_prop_bt_mouse.svg</file>
+        <file>icons/qgn_prop_bt_phone.svg</file>
+        <file>icons/qgn_prop_bt_printer.svg</file>
+        <file>icons/qgn_prop_bt_unknown.svg</file>
+        <file>icons/qgn_frwidget_add_friend_photo.svg</file>
+        <file>docml/bt-main-view.docml</file>
+        <file>docml/bt-search-view.docml</file>
+        <file>docml/bt-device-view.docml</file>
+        <file>docml/bt-device-details-view.docml</file>
+    </qresource>
+</RCC>

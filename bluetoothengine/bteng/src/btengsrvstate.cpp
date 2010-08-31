@@ -108,7 +108,7 @@ void CBTEngSrvState::StartStateMachineL( TBTPowerState aState )
         // Power off, starting state is to disconnect the plug-ins
         iState = EDisconnectPlugins;
         iOperation = EPowerOff;
-        iServer->SettingsManager()->UpdateCenRepPowerKeyL( EBTOff );
+        iServer->SettingsManager()->HandleHwPowerChangeL( EBTOff );
         iServer->SettingsManager()->SetUiIndicatorsL();
         }
     ChangeState();
@@ -212,7 +212,7 @@ void CBTEngSrvState::RequestCompletedL()
             {
             if( iOperation == EPowerOn )
                 {
-                iServer->SettingsManager()->UpdateCenRepPowerKeyL( EBTOn );
+                iServer->SettingsManager()->HandleHwPowerChangeL( EBTOn );
                 iServer->SettingsManager()->SetUiIndicatorsL();
                 }
             iOperation = ESrvOpIdle;

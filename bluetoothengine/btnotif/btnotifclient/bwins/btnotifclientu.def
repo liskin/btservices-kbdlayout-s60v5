@@ -1,0 +1,11 @@
+EXPORTS
+	??0RBTNotifier@@QAE@XZ @ 1 NONAME ; RBTNotifier::RBTNotifier(void)
+	?CancelNotifier@RBTNotifier@@QAEHVTUid@@@Z @ 2 NONAME ; int RBTNotifier::CancelNotifier(class TUid)
+	?Connect@RBTNotifier@@QAEHXZ @ 3 NONAME ; int RBTNotifier::Connect(void)
+	?StartNotifier@RBTNotifier@@QAEHVTUid@@ABVTDesC8@@@Z @ 4 NONAME ; int RBTNotifier::StartNotifier(class TUid, class TDesC8 const &)
+	?StartNotifierAndGetResponse@RBTNotifier@@QAEXAAVTRequestStatus@@VTUid@@ABVTDesC8@@AAVTDes8@@@Z @ 5 NONAME ; void RBTNotifier::StartNotifierAndGetResponse(class TRequestStatus &, class TUid, class TDesC8 const &, class TDes8 &)
+	?UpdateNotifier@RBTNotifier@@QAEHVTUid@@ABVTDesC8@@AAVTDes8@@@Z @ 6 NONAME ; int RBTNotifier::UpdateNotifier(class TUid, class TDesC8 const &, class TDes8 &)
+	?Version@RBTNotifier@@QAE?AVTVersion@@XZ @ 7 NONAME ; class TVersion RBTNotifier::Version(void)
+	?CancelPairDevice@RBTNotifier@@QAEXXZ @ 8 NONAME ; void RBTNotifier::CancelPairDevice(void)
+	?PairDevice@RBTNotifier@@QAEXABV?$TPckgBuf@VTBTDevAddr@@@@JAAVTRequestStatus@@@Z @ 9 NONAME ; void RBTNotifier::PairDevice(class TPckgBuf<class TBTDevAddr> const &, long, class TRequestStatus &)
+

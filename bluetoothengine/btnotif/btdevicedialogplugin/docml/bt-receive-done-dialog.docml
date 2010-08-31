@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hbdocument version="1.1">
+    <object name="showaction" type="HbAction">
+        <string locid="txt_common_button_show" name="iconText"/>
+        <string locid="txt_common_button_show" name="text"/>
+        <string locid="txt_common_button_show" name="toolTip"/>
+    </object>
+    <object name="cancelaction" type="HbAction">
+        <string locid="txt_common_button_cancel" name="iconText"/>
+        <string locid="txt_common_button_cancel" name="text"/>
+        <string locid="txt_common_button_cancel" name="toolTip"/>
+    </object>
+    <widget name="recvCompleteddialog" type="HbDialog">
+        <rect height="37.46269un" name="geometry" width="49.73134un" x="1.49254un" y="36.26866un"/>
+        <widget name="heading" role="HbDialog:headingWidget" type="HbLabel">
+            <real name="z" value="1"/>
+            <string name="plainText"/>
+        </widget>
+        <widget name="container" role="HbDialog:contentWidget" type="HbWidget">
+            <widget name="filecontainer" type="HbWidget">
+                <widget name="fileiconlabel" type="HbLabel">
+                    <enums name="alignment" value="AlignVCenter|AlignHCenter"/>
+                    <icon iconName="qtg_small_smiley_very_cool" name="icon"/>
+                    <real name="z" value="1"/>
+                </widget>
+                <widget name="fileSize" type="HbLabel">
+                    <real name="z" value="3"/>
+                    <sizehint height="4.02985un" type="PREFERRED" width="24.32836un"/>
+                    <string name="plainText"/>
+                </widget>
+                <widget name="fileName" type="HbLabel">
+                    <real name="z" value="4"/>
+                    <sizehint height="4.1791un" type="PREFERRED" width="35.07463un"/>
+                    <string name="plainText"/>
+                </widget>
+                <real name="z" value="0"/>
+                <sizehint height="9.8806un" type="PREFERRED" width="23.8806un"/>
+                <layout type="anchor">
+                    <anchoritem dst="fileiconlabel" dstEdge="LEFT" spacing="1.04478un" src="" srcEdge="LEFT"/>
+                    <anchoritem dst="fileiconlabel" dstEdge="BOTTOM" spacing="-0.71767un" src="" srcEdge="BOTTOM"/>
+                    <anchoritem dst="fileSize" dstEdge="LEFT" spacing="9.30448un" src="" srcEdge="LEFT"/>
+                    <anchoritem dst="fileSize" dstEdge="BOTTOM" spacing="-0.26991un" src="" srcEdge="BOTTOM"/>
+                    <anchoritem dst="fileName" dstEdge="LEFT" spacing="9.30448un" src="" srcEdge="LEFT"/>
+                    <anchoritem dst="fileName" dstEdge="TOP" spacing="0.44776un" src="" srcEdge="TOP"/>
+                </layout>
+            </widget>
+            <widget name="fileCount_label" type="HbLabel">
+                <enums name="alignment" value="AlignVCenter|AlignHCenter"/>
+                <string name="plainText"/>
+            </widget>
+            <real name="z" value="2"/>
+            <layout orientation="Vertical" type="linear">
+                <linearitem itemname="filecontainer"/>
+                <linearitem itemname="fileCount_label"/>
+            </layout>
+        </widget>
+        <ref object="showaction" role="HbWidget:addAction"/>
+        <ref object="cancelaction" role="HbWidget:addAction"/>
+    </widget>
+    <metadata activeUIState="Common ui state" display="NHD-3.2-inch_portrait" unit="un">
+        <uistate name="Common ui state" sections="#common"/>
+    </metadata>
+</hbdocument>

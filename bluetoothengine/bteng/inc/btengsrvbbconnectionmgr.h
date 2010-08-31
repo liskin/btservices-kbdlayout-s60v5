@@ -149,22 +149,27 @@ public:
      *
      * @since S60 v3.2
      * @param aActive Pointer to the active object that completed.
-     * @param aId The ID that identifies the outstanding request.
      * @param aStatus The status of the completed request.
      */
-    virtual void RequestCompletedL( CBTEngActive* aActive, TInt aId, 
+    virtual void RequestCompletedL( CBTEngActive* aActive,
                                      TInt aStatus );
 
+    /**
+     * Callback for handling cancelation of an outstanding request.
+     *
+     * @param aId The ID that identifies the outstanding request.
+     */
+    virtual void CancelRequest( TInt aRequestId );
+    
     /**
      * From MBTEngActiveObserver.
      * Callback to notify that an error has occurred in RunL.
      *
      * @since S60 v3.2
      * @param aActive Pointer to the active object that completed.
-     * @param aId The ID that identifies the outstanding request.
      * @param aStatus The status of the completed request.
      */
-    virtual void HandleError( CBTEngActive* aActive, TInt aId, 
+    virtual void HandleError( CBTEngActive* aActive,
                                TInt aError );
 
 private:

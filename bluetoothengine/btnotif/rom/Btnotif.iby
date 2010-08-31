@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2003-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -11,18 +11,21 @@
 *
 * Contributors:
 *
-* Description:
+* Description:  Image description file for project btnotif
 *
 */
 
-#ifndef __BTNOTIF_IBY__
-#define __BTNOTIF_IBY__
 
-REM Bluetooth notifiers library
+#ifndef BTNOTIF_IBY
+#define BTNOTIF_IBY
 
-file=ABI_DIR\BUILD_DIR\btnotif.dll                                      SHARED_LIB_DIR\btnotif.dll
-SCALABLE_IMAGE(APP_BITMAP_DIR,APP_BITMAP_DIR,btnotif)
+#include <data_caging_paths_for_iby.hrh>
 
-ECOM_PLUGIN(btnotifwrapper.dll,101FD68F.rsc)
+#ifdef __BT
 
-#endif
+file=ABI_DIR/BUILD_DIR/btnotifsrv.exe    SHARED_LIB_DIR/btnotifsrv.exe
+ECOM_PLUGIN( btnotifwrapper.dll, btnotifwrapper.rsc )
+
+#endif // __BT
+
+#endif // BTNOTIF_IBY

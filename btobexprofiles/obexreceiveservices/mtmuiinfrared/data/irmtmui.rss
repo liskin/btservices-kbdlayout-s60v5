@@ -1,0 +1,87 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*     This file contains infrared MTM info resource. Entry points to Mtm Ui.
+*     
+*
+*/
+
+
+//  INCLUDES
+#include <mtmconfig.rh>
+
+
+#include <e32capability.h>
+
+RESOURCE MTM_INFO_FILE
+	{
+	mtm_type_uid = 0x100053A4;
+	technology_type_uid = 0x1000539F;
+	components = 
+		{		
+		MTM_COMPONENT_V2
+			{
+            //todo: Need to use localized string.
+			human_readable_name = "Via Infrared ";
+			component_uid = KUidMtmServerComponentVal;
+			entry_point = 1;
+			version = VERSION_V2 {};
+			filename = "irs.dll";
+			},
+		MTM_COMPONENT_V2
+			{
+			//todo: Need to use localized string.
+			human_readable_name = "Via Infrared ";
+			component_uid = KUidMtmClientComponentVal;
+			entry_point = 1;
+			version = VERSION_V2 {};
+			filename = "irc.dll";
+			},
+		MTM_COMPONENT_V2
+			{
+			//todo: Need to use localized string.
+			human_readable_name = "Via Infrared ";
+			component_uid = KUidMtmUiComponentVal;
+			entry_point = 2;
+			version = VERSION_V2 {};
+			filename = "irmtmui.dll";
+			},
+		MTM_COMPONENT_V2
+			{
+			//todo: Need to use localized string.
+			human_readable_name = "Via Infrared ";
+			component_uid = KUidMtmUiDataComponentVal;
+			entry_point = 1;
+			version = VERSION_V2 {};
+			filename = "irmtmui.dll";
+			}
+		};
+	}
+
+
+RESOURCE MTM_CAPABILITIES
+    {
+//    send_capability = 1; 
+    send_capability = 0;
+    body_capability = 1; 
+    }
+
+RESOURCE MTM_SECURITY_CAPABILITY_SET
+    {
+    capabilities = { ECapabilityLocalServices };
+    }
+
+
+
+// End of File

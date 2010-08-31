@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<service name="com.nokia.services.btmsgdispservices"  filepath="must-not-be-empty" >
+  <description>BT msg Disp service</description>
+  <interface name="displaymsg" version="1.0" capabilities="">
+    <description>display message from inbox</description>
+  </interface>
+</service>

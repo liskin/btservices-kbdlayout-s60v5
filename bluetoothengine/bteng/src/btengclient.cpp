@@ -255,40 +255,10 @@ TInt RBTEng::CancelNotifyConnectionEvents()
 
 
 // ---------------------------------------------------------------------------
-// Set a pairing observer in BTEngine.
-// ---------------------------------------------------------------------------
-//
-TInt RBTEng::SetPairingObserver( const TBTDevAddr& aAddr, TBool aActivate )
-    {
-    TBTDevAddrPckgBuf addrPkg( aAddr );
-    return SendReceive( EBTEngSetPairingObserver, TIpcArgs( &addrPkg, aActivate ) );
-    }
-
-
-// ---------------------------------------------------------------------------
 // ?implementation_description
 // ---------------------------------------------------------------------------
 //
 TInt RBTEng::PrepareDiscovery()
     {
     return SendReceive( EBTEngPrepareDiscovery, TIpcArgs() );
-    }
-
-// ---------------------------------------------------------------------------
-// Start to pair a device in BTEngine.
-// ---------------------------------------------------------------------------
-//
-void RBTEng::PairDevice( const TBTDevAddrPckgBuf& aAddr, 
-        const TUint32& aDeviceClass, TRequestStatus& aStatus  )
-    {
-    SendReceive( EBTEngPairDevice, TIpcArgs( &aAddr, aDeviceClass ), aStatus );    
-    }
-
-// ---------------------------------------------------------------------------
-// cancel pairing request
-// ---------------------------------------------------------------------------
-//
-void RBTEng::CancelPairDevice( )
-    {
-    (void) SendReceive( EBTEngCancelPairDevice);        
     }

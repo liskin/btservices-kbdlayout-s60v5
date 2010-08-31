@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -154,7 +154,7 @@ void CBTToggle::ToggleBT()
       }
     else //other than offline
       {									
-      TBuf<KHCILocalDeviceNameMaxLength> localName;
+      TBuf<KMaxBluetoothNameLen> localName;
       iSettings->GetLocalName(localName);														
 
       //There is no BT local name defined		
@@ -360,7 +360,8 @@ void CBTToggle::RunL()
 //
 TInt CBTToggle::RunError(TInt aError)
     {	  
-    TRACE_INFO((_L("[BTENG][BTTOGGLE] RunError %d"), aError ))	
+    TRACE_INFO((_L("[BTENG][BTTOGGLE] RunError %d"), aError ))
+    (void) aError;
     iActiveNotifier = ENoneQuery;
     CActiveScheduler::Stop();
     return KErrNone;

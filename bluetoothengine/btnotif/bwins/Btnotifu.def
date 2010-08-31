@@ -1,3 +1,0 @@
-EXPORTS
-	?NotifierArray@@YAPAV?$CArrayPtr@VMEikSrvNotifierBase2@@@@XZ @ 1 NONAME ; class CArrayPtr<class MEikSrvNotifierBase2> * __cdecl NotifierArray(void)
-

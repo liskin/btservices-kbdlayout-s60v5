@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -73,9 +73,8 @@ inline CBTEngActive::~CBTEngActive()
 //
 inline void CBTEngActive::DoCancel()
     {
+    iObserver.CancelRequest( iRequestId );
     }
-
-
 
 // -----------------------------------------------------------------------------
 // Get the identifier of this instance.
@@ -106,17 +105,6 @@ inline void CBTEngActive::GoActive()
     SetActive();
     }
 
-
-// -----------------------------------------------------------------------------
-// Cancel an outstanding request.
-// -----------------------------------------------------------------------------
-//
-inline void CBTEngActive::CancelRequest()
-    {
-    Cancel();
-    }
-
-
 // -----------------------------------------------------------------------------
 // Get a reference to the active object request status.
 // -----------------------------------------------------------------------------
@@ -126,7 +114,6 @@ inline TRequestStatus& CBTEngActive::RequestStatus()
     return iStatus;
     }
 
-
 // ---------------------------------------------------------------------------
 // From class CActive.
 // Called by the active scheduler when the request has been completed.
@@ -134,7 +121,7 @@ inline TRequestStatus& CBTEngActive::RequestStatus()
 //
 inline void CBTEngActive::RunL()
     {
-    iObserver.RequestCompletedL( this, iRequestId, iStatus.Int() );
+    iObserver.RequestCompletedL( this, iStatus.Int() );
     }
 
 
@@ -145,6 +132,6 @@ inline void CBTEngActive::RunL()
 //
 inline TInt CBTEngActive::RunError( TInt aError )
     {
-    iObserver.HandleError( this, iRequestId, aError );
+    iObserver.HandleError( this, aError );
     return KErrNone;
     }

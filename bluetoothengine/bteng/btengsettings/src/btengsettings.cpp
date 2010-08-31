@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -191,7 +191,7 @@ EXPORT_C TInt CBTEngSettings::GetLocalName( TDes& aName )
     TRACE_FUNC_ENTRY
     aName.Zero();
     TBool nameStatus = EFalse;
-    TBuf<KHCILocalDeviceNameMaxLength> tmpName;
+    TBuf<KMaxBluetoothNameLen> tmpName;
     
     TInt err = GetLocalNameModified( nameStatus );
     
@@ -413,7 +413,7 @@ TInt CBTEngSettings::HandleBTRegistryNameSetting( TDes& aName )
     if( !err )
         {
             // BT registry keeps the device name in UTF-8 format.
-        TBuf8<KHCILocalDeviceNameMaxLength> utf8Name;
+        TBuf8<KMaxBluetoothNameLen> utf8Name;
         if( aName.Length() == 0 )
             {
                 // The error can be > 0 if there are unconverted characters.

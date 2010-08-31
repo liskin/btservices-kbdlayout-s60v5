@@ -32,7 +32,6 @@ class CBTEngPlugin;
 class CBTEngSrvBBConnMgr;
 class CBTEngSrvKeyWatcher;
 class CBTEngSdpDbHandler;
-class CBTEngPairMan;
 class CPolicyServer;
 class TEComResolverParams;
 class CImplementationInformation;
@@ -150,14 +149,6 @@ public:
     inline CBTEngSrvBBConnMgr* BasebandConnectionManager() const
             { return iBBConnMgr; }
 
-    /**
-     * Getter for pairing manager. Ownership is not transferred.
-     *
-     * @since Symbian^3
-     * @return Pointer to instance of baseband connection manager.
-     */
-    inline CBTEngPairMan* PairManager() const
-            { return iPairMan; }
 
     /**
      * Getter for socket server session.
@@ -168,16 +159,6 @@ public:
      */
     inline RSocketServ& SocketServer()
             { return  iSocketServ; }
-
-    /**
-     * Getter for registry server session.
-     * This handle can be used for creating subsessions.
-     *
-     * @since Symbian^3
-     * @return Reference to session with the registry server.
-     */
-    inline RBTRegServ& RegistrServer()
-            { return iBTRegServ; }
 
     /**
      * Set Bluetooth on or off
@@ -405,21 +386,11 @@ private: // data
      * Callback for expiry of Simple Pairing debug mode.
      */
     TDeltaTimerEntry iDebugModeCallBack;
-
-    /**
-     * Pairing manager.
-     */
-    CBTEngPairMan* iPairMan;
     
     /**
     * Socket Server instance for this and other classes to access Bluetooth socket APIs.
     */   
     RSocketServ iSocketServ;
-
-    /**
-    * Registry Server instance for bteng to access Bluetooth registry APIs.
-    */      
-    RBTRegServ iBTRegServ;
 
     /**
      * Our state machine for handling power on/off.

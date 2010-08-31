@@ -1,0 +1,49 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*     This file contains all the resources for the SRCS USB transport plug-in.
+*
+*/
+
+
+#include "registryinfo.rh"
+
+// Declares info for two implementations
+RESOURCE REGISTRY_INFO theInfo
+	{
+	// UID for the DLL
+	dll_uid = 0x101F9693;
+	// Declare array of interface info
+	interfaces = 
+		{
+		INTERFACE_INFO
+			{
+			// UID of SRCS Transport interface
+			interface_uid = 0x101F7C9A;
+			implementations = 
+				{
+				// Info for CSrcsUSBConnection
+				IMPLEMENTATION_INFO
+					{
+					implementation_uid = 0x101F9692;
+					version_no = 1;
+					display_name = "Srcs USB Tranport";
+					default_data = "OBEX/USB";
+					opaque_data = "";
+					}
+				};
+			}
+		};
+	}
+

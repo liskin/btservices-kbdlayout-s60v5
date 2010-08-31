@@ -27,6 +27,7 @@
 #include <coecntrl.h>
 #include <w32std.h>
 #include <BTMouseBitMaps.mbg>
+#include <e32svr.h>
 #include "clientimagecommander.h"
 
 #ifndef DBG

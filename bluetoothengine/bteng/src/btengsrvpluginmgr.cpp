@@ -83,6 +83,7 @@ CBTEngSrvPluginMgr::~CBTEngSrvPluginMgr()
     {
     iPluginInfoArray.Close();
     iPluginArray.ResetAndDestroy();
+    REComSession::FinalClose();
     }
 
 

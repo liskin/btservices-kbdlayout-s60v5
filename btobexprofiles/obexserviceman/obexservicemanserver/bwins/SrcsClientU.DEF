@@ -1,0 +1,13 @@
+EXPORTS
+	??0RSrcs@@QAE@XZ @ 1 NONAME ; RSrcs::RSrcs(void)
+	?Connect@RSrcs@@QAEHXZ @ 2 NONAME ; int RSrcs::Connect(void)
+	?GetDescriptorInfo@RSrcs@@QBEHAAVTSrcsUsbDescriptorInfo@@@Z @ 3 NONAME ; int RSrcs::GetDescriptorInfo(class TSrcsUsbDescriptorInfo &) const
+	?GetIrDAState@RSrcs@@QBEHAAH@Z @ 4 NONAME ; int RSrcs::GetIrDAState(int &) const
+	?ManageBTServices@RSrcs@@QAEHH@Z @ 5 NONAME ; int RSrcs::ManageBTServices(int)
+	?ManageIrDAServices@RSrcs@@QAEHH@Z @ 6 NONAME ; int RSrcs::ManageIrDAServices(int)
+	?SignalL@TSrcsStart@@QAEXXZ @ 7 NONAME ; void TSrcsStart::SignalL(void)
+	?StartThread@@YAHXZ @ 8 NONAME ; int StartThread(void)
+	?StartUSB@RSrcs@@QAEHXZ @ 9 NONAME ; int RSrcs::StartUSB(void)
+	?StopUSB@RSrcs@@QAEHXZ @ 10 NONAME ; int RSrcs::StopUSB(void)
+	?Version@RSrcs@@QBE?AVTVersion@@XZ @ 11 NONAME ; class TVersion RSrcs::Version(void) const
+

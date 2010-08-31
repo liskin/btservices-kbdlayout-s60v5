@@ -31,3 +31,7 @@
 #include "../bluetooth_notifier_internal_api/group/bld.inf"
 #include "../bluetooth_sap_connection_state_api/group/bld.inf"
 #include "../bluetooth_secondary_display_notification_api/group/bld.inf"
+#include "../obex_secondary_display_notification_api/group/bld.inf"
+#include "../obex_service_plugin_api/group/bld.inf"
+#include "../obex_service_utils_api/group/bld.inf"
+#include "../usb_obexservicemanager_client_api/group/bld.inf"

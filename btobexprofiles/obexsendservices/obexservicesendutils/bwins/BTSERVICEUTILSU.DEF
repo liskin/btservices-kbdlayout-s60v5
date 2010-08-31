@@ -1,0 +1,12 @@
+EXPORTS
+	?AddImageL@CBTServiceParameterList@@QAEXABVTDesC16@@@Z @ 1 NONAME ; void CBTServiceParameterList::AddImageL(class TDesC16 const &)
+	?AddImageL@CBTServiceParameterList@@QAEXVRFile@@@Z @ 2 NONAME ; void CBTServiceParameterList::AddImageL(class RFile)
+	?AddObjectL@CBTServiceParameterList@@QAEXABVTDesC16@@@Z @ 3 NONAME ; void CBTServiceParameterList::AddObjectL(class TDesC16 const &)
+	?AddObjectL@CBTServiceParameterList@@QAEXVRFile@@@Z @ 4 NONAME ; void CBTServiceParameterList::AddObjectL(class RFile)
+	?AddXhtmlL@CBTServiceParameterList@@QAEXABVTDesC16@@@Z @ 5 NONAME ; void CBTServiceParameterList::AddXhtmlL(class TDesC16 const &)
+	?NewL@CBTServiceAPI@@SAPAV1@XZ @ 6 NONAME ; class CBTServiceAPI * CBTServiceAPI::NewL(void)
+	?NewL@CBTServiceParameterList@@SAPAV1@XZ @ 7 NONAME ; class CBTServiceParameterList * CBTServiceParameterList::NewL(void)
+	?NewLC@CBTServiceParameterList@@SAPAV1@XZ @ 8 NONAME ; class CBTServiceParameterList * CBTServiceParameterList::NewLC(void)
+	?StartServiceL@CBTServiceAPI@@QAEXW4TBTServiceType@@PAVCBTServiceParameterList@@@Z @ 9 NONAME ; void CBTServiceAPI::StartServiceL(enum TBTServiceType, class CBTServiceParameterList *)
+	?StartSynchronousServiceL@CBTServiceAPI@@QAEXW4TBTServiceType@@PAVCBTServiceParameterList@@@Z @ 10 NONAME ; void CBTServiceAPI::StartSynchronousServiceL(enum TBTServiceType, class CBTServiceParameterList *)
+

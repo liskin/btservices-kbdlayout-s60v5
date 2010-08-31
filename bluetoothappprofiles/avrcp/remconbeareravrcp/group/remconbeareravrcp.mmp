@@ -20,8 +20,6 @@
  @file
 */
 
-#include "../../../../../../os/bt/bluetoothmgmt/btcommon/config.cfg"
-
 #include <remcon/remconservercaps.mmh>
 
 TARGET        remconbeareravrcp.dll

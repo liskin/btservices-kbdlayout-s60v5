@@ -60,9 +60,16 @@ public:
      * @since S60 v3.2
      * @param ?arg1 ?description
      */
-    virtual void RequestCompletedL( CBTEngActive* aActive, TInt aId, 
+    virtual void RequestCompletedL( CBTEngActive* aActive, 
                                      TInt aStatus );
 
+    /**
+     * Callback for handling cancelation of an outstanding request.
+     *
+     * @param aId The ID that identifies the outstanding request.
+     */
+    virtual void CancelRequest( TInt aRequestId );
+    
     /**
      * From MBTEngActiveObserver.
      * Notification that a key value has changed.
@@ -70,7 +77,7 @@ public:
      * @since S60 v3.2
      * @param ?arg1 ?description
      */
-    virtual void HandleError( CBTEngActive* aActive, TInt aId, TInt aError );
+    virtual void HandleError( CBTEngActive* aActive, TInt aError );
 
 private:
 
@@ -142,11 +149,6 @@ private: // data
     RProperty iSspDebugModeKey;
     
     /**
-     * Property containing the BT registry change monitoring key
-     */
-    RProperty iBtRegistryKey;
-    
-    /**
      * Session with the central repository for BT SAP mode setting.
      * We load/unload BT SAP plugin.
      * Own.
@@ -206,12 +208,6 @@ private: // data
      * Own.
      */
     CBTEngActive* iSspDebugModeWatcher;
-
-    /**
-     * Active object for subscribing to BT registry property changes.
-     * Own.
-     */
-    CBTEngActive* iBtRegistryWatcher;
 
     /**
      * Pointer to our parent.

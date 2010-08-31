@@ -1,0 +1,36 @@
+EXPORTS
+	?CopyL@CBtDevExtension@@QAEPAV1@XZ @ 1 NONAME ; class CBtDevExtension * CBtDevExtension::CopyL(void)
+	?GoActive@CBtSimpleActive@@QAEXXZ @ 2 NONAME ; void CBtSimpleActive::GoActive(void)
+	?IsUserAwareBonded@CBtDevExtension@@QBEHXZ @ 3 NONAME ; int CBtDevExtension::IsUserAwareBonded(void) const
+	?IsUserAwareBonded@CBtDevExtension@@SAHABVTBTNamelessDevice@@@Z @ 4 NONAME ; int CBtDevExtension::IsUserAwareBonded(class TBTNamelessDevice const &)
+	?NewL@CBtSimpleActive@@SAPAV1@AAVMBtSimpleActiveObserver@@HH@Z @ 5 NONAME ; class CBtSimpleActive * CBtSimpleActive::NewL(class MBtSimpleActiveObserver &, int, int)
+	?AllDevices@CBtDevRepository@@QBEABV?$RPointerArray@VCBtDevExtension@@@@XZ @ 6 NONAME ; class RPointerArray<class CBtDevExtension> const & CBtDevRepository::AllDevices(void) const
+	?IsBonded@CBtDevExtension@@SAHABVTBTNamelessDevice@@@Z @ 7 NONAME ; int CBtDevExtension::IsBonded(class TBTNamelessDevice const &)
+	?RemoveObserver@CBtDevRepository@@QAEXPAVMBtDevRepositoryObserver@@@Z @ 8 NONAME ; void CBtDevRepository::RemoveObserver(class MBtDevRepositoryObserver *)
+	?AddObserverL@CBtDevRepository@@QAEXPAVMBtDevRepositoryObserver@@@Z @ 9 NONAME ; void CBtDevRepository::AddObserverL(class MBtDevRepositoryObserver *)
+	?SetRequestId@CBtSimpleActive@@QAEXH@Z @ 10 NONAME ; void CBtSimpleActive::SetRequestId(int)
+	?SetDeviceL@CBtDevExtension@@QAEXPAVCBTDevice@@@Z @ 11 NONAME ; void CBtDevExtension::SetDeviceL(class CBTDevice *)
+	??1CBtDevRepository@@UAE@XZ @ 12 NONAME ; CBtDevRepository::~CBtDevRepository(void)
+	?SetObserver@CAdvanceDevDiscoverer@@QAEXAAVMDevDiscoveryObserver@@@Z @ 13 NONAME ; void CAdvanceDevDiscoverer::SetObserver(class MDevDiscoveryObserver &)
+	?RequestStatus@CBtSimpleActive@@QAEAAVTRequestStatus@@XZ @ 14 NONAME ; class TRequestStatus & CBtSimpleActive::RequestStatus(void)
+	??1CAdvanceDevDiscoverer@@UAE@XZ @ 15 NONAME ; CAdvanceDevDiscoverer::~CAdvanceDevDiscoverer(void)
+	?Alias@CBtDevExtension@@QBEABVTDesC16@@XZ @ 16 NONAME ; class TDesC16 const & CBtDevExtension::Alias(void) const
+	?NewL@CAdvanceDevDiscoverer@@SAPAV1@AAVCBtDevRepository@@AAVMDevDiscoveryObserver@@@Z @ 17 NONAME ; class CAdvanceDevDiscoverer * CAdvanceDevDiscoverer::NewL(class CBtDevRepository &, class MDevDiscoveryObserver &)
+	?ServiceConnectionStatus@CBtDevExtension@@QBE?AW4TBTEngConnectionStatus@@XZ @ 18 NONAME ; enum TBTEngConnectionStatus CBtDevExtension::ServiceConnectionStatus(void) const
+	?NewLC@CBtDevExtension@@SAPAV1@ABVTInquirySockAddr@@ABVTDesC16@@W4TDefaultDevNameOption@@@Z @ 19 NONAME ; class CBtDevExtension * CBtDevExtension::NewLC(class TInquirySockAddr const &, class TDesC16 const &, enum TDefaultDevNameOption)
+	??1CBtDevExtension@@UAE@XZ @ 20 NONAME ; CBtDevExtension::~CBtDevExtension(void)
+	?DiscoverDeviceL@CAdvanceDevDiscoverer@@QAEXW4TDevDiscoveryFilter@1@W4TBTMajorDeviceClass@@@Z @ 21 NONAME ; void CAdvanceDevDiscoverer::DiscoverDeviceL(enum CAdvanceDevDiscoverer::TDevDiscoveryFilter, enum TBTMajorDeviceClass)
+	?NewLC@CBtDevExtension@@SAPAV1@PAVCBTDevice@@W4TDefaultDevNameOption@@@Z @ 22 NONAME ; class CBtDevExtension * CBtDevExtension::NewLC(class CBTDevice *, enum TDefaultDevNameOption)
+	?IsJustWorksBonded@CBtDevExtension@@SAHABVTBTNamelessDevice@@@Z @ 23 NONAME ; int CBtDevExtension::IsJustWorksBonded(class TBTNamelessDevice const &)
+	?Device@CBtDevExtension@@QBEABVCBTDevice@@XZ @ 24 NONAME ; class CBTDevice const & CBtDevExtension::Device(void) const
+	?RequestId@CBtSimpleActive@@QAEHXZ @ 25 NONAME ; int CBtSimpleActive::RequestId(void)
+	?IsInitialized@CBtDevRepository@@QBEHXZ @ 26 NONAME ; int CBtDevRepository::IsInitialized(void) const
+	?Addr@CBtDevExtension@@QBEABVTBTDevAddr@@XZ @ 27 NONAME ; class TBTDevAddr const & CBtDevExtension::Addr(void) const
+	?CancelDiscovery@CAdvanceDevDiscoverer@@QAEXXZ @ 28 NONAME ; void CAdvanceDevDiscoverer::CancelDiscovery(void)
+	?NewL@CBtDevRepository@@SAPAV1@XZ @ 29 NONAME ; class CBtDevRepository * CBtDevRepository::NewL(void)
+	??1CBtSimpleActive@@UAE@XZ @ 30 NONAME ; CBtSimpleActive::~CBtSimpleActive(void)
+	?Device@CBtDevRepository@@QBEPBVCBtDevExtension@@ABVTBTDevAddr@@@Z @ 31 NONAME ; class CBtDevExtension const * CBtDevRepository::Device(class TBTDevAddr const &) const
+	?ReInitialize@CBtDevRepository@@QAEXXZ @ 32 NONAME ; void CBtDevRepository::ReInitialize(void)
+	?IsHeadset@CBtDevExtension@@SAHABVTBTDeviceClass@@@Z @ 33 NONAME ; int CBtDevExtension::IsHeadset(class TBTDeviceClass const &)
+	?NewLC@CBtDevExtension@@SAPAV1@ABVTBTDevAddr@@ABVTDesC16@@W4TDefaultDevNameOption@@@Z @ 34 NONAME ; class CBtDevExtension * CBtDevExtension::NewLC(class TBTDevAddr const &, class TDesC16 const &, enum TDefaultDevNameOption)
+

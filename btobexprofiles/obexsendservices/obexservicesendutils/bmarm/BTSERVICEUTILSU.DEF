@@ -1,0 +1,10 @@
+EXPORTS
+	StartSynchronousServiceL__13CBTServiceAPI14TBTServiceTypeP23CBTServiceParameterList @ 1 NONAME R3UNUSED ; CBTServiceAPI::StartSynchronousServiceL(TBTServiceType, CBTServiceParameterList *)
+	AddObjectL__23CBTServiceParameterListRC7TDesC16 @ 2 NONAME R3UNUSED ; CBTServiceParameterList::AddObjectL(TDesC16 const &)
+	AddXhtmlL__23CBTServiceParameterListRC7TDesC16 @ 3 NONAME R3UNUSED ; CBTServiceParameterList::AddXhtmlL(TDesC16 const &)
+	NewLC__23CBTServiceParameterList @ 4 NONAME R3UNUSED ; CBTServiceParameterList::NewLC(void)
+	NewL__13CBTServiceAPI @ 5 NONAME R3UNUSED ; CBTServiceAPI::NewL(void)
+	NewL__23CBTServiceParameterList @ 6 NONAME R3UNUSED ; CBTServiceParameterList::NewL(void)
+	StartServiceL__13CBTServiceAPI14TBTServiceTypeP23CBTServiceParameterList @ 7 NONAME R3UNUSED ; CBTServiceAPI::StartServiceL(TBTServiceType, CBTServiceParameterList *)
+	AddImageL__23CBTServiceParameterListRC7TDesC16 @ 8 NONAME R3UNUSED ; CBTServiceParameterList::AddImageL(TDesC16 const &)
+

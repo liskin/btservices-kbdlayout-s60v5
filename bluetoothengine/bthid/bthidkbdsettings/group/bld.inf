@@ -21,17 +21,7 @@ WINSCW ARMV5
 
 PRJ_EXPORTS
 
-PRJ_EXTENSIONS
-START EXTENSION s60/mifconv
-OPTION TARGETFILE btkeyboard.mif
-OPTION TARGETFILE btkeyboard_aif.mif
-OPTION HEADERFILE btkeyboard.mbg
-OPTION SOURCEDIR ../aif
-OPTION SOURCES -c8,8 qgn_wka_cxt
-END
-
 PRJ_MMPFILES
 bthidsettings.mmp
-bthidkbdsettings.mmp
 
 

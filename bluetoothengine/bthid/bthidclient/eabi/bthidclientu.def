@@ -8,4 +8,5 @@ EXPORTS
 	_ZN12RBTHidClient7ConnectEv @ 7 NONAME
 	_ZNK12RBTHidClient19CancelConnectDeviceEv @ 8 NONAME
 	_ZNK12RBTHidClient24CancelNotifyStatusChangeEv @ 9 NONAME
+	_ZNK12RBTHidClient7VersionEv @ 10 NONAME
 

@@ -1,0 +1,63 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*	 This file provides the information required for building the
+*    whole of a ?module_name.
+*
+*/
+
+#include <platform_paths.hrh>
+
+PRJ_PLATFORMS
+
+
+PRJ_MMPFILES
+
+../group/obexserviceman.mmp
+../group/obexservicemanclient.mmp
+../group/obexusbapi.mmp
+
+PRJ_EXPORTS
+
+../conf/obexserviceman.confml			MW_LAYER_CONFML(obexserviceman.confml)
+../conf/obexserviceman_20016BC5.crml	MW_LAYER_CRML(obexserviceman_20016BC5.crml)
+
+../obexservicemanserver/inc/obexservicemanprop.h			MW_LAYER_PLATFORM_EXPORT_PATH(obexservicemanprop.h)
+
+// Backup registration file
+backup_registration.xml  /epoc32/data/z/private/101f7c87/backup_registration.xml
+backup_registration.xml  /epoc32/release/winscw/udeb/z/private/101f7c87/backup_registration.xml
+backup_registration.xml  /epoc32/release/winscw/urel/z/private/101f7c87/backup_registration.xml
+
+
+../rom/obex.iby                                 /epoc32/rom/include/obex.iby
+../rom/obex.iby                                 CORE_MW_LAYER_IBY_EXPORT_PATH(obex.iby)
+../rom/obexserviceman.iby                       CORE_MW_LAYER_IBY_EXPORT_PATH(obexserviceman.iby)
+../rom/obexservicemanbt.iby                     CORE_MW_LAYER_IBY_EXPORT_PATH(obexservicemanbt.iby)
+../rom/obexservicemanirda.iby                   CORE_MW_LAYER_IBY_EXPORT_PATH(obexservicemanirda.iby)
+../rom/obexservicemanusb.iby                    CORE_MW_LAYER_IBY_EXPORT_PATH(obexservicemanusb.iby)
+../rom/ObexUtils.iby                            CORE_MW_LAYER_IBY_EXPORT_PATH(ObexUtils.iby)
+
+
+#include  "../utils/group/bld.inf"
+
+#include "../plugins/group/bld.inf"
+
+
+
+
+
+
+
+

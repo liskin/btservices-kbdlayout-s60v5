@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<api id="1547a7c78494bd39533b7a4a18b534e8" dataversion="2.0">
+  <name>OBEX Service Plugin API</name>
+  <description>ECom interface for implementing obex service controllers, e.g. ftp, opp service controller</description>
+  <type>c++</type>
+  <collection>localconnectivityservice</collection>
+  <libs>
+  </libs>
+  <release category="platform"/>
+  <attributes>
+     <!-- This indicates wether the api provedes separate html documentation -->
+     <!-- or is the additional documentation generated from headers. -->
+     <!-- If you are unsuere then the value is "no" -->
+     <htmldocprovided>no</htmldocprovided>
+     <adaptation>no</adaptation>
+  </attributes>
+</api>

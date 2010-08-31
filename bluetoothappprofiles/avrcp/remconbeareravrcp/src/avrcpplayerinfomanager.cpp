@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -133,7 +133,33 @@ void CAvrcpPlayerInfoManager::BulkStopped()
 	iUidWatcher = NULL;
 	}
 
-void CAvrcpPlayerInfoManager::ClientAvailable(const TRemConClientId& aId, TPlayerType aClientType, TPlayerSubType aClientSubType, const TDesC8& aName)
+// Helper function for ClientAvailable and TargetFeaturesUpdated
+TInt CAvrcpPlayerInfoManager::SetItemDetails(TAvrcpMediaPlayerItem& aItem, TPlayerType aPlayerType, TPlayerSubType aPlayerSubType, const TDesC8& aName)
+	{
+	aItem.iPlayerType = aPlayerType;
+	aItem.iPlayerSubType = aPlayerSubType;
+	aItem.iName.Set(aName);
+	aItem.iFeatureBitmask = TPlayerFeatureBitmask();
+	return SetPlayerFeatures(aItem.iId, aItem.iFeatureBitmask, aItem.iSdpFeatures, aItem.iAbsoluteVolumeSupport);
+	}
+
+// Helper function for ClientAvailable and TargetFeaturesUpdated
+void CAvrcpPlayerInfoManager::UpdateSdpRecord(const TAvrcpMediaPlayerItem& aItem)
+	{
+	// Update SDP record, if this fails we carry on, it's non-fatal
+	TInt sdpErr = KErrNone;
+	if(!iTargetRecord)
+		{
+		TRAP(sdpErr, AvrcpSdpUtils::CreateServiceRecordL(iSdpDatabase, iTargetRecord, ETrue, 
+					(aItem.iSdpFeatures & AvrcpSdp::EBrowsing) ? AvrcpSdp::KAvrcpProfileVersion14 : AvrcpSdp::KAvrcpProfileVersion13));
+		}
+	if(sdpErr == KErrNone)
+		{
+		TRAP_IGNORE(UpdateTgServiceRecordL());
+		}
+	}
+
+void CAvrcpPlayerInfoManager::ClientAvailable(const TRemConClientId& aId, TPlayerType aPlayerType, TPlayerSubType aPlayerSubType, const TDesC8& aName)
 	{
 	LOG_FUNC;
 	ASSERT_CONTROL_THREAD;
@@ -150,15 +176,11 @@ void CAvrcpPlayerInfoManager::ClientAvailable(const TRemConClientId& aId, TPlaye
 	
 	TAvrcpMediaPlayerItem& item = iPlayers[index];
 	item.iId = aId;
-	item.iPlayerType = aClientType;
-	item.iPlayerSubType = aClientSubType;
-	item.iName.Set(aName);
 	item.iBulkClientAvailable = EFalse;
 	item.iUidCounter = 0;
 	item.iLastUpdatedUidCounter = 0;
 	item.iPlaybackStatus = MPlayerEventsObserver::EStopped;
-	item.iFeatureBitmask = TPlayerFeatureBitmask();
-	TInt err = SetPlayerFeatures(aId, item.iFeatureBitmask, item.iSdpFeatures, item.iAbsoluteVolumeSupport);
+	TInt err = SetItemDetails(item, aPlayerType, aPlayerSubType, aName);
 
 	// Release lock before calling out of player info manager in case
 	// anyone needs to call back in - we're finished updating the
@@ -168,40 +190,20 @@ void CAvrcpPlayerInfoManager::ClientAvailable(const TRemConClientId& aId, TPlaye
 	if(!err)
 		{
 		TRAP(err, iPlayStatusWatcher->StartWatchingPlayerL(aId));
-	
 		if(!err)
 			{
-			// Update SDP record, if this fails we carry on, it's non-fatal
-			TInt sdpErr = KErrNone;
-			if(!iTargetRecord)
+			UpdateSdpRecord(item);
+		     for(TInt i = 0; i<iObservers.Count(); i++)
 				{
-				TRAP(sdpErr, AvrcpSdpUtils::CreateServiceRecordL(iSdpDatabase, 
-						iTargetRecord, 
-						ETrue, 
-						(item.iSdpFeatures & AvrcpSdp::EBrowsing) ? 
-						AvrcpSdp::KAvrcpProfileVersion14 : 
-						AvrcpSdp::KAvrcpProfileVersion13));
-				}
-			
-			if(sdpErr == KErrNone)
-				{
-				TRAP_IGNORE(UpdateTgServiceRecordL());
+				iObservers[i]->MpcoAvailablePlayersChanged();
 				}
 			}
-		}
-
-	if(!err)
-		{
-		for(TInt i = 0; i<iObservers.Count(); i++)
+		  else    
 			{
-			iObservers[i]->MpcoAvailablePlayersChanged();
+			iLock.Wait();
+			iPlayers[index].iId = KNullClientId;
+			iLock.Signal();
 			}
-		}
-	else	
-		{
-		iLock.Wait();
-		iPlayers[index].iId = KNullClientId;
-		iLock.Signal();
 		}
 	}
 
@@ -301,6 +303,46 @@ void CAvrcpPlayerInfoManager::ControllerFeaturesUpdatedL(RArray<TUid>& aSupporte
 	AvrcpSdpUtils::UpdateProtocolDescriptorListL(iSdpDatabase, iControllerRecord, avctpVersion);
 	AvrcpSdpUtils::UpdateProfileDescriptorListL(iSdpDatabase, iControllerRecord, avrcpVersion);
 	AvrcpSdpUtils::UpdateSupportedFeaturesL(iSdpDatabase, iControllerRecord, AvrcpSdp::ERemoteControl, AvrcpSdp::KAvrcpBaseCtFeatures);
+	}
+
+void CAvrcpPlayerInfoManager::TargetFeaturesUpdated(const TRemConClientId& aId, TPlayerType aPlayerType, TPlayerSubType aPlayerSubType, const TDesC8& aName)
+	{
+	LOG_FUNC;
+	ASSERT_CONTROL_THREAD;
+	iLock.Wait();
+	// Find this client in our client list
+	TInt index = iPlayers.Find(aId, PlayerCompare);
+	if(index < 0)
+		{
+		// Couldn't find client in client list, maybe we removed it after an earlier failure
+		iLock.Signal();
+		return;
+		}
+
+	TAvrcpMediaPlayerItem& item = iPlayers[index];
+	TInt err = SetItemDetails(item, aPlayerType, aPlayerSubType, aName);
+
+	// Release lock before calling out of player info manager in case
+	// anyone needs to call back in - we're finished updating the
+	// info now.
+	iLock.Signal();
+
+	if(!err)
+		{
+		UpdateSdpRecord(item);
+		}
+	else    
+		{
+		// There was an error updating the features so remove this client from the client list
+		iLock.Wait();
+		iPlayers[index].iId = KNullClientId;
+		iLock.Signal();
+		}
+
+	for(TInt i = 0; i<iObservers.Count(); i++)
+		{
+		iObservers[i]->MpcoAvailablePlayersChanged();
+		}
 	}
 
 MIncomingCommandHandler& CAvrcpPlayerInfoManager::InternalCommandHandler()

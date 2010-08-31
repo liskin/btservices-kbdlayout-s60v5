@@ -21,7 +21,6 @@
 #include "btengsrvsession.h"
 #include "btengserver.h"
 #include "btengsrvbbconnectionmgr.h"
-#include "btengpairman.h"
 #include "btengsrvsettingsmgr.h"
 #include "btengclientserver.h"
 #include "debug.h"
@@ -158,7 +157,6 @@ void CBTEngSrvSession::ServiceL( const RMessage2& aMessage )
     if( !aMessage.IsNull() &&
         ( err || 
           ( aMessage.Function() != EBTEngNotifyConnectionEvents && 
-            aMessage.Function() != EBTEngPairDevice &&
             aMessage.Function() != EBTEngSetPowerState ) ) )
         {
             // Return the error code to the client.
@@ -260,25 +258,6 @@ void CBTEngSrvSession::DispatchMessageL( const RMessage2& aMessage )
             Server()->BasebandConnectionManager()->ManageTopology( ETrue );
             }
             break;
-        case EBTEngSetPairingObserver:
-            {
-            CheckPowerOnL();
-            // Simply forward it to the pairing manager
-            Server()->PairManager()->ProcessCommandL( aMessage );
-            break;
-            }
-        case EBTEngPairDevice:
-            {
-            CheckPowerOnL();
-            // Simply forward it to the pairing manager
-            Server()->PairManager()->ProcessCommandL( aMessage );
-            break;
-            }
-        case EBTEngCancelPairDevice:
-            {
-            Server()->PairManager()->ProcessCommandL( aMessage );
-            break;
-            }
         default:
             {
             TRACE_INFO( ( _L( "[BTENG]\t DispatchMessageL: bad request (%d)" ), aMessage.Function() ) )

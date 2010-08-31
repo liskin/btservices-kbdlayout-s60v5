@@ -92,14 +92,12 @@ CBTEngSrvBBConnMgr* CBTEngSrvBBConnMgr::NewL(CBTEngServer* aServer,
 //
 CBTEngSrvBBConnMgr::~CBTEngSrvBBConnMgr()
     {
-    Unsubscribe();
+	delete iLinkCountWatcher;
+	delete iWlanWatcher;    
 	iLinkCountProperty.Close();
     iWlanStatusProperty.Close();
-	delete iLinkCountWatcher;
-	delete iWlanWatcher;
 	delete iPhyLinks;
     }
-
 
 // ---------------------------------------------------------------------------
 // Start listening to the relevant properties.
@@ -126,18 +124,9 @@ void CBTEngSrvBBConnMgr::Subscribe()
 //
 void CBTEngSrvBBConnMgr::Unsubscribe()
     {
-    if( iLinkCountWatcher->IsActive() )
-        {
-        iLinkCountProperty.Cancel();
-        iLinkCountWatcher->CancelRequest();
-        }
-	if( iWlanWatcher && iWlanWatcher->IsActive() )
-	    {
-	    iWlanStatusProperty.Cancel();
-	    iWlanWatcher->CancelRequest();
-	    }
+    iLinkCountWatcher->Cancel();
+    iWlanWatcher->Cancel();
     }
-
 
 // ---------------------------------------------------------------------------
 // ?implementation_description
@@ -364,22 +353,20 @@ void CBTEngSrvBBConnMgr::HandleDisconnectAllCompleteL( TInt aErr )
 // ?implementation_description
 // ---------------------------------------------------------------------------
 //
-void CBTEngSrvBBConnMgr::RequestCompletedL( CBTEngActive* aActive, TInt aId, 
+void CBTEngSrvBBConnMgr::RequestCompletedL( CBTEngActive* aActive,
     TInt aStatus )
     {
-    TRACE_FUNC_ARG( ( _L( "id: %d; status: %d" ), aId, aStatus ) )
-    ASSERT( aId == KBTEngSrvBBConnId || aId == KBTEngSrvWlanStatusId );
-    (void) aActive;
-    (void) aId;
+    TRACE_FUNC_ARG( ( _L( "id: %d; status: %d" ), aActive->RequestId(), aStatus ) )
+    ASSERT( aActive->RequestId() == KBTEngSrvBBConnId || aActive->RequestId() == KBTEngSrvWlanStatusId );
     if( aStatus != KErrPermissionDenied )
         {
-            // Ignore any other errors.
-            // First subscribe again, so that we don't miss any updates.
-            Subscribe();
+        // Ignore any other errors.
+        // First subscribe again, so that we don't miss any updates.
+        Subscribe();
         }
     (void) ManageTopology( EFalse );    // Ignore result; nothing to do 
                                         // about it here.
-    if( aId == KBTEngSrvBBConnId )
+    if( aActive->RequestId() == KBTEngSrvBBConnId )
         {
         TRACE_INFO( ( _L( "[BTENG] PHY count key changed, update UI connection status" ) ) )
         iServer->SettingsManager()->SetUiIndicatorsL();
@@ -387,6 +374,24 @@ void CBTEngSrvBBConnMgr::RequestCompletedL( CBTEngActive* aActive, TInt aId,
     TRACE_FUNC_EXIT
     }
 
+// ---------------------------------------------------------------------------
+// From class MBTEngActiveObserver.
+// Handles cancelation of an outstanding request
+// ---------------------------------------------------------------------------
+//
+void CBTEngSrvBBConnMgr::CancelRequest( TInt aRequestId )
+    {
+    TRACE_FUNC_ARG( ( _L( "reqID %d" ), aRequestId ) );
+    if ( aRequestId == KBTEngSrvBBConnId )
+        {
+        iLinkCountProperty.Cancel();
+        }
+    else if ( aRequestId == KBTEngSrvWlanStatusId )
+        {
+        iWlanStatusProperty.Cancel();
+        }
+    TRACE_FUNC_EXIT
+    }
 
 // ---------------------------------------------------------------------------
 // From class MBTEngActiveObserver.
@@ -394,12 +399,11 @@ void CBTEngSrvBBConnMgr::RequestCompletedL( CBTEngActive* aActive, TInt aId,
 // RunL cannot actually leave.
 // ---------------------------------------------------------------------------
 //
-void CBTEngSrvBBConnMgr::HandleError( CBTEngActive* aActive, TInt aId, 
+void CBTEngSrvBBConnMgr::HandleError( CBTEngActive* aActive,  
     TInt aError )
     {
-    TRACE_FUNC_ARG( ( _L( "id: %d; status: %d" ), aId, aError ) )
+    TRACE_FUNC_ARG( ( _L( "id: %d; status: %d" ), aActive->RequestId(), aError ) )
     (void) aActive;
-    (void) aId;
     (void) aError;
     }
 

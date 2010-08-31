@@ -78,9 +78,16 @@ public:
      * @since S60 v3.2
      * @param ?arg1 ?description
      */
-    virtual void RequestCompletedL( CBTEngActive* aActive, TInt aId, 
+    virtual void RequestCompletedL( CBTEngActive* aActive, 
                                      TInt aStatus );
 
+    /**
+     * Callback for handling cancelation of an outstanding request.
+     *
+     * @param aId The ID that identifies the outstanding request.
+     */
+    virtual void CancelRequest( TInt aRequestId );
+    
     /**
      * From MBTEngActiveObserver.
      * Handle an error in the setting change handling.
@@ -88,7 +95,7 @@ public:
      * @since S60 v3.2
      * @param ?arg1 ?description
      */
-    virtual void HandleError( CBTEngActive* aActive, TInt aId, TInt aError );
+    virtual void HandleError( CBTEngActive* aActive, TInt aError );
 
 private:
 

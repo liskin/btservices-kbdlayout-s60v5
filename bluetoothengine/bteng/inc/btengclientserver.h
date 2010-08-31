@@ -55,9 +55,6 @@ enum TBTEngServerRequest
     EBTEngNotifyConnectionEvents,       // 41
     EBTEngCancelEventNotifier,          // 42
     EBTEngPrepareDiscovery,             // 43
-    EBTEngSetPairingObserver,           // 44
-    EBTEngPairDevice,                   // 45
-    EBTEngCancelPairDevice,             // 46
     };
 
 /**  TBTDevAddr class size */

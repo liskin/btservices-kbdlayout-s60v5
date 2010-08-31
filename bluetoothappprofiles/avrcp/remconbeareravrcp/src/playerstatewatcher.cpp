@@ -37,14 +37,17 @@ CPlayerWatcherBase::~CPlayerWatcherBase()
 void CPlayerWatcherBase::StopWatchingPlayer(TRemConClientId aClientId)
 	{
 	LOG_FUNC;
-	CInternalCommand* command = *iCommands.Find(aClientId);
-	__ASSERT_DEBUG(command, AVRCP_PANIC(ENotWatchingPlayer));
-
-	TUint transId = command->RemConCommandId();
-	iCommandInterface.MrcciCommandExpired(transId);
-
-	iCommands.Remove(aClientId);
-	command->DecrementUsers();
+	CInternalCommand** cmdPtr = iCommands.Find(aClientId);
+	if (cmdPtr) // This may be NULL if we've already stopped watching the player as a result of reciving a reject
+	    {
+        CInternalCommand* cmd = *cmdPtr;
+        
+        TUint transId = cmd->RemConCommandId();
+        iCommandInterface.MrcciCommandExpired(transId);
+    
+        iCommands.Remove(aClientId);
+        cmd->DecrementUsers();
+	    }
 	}
 
 void CPlayerWatcherBase::MessageSent(CAvrcpCommand& /*aCommand*/, TInt /*aSendResult*/)

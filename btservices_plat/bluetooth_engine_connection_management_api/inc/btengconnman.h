@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -23,6 +23,7 @@
 #include <btengconstants.h>
 
 class CBTEngConnHandler;
+class CBTEngPairingHandler;
 
 /**
  *  Class MBTEngConnObserver
@@ -89,7 +90,7 @@ public:
      *              procedure; KErrNone for a normal disconnection, or 
      *              e.g. KErrCancel if the user cancelled the pairing dialog.
      */
-    virtual void PairingComplete( TBTDevAddr& aAddr, TInt aErr );
+     IMPORT_C virtual void PairingComplete( TBTDevAddr& aAddr, TInt aErr );
 
     };
 
@@ -449,10 +450,10 @@ private: // data
     CBTEngConnHandler* iConnHandler;
 
     /**
-     * This field is NOT used. Reserved for future extension.
+     * For handling pairing requests
      * Own.
      */
-    TAny* iReserved;
+    CBTEngPairingHandler* iPairingHandler;
 
     /**
      * Reference to receiver of connection events.

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>docml/pairwaitingdialog.docml</file>
+    </qresource>
+</RCC>

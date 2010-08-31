@@ -1,0 +1,4 @@
+EXPORTS
+	NewMtmUiDataLayerL__FR17CRegisteredMtmDll @ 1 NONAME R3UNUSED ; NewMtmUiDataLayerL(CRegisteredMtmDll &)
+	NewMtmUiL__FR8CBaseMtmR17CRegisteredMtmDll @ 2 NONAME R3UNUSED ; NewMtmUiL(CBaseMtm &, CRegisteredMtmDll &)
+

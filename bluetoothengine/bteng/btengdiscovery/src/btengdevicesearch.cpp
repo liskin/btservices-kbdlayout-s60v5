@@ -72,11 +72,6 @@ CBTEngDeviceSearch* CBTEngDeviceSearch::NewL()
 //
 CBTEngDeviceSearch::~CBTEngDeviceSearch()
     {
-    if( iNotifier.Handle()&& iActive->IsActive())
-       {
-       iNotifier.CancelNotifier( KDeviceSelectionNotifierUid );
-       iActive->CancelRequest();
-       }
     delete iActive;
     iNotifier.Close();
     iHostResolver.Close();
@@ -132,20 +127,17 @@ void CBTEngDeviceSearch::CancelSearch()
     TRACE_FUNC_ENTRY
     if( iActive->IsActive() && iClientReq == EDeviceSearch)
         {
+        iActive->Cancel();
         if (iActive->RequestId() == KDevSearchAoReqId)
             {
-            iNotifier.CancelNotifier( KDeviceSelectionNotifierUid );
-            iActive->CancelRequest();
             iNotifier.Close();
             NotifyClient(KErrAbort);
             }
         else if (iActive->RequestId() == KDevEirServiceListAoReqId)
             {
-            iHostResolver.Cancel();
             iHostResolver.Close();
             }
         }
-    
     TRACE_FUNC_EXIT
     }
 
@@ -182,7 +174,7 @@ void CBTEngDeviceSearch::CancelGetEirServiceUUIDs()
     TRACE_FUNC_ENTRY
     if( iActive->IsActive() && iClientReq == EGetDeviceEir)
         {
-        iHostResolver.Cancel();
+        iActive->Cancel();
         iHostResolver.Close();
         }
     TRACE_FUNC_EXIT
@@ -193,16 +185,16 @@ void CBTEngDeviceSearch::CancelGetEirServiceUUIDs()
 // Callback to notify that an outstanding request has completed.
 // ---------------------------------------------------------------------------
 //
-void CBTEngDeviceSearch::RequestCompletedL( CBTEngActive* aActive, TInt aId, 
+void CBTEngDeviceSearch::RequestCompletedL( CBTEngActive* aActive, 
     TInt aStatus )
     {
     TRACE_FUNC_ARG( ( _L( "status: %d") , aStatus ) )
     (void) aActive;
-    if ( aId == KDevSearchAoReqId )
+    if ( aActive->RequestId() == KDevSearchAoReqId )
         {
         HandleDeviceSelectionResultL(aStatus);
         }
-    else if (aId == KDevEirServiceListAoReqId)
+    else if ( aActive->RequestId() == KDevEirServiceListAoReqId )
         {
         HandleDeviceEirDataResult( aStatus );
         }
@@ -211,15 +203,33 @@ void CBTEngDeviceSearch::RequestCompletedL( CBTEngActive* aActive, TInt aId,
 
 // ---------------------------------------------------------------------------
 // From class MBTEngActiveObserver.
+// Handles cancelation of an outstanding request
+// ---------------------------------------------------------------------------
+//
+void CBTEngDeviceSearch::CancelRequest( TInt aRequestId )
+    {
+    TRACE_FUNC_ARG( ( _L( "reqID %d" ), aRequestId ) )
+    if ( aRequestId == KDevSearchAoReqId )
+        {
+        iNotifier.CancelNotifier( KDeviceSelectionNotifierUid );
+        }
+    else if ( aRequestId == KDevEirServiceListAoReqId )
+        {
+        iHostResolver.Cancel();
+        }
+    TRACE_FUNC_EXIT 
+    }
+
+// ---------------------------------------------------------------------------
+// From class MBTEngActiveObserver.
 // Callback to notify that an error has occurred in RunL.
 // ---------------------------------------------------------------------------
 //
-void CBTEngDeviceSearch::HandleError( CBTEngActive* aActive, TInt aId, 
+void CBTEngDeviceSearch::HandleError( CBTEngActive* aActive, 
     TInt aError )
     {
     TRACE_FUNC_ARG( ( _L( "error: %d") , aError ) )
     (void) aActive;
-    (void) aId;
     iNotifier.Close();
     iHostResolver.Close();
     NotifyClient(aError);

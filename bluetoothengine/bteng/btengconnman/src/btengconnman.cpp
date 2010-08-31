@@ -23,6 +23,7 @@
 
 #include "btengconnman.h"
 #include "btengconnhandler.h"
+#include "btengpairinghandler.h"
 #include "debug.h"
 
 // ======== MEMBER FUNCTIONS ========
@@ -92,6 +93,7 @@ CBTEngConnMan::~CBTEngConnMan()
     {
     TRACE_FUNC_ENTRY
     delete iConnHandler;
+    delete iPairingHandler;
     }
 
 
@@ -224,9 +226,20 @@ EXPORT_C TInt CBTEngConnMan::PairDevice( const TBTDevAddr& aAddr )
 EXPORT_C TInt CBTEngConnMan::PairDevice( const TBTDevAddr& aAddr, TBTDeviceClass aDeviceClass )
     {
     TRACE_FUNC_ENTRY
-    return  iConnHandler->StartPairing( aAddr, aDeviceClass );
-    }
+    TInt err = KErrNone;
+    if( !iPairingHandler )
+        {
+        TRAP( err, iPairingHandler = CBTEngPairingHandler::NewL( iObserver, this ) );
+        }
+    if( !err )
+        {
+        iPairingHandler->CancelPairing();
 
+        TRAP( err, iPairingHandler->StartPairingL( aAddr, aDeviceClass ) );
+        }
+    TRACE_FUNC_RES( ( _L( "result: %d" ), err ) )
+    return err;
+    }
 
 // ---------------------------------------------------------------------------
 // Cancels an ongoing pairing.
@@ -235,21 +248,25 @@ EXPORT_C TInt CBTEngConnMan::PairDevice( const TBTDevAddr& aAddr, TBTDeviceClass
 EXPORT_C void CBTEngConnMan::CancelPairDevice()
     {
     TRACE_FUNC_ENTRY
-    if( iConnHandler )
+    if( iPairingHandler )
         {
-        iConnHandler->CancelPairing();
+        iPairingHandler->CancelPairing();
+        delete iPairingHandler;
+        iPairingHandler = NULL;
         }
     }
 
 
 // ---------------------------------------------------------------------------
 // Tell BTEng to start observing the status of an ongoing pairing.
+// Deprecated since Symbian^4.
 // ---------------------------------------------------------------------------
 //
 EXPORT_C TInt CBTEngConnMan::StartPairingObserver( const TBTDevAddr& aAddr )
     {
     TRACE_FUNC_ENTRY
-    return CBTEngConnHandler::SetPairingObserver( aAddr, ETrue );
+    (void) aAddr;
+    return KErrNone;
     }
 
 
@@ -264,13 +281,14 @@ EXPORT_C void CBTEngConnMan::PrepareDiscovery()
     }
 
 // ---------------------------------------------------------------------------
-// ?implementation_description
+// Deprecated since Symbian^4.
 // ---------------------------------------------------------------------------
 //
 EXPORT_C TInt CBTEngConnMan::StopPairingObserver( const TBTDevAddr& aAddr )
     {
     TRACE_FUNC_ENTRY
-    return CBTEngConnHandler::SetPairingObserver( aAddr, EFalse );
+    (void) aAddr;
+    return KErrNone;
     }
 
 // ---------------------------------------------------------------------------

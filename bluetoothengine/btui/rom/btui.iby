@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -11,26 +11,23 @@
 *
 * Contributors:
 *
-* Description:
+* Description: 
 *
 */
-#ifndef __BTUI_IBY__
-#define __BTUI_IBY__
+#ifndef __BTCPPLUGIN_IBY__
+#define __BTCPPLUGIN_IBY__
 
+#include <data_caging_paths_for_iby.hrh>
+#include <bldvariant.hrh>
 #ifdef __BT
 
-// BTUI Application(EXE)
-S60_APP_EXE(BtUi)
-SCALABLE_IMAGE(APP_BITMAP_DIR,APP_BITMAP_DIR,BtUi)
-S60_APP_AIF_ICONS(BtUi)
-S60_APP_AIF_RSC(BtUi)
+file=ABI_DIR/BUILD_DIR/btuimodel.dll SHARED_LIB_DIR/btuimodel.dll
+file=ABI_DIR/BUILD_DIR/btuidelegate.dll SHARED_LIB_DIR/btuidelegate.dll
 
-// BTUI Model(DLL)
-file=ABI_DIR\BUILD_DIR\btdevmodel.dll          SHARED_LIB_DIR\btdevmodel.dll
-
-//ECOM plugin(Ecom DLL)
-ECOM_PLUGIN( BtuiPlugin.dll, BtuiPlugin.rsc )
+file=ABI_DIR/BUILD_DIR/btcpplugin.dll SHARED_LIB_DIR/btcpplugin.dll
+data=/epoc32/data/c/resource/qt/plugins/controlpanel/btcpplugin.qtplugin resource/qt/plugins/controlpanel/btcpplugin.qtplugin
 
 #endif //__BT
 
-#endif //__BTUI_IBY__
+#endif  // __BTCPPLUGIN_IBY__
+

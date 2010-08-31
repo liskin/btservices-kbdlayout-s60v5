@@ -57,7 +57,7 @@ EXPORT_C TInt RBTHidClient::Connect()
 // Defines server version number
 // ---------------------------------------------------------
 //
-TVersion RBTHidClient::Version() const
+EXPORT_C TVersion RBTHidClient::Version() const
     {
     return (TVersion(KBTHIDServMajorVersionNumber,
             KBTHIDServMinorVersionNumber, KBTHIDServBuildVersionNumber));

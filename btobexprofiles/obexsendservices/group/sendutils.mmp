@@ -1,0 +1,85 @@
+/*
+* Copyright (c) 2002-2010 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This is project specification file for the BtServiceUtils
+*
+*/
+
+#include <platform_paths.hrh>
+
+
+TARGET          obexservicesendutils.dll
+TARGETTYPE      dll
+UID             0x1000008D 0x101F86B6
+CAPABILITY	CAP_GENERAL_DLL
+VENDORID 	VID_DEFAULT
+
+SOURCEPATH      ../obexservicesendutils/src
+SOURCE          BTServiceAPI.cpp
+SOURCE          BTServiceClient.cpp
+SOURCE          BTServiceUtils.cpp
+SOURCE          BTServiceStarter.cpp
+SOURCE          BTServiceParameterList.cpp
+SOURCE          BTServiceDelayedDestroyer.cpp
+
+SOURCE          BTSOPPController.cpp
+SOURCE          BTSBIPController.cpp
+SOURCE          BTSBPPController.cpp
+SOURCE          BTSBPPObjectRequest.cpp
+SOURCE          BTSBPPObjectServer.cpp
+SOURCE          BTSBPPServerWait.cpp
+
+SOURCE          BTSUCapabilityResolver.cpp
+SOURCE          BTSUDataConverter.cpp
+SOURCE          BTSUImageConverter.cpp
+SOURCE          BTSUPassKeyRequest.cpp
+SOURCE          BTSURefObjectResolver.cpp
+SOURCE          BTSUXmlParser.cpp
+SOURCE          BTConnectionTimer.cpp
+SOURCE          BTSController.cpp
+
+USERINCLUDE     ../obexservicesendutils/inc
+SYSTEMINCLUDE  ../../inc /epoc32/include/libc
+SYSTEMINCLUDE  /epoc32/include/mw/hb/hbcore
+SYSTEMINCLUDE  /epoc32/include/mw/hb/hbwidgets
+MW_LAYER_SYSTEMINCLUDE
+
+
+LIBRARY         apgrfx.lib              // App Arch Session
+LIBRARY         apmime.lib              // App Arch Mime Recognizers
+LIBRARY         bafl.lib                // Basic Application Framework Library
+LIBRARY         bitmaptransforms.lib    // Bitmap transfomration library
+LIBRARY         bluetooth.lib           // Bluetooth Sockets
+LIBRARY         btdevice.lib            // Bluetooth Device
+LIBRARY         btengdiscovery.lib      // Bluetooth Discovery
+LIBRARY         btengsettings.lib       // Bluetooth Settings
+LIBRARY         charconv.lib            // Character conversion
+LIBRARY         efsrv.lib               // File Server
+LIBRARY         esock.lib               // Socket Connections
+LIBRARY         estor.lib               // Write and Read streams
+LIBRARY         euser.lib               // Base library
+LIBRARY         fbscli.lib              // Bitmap utils
+LIBRARY         imageconversion.lib     // Image conversion library
+LIBRARY         irobex.lib              // Object Exchange
+LIBRARY         obexutils.lib           // Object Exchange UI services
+//LIBRARY         xmlinterface.lib      // XML parser interface
+LIBRARY         caf.lib   				// DRM common
+LIBRARY         xmlframework.lib        // XML Framework
+LIBRARY			featmgr.lib				// Inquire supported static feature
+LIBRARY			HbCore.lib
+LIBRARY			HbWidgets.lib
+DEBUGLIBRARY    flogger.lib             // File logging services
+
+
+
+//  End of File

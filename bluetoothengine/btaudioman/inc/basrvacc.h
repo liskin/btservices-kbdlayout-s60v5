@@ -67,6 +67,11 @@ public:
     void OpenAudioL(TAccAudioType aType);
 
     /**
+    * Called when the audio open request is to be cancelled.
+    */
+    void CancelOpenAudio();
+    
+    /**
     * Called when an audio close request comes from Acc FW.
     */
     void CloseAudioL(TAccAudioType aType);

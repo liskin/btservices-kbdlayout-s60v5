@@ -38,7 +38,6 @@ file=ABI_DIR\BUILD_DIR\BTcursor_server.dll           SHARED_LIB_DIR\BTcursor_ser
 ECOM_PLUGIN(hidkeyboard.dll, hidkeyboard.rsc)
 ECOM_PLUGIN(hidmouse.dll, hidmouse.rsc)
 ECOM_PLUGIN(kbdlayout.dll, kbdlayout.rsc)
-ECOM_PLUGIN(bthidkbdsettings.dll, bthidkbdsettings.rsc)
 ECOM_PLUGIN(bthidengplugin.dll, bthidengplugin.rsc)
 
 data=DATAZ_\APP_BITMAP_DIR\BTMouseBitMaps.mbm     APP_BITMAP_DIR\BTMouseBitMaps.mbm

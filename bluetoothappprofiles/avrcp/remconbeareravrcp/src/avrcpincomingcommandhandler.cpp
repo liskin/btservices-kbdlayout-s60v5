@@ -1,4 +1,4 @@
-// Copyright (c) 2004-2009 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2004-2010 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -564,13 +564,13 @@ TInt CRcpIncomingCommandHandler::HandleSetAddressedPlayer(TUint aId, RBuf8& aCom
 			
 			// Can ignore this as we know we have allocated a big enough buffer
 			TRAP_IGNORE(response.WriteL(responseBuf));
+
+			iCommandInterface.MrccciSetAddressedClient(iClientId);
 			break;
 			}
 			};
 	
 		SendInternalResponse(aId, responseBuf);
-		iCommandInterface.MrccciSetAddressedClient(iClientId);
-	
 		responseBuf.Close();
 		}
 

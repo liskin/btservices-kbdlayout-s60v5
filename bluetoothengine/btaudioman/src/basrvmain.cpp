@@ -30,8 +30,8 @@ static void RunServerL();
 GLDEF_C TInt E32Main()
     {
     TRACE_STATIC_FUNC
-
-    __UHEAP_MARK;
+    //TODO uncomment UHEAP macros after orbit & Qt memory leaks are resolved till then it should be commented.
+//    __UHEAP_MARK;
     CTrapCleanup* cleanup=CTrapCleanup::New();
     TInt r=KErrNoMemory;
     if (cleanup)
@@ -40,7 +40,7 @@ GLDEF_C TInt E32Main()
         delete cleanup;
         }
     //
-    __UHEAP_MARKEND;
+//    __UHEAP_MARKEND;
     return r;
     }
 

@@ -35,10 +35,6 @@ SOURCE                  btengsrvpluginmgr.cpp
 SOURCE                  btengsrvbbconnectionmgr.cpp
 SOURCE                  btengsdpdbhandler.cpp
 SOURCE                  btengsrvkeywatcher.cpp
-SOURCE                  btengpairman.cpp
-SOURCE                  btengpairbase.cpp
-SOURCE                  btengincpair.cpp 
-SOURCE                  btengotgpair.cpp
 SOURCE                  btengsrvsettingsmgr.cpp
 START RESOURCE          ../data/btengsdp.rss
 HEADER
@@ -47,6 +43,7 @@ END // RESOURCE
 
 USERINCLUDE             ../inc  
 SYSTEMINCLUDE           ../../inc
+SYSTEMINCLUDE  /epoc32/include/mw/hb/hbcore
 MW_LAYER_SYSTEMINCLUDE
 
 LIBRARY                 euser.lib
@@ -63,6 +60,7 @@ LIBRARY                 efsrv.lib
 LIBRARY                 featmgr.lib
 LIBRARY                 aknnotify.lib
 LIBRARY                 btfeatures.lib
+LIBRARY 				hbcore.lib
 
 LIBRARY                 btpowercontrol.lib
 #ifndef __WINS__

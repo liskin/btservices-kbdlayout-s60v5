@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hbdocument version="1.1">
+    <widget name="dialog" type="HbDialog">
+        <rect height="21.04478un" name="geometry" width="46.71642un" x="3.43284un" y="37.16418un"/>
+        <widget name="heading" role="HbDialog:headingWidget" type="HbLabel">
+            <enums name="textWrapping" value="TextWordWrap"/>
+            <enums name="alignment" value="AlignLeft|AlignJustify|AlignTop|AlignLeading"/>
+            <enums name="layoutDirection" value="LeftToRight"/>
+            <string name="plainText" value="=== Heading ==="/>
+        </widget>
+        <widget name="container" role="HbDialog:contentWidget" type="HbWidget">
+            <widget name="label" type="HbLabel">
+                <enums name="alignment" value="AlignLeft|AlignLeading"/>
+                <string locid="txt_bt_info_waiting_the_other_device" name="plainText" value="Waiting for other device"/>
+            </widget>
+            <widget name="progressBar" type="HbProgressBar">
+                <integer name="progressValue" value="30"/>
+                <integer name="minimum" value="0"/>
+                <enums name="orientation" value="Horizontal"/>
+                <integer name="maximum" value="100"/>
+            </widget>
+            <layout orientation="Vertical" spacing="2un" type="linear">
+                <linearitem itemname="label"/>
+                <linearitem itemname="progressBar"/>
+            </layout>
+        </widget>
+    </widget>
+    <metadata activeUIState="Common ui state" display="NHD-3.2-inch_portrait" unit="un">
+        <uistate name="Common ui state" sections="#common"/>
+    </metadata>
+</hbdocument>

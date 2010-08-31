@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hbdocument version="1.1">
+    <object name="menu_item_home" type="HbAction">
+        <string name="text" value="Add to home screen"/>
+    </object>
+    <widget name="bt_device_view" type="HbView">
+        <widget name="content" role="HbView:widget" type="HbWidget">
+            <widget name="dataForm_deviceView" type="HbDataForm">
+                <real name="z" value="1"/>
+                <sizepolicy horizontalPolicy="Expanding" horizontalStretch="0" verticalPolicy="Preferred" verticalStretch="0"/>
+                <sizehint height="7.8806un" type="PREFERRED" width="53.73134un"/>
+                <string locid="txt_bt_subhead_bluetooth_device" name="heading" value="Bluetooth device"/>
+            </widget>
+            <widget name="deviceCategory" type="HbLabel">
+                <real name="z" value="3"/>
+                <sizepolicy horizontalPolicy="Preferred" horizontalStretch="0" verticalPolicy="Preferred" verticalStretch="0"/>
+                <sizehint height="var(hb-param-text-height-secondary)" type="PREFERRED" width="39.70149un"/>
+                <string name="plainText" value="Mobile Phone"/>
+            </widget>
+            <widget name="deviceStatus" type="HbLabel">
+                <real name="z" value="4"/>
+                <sizehint height="var(hb-param-text-height-secondary)" type="PREFERRED" width="39.70149un"/>
+                <string name="plainText" value="Paired Connected"/>
+            </widget>
+            <widget name="deviceName" type="HbLineEdit">
+                <real name="z" value="2"/>
+                <sizehint height="expr(var(hb-param-graphic-size-primary-large) )" type="PREFERRED" width="39.70149un"/>
+                <string name="text" value="Wang's N97"/>
+            </widget>
+            <widget name="deviceIcon" type="HbLabel">
+                <enums name="alignment" value="AlignVCenter|AlignHCenter"/>
+                <icon iconName="qtg_large_mobile" name="icon"/>
+                <real name="z" value="1"/>
+                <sizepolicy horizontalPolicy="Fixed" horizontalStretch="0" verticalPolicy="Preferred" verticalStretch="0"/>
+                <sizehint height="var(hb-param-graphic-size-primary-large)" type="PREFERRED" width="var(hb-param-graphic-size-primary-large)"/>
+                <contentsmargins bottom="0un" left="0un" right="0un" top="0un"/>
+            </widget>
+            <widget name="connectionCombobox" type="HbDataForm">
+                <enums name="verticalScrollBarPolicy" value="ScrollBarAlwaysOff"/>
+                <enums name="horizontalScrollBarPolicy" value="ScrollBarAlwaysOff"/>
+                <enums name="selectionMode" value="NoSelection"/>
+                <real name="z" value="2"/>
+                <sizehint height="16.41791un" type="PREFERRED" width="53.73134un"/>
+                <string name="description"/>
+                <string name="heading"/>
+            </widget>
+            <widget name="pushButton_0" type="HbPushButton">
+                <icon iconName="qtg_mono_bt_unpair" name="icon"/>
+                <real name="z" value="5"/>
+                <sizehint height="9un" type="PREFERRED"/>
+                <enums name="orientation" value="Horizontal"/>
+                <string name="text" value="Unpair"/>
+            </widget>
+            <widget name="pushButton_1" type="HbPushButton">
+                <icon iconName="qtg_mono_disconnect" name="icon"/>
+                <real name="z" value="6"/>
+                <sizehint height="9un" type="PREFERRED"/>
+                <enums name="orientation" value="Horizontal"/>
+                <string name="text" value="Disconnect"/>
+            </widget>
+            <widget name="pushButton_2" type="HbPushButton">
+                <icon iconName="qtg_mono_settings" name="icon"/>
+                <real name="z" value="7"/>
+                <sizehint height="9un" type="PREFERRED"/>
+                <enums name="orientation" value="Horizontal"/>
+                <string name="text" value="Settings"/>
+            </widget>
+            <layout type="anchor">
+                <anchoritem dst="dataForm_deviceView" dstEdge="LEFT" spacing="0un" src="" srcEdge="LEFT"/>
+                <anchoritem dst="dataForm_deviceView" dstEdge="TOP" spacing="0un" src="" srcEdge="TOP"/>
+                <anchoritem dst="dataForm_deviceView" dstEdge="RIGHT" spacing="0un" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceIcon" dstEdge="LEFT" spacing="var(hb-param-margin-gene-left)" src="" srcEdge="LEFT"/>
+                <anchoritem dst="deviceIcon" dstEdge="TOP" spacing="var(hb-param-margin-gene-top)" src="dataForm_deviceView" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceName" dstEdge="LEFT" spacing="2un" src="deviceIcon" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceName" dstEdge="TOP" spacing="var(hb-param-margin-gene-top)" src="dataForm_deviceView" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceName" dstEdge="RIGHT" spacing="-var(hb-param-margin-gene-right)" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceStatus" dstEdge="LEFT" spacing="12un" src="" srcEdge="LEFT"/>
+                <anchoritem dst="deviceStatus" dstEdge="TOP" spacing="var(hb-param-margin-gene-bottom)" src="deviceCategory" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceStatus" dstEdge="RIGHT" spacing="-var(hb-param-margin-gene-right)" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceCategory" dstEdge="LEFT" spacing="2un" src="deviceIcon" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceCategory" dstEdge="TOP" spacing="var(hb-param-margin-gene-middle-vertical)" src="deviceName" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceCategory" dstEdge="RIGHT" spacing="-var(hb-param-margin-gene-right)" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="pushButton_2" dstEdge="LEFT" spacing="expr(var(hb-param-margin-gene-left) )" src="" srcEdge="LEFT"/>
+                <anchoritem dst="pushButton_2" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-bottom) )" src="pushButton_1" srcEdge="BOTTOM"/>
+                <anchoritem dst="pushButton_2" dstEdge="RIGHT" spacing="-expr(var(hb-param-margin-gene-right) )" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="connectionCombobox" dstEdge="LEFT" spacing="0un" src="" srcEdge="LEFT"/>
+                <anchoritem dst="connectionCombobox" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-top) )" src="deviceStatus" srcEdge="BOTTOM"/>
+                <anchoritem dst="connectionCombobox" dstEdge="RIGHT" spacing="0un" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="pushButton_1" dstEdge="LEFT" spacing="expr(var(hb-param-margin-gene-left) )" src="" srcEdge="LEFT"/>
+                <anchoritem dst="pushButton_1" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-middle-vertical) )" src="pushButton_0" srcEdge="BOTTOM"/>
+                <anchoritem dst="pushButton_1" dstEdge="RIGHT" spacing="-expr(var(hb-param-margin-gene-right) )" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="pushButton_0" dstEdge="LEFT" spacing="expr(var(hb-param-margin-gene-left) )" src="" srcEdge="LEFT"/>
+                <anchoritem dst="pushButton_0" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-top) )" src="connectionCombobox" srcEdge="BOTTOM"/>
+                <anchoritem dst="pushButton_0" dstEdge="RIGHT" spacing="-expr(var(hb-param-margin-gene-right) )" src="" srcEdge="RIGHT"/>
+            </layout>
+        </widget>
+        <widget name="viewMenu" role="HbView:menu" type="HbMenu">
+            <ref object="menu_item_home" role="HbWidget:addAction"/>
+        </widget>
+        <string locid="txt_cp_title_control_panel" name="title" value="Control Panel"/>
+    </widget>
+    <section name="landscape">
+        <widget name="content" role="HbView:widget" type="HbWidget">
+            <layout type="anchor">
+                <anchoritem dst="dataForm_deviceView" dstEdge="LEFT" spacing="0un" src="" srcEdge="LEFT"/>
+                <anchoritem dst="dataForm_deviceView" dstEdge="TOP" spacing="0un" src="" srcEdge="TOP"/>
+                <anchoritem dst="dataForm_deviceView" dstEdge="RIGHT" spacing="0un" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceIcon" dstEdge="LEFT" spacing="var(hb-param-margin-gene-left)" src="" srcEdge="LEFT"/>
+                <anchoritem dst="deviceIcon" dstEdge="TOP" spacing="var(hb-param-margin-gene-top)" src="dataForm_deviceView" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceName" dstEdge="LEFT" spacing="2un" src="deviceIcon" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceName" dstEdge="TOP" spacing="var(hb-param-margin-gene-top)" src="dataForm_deviceView" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceName" dstEdge="RIGHT" spacing="-var(hb-param-margin-gene-right)" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceCategory" dstEdge="LEFT" spacing="2un" src="deviceIcon" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceCategory" dstEdge="TOP" spacing="var(hb-param-margin-gene-middle-vertical)" src="deviceName" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceStatus" dstEdge="LEFT" spacing="expr(var(hb-param-margin-gene-middle-horizontal) )" src="deviceCategory" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceStatus" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-middle-vertical) )" src="deviceName" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceStatus" dstEdge="RIGHT" spacing="-var(hb-param-margin-gene-right)" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="connectionCombobox" dstEdge="LEFT" spacing="0un" src="" srcEdge="LEFT"/>
+                <anchoritem dst="connectionCombobox" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-bottom)  )" src="deviceStatus" srcEdge="BOTTOM"/>
+                <anchoritem dst="connectionCombobox" dstEdge="RIGHT" spacing="0un" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="pushButton_0" dstEdge="LEFT" spacing="expr(var(hb-param-margin-gene-left) )" src="" srcEdge="LEFT"/>
+                <anchoritem dst="pushButton_0" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-top) )" src="connectionCombobox" srcEdge="BOTTOM"/>
+                <anchoritem dst="pushButton_0" dstEdge="RIGHT" spacing="-var(hb-param-margin-gene-right)" src="" srcEdge="CENTERH"/>
+                <anchoritem dst="pushButton_1" dstEdge="LEFT" spacing="var(hb-param-margin-gene-middle-horizontal)" src="pushButton_0" srcEdge="RIGHT"/>
+                <anchoritem dst="pushButton_1" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-top) )" src="connectionCombobox" srcEdge="BOTTOM"/>
+                <anchoritem dst="pushButton_1" dstEdge="RIGHT" spacing="-expr(var(hb-param-margin-gene-right) )" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="pushButton_2" dstEdge="LEFT" spacing="expr(var(hb-param-margin-gene-left) )" src="" srcEdge="LEFT"/>
+                <anchoritem dst="pushButton_2" dstEdge="TOP" spacing="var(hb-param-margin-gene-middle-vertical)" src="pushButton_1" srcEdge="BOTTOM"/>
+                <anchoritem dst="pushButton_2" dstEdge="RIGHT" spacing="-expr(var(hb-param-margin-gene-right) )" src="" srcEdge="RIGHT"/>
+            </layout>
+        </widget>
+    </section>
+    <section name="portrait">
+        <widget name="content" role="HbView:widget" type="HbWidget">
+            <layout type="anchor">
+                <anchoritem dst="dataForm_deviceView" dstEdge="LEFT" spacing="0un" src="" srcEdge="LEFT"/>
+                <anchoritem dst="dataForm_deviceView" dstEdge="TOP" spacing="0un" src="" srcEdge="TOP"/>
+                <anchoritem dst="dataForm_deviceView" dstEdge="RIGHT" spacing="0un" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceIcon" dstEdge="LEFT" spacing="var(hb-param-margin-gene-left)" src="" srcEdge="LEFT"/>
+                <anchoritem dst="deviceIcon" dstEdge="TOP" spacing="var(hb-param-margin-gene-top)" src="dataForm_deviceView" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceName" dstEdge="LEFT" spacing="2un" src="deviceIcon" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceName" dstEdge="TOP" spacing="var(hb-param-margin-gene-top)" src="dataForm_deviceView" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceName" dstEdge="RIGHT" spacing="-var(hb-param-margin-gene-right)" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceStatus" dstEdge="LEFT" spacing="12un" src="" srcEdge="LEFT"/>
+                <anchoritem dst="deviceStatus" dstEdge="TOP" spacing="var(hb-param-margin-gene-bottom)" src="deviceCategory" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceStatus" dstEdge="RIGHT" spacing="-var(hb-param-margin-gene-right)" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceCategory" dstEdge="LEFT" spacing="2un" src="deviceIcon" srcEdge="RIGHT"/>
+                <anchoritem dst="deviceCategory" dstEdge="TOP" spacing="var(hb-param-margin-gene-middle-vertical)" src="deviceName" srcEdge="BOTTOM"/>
+                <anchoritem dst="deviceCategory" dstEdge="RIGHT" spacing="-var(hb-param-margin-gene-right)" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="pushButton_2" dstEdge="LEFT" spacing="expr(var(hb-param-margin-gene-left) )" src="" srcEdge="LEFT"/>
+                <anchoritem dst="pushButton_2" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-bottom) )" src="pushButton_1" srcEdge="BOTTOM"/>
+                <anchoritem dst="pushButton_2" dstEdge="RIGHT" spacing="-expr(var(hb-param-margin-gene-right) )" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="connectionCombobox" dstEdge="LEFT" spacing="0un" src="" srcEdge="LEFT"/>
+                <anchoritem dst="connectionCombobox" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-top) )" src="deviceStatus" srcEdge="BOTTOM"/>
+                <anchoritem dst="connectionCombobox" dstEdge="RIGHT" spacing="0un" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="pushButton_1" dstEdge="LEFT" spacing="expr(var(hb-param-margin-gene-left) )" src="" srcEdge="LEFT"/>
+                <anchoritem dst="pushButton_1" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-middle-vertical) )" src="pushButton_0" srcEdge="BOTTOM"/>
+                <anchoritem dst="pushButton_1" dstEdge="RIGHT" spacing="-expr(var(hb-param-margin-gene-right) )" src="" srcEdge="RIGHT"/>
+                <anchoritem dst="pushButton_0" dstEdge="LEFT" spacing="expr(var(hb-param-margin-gene-left) )" src="" srcEdge="LEFT"/>
+                <anchoritem dst="pushButton_0" dstEdge="TOP" spacing="expr(var(hb-param-margin-gene-top) )" src="connectionCombobox" srcEdge="BOTTOM"/>
+                <anchoritem dst="pushButton_0" dstEdge="RIGHT" spacing="-expr(var(hb-param-margin-gene-right) )" src="" srcEdge="RIGHT"/>
+            </layout>
+        </widget>
+    </section>
+    <metadata activeUIState="Common ui state" display="NHD-3.2-inch_portrait" unit="un">
+        <uistate name="Common ui state" sections="#common"/>
+        <uistate name="landscape" sections="#common landscape"/>
+        <uistate name="portrait" sections="#common portrait"/>
+    </metadata>
+</hbdocument>
