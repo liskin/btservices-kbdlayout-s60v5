@@ -1,0 +1,754 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This file contains all the resources for the module BTNotif.
+*
+*/
+
+
+NAME BNOT
+
+#include <eikon.rsg>
+
+#include <eikon.rh>
+
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.mbg>
+#include <avkon.loc>
+#include <btnotif.loc>
+#include "btnotif.hrh"
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf=""; }
+
+// === ICONS =================================================================
+
+//----------------------------------------------------
+// Icon array for BTNOTIF
+//----------------------------------------------------
+//
+RESOURCE AKN_ICON_ARRAY r_btnotif_icons
+    {
+    //This resource is removed because of skinable icon change. The title is still staying here
+	//to prevent intruducing BC break.
+    }
+
+// === TITLES AND PROMPTS ====================================================
+
+//----------------------------------------------------
+// Titles for popup windows
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_search_devs_popup_title { buf = qtn_bt_searching_found; }
+
+RESOURCE TBUF r_bt_found_devs_popup_title { buf = qtn_bt_devices_found; }
+
+RESOURCE TBUF r_bt_last_seen_devs_popup_title { buf = qtn_bt_last_seen_devices; }
+
+RESOURCE TBUF r_bt_last_used_devs_popup_title { buf = qtn_bt_last_used_devices; }
+
+//----------------------------------------------------
+// Fixed list items
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_more_devices_item { buf = qtn_bt_more_devices; }
+
+//----------------------------------------------------
+// Prompts for queries
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_passkey_prompt { buf = qtn_bt_enter_pk_for_conn; }
+
+RESOURCE TBUF r_bt_dialog_def_name { buf = qtn_bt_dialog_def_name; }
+
+RESOURCE TBUF r_bt_authorisation_name { buf = qtn_bt_accept_conn_request; }
+
+RESOURCE TBUF r_bt_receive_message { buf = qtn_bt_receive_message; }
+
+RESOURCE TBUF r_bt_receive_message_paired { buf = qtn_bt_receive_message_paired; }
+
+RESOURCE TBUF r_bt_no_devices_found { buf =qtn_bt_no_devices_found; }
+//same text than in r_bt_try_again_query	
+
+RESOURCE TBUF r_bt_power_is_off { buf = qtn_bt_is_off; }
+//same text than in R_BT_POWER_IS_OFF_QUERY
+
+RESOURCE TBUF r_bt_activate_in_offline { buf= qtn_bt_activate_in_offline; }
+//same text than in R_BT_ACTIVATE_IN_OFFLINE_QUERY
+
+RESOURCE TBUF r_bt_is_hidden_java 		{ buf=qtn_bt_is_hidden_java; }
+
+RESOURCE TBUF r_bt_is_off_java 			{ buf=qtn_bt_is_off_java; }
+
+RESOURCE TBUF r_bt_is_hidden_java_appname 		{ buf=qtn_bt_is_hidden_java_appname; }
+
+RESOURCE TBUF r_bt_is_off_java_appname 			{ buf=qtn_bt_is_off_java_appname; }
+
+RESOURCE TBUF r_bt_turn_bt_off                         { buf = qtn_bt_dos_query; }
+
+RESOURCE TBUF r_bt_switch_off_anyway { buf= qtn_bt_switch_off_anyway; }
+
+//----------------------------------------------------
+// Headers of the r_bt_is_hidden_java and r_bt_is_off_java queries
+//----------------------------------------------------
+RESOURCE TBUF r_bt_is_off_java_header 	{ buf=qtn_bt_is_off_java_header ; }
+
+RESOURCE TBUF r_bt_is_hidden_java_header 	{ buf=qtn_bt_is_hidden_java_header ; }
+
+//----------------------------------------------------
+// Prompts for global notes
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_audio_accessory_prompt { buf = qtn_bt_audio_accessory; }
+
+RESOURCE TBUF r_bt_audio_handset_prompt { buf = qtn_bt_audio_handset; }
+
+RESOURCE TBUF r_bt_conf_connected_prompt { buf = qtn_bt_conf_connected; }
+
+RESOURCE TBUF r_bt_conf_disconnected_prompt { buf = qtn_bt_conf_disconnected; }
+
+RESOURCE TBUF r_bt_conn_closed_prompt { buf = qtn_bt_conn_closed; }
+
+RESOURCE TBUF r_bt_device_not_avail { buf = qtn_bt_device_not_avail; }
+
+RESOURCE TBUF r_bt_offline_disabled { buf = qtn_bt_offline_disabled; }
+//text of R_BT_BUSY
+RESOURCE TBUF r_bt_busy_text {	buf =qtn_bt_busy;	}
+
+RESOURCE TBUF r_ir_not_supported {	buf =qtn_ir_not_supported;	}
+
+
+//----------------------------------------------------
+// Default name array for BTNotif
+// These names are used if no name is received in inquiry.
+// Note! The order must match enum TBTDefaultDevNameArrayIndexes
+// defined in BTNInqUi.cpp.
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_bt_default_device_names
+    {
+    items = {
+        LBUF { txt=qtn_bt_computer; },
+        LBUF { txt=qtn_bt_phone; },
+        LBUF { txt=qtn_bt_audio; },
+        LBUF { txt=qtn_bt_keyboard; },
+        LBUF { txt=qtn_bt_mouse; },
+        LBUF { txt=qtn_bt_printer; },
+        LBUF { txt=qtn_bt_carkit; },
+        LBUF { txt=qtn_bt_dialog_def_name; }
+        };
+    }
+
+
+// === SOFTKEYS ==============================================================
+
+//----------------------------------------------------
+// Softkeys for "Searching devices" wait note
+//----------------------------------------------------
+//
+RESOURCE CBA r_bt_softkeys_empty_cancel
+    {
+    buttons =
+        {
+        CBA_BUTTON {txt="";},
+        CBA_BUTTON {id=EAknSoftkeyCancel; txt = text_softkey_cancel; }
+        };
+    }
+
+
+//----------------------------------------------------
+// Softkeys for found devices popup list
+//----------------------------------------------------
+//
+RESOURCE CBA r_bt_softkeys_select_stop
+    {
+    buttons =
+        {
+        CBA_BUTTON {id=EAknSoftkeySelect; txt = text_softkey_select;},
+        CBA_BUTTON {id=EAknSoftkeyCancel; txt = qtn_bt_softkey_stop; },
+        CBA_BUTTON {id=EAknSoftkeySelect; txt = text_softkey_select;}       
+        };
+    }
+
+// === QUERIES ===============================================================
+
+//----------------------------------------------------
+// PIN request query
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_enter_passkey_query
+    {
+    flags   = EGeneralQueryFlags | EEikDialogFlagVirtualInput ;
+    buttons = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items   =
+        {        
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_DATA_QUERY
+                {
+                layout  = EDataLayout;
+                control = EDWIN
+                    {
+                    maxlength = KBTPassKeyMaxLength;
+                    default_input_mode = EAknEditorNumericInputMode;
+                    flags     = EEikEdwinNoHorizScrolling | EEikEdwinResizable;
+                    avkon_flags = EAknEditorFlagLatinInputModesOnly;
+                    };
+                };
+            }
+        }; 
+    }
+
+//----------------------------------------------------
+// OBEX PIN request query
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_obex_passkey_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_DATA_QUERY
+                {
+                layout  = EDataLayout;
+                label   = qtn_bt_enter_obex_pcode;
+                control = EDWIN
+                    {
+                    maxlength = KBTPassKeyMaxLength;
+                    default_input_mode = EAknEditorNumericInputMode;
+                    flags     = EEikEdwinNoHorizScrolling | EEikEdwinResizable;
+                    };
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Query for accepting incoming connections
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_authorisation_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// If device search has been unsuccessful, the new
+// search is asked with this query from user.
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_try_again_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                label     = qtn_bt_no_devices_found;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Ask BT power mode setting from user
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_power_is_off_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                label     = qtn_bt_is_off;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Ask BT power mode setting from user in offline mode
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_activate_in_offline_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                label     = qtn_bt_activate_in_offline;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Inform user that data receiving failed because of low memory.
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_memlo_memory_low_data_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                label     = qtn_memlo_memory_low_data;
+                animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Inform user that data receiving to MMC failed because of low memory.
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_memlo_mmc_memory_low_data_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                label     = qtn_memlo_mmc_memory_low_data;
+                animation = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE DIALOG r_bt_passkey_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_CANCEL;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+// === NOTES =================================================================
+
+//----------------------------------------------------
+// Wait note right after bluetooth device search
+// has been launched.
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_searching_devices_note
+    {
+    flags   = EAknWaitNoteFlags | EEikDialogFlagWait;
+    buttons = r_bt_softkeys_empty_cancel;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTNotifSearchingDevicesNote;
+            control = AVKON_NOTE
+                {
+                layout          = EWaitLayout;
+                singular_label  = qtn_bt_searching;
+                animation       = R_QGN_GRAF_WAIT_BAR_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Information note when maximum number of connections
+// is reached and new one could not be created.
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_busy_note
+    {
+    flags   = EAknInformationNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTNotifBtBusyNote;
+            control = AVKON_NOTE
+                {
+                layout          = EGeneralLayout;
+                singular_label  = qtn_bt_busy;
+                animation       = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+
+// === ANIMATIONS ============================================================
+
+//----------------------------------------------------
+// Animation for r_bt_searching_devices_popuplist
+//----------------------------------------------------
+//
+RESOURCE BMPANIM_DATA r_bt_animation_for_popuplist
+    {
+    frameinterval   = 200;
+    playmode        = EAknBitmapAnimationPlayModeCycle;
+    bmpfile         = btnotif_bitmap_file_data_caging;
+    frames          = r_bt_animation_for_popuplist_images;
+    }
+
+//----------------------------------------------------
+// Image frames for r_bt_animation_for_popuplist_images
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_bt_animation_for_popuplist_images
+    {
+    items=
+        {
+        BMPANIM_FRAME {bmpid=EMbmBtnotifQgn_note_bt_popup_2;  maskid=EMbmBtnotifQgn_note_bt_popup_2_mask; },
+        BMPANIM_FRAME {bmpid=EMbmBtnotifQgn_note_bt_popup;    maskid=EMbmBtnotifQgn_note_bt_popup_mask;   },
+        BMPANIM_FRAME {bmpid=EMbmBtnotifQgn_note_bt_popup_3;  maskid=EMbmBtnotifQgn_note_bt_popup_3_mask; },
+        BMPANIM_FRAME {bmpid=EMbmBtnotifQgn_note_bt_popup;    maskid=EMbmBtnotifQgn_note_bt_popup_mask;   }
+        };
+    }
+
+//---------------------------------------------------------------
+// Prompts for Remote SIM Access Profile notes
+//----------------------------------------------------------------
+RESOURCE TBUF r_bt_enter_sap_note   	    	{ buf = qtn_bt_wait_sap_entering; }
+
+RESOURCE TBUF r_bt_enter_sap_succeed_note 		{ buf = qtn_bt_sap_entering_succeeded; }
+
+RESOURCE TBUF r_bt_enter_sap_failed_note 		{ buf = qtn_bt_sap_entering_failed; }
+
+RESOURCE TBUF r_bt_min_passkey_prompt 			{ buf = qtn_bt_enter_pk_sap; }
+
+//----------------------------------------------------
+// Data query "Enter Bluetooth name for your phone"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_enter_local_name_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_DATA_QUERY
+                {
+                layout  = EDataLayout;
+                label   = qtn_enter_bt_name;
+                control = EDWIN
+                    {
+                    flags     = EEikEdwinNoHorizScrolling | EEikEdwinResizable;
+                    maxlength = KBTUIMaxNameLength;
+                    };
+                };
+            }
+        };
+    }
+// ---------------------------------------------------
+//
+// r_bt_generic_message_query 
+//
+// This is the query blanket used by Generic Message queries.
+// They are java power and java visibility at the time
+// of this writing, but probably in the future there will be
+// others.
+// ---------------------------------------------------
+//
+RESOURCE DIALOG r_bt_generic_message_query 
+    {
+    flags = EGeneralQueryFlags | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items=
+        {
+		DLG_LINE 
+	        {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                };
+            },
+        DLG_LINE
+            {
+            type = EAknCtMessageQuery;
+            id = EAknMessageQueryContentId;
+            control = AVKON_MESSAGE_QUERY
+                {
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// r_bt_generic_query
+//
+// This is the blanket for all the generic yes/no queries, which
+// do NOT use message query. This is not only used by CBTNGenericQueryNotifier
+// but other notifiers such as PinNotifier use also this.
+//
+// NOTE: There is no blanket for empty genric message.
+// It is just based on empty CAknInformationNote.
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_generic_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }    
+       
+//----------------------------------------------------
+// Information note that will be shown when temp 
+// visibility expire.
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_hidden_from_others_note			
+	{ 
+		buf = qtn_bt_hidden_from_others; 
+	}
+//----------------------------------------------------
+// Block devices related items
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_block_device_header	
+	{
+		buf = qtn_bt_block_device_header;
+	}
+	
+//----------------------------------------------------	
+// Blocking question asked, when the
+// user is asked about blocking a non-paired device.
+//----------------------------------------------------	
+//
+RESOURCE TBUF r_bt_block_device_nohelp
+	{
+		buf= qtn_bt_block_all_conn_attempts;
+	}
+
+//----------------------------------------------------	
+// Blocking question asked, when the
+// user is asked about blocking a paired device.
+//----------------------------------------------------	
+//
+RESOURCE TBUF r_bt_block_paired_device_nohelp
+	{
+		buf= qtn_bt_block_paired_device;
+	}
+	
+//----------------------------------------------------
+// Query for incoming pairing request
+//----------------------------------------------------
+RESOURCE TBUF r_bt_accept_pairing_request
+	{
+		buf=qtn_bt_accept_pairing_request;
+	}
+
+//----------------------------------------------------
+// Information note that will be shown when temp 
+// visibility expire.
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_no_device_discovery_voip			{ buf = qtn_bt_no_device_discovery_voip; }
+
+//----------------------------------------------------
+// Information note that will be shown if SIM card
+// is not available while trying SAP connection.
+//----------------------------------------------------
+//
+
+RESOURCE TBUF r_bt_sap_no_sim_note                       { buf = qtn_bt_sap_no_sim; }
+                                                               
+//----------------------------------------------------
+// Information note when maximum number of connections
+// is reached and new one could not be created.
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_turn_bt_off_note
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                label     = qtn_bt_dos_query;
+                };
+            }
+        };
+    }
+  
+   
+//---------------------------------------------------
+// Title for search filter        
+//---------------------------------------------------
+RESOURCE TBUF r_bt_search_filter_popup_title { buf = qtn_bt_search_for; }    
+
+//----------------------------------------------------
+//List item text in search filter
+//----------------------------------------------------
+RESOURCE TBUF r_bt_search_for_all { buf = qtn_bt_search_for_all; }
+RESOURCE TBUF r_bt_search_for_phone { buf = qtn_bt_search_for_phone; }
+RESOURCE TBUF r_bt_search_for_computer { buf = qtn_bt_search_for_computer; }
+RESOURCE TBUF r_bt_search_for_audio { buf = qtn_bt_search_for_audio; }
+RESOURCE TBUF r_bt_search_for_input { buf = qtn_bt_search_for_input; }    
+
+//------------------------------------------------------------
+// query for unblocking selected blocked device
+//------------------------------------------------------------
+RESOURCE DIALOG r_bt_unblock_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationLayout;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE TBUF r_bt_unblock_device 		{ buf = qtn_bt_unblock_device; }
+
+//----------------------------------------------------
+// Information note for AVRCP 1.3 Battery low info
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_accessory_low 		{ buf = qtn_bt_accessory_low; }
+RESOURCE TBUF r_bt_accessory_critical 	{ buf = qtn_bt_accessory_critical; }
+RESOURCE TBUF r_bt_permanently_on        { buf = qtn_bt_permanently_on; }
+RESOURCE TBUF r_bt_switched_on        { buf = qtn_bt_switched_on; }
+RESOURCE TBUF r_bt_switched_off        { buf = qtn_bt_switched_off; }
+
+//----------------------------------------------------
+// SSP NumericComparison and PasskeyEntry
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_ssp_passkey_comparison_prompt    { buf = qtn_bt_simple_passkey_comparison; }
+RESOURCE TBUF r_bt_ssp_passkey_entry    { buf = qtn_bt_simple_passkey_entry; }
+
+//----------------------------------------------------
+// Confirmation note "Pairing successfully done with %U"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_succesfully_paired_prompt { buf = qtn_bt_succesfully_paired; }
+
+//----------------------------------------------------
+// Error notes of SSP 
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_pairing_failed_prompt { buf = qtn_bt_pairing_failed; }
+RESOURCE TBUF r_bt_ssp_busy { buf = qtn_bt_simple_busy; }
+
+//-----------------------------------------------------------------------------
+// Confirmation note "Authorise this device to make connections automatically?"
+//-----------------------------------------------------------------------------
+//
+RESOURCE TBUF r_bt_authorization_prompt { buf = qtn_bt_authorisation_query; }
+
+// End of File

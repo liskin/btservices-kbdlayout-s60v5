@@ -26,8 +26,8 @@ DEFAULT
 PRJ_EXPORTS
 ../inc/btengprivatecrkeys.h                 |../../inc/btengprivatecrkeys.h
 ../inc/btengprivatepskeys.h                 |../../inc/btengprivatepskeys.h
+../inc/btotgpairpub.inl                     |../../inc/btotgpairpub.inl
 ../inc/btengutil.h                          |../../inc/btengutil.h
-
 ../rom/bteng.iby                            CORE_MW_LAYER_IBY_EXPORT_PATH(bteng.iby)
 ../data/10204DA9.xml                        z:/private/2000B187/10204DA9.xml
 
@@ -36,7 +36,6 @@ PRJ_EXPORTS
 ../conf/bteng_10204DAA.crml                 MW_LAYER_CRML(bteng_10204DAA.crml)
 ../conf/bteng_10204DAB.crml 	            MW_LAYER_CRML(bteng_10204DAB.crml)
 ../conf/bteng_10204DAC.crml 	            MW_LAYER_CRML(bteng_10204DAC.crml)
-
 
 ../data/btrfs.txt                           z:/resource/btrfs.txt
 

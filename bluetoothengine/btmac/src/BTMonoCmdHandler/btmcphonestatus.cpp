@@ -19,9 +19,7 @@
 // INCLUDE FILES
 
 #include "btmcphonestatus.h"
-#ifdef NO101APPDEPFIXES
 #include <nssvascoreconstant.h>
-#endif  //NO101APPDEPFIXES
 #include <etelmm.h>
 #include "atcodec.h"
 #include "btmcprotocol.h"
@@ -102,11 +100,7 @@ void CBtmcPhoneStatus::SetVoiceRecognitionControlL(TBool aEnabled)
     if (aEnabled && !iVoiceRecognitionEnabled)
         {
         // AO for Voice Dial
-#ifdef NO101APPDEPFIXES
         LEAVE_IF_ERROR(iVoiceDialProperty.Attach(KSINDUID, ERecognitionState))
-#else   //NO101APPDEPFIXES
-        LEAVE_IF_ERROR(iVoiceDialProperty.Attach(KUidSystemCategory, KBTMonoVoiceRecognitionStateKey))
-#endif  //NO101APPDEPFIXES
         CBtmcActive* ao = CBtmcActive::NewLC(*this, CActive::EPriorityStandard, KVoiceDialSubscribe);
         iActives.AppendL(ao);
         iVoiceDialProperty.Subscribe(ao->iStatus);
@@ -213,11 +207,7 @@ void CBtmcPhoneStatus::HandleVoiceDialEventL(TInt aEnabled)
     TRACE_INFO((_L("Voice dial Initiator %d, Voice dial event %d"), iVoiceRecogInitiator, aEnabled))
     TBTMonoATVoiceRecognition value = EBTMonoATVoiceRecognitionOff;    
     
-#ifdef NO101APPDEPFIXES
     if (iVoiceRecogInitiator != EBTMonoVoiceRecognitionActivatedByRemote && aEnabled == ERecognitionStarted)
-#else   //NO101APPDEPFIXES
-    if (iVoiceRecogInitiator != EBTMonoVoiceRecognitionActivatedByRemote && aEnabled == KBTMonoVoiceRecognitionStarted)
-#endif  //NO101APPDEPFIXES
         {// phone activated or headset deactivated voice recognition, informs headset status change
         value = EBTMonoATVoiceRecognitionOn;
         }

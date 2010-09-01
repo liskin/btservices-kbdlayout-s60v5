@@ -1,0 +1,1440 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This file contains all the resources for the BTUI.
+*
+*/
+
+
+#include <data_caging_paths_strings.hrh>
+
+//  RESOURCE IDENTIFIER
+
+NAME    BVIE          // 4 letter ID
+
+//  INCLUDES
+#include <eikon.rh>
+#include "btui.hrh"   // Enums for these resources
+#include <btui.loc>   // Localisation file
+#include <btui.mbg>   // Icon indexes created by abld
+#include "eikon.rsg"
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <avkon.mbg>
+#include <avkon.loc>
+#include <appinfo.rh>
+
+//  MACROS
+
+//  RESOURCE DEFINITIONS
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf=""; }
+
+//----------------------------------------------------
+//
+//  Hotkeys for BTUI
+//
+//----------------------------------------------------
+//
+RESOURCE HOTKEYS r_btui_hotkeys
+    {
+    control=
+        {
+        HOTKEY { command=EAknCmdExit; key='e'; }
+        };
+    }
+
+// == MAIN VIEW ==============================================================
+
+RESOURCE CBA r_btui_softkeys_options_back__change
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyOptions;
+            txt = text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyBack;
+            txt = text_softkey_back; 
+            },
+        CBA_BUTTON 
+            {
+            id = EBTUICmdMSK ;
+            txt = qtn_msk_change; 
+            }
+            
+        };
+    }
+
+
+
+
+//----------------------------------------------------
+//
+//  The main view of the BTUI application
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_btui_main_view
+    {
+    hotkeys = r_btui_hotkeys;
+    menubar = r_btui_menubar_main_view;
+    cba     = r_btui_softkeys_options_exit__change;
+    }
+
+//----------------------------------------------------
+//
+//  The main view's menu bar
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_btui_menubar_main_view
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_btui_app_menu; txt=""; },
+        MENU_TITLE { menu_pane = r_btui_main_view_menu; txt=""; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//  The main view options
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_btui_main_view_menu
+    {
+    items =
+        {
+        MENU_ITEM { command = EBTUICmdChangePowerStateMenu;   txt = qtn_bt_change_value; },
+        MENU_ITEM { command = EBTUICmdChangeVisibilityMenu;   txt = qtn_bt_change_value; },
+        MENU_ITEM { command = EBTUICmdChangeBTNameMenu;       txt = qtn_bt_change_value; }
+		#ifdef __BT_SAP
+		,
+		MENU_ITEM { command = EBTUICmdChangeSapStateMenu;   txt = qtn_bt_change_value; }
+		#endif
+        };
+    }
+
+//----------------------------------------------------
+//
+//  Editor for entering all settings
+//
+//----------------------------------------------------
+//
+RESOURCE LISTBOX r_bt_setting_editor
+    {
+    flags = EEikListBoxMultipleSelection;
+    }
+
+//----------------------------------------------------
+//
+//  The input dialog for entering power mode
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_bt_power_setting_page
+    {
+    label              = qtn_bt_sett_module;
+    hint_text          = " ";
+    softkey_resource   = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    type               = EAknSetListBox;
+    editor_resource_id = r_bt_setting_editor;
+    }
+
+//----------------------------------------------------
+//
+//  Bluetooth power modes
+//
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_bt_power_modes
+    {
+    items =
+        {
+        LBUF { txt = qtn_bt_sett_on; },
+        LBUF { txt = qtn_bt_sett_off; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//  The input dialog for bluetooth visibility setting
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_bt_visibility_setting_page
+    {
+    label              = qtn_bt_sett_phone_visibility;
+    hint_text          = " ";
+    softkey_resource   = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    type               = EAknSetListBox;
+    editor_resource_id = r_bt_setting_editor;
+    }
+
+//----------------------------------------------------
+//
+//  Bluetooth visibility modes
+//
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_bt_visibility_modes
+    {
+    items =
+        {
+        LBUF { txt = qtn_bt_det_sett_general; },
+        LBUF { txt = qtn_bt_set_visibility_time; },
+        LBUF { txt = qtn_bt_hidden; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//  The input dialog for bluetooth local name setting
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_bt_name_setting_page
+    {
+    label   = qtn_bt_sett_bt_name;
+    type    = EEikCtEdwin;
+    softkey_resource   = R_AVKON_SOFTKEYS_OK_CANCEL__OK;    
+    editor_resource_id = r_bt_name_setting_editor;
+    }
+
+//----------------------------------------------------
+//
+//  Editor for entering BT's local name
+//
+//----------------------------------------------------
+//
+RESOURCE EDWIN r_bt_name_setting_editor
+    {
+    lines = 0; // Expanding to multiple rows
+    maxlength = KBTUIMaxNameLength;
+    flags = EEikEdwinNoLineOrParaBreaks;
+    }
+
+
+// === PAIRED DEVICES VIEW ===================================================
+
+//----------------------------------------------------
+//
+//  This view shows all paired Bluetooth devices.
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_btui_other_devices_view
+    {
+    hotkeys = r_btui_hotkeys;
+    menubar = r_btui_menubar_other_devices_view;
+    cba     = r_btui_softkeys_options_exit__conoptions; 
+    }
+    
+
+RESOURCE CBA r_btui_softkeys_options_exit__conoptions
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyOptions;
+            txt = text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyExit;
+            txt = text_softkey_exit;
+            },
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyContextOptions;//EAknSoftkeyOptions;
+            txt = text_softkey_option;
+            }
+            
+        };
+    }  
+    
+RESOURCE AVKON_VIEW r_btui_other_devices_view_gs
+    {
+    hotkeys = r_btui_hotkeys;
+    menubar = r_btui_menubar_other_devices_view;
+    cba     = r_btui_softkeys_options_back__conoptions; 
+    }
+//    menubar_context = r_btui_menubar_other_devices_view__context;
+// this is defined in CBTUIOtherDevicesView::DoActivate, since I did not
+// find a way to do this by resources
+
+RESOURCE CBA r_btui_softkeys_options_back__conoptions
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyOptions;
+            txt = text_softkey_option;
+            },
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyBack;
+            txt = text_softkey_back; 
+            },
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyContextOptions;//EAknSoftkeyOptions;
+            txt = text_softkey_option;
+            }
+            
+        };
+    }    
+    
+//----------------------------------------------------
+//
+//  The menubar for other paired devices view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_btui_menubar_other_devices_view
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_btui_app_menu; txt = ""; },
+        MENU_TITLE { menu_pane = r_btui_other_devices_view_menu; txt = ""; }
+        };
+    }
+
+
+RESOURCE MENU_BAR r_btui_menubar_other_devices_view_context
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_btui_other_devices_view_menu_context; txt = ""; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//  The other devices view options
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_btui_other_devices_view_menu
+    {
+    items =
+        {
+        MENU_ITEM { command = EBTUICmdNewPairedDevice;    txt = qtn_bt_new_paired_device; },
+        MENU_ITEM { command = EBTUICmdConnect;            txt = qtn_bt_gen_connect; flags = EEikMenuItemSpecific; },
+        MENU_ITEM { command = EBTUICmdConnectAudio;       txt = qtn_bt_connect; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdDisconnect;         txt = qtn_bt_disconnect; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdGiveNickname;       txt = qtn_bt_give_nickname; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdSetTrusted;         txt = qtn_bt_set_as_trusted; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdSetUnTrusted;       txt = qtn_bt_set_as_untrusted; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdSetBlocked;         txt = qtn_bt_block; flags = EEikMenuItemSpecific; },        
+        MENU_ITEM { command = EBTUICmdDelete;             txt = qtn_bt_delete; flags = EEikMenuItemSpecific; },
+        MENU_ITEM { command = EBTUICmdSettings;           txt = qtn_bt_settings;  flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdDeleteAll;          txt = qtn_bt_delete_all; }
+        };
+    }
+
+RESOURCE MENU_PANE r_btui_other_devices_view_menu_context
+    {
+    items =
+        {
+        MENU_ITEM { command = EBTUICmdNewPairedDevice;    txt = qtn_bt_new_paired_device; },
+        MENU_ITEM { command = EBTUICmdConnect;            txt = qtn_bt_gen_connect; },
+        MENU_ITEM { command = EBTUICmdConnectAudio;       txt = qtn_bt_connect; },
+        MENU_ITEM { command = EBTUICmdDisconnect;         txt = qtn_bt_disconnect; },
+        MENU_ITEM { command = EBTUICmdGiveNickname;       txt = qtn_bt_give_nickname; },
+        MENU_ITEM { command = EBTUICmdSetTrusted;         txt = qtn_bt_set_as_trusted; },
+        MENU_ITEM { command = EBTUICmdSetUnTrusted;       txt = qtn_bt_set_as_untrusted; },
+        MENU_ITEM { command = EBTUICmdSetBlocked;         txt = qtn_bt_block; },                
+        MENU_ITEM { command = EBTUICmdDelete;             txt = qtn_bt_delete; },
+        MENU_ITEM { command = EBTUICmdSettings;           txt = qtn_bt_settings; }
+        };
+    }
+
+
+// == APPLICATION ============================================================
+
+//----------------------------------------------------
+//
+//  The BTUI application level menu
+//  Common for all views
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_btui_app_menu
+    {
+    items =
+        {
+#ifdef __SERIES60_HELP
+        MENU_ITEM { command = EAknCmdHelp; txt = qtn_options_help; },
+#endif
+        MENU_ITEM { command = EAknCmdExit; txt = qtn_options_exit; }
+        };
+    }
+
+    
+
+// === QUERIES ===============================================================
+
+//----------------------------------------------------
+// Data query "Enter Bluetooth name for your phone"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_enter_local_name_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_DATA_QUERY
+                {
+                layout  = EDataLayout;
+                label   = qtn_enter_bt_name;
+                control = EDWIN
+                    {
+                    flags     = EEikEdwinNoHorizScrolling | EEikEdwinResizable | EEikEdwinNoLineOrParaBreaks;
+                    maxlength = KBTUIMaxNameLength;
+                    };
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Confirmation query "You have active Bluetooth
+// connections on. Switch off anyway?"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_switch_off_anyway_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationLayout;
+                label     = qtn_bt_switch_off_anyway;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Confirmation query "Bluetooth is currently off.
+// Do you want to switch it on?"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_is_off_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationLayout;
+                label     = qtn_bt_is_off;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Confirmation query "Do you want to activate bluetooth in off-line mode?"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_activate_in_offline_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                label     = qtn_bt_activate_in_offline;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Confirmation query "Cancel pairing with: %U"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_warn_erase_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationLayout;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE TBUF r_bt_warn_erase { buf = qtn_bt_warn_erase; }
+RESOURCE TBUF r_bt_warn_erase_connected { buf = qtn_bt_warn_erase_connected; }
+
+//----------------------------------------------------
+// Confirmation query "Cancel all pairings"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_warn_erase_all_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationLayout;
+                label     = qtn_bt_warn_erase_all;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Confirmation query "Delete all pairings? Some devices may be disconnected."
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_warn_erase_all_connected_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationLayout;
+                label     = qtn_bt_warn_erase_all_connected;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Data query "Enter alias"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_enter_nickname_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_DATA_QUERY
+                {
+                layout  = EDataLayout;
+                label   = qtn_bt_enter_nickname;
+                control = EDWIN
+                    {
+                    flags     = EEikEdwinNoHorizScrolling | EEikEdwinResizable;
+                    maxlength = KBTUIMaxAliasLength;
+                    };
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Confirmation query "Set this device as trusted"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_set_trusted_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationLayout;
+                label     = qtn_bt_conf_aut;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE TBUF r_bt_set_as_trusted_prompt { buf = qtn_bt_conf_aut; }
+
+//----------------------------------------------------
+// Confirmation query "Disconnect from: %U"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_disconnect_from_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationLayout;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE TBUF r_bt_disconnect_from { buf = qtn_bt_disconn_from; }
+
+
+// === NOTES =================================================================
+
+//----------------------------------------------------
+// Information note "Phone is visible to other
+// Bluetooth devices."
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_phone_visib_to_oth_note
+    {
+    flags   = EAknInformationNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUIPhoneVisibleToOthers;
+            control = AVKON_NOTE
+                {
+                layout          = EGeneralLayout;
+                singular_label  = qtn_bt_phone_visib_to_oth;
+                animation       = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Information note "Phone is hidden from others"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_hidden_from_others
+    {
+    flags   = EAknInformationNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUIHiddenFromOthersNote;
+            control = AVKON_NOTE
+                {
+                layout          = EGeneralLayout;
+                singular_label  = qtn_bt_hidden_from_others;
+                animation       = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Error note "Alias exists in Paired devices list."
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_name_exists_note
+    {
+    flags   = EAknErrorNoteFlags | EEikDialogFlagWait;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUINameAlreadyExists;
+            control = AVKON_NOTE
+                {
+                layout          = EGeneralLayout;
+                singular_label  = qtn_bt_name_exists;
+                animation       = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Error note "Invalid name entered, try again."
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_invalid_local_name_note
+    {
+    //removed
+    //Leave the name here to keep binary compatibility
+    }
+
+//----------------------------------------------------
+// Confirmation note "Device set as untrusted."
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_device_untrusted_note
+    {
+    flags   = EAknConfirmationNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUIDeviceSetAsUntrusted;
+            control = AVKON_NOTE
+                {
+                layout          = EGeneralLayout;
+                singular_label  = qtn_bt_dev_set_as_untrust;
+                animation       = R_QGN_NOTE_OK_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Wait note "Waiting for response from %U"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_waiting
+    {
+    flags   = EAknWaitNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY; 
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUIWaitingForPairing;
+            control = AVKON_NOTE
+                {
+                layout          = EWaitLayout;
+                singular_label  = qtn_bt_waiting;
+                animation       = R_QGN_GRAF_WAIT_BAR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE TBUF r_bt_waiting_prompt { buf = qtn_bt_waiting; }
+
+//----------------------------------------------------
+// Error note "Cannot execute Bluetooth operation
+// successfully!"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_general_error_note
+    {
+    flags   = EAknErrorNoteFlags | EEikDialogFlagWait;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUIGeneralError;
+            control = AVKON_NOTE
+                {
+                layout          = EGeneralLayout;
+                singular_label  = qtn_bt_general_error;
+                animation       = R_QGN_NOTE_ERROR_ANIM;
+                };
+            }
+        };
+    }
+
+
+//----------------------------------------------------
+// Wait note "Connecting to %U"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_connecting_to_wait_note
+    {
+    flags   = EAknWaitNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_CANCEL;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUIConnectingTo;
+            control = AVKON_NOTE
+                {
+                layout          = EWaitLayout;                
+                animation       = R_QGN_GRAF_WAIT_BAR_ANIM;
+                };
+            }
+        };
+    }
+
+RESOURCE TBUF r_bt_connecting_to { buf = qtn_bt_wait_connecting_to;}
+
+//----------------------------------------------------
+// Information note "Disconnect wired accessory"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_disconnect_wired_note
+    {
+    flags   = EAknInformationNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUIDisconnectWired;
+            control = AVKON_NOTE
+                {
+                layout          = EGeneralLayout;
+                singular_label  = qtn_bt_disconnect_wired;
+                animation       = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Information note "Cannot establish Bluetooth connection"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_not_incall_note
+    {
+    flags   = EAknInformationNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUINotIncall;
+            control = AVKON_NOTE
+                {
+                layout          = EGeneralLayout;
+                singular_label  = qtn_bt_not_incall;
+                animation       = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Information note "Disconnect %U first"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_disconnect_first_prompt { buf = qtn_bt_disconnect_first; }
+
+//----------------------------------------------------
+// Information note "Maximum amount of Bluetooth conn..."
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_busy
+    {
+    flags   = EAknInformationNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_EMPTY;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUIBtBusy;
+            control = AVKON_NOTE
+                {
+                layout          = EGeneralLayout;
+                singular_label  = qtn_bt_busy;
+                animation       = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+
+//----------------------------------------------------
+// Information note "Bluetooth can't activated in off-line mode"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_offline_disabled { buf = qtn_bt_offline_disabled; }
+
+//----------------------------------------------------
+// Default value for "My Bluetooth name"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_default_local_name {	buf = qtn_bt_default_local_name; }
+
+
+// === GLOBAL QUERIES AND NOTES ==============================================
+
+//----------------------------------------------------
+// Global Information note "Audio routed to BT handsfree"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_audios_accessory_prompt { buf = qtn_bt_audio_accessory; }
+
+//----------------------------------------------------
+// Global Information note "Connected to %U"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_conf_connected_prompt { buf = qtn_bt_conf_connected; }
+
+//----------------------------------------------------
+// Global Information note "Disconnected from %U"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_conf_disconnected_prompt { buf = qtn_bt_conf_disconnected; }
+
+//----------------------------------------------------
+// Global Information note "Cannot establish Bluetooth connection"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_device_not_avail_note { buf = qtn_bt_device_not_avail; }
+
+//----------------------------------------------------
+// Global Information note "Hands-Free Profile not supported by %U"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_hfp_not_supported { buf = qtn_bt_hfp_not_supported; }
+
+//----------------------------------------------------
+// Global Information note "Unsupported device: %U"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_device_not_supported { buf = qtn_bt_device_not_supported; }
+
+// ===========================================================================
+
+//----------------------------------------------------
+// Titles for views
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_title_bluetooth  { buf = qtn_bt_title_bluetooth; }
+RESOURCE TBUF r_bt_title_paired_dev { buf = qtn_bt_title_paired_dev; }
+
+//----------------------------------------------------
+// Empty list text
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_no_paired_devices { buf = qtn_bt_no_paired_devices; }
+
+//----------------------------------------------------
+// Popup commands for paired devices view when
+// there are no devices
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_bt_no_paired_devices_popup_commands
+    {
+    items = {
+        LBUF { txt = qtn_bt_new_paired_device; }
+        };
+    }
+
+//----------------------------------------------------
+// Standard popup commands for paired devices view
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_bt_paired_devices_popup_commands
+    {
+    items = {		
+        LBUF { txt = qtn_bt_give_nickname; },        
+        LBUF { txt = qtn_bt_delete; }
+        };
+    }
+
+//----------------------------------------------------
+// Optional popup commands for paired devices view
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_set_untrusted_command { buf = qtn_bt_set_as_untrusted; }
+
+RESOURCE TBUF r_bt_set_trusted_command { buf = qtn_bt_set_as_trusted; }
+
+RESOURCE TBUF r_bt_connect_command { buf = qtn_bt_connect; }
+
+RESOURCE TBUF r_bt_disconnect_command { buf = qtn_bt_disconnect; }
+
+
+//----------------------------------------------------
+// Format/label strings for main view
+// There is also TBTUIMainViewSettingFormatStrings enum
+// in the BTUI.hrh which must reflect EXACTLY this resource !
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_bt_label_strings
+    {
+    items = {
+        LBUF { txt=" \t"qtn_bt_sett_module"\t\t"qtn_bt_sett_on; },
+        LBUF { txt=" \t"qtn_bt_sett_module"\t\t"qtn_bt_sett_off; },
+        LBUF { txt=" \t"qtn_bt_sett_phone_visibility"\t\t"qtn_bt_det_sett_general; },
+        LBUF { txt=" \t"qtn_bt_sett_phone_visibility"\t\t"qtn_bt_hidden; },
+        
+        //temp visible mode		
+        LBUF { txt=" \t"qtn_bt_sett_phone_visibility"\t\t" qtn_bt_temp_visible; },
+        
+        LBUF { txt=" \t"qtn_bt_sett_bt_name"\t\t"; }
+		#ifdef __BT_SAP
+		,
+		LBUF { txt=" \t"qtn_bt_sap"\t\t"qtn_bt_sap_enabled; },
+        LBUF { txt=" \t"qtn_bt_sap"\t\t"qtn_bt_sap_disabled; }
+		#endif
+        };
+    }
+
+
+#ifdef __BT_SAP
+//----------------------------------------------------
+//
+//  The input dialog for SIM access profile setting
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_bt_sap_setting_page
+    {
+    label              = qtn_bt_sap;
+    hint_text          = " ";
+    softkey_resource   = R_AVKON_SOFTKEYS_OK_CANCEL__OK;
+    type               = EAknSetListBox;
+    editor_resource_id = r_bt_setting_editor;
+    }
+
+//----------------------------------------------------
+//
+//  Bluetooth sap modes
+//
+//----------------------------------------------------
+//
+RESOURCE ARRAY r_bt_sap_modes
+    {
+    items =
+        {
+        LBUF { txt = qtn_bt_sap_enabled; },
+        LBUF { txt = qtn_bt_sap_disabled; }
+        };
+    }  
+
+//----------------------------------------------------
+// Information Note "Enabling SIM Access Profile  
+// connection Bluetooth must be ON"
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_sap_enable_note
+    { 
+    flags   = EAknInformationNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_OK_EMPTY__OK;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtNote;
+            id      = EBTUIBtSapEnableNote;
+            control = AVKON_NOTE
+                {
+                layout           = EGeneralLayout;
+                singular_label   = qtn_bt_sap_enable_info;
+                animation        = R_QGN_NOTE_INFO_ANIM;
+                };
+            }
+        };
+    }
+#endif //__BT_SAP
+
+//  Visibility TIMEOUT
+//----------------------------------------------------
+//    
+//    r_setting_visibility_time_slider    
+//    visibility timeout setting slider
+//
+//----------------------------------------------------
+//
+RESOURCE SLIDER r_setting_visibility_time_slider 
+    {
+    layout = EAknSettingsItemSliderLayout;
+    minvalue = 1;
+    maxvalue = 60;
+    step = 1; 
+    valuetype = EAknSliderValueBareFigure;
+    singular_valuelabel = qtn_bt_slider_singular;
+        
+    minlabel = qtn_bt_slider_min;
+    maxlabel = qtn_bt_slider_max;
+    valuelabel = qtn_bt_slider_plural; 
+    }
+
+//----------------------------------------------------
+//    
+//    r_visibility_time_setting_page     
+//    visibility timeout setting page. 
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_SETTING_PAGE r_visibility_time_setting_page
+    { 
+    number = EAknSettingPageNoOrdinalDisplayed;
+    label = qtn_bt_slider_visibility_time;
+    type = EAknCtSlider;
+    softkey_resource   = R_AVKON_SOFTKEYS_OK_CANCEL__OK;    
+    editor_resource_id = r_setting_visibility_time_slider;
+    }
+ 
+
+//----------------------------------------------------
+//  r_gs_btui_view_caption 
+// 
+// Btui view caption for GS plugin
+//----------------------------------------------------
+//
+RESOURCE TBUF r_gs_btui_view_caption
+    {
+    buf = qtn_set_folder_bluetooth;
+    }
+
+//----------------------------------------------------
+//
+//  The main view of the BTUI as GS plugin
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_btui_main_view_gs_plugin
+    {
+    hotkeys = r_btui_hotkeys;
+    menubar = r_btui_menubar_main_view;
+    cba     = r_btui_softkeys_options_back__change;   
+    }
+    
+RESOURCE CBA r_btui_softkeys_options_exit__change
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyOptions;
+            txt = text_softkey_option; 
+            },
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyExit;
+            txt = text_softkey_exit; 
+            },
+        CBA_BUTTON 
+            {
+            id = EBTUICmdMSK ;
+            txt = qtn_msk_change; 
+            }
+            
+        };
+    }    
+
+//----------------------------------------------------
+// Audio connection confirmation query 
+//----------------------------------------------------
+//
+RESOURCE DIALOG r_bt_connect_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationLayout;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+     }
+     
+// === BLOCKED DEVICES VIEW ===================================================
+
+//----------------------------------------------------
+//
+//  This view shows all blocked Bluetooth devices.(for GS)
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_btui_block_devices_view_gs
+    {
+    hotkeys = r_btui_hotkeys;
+    menubar = r_btui_menubar_block_devices_view;
+    cba     = r_btui_softkeys_options_back__unblock ;
+    }
+
+//----------------------------------------------------
+//
+//  The menubar buttons for blocked devices view
+//  MSK is dimmed when needed.
+//
+//----------------------------------------------------
+//
+
+
+RESOURCE CBA r_btui_softkeys_options_back__unblock
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyOptions;
+            txt = text_softkey_option; 
+            },
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyBack;
+            txt = text_softkey_back; 
+            },
+        CBA_BUTTON 
+            {
+            id = EBTUICmdUnblock ;
+            txt = qtn_msk_delete ;
+            }
+            
+        };
+    }
+    
+//----------------------------------------------------
+//
+//  This view shows all blocked Bluetooth devices.(bt application) 
+//
+//----------------------------------------------------
+//
+RESOURCE AVKON_VIEW r_btui_block_devices_view
+    {
+    hotkeys = r_btui_hotkeys;
+    menubar = r_btui_menubar_block_devices_view;
+    cba     = r_btui_softkeys_options_exit__unblock ;
+    }
+
+//----------------------------------------------------
+//
+//  The menubar buttons for blocked devices view
+//  MSK is dimmed when needed.
+//
+//----------------------------------------------------
+//
+
+
+RESOURCE CBA r_btui_softkeys_options_exit__unblock
+    {
+    buttons =
+        {
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyOptions;
+            txt = text_softkey_option; 
+            },
+        CBA_BUTTON
+            {
+            id = EAknSoftkeyExit;
+            txt = text_softkey_exit;
+            },
+        CBA_BUTTON 
+            {
+            id = EBTUICmdUnblock ;
+            txt = qtn_msk_delete ;
+            }
+            
+        };
+    }
+    
+//----------------------------------------------------
+//
+//  The menubar for other blocked devices view
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_BAR r_btui_menubar_block_devices_view
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_btui_app_menu; txt = ""; },
+        MENU_TITLE { menu_pane = r_btui_block_devices_view_menu; txt = ""; }
+        };
+    }
+
+
+//----------------------------------------------------
+//
+//  The blocked devices view options
+//
+//----------------------------------------------------
+//
+RESOURCE MENU_PANE r_btui_block_devices_view_menu
+    {
+    items =
+        {
+        MENU_ITEM { command = EBTUICmdUnblock;    	txt = qtn_bt_delete; flags = EEikMenuItemSpecific;},
+        MENU_ITEM { command = EBTUICmdUnblockAll;   txt = qtn_bt_delete_all; }
+        };
+    }
+
+//-----------------------------------------------
+//Title for blocked device view    
+//------------------------------------------------
+//
+RESOURCE TBUF r_bt_title_blocked_dev { buf = qtn_bt_title_blocked_devices; }
+// empty listy
+RESOURCE TBUF r_bt_no_blocked_devices { buf = qtn_bt_no_blocked_devices; }
+// Information note "Disconnect %0U device and %1U device first"
+//----------------------------------------------------
+//
+RESOURCE TBUF r_bt_disconnect_first_stereo_prompt { buf = qtn_bt_disconnect_first_stereo; }
+
+
+RESOURCE TBUF r_bt_warn_erase_blocked
+{
+	buf=qtn_bt_warn_erase_blocked;
+}
+RESOURCE TBUF r_bt_warn_erase_all_blocked
+{
+	buf=qtn_bt_warn_erase_all_blocked;
+}
+
+RESOURCE DIALOG r_bt_generic_query
+    {
+    flags   = EGeneralQueryFlags;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items   =
+        {
+        DLG_LINE
+            {
+            type    = EAknCtQuery;
+            id      = EGeneralQuery;
+            control = AVKON_CONFIRMATION_QUERY
+                {
+                layout    = EConfirmationQueryLayout;
+                animation = R_QGN_NOTE_QUERY_ANIM;
+                };
+            }
+        };
+    }      
+
+RESOURCE TBUF r_bt_option_block_device_header  
+{
+	buf=qtn_bt_block_device_header     ;
+}
+RESOURCE TBUF r_bt_option_block_paired_device_help
+{
+		buf= qtn_bt_block_paired_device "\n\n" qtn_bt_block_device_link;
+}
+
+RESOURCE TBUF r_bt_option_block_paired_device_nohelp
+{
+		buf=qtn_bt_block_paired_device;
+}
+
+RESOURCE TBUF r_bt_option_block_connected_paired_devices_help
+{
+		buf= qtn_bt_block_connected_paired_devices "\n\n" qtn_bt_block_device_link;
+}
+
+RESOURCE TBUF r_bt_option_block_connected_paired_devices_nohelp
+{
+		buf= qtn_bt_block_connected_paired_devices ;
+}
+RESOURCE TBUF r_bt_block_device_link
+	{
+		buf=qtn_bt_block_device_link;
+	}
+	
+RESOURCE DIALOG r_bt_message_query 
+    {
+    flags = EGeneralQueryFlags | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow;
+    buttons = R_AVKON_SOFTKEYS_YES_NO__YES;
+    items=
+        {
+		DLG_LINE 
+	        {
+            type = EAknCtPopupHeadingPane;
+            id = EAknMessageQueryHeaderId;
+            control = AVKON_HEADING
+                {
+                label = header_not_defined;
+                };
+            },
+        DLG_LINE
+            {
+            type = EAknCtMessageQuery;
+            id = EAknMessageQueryContentId;
+            control = AVKON_MESSAGE_QUERY
+                {
+                };
+            }
+        };
+    }
+
+RESOURCE TBUF r_cp_detail_bt_off { buf= qtn_cp_detail_bt_off; }   
+RESOURCE TBUF r_cp_detail_bt_on_shown {	buf= qtn_cp_detail_bt_on_shown; }	
+RESOURCE TBUF r_cp_detail_bt_on_hidden {	buf= qtn_cp_detail_bt_on_hidden; }	
+RESOURCE TBUF r_cp_detail_bt_conn_shown {	buf= qtn_cp_detail_bt_conn_shown; }	
+RESOURCE TBUF r_cp_detail_bt_conn_hidden {	buf= qtn_cp_detail_bt_conn_hidden; }	
+
+RESOURCE TBUF r_bt_ssp_incorrect_passcode { buf = qtn_bt_simple_incorrect_passcode;}
+RESOURCE TBUF r_bt_ssp_passcode_retry { buf = qtn_bt_simple_passcode_retry; }
+
+// End of File

@@ -1,0 +1,150 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This file contains all the resources for the BTUI.
+*
+*/
+
+
+#include <data_caging_paths_strings.hrh>
+
+//  RESOURCE IDENTIFIER
+
+NAME    BTUI          // 4 letter ID
+
+//  INCLUDES
+#include <eikon.rh>
+#include "btui.hrh"   // Enums for these resources
+#include <btui.loc>   // Localisation file
+#include <btui.mbg>   // Icon indexes created by abld
+#include "eikon.rsg"
+#include <avkon.rsg>
+#include <avkon.rh>
+#include <appinfo.rh>
+
+//  MACROS
+
+//  RESOURCE DEFINITIONS
+
+RESOURCE RSS_SIGNATURE { }
+
+RESOURCE TBUF { buf="BTUI"; }
+
+RESOURCE EIK_APP_INFO
+    {
+    status_pane = r_btui_status_pane;
+    }
+
+//----------------------------------------------------
+//
+//  Hotkeys for BTUI
+//
+//----------------------------------------------------
+//
+RESOURCE HOTKEYS r_btui_hotkeys
+    {
+    control=
+        {
+        HOTKEY { command=EAknCmdExit; key='e'; }
+        };
+    }
+
+//----------------------------------------------------
+//
+//  The status pane for BTUI application
+//
+//----------------------------------------------------
+//
+RESOURCE STATUS_PANE_APP_MODEL r_btui_status_pane
+    {
+    panes =
+        {
+        SPANE_PANE
+            {
+            id       = EEikStatusPaneUidNavi;
+            type     = EAknCtNaviPane;
+            resource = r_btui_navi_decorator;
+            }
+        };
+    }
+
+//----------------------------------------------------
+//
+//  The navi decorator for BTUI application
+//  Defines application views tabs
+//
+//----------------------------------------------------
+//
+RESOURCE NAVI_DECORATOR r_btui_navi_decorator
+    {
+    type    = ENaviDecoratorControlTabGroup;
+    control = TAB_GROUP
+        {
+        tab_width = EAknTabWidthWithThreeTabs;
+        active    = 0;  // Initial tab to be active
+        tabs =
+            {
+            TAB
+                {
+                id      = EBTUIMainViewTab;
+                bmpfile = btui_bitmap_file_data_caging;
+                bmpid   = EMbmBtuiQgn_prop_bt_set_tab3;
+                bmpmask = EMbmBtuiQgn_prop_bt_set_tab3_mask;
+                },
+            TAB
+                {
+                id      = EBTUIPairedDevicesViewTab;
+                bmpfile = btui_bitmap_file_data_caging;
+                bmpid   = EMbmBtuiQgn_prop_bt_devices_tab3;
+                bmpmask = EMbmBtuiQgn_prop_bt_devices_tab3_mask;
+                },
+
+            TAB
+                {
+                id      = EBTUIBlockedDevicesViewTab;
+                bmpfile = btui_bitmap_file_data_caging;
+                bmpid   = EMbmBtuiQgn_prop_bt_blocked_tab3;
+                bmpmask = EMbmBtuiQgn_prop_bt_blocked_tab3_mask;
+                }
+            };
+        };
+    }
+
+
+
+//----------------------------------------------------
+//
+// 	LOCALISABLE_APP_INFO
+//
+//----------------------------------------------------
+
+
+RESOURCE LOCALISABLE_APP_INFO r_btui_localisable_app_info
+    {
+    short_caption = qtn_apps_bluetooth_grid;
+    caption_and_icon = 
+    CAPTION_AND_ICON_INFO
+        {
+        caption = qtn_apps_bluetooth_list;
+		#ifdef __SCALABLE_ICONS
+			number_of_icons = 1;
+        	icon_file = APP_BITMAP_DIR"\\Btui_aif.mif";			
+		#else
+			number_of_icons = 2;
+        	icon_file = APP_BITMAP_DIR"\\Btui_aif.mbm";
+		#endif
+        };
+    }
+
+
+

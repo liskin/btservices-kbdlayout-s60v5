@@ -25,7 +25,6 @@
 #include <locodbearerpluginparams.h>      
 #include <centralrepository.h>      
 #include <locodbearer.h>
-#include <hbindicatorsymbian.h>
 
 
 /**
@@ -90,11 +89,6 @@ private:
      * @since S60 v3.2
      */
     void SubscribeL();
-    
-    /**
-     * Handles service load/unload when BT power changes.
-     */
-    void HandleBtPowerChanged( TBTPowerStateValue aPower );
 
 // from base class CActive
 
@@ -150,8 +144,6 @@ private: // data
      * Own.
      */
     CRepository* iSession;
-    
-    CHbIndicatorSymbian* iBTIndicator;
 
     };
 

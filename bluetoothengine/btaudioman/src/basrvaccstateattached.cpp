@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  Implementation of Connected state.
-*  Version     : %version: 22 %
+*  Version     : %version: 21 %
 *
 */
 
@@ -226,16 +226,6 @@ void CBasrvAccStateAttached::OpenAudioL(TAccAudioType aType)
     *myStatus = KRequestPending;
     iAudioOpener->GoActive();
 	User::RequestComplete( myStatus, KErrNone );
-    }
-
-void CBasrvAccStateAttached::CancelOpenAudio()
-    {
-    TRACE_FUNC
-    
-    if (iAudioOpener)
-        {
-        iAudioOpener->Cancel();
-        }
     }
 
 void CBasrvAccStateAttached::CloseAudioL(TAccAudioType aType)

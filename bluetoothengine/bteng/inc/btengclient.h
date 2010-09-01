@@ -158,6 +158,17 @@ public:
      * @return ?description
      */
     TInt CancelNotifyConnectionEvents();
+    
+    /**
+     * Set a pairing observer in BTEngine.
+     *
+     * @since S60 v3.2
+     * @param aAddr The address of the remote device that is being paired.
+     * @param aActivate If ETrue, the observer will be activated, otherwise
+     *                  the observer will be removed.
+     * @return KErrNone on success, otherwise a system-wide error code.
+     */
+    TInt SetPairingObserver( const TBTDevAddr& aAddr, TBool aActivate );
 
     /**
      * ?description
@@ -166,6 +177,21 @@ public:
      * @return ?description
      */
     TInt PrepareDiscovery();
+    
+    /**
+     * Pair a device.
+     * @param aAddr The address of the remote device to be paired.
+     * @param aDeviceClass the CoD of the device to be paired.
+     * @param aStatus contains the pair result at request completion.
+     */
+    void PairDevice( const TBTDevAddrPckgBuf& aAddr, 
+                     const TUint32& aDeviceClass, 
+                     TRequestStatus& aStatus  );
+    
+    /**
+     * Cancels an outstanding pair request
+     */
+    void CancelPairDevice();
     
     };
 

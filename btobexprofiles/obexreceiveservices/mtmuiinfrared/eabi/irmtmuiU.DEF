@@ -1,8 +1,0 @@
-EXPORTS
-	_Z18NewMtmUiDataLayerLR17CRegisteredMtmDll @ 1 NONAME
-	_Z9NewMtmUiLR8CBaseMtmR17CRegisteredMtmDll @ 2 NONAME
-	_ZTI12CIrMtmUiData @ 3 NONAME ; #<TI>#
-	_ZTI8CIrMtmUi @ 4 NONAME ; #<TI>#
-	_ZTV12CIrMtmUiData @ 5 NONAME ; #<VT>#
-	_ZTV8CIrMtmUi @ 6 NONAME ; #<VT>#
-

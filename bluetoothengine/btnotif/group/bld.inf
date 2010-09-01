@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2010 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -19,21 +19,30 @@
 #include <platform_paths.hrh>
 
 PRJ_PLATFORMS
-DEFAULT
+//DEFAULT
 
 PRJ_EXPORTS
+../loc/btnotif.loc        MW_LAYER_LOC_EXPORT_PATH(btnotif.loc)
+../rom/Btnotif.iby        CORE_MW_LAYER_IBY_EXPORT_PATH(Btnotif.iby)
+../rom/BtnotifResources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(BtnotifResources.iby)
+../inc/devui_const.h |../../inc/devui_const.h
 
-../rom/btnotif.iby  CORE_MW_LAYER_IBY_EXPORT_PATH(btnotif.iby)
-../inc/bluetoothdevicedialogs.h       MW_LAYER_PLATFORM_EXPORT_PATH(btservices/bluetoothdevicedialogs.h)
+PRJ_EXTENSIONS
+
+START EXTENSION s60/mifconv
+OPTION TARGETFILE btnotif.mif
+OPTION HEADERFILE btnotif.mbg
+OPTION SOURCES -c8,8 qgn_note_bt_popup -c8,8 qgn_note_bt_popup_2 \
+		           -c8,8 qgn_note_bt_popup_3 -c8,8 qgn_indi_bt_blocked
+END
+
 PRJ_MMPFILES
 
-btnotifsrv.mmp
-btnotifwrapper.mmp
+// gnumakefile btnotif_icons_dc.mk
+
+../group/BTNotif.mmp
+../ecom/BtnotifWrapper.mmp
 
 PRJ_TESTMMPFILES
 
-//../btnotifsrv/tsrc/btnotifsrvtest/group/btnotifsrvtest.mmp
-//../btnotifsrv/tsrc/btnotifsrvtest/group/btnotifserversessiontest.mmp
-//../btnotifwrapper/tsrc/btnotifwrappertest/group/btnotifwrappertest.mmp
-
-PRJ_TESTEXPORTS
+// End of File

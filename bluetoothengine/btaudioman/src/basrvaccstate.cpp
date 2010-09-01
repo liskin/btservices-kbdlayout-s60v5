@@ -86,11 +86,6 @@ void CBasrvAccState::OpenAudioL(TAccAudioType /*aType*/)
     TRACE_FUNC
     }
 
-void CBasrvAccState::CancelOpenAudio()
-    {
-    TRACE_FUNC
-    }
-
 void CBasrvAccState::CloseAudioL(TAccAudioType /*aType*/)
     {
     TRACE_FUNC
@@ -133,7 +128,7 @@ TAccInfo& CBasrvAccState::AccInfo()
     }
 
 void CBasrvAccState::NewProfileConnection(TProfiles aProfile)
-    {    
+    {
     AccInfo().iConnProfiles |= aProfile;
     AccInfo().iSuppProfiles |= aProfile;
     if (aProfile == ERemConCT && 

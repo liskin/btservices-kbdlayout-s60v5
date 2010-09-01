@@ -86,12 +86,12 @@ TInt CBtApiTest::RunMethodL(
 
     static TStifFunctionInfo const KFunctions[] =
         {
-        ENTRY( "PowerState", CBtApiTest::CBTEngSettings_GetAndSetPowerState ),
-        ENTRY( "Visibility", CBtApiTest::CBTEngSettings_SetAndGetVisibility ),
-        ENTRY( "LocalName", CBtApiTest::CBTEngSettings_SetAndGetLocalName ),
-        ENTRY( "GetOfflineModeSettingsApi", CBtApiTest::CBTEngSettings_GetOfflineModeSettingsApi ),
-        ENTRY( "ChangePowerStateTemporarily", CBtApiTest::CBTEngSettings_ChangePowerStateTemporarily ),
-        ENTRY( "CP", CBtApiTest::CBTEngSettings_ChangePowerStateTemporarily ),
+        ENTRY( "PowerState", CBTEngSettings_GetAndSetPowerState ),
+        ENTRY( "Visibility", CBTEngSettings_SetAndGetVisibility ),
+        ENTRY( "LocalName", CBTEngSettings_SetAndGetLocalName ),
+        ENTRY( "GetOfflineModeSettingsApi", CBTEngSettings_GetOfflineModeSettingsApi ),
+        ENTRY( "ChangePowerStateTemporarily", CBTEngSettings_ChangePowerStateTemporarily ),
+        ENTRY( "CP", CBTEngSettings_ChangePowerStateTemporarily ),
         };
 
     const TInt count = sizeof( KFunctions ) / 

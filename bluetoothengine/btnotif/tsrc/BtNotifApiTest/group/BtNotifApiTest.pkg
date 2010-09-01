@@ -1,0 +1,60 @@
+;
+; Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+; All rights reserved.
+; This component and the accompanying materials are made available
+; under the terms of "Eclipse Public License v1.0"
+; which accompanies this distribution, and is available
+; at the URL "http://www.eclipse.org/legal/epl-v10.html".
+;
+; Initial Contributors:
+; Nokia Corporation - initial contribution.
+;
+; Contributors:
+;
+; Description: 
+;
+
+; Languages
+&EN
+
+; Provide value for uid
+#{"STIF"},(0x00000000),1,1,0,TYPE=SA
+
+; Series60 product id for S60 3.0
+[0x1028315F], 0, 0, 0, {"Series60ProductID"}
+
+; Localised Vendor name
+%{"Nokia"}
+
+; Unique Vendor name
+:"Nokia"
+
+; Logo
+; None
+
+; Package signature - Optional
+; None
+
+; Start of Package body
+
+; Condition blocks
+; None
+
+; Options list
+; None
+
+; Install files
+"\epoc32\release\armv5\udeb\BtNotifApiTest.dll"-"c:\Sys\Bin\BtNotifApiTest.dll"
+"..\init\BtNotifApiTest.ini"-"e:\testing\init\BtNotifApiTest.ini"
+"..\conf\ui_BtNotifApiTest.cfg"-"e:\testing\conf\ui_BtNotifApiTest.cfg"
+  
+; Embedded SIS 
+; None
+
+; End of Package body
+
+; PKG dependencies
+; None
+
+; PKG capabilities
+; None

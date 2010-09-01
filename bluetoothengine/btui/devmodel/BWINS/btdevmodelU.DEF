@@ -1,0 +1,16 @@
+EXPORTS
+	??0TBTDevice@@QAE@XZ @ 1 NONAME ; TBTDevice::TBTDevice(void)
+	?IsAnyDeviceConnected@CBTDevModel@@QAEHXZ @ 2 NONAME ; int CBTDevModel::IsAnyDeviceConnected(void)
+	?CancelChange@CBTDevModel@@QAEXABVTBTDevice@@@Z @ 3 NONAME ; void CBTDevModel::CancelChange(class TBTDevice const &)
+	?ReverseCompareAphabetically@TBTDeviceComparison@@SAHABVTBTDevice@@0@Z @ 4 NONAME ; int TBTDeviceComparison::ReverseCompareAphabetically(class TBTDevice const &, class TBTDevice const &)
+	?ChangeDevice@CBTDevModel@@QAEXPBVCBTDevice@@PAV?$TPckgBuf@VTNameRecord@@@@W4TBTDeviceOp@@@Z @ 5 NONAME ; void CBTDevModel::ChangeDevice(class CBTDevice const *, class TPckgBuf<class TNameRecord> *, enum TBTDeviceOp)
+	?DeviceChangeInProgress@CBTDevModel@@QAEHXZ @ 6 NONAME ; int CBTDevModel::DeviceChangeInProgress(void)
+	??0TBTDevice@@QAE@ABV0@@Z @ 7 NONAME ; TBTDevice::TBTDevice(class TBTDevice const &)
+	?CreateDeviceL@CBTDevModel@@QAEPAVTBTDevice@@PBVCBTDevice@@PAV?$TPckgBuf@VTNameRecord@@@@@Z @ 8 NONAME ; class TBTDevice * CBTDevModel::CreateDeviceL(class CBTDevice const *, class TPckgBuf<class TNameRecord> *)
+	?ChangeDevice@CBTDevModel@@QAEXABVTBTDevice@@@Z @ 9 NONAME ; void CBTDevModel::ChangeDevice(class TBTDevice const &)
+	??4TBTDevice@@QAEAAV0@ABV0@@Z @ 10 NONAME ; class TBTDevice & TBTDevice::operator=(class TBTDevice const &)
+	?ChangeAllDevices@CBTDevModel@@QAEXW4TBTDeviceOp@@@Z @ 11 NONAME ; void CBTDevModel::ChangeAllDevices(enum TBTDeviceOp)
+	?GetDevice@CBTDevModel@@QAEHAAVTBTDevice@@@Z @ 12 NONAME ; int CBTDevModel::GetDevice(class TBTDevice &)
+	?NewL@CBTDevModel@@SAPAV1@W4TBTDeviceGroup@@PAVMBTDeviceObserver@@PAV?$TLinearOrder@VTBTDevice@@@@@Z @ 13 NONAME ; class CBTDevModel * CBTDevModel::NewL(enum TBTDeviceGroup, class MBTDeviceObserver *, class TLinearOrder<class TBTDevice> *)
+	?CompareAphabetically@TBTDeviceComparison@@SAHABVTBTDevice@@0@Z @ 14 NONAME ; int TBTDeviceComparison::CompareAphabetically(class TBTDevice const &, class TBTDevice const &)
+

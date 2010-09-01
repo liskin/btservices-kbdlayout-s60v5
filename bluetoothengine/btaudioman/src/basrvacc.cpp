@@ -139,12 +139,6 @@ void CBasrvAcc::CloseAudioL(TAccAudioType aType)
     iState->CloseAudioL(aType);
     }
 
-void CBasrvAcc::CancelOpenAudio()
-    {
-    TRACE_FUNC
-    iState->CancelOpenAudio();
-    }
-
 const TAccInfo* CBasrvAcc::AccInfo(const TBTDevAddr& aAddr)
     {
     TRACE_FUNC

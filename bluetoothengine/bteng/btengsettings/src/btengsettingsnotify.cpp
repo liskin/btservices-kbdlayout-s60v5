@@ -90,11 +90,22 @@ CBTEngSettingsNotify* CBTEngSettingsNotify::NewL( MBTEngSettingsObserver* aObser
 //
 CBTEngSettingsNotify::~CBTEngSettingsNotify()
     {
-    delete iPowerKeyWatcher;
+    if ( iPowerKeyCenRep )
+        {
+        iPowerKeyCenRep->NotifyCancel( KBTPowerState );
+        }
+    delete iPowerKeyWatcher;     // Will call Cancel()
     delete iPowerKeyCenRep;
-    delete iVisiKeyWatcher;
+    if ( iVisiKeyCenRep )
+        {
+   	    iVisiKeyCenRep->NotifyCancel( KBTDiscoverable );
+   	    }
+    delete iVisiKeyWatcher;   // Will call Cancel()
     delete iVisiKeyCenRep;
-    iBTeng.Close();
+    if( iBTeng.Handle() )
+        {
+        iBTeng.Close();
+        }
     }
 
 	
@@ -127,12 +138,12 @@ TInt CBTEngSettingsNotify::TogglePowerTemporarily()
 // Handles notification of a setting change, and informs our observer.
 // ---------------------------------------------------------------------------
 //
-void CBTEngSettingsNotify::RequestCompletedL( CBTEngActive* aActive, 
+void CBTEngSettingsNotify::RequestCompletedL( CBTEngActive* aActive, TInt aId, 
     TInt aStatus )
     {
-    TRACE_FUNC_ARG( ( _L( "Id(%d), status(%d)" ), aActive->RequestId(), aStatus ) )
+    TRACE_FUNC_ARG( ( _L( "Id(%d), status(%d)" ), aId, aStatus ) )
 
-    if( aActive->RequestId() == KPowerKeyReqId && aStatus == KBTPowerState )
+    if( aId == KPowerKeyReqId && aStatus == KBTPowerState )
         {
         iPowerKeyCenRep->NotifyRequest( KBTPowerState, 
                                          iPowerKeyWatcher->RequestStatus() );
@@ -144,7 +155,7 @@ void CBTEngSettingsNotify::RequestCompletedL( CBTEngActive* aActive,
             iObserver->PowerStateChanged( (TBTPowerStateValue) value );
             }
         }
-    else if( aActive->RequestId() == KVisibilityKeyReqId && aStatus == KBTDiscoverable )
+    else if( aId == KVisibilityKeyReqId && aStatus == KBTDiscoverable )
         {
         iVisiKeyCenRep->NotifyRequest( KBTDiscoverable, 
                                         iVisiKeyWatcher->RequestStatus() );
@@ -161,42 +172,23 @@ void CBTEngSettingsNotify::RequestCompletedL( CBTEngActive* aActive,
             // Coudl be a repository-wide reset (KInvalidNotificationId),
             // or an invalid key ID. Anyway we know the ID of the active
             // object, so we can just reset the watcher.
-        HandleError( aActive, aStatus );
+        HandleError( aActive, aId, aStatus );
         }
     TRACE_FUNC_EXIT
     }
 
-// ---------------------------------------------------------------------------
-// From class MBTEngActiveObserver.
-// Handles cancelation of an outstanding request
-// ---------------------------------------------------------------------------
-//
-void CBTEngSettingsNotify::CancelRequest( TInt aRequestId )
-    {
-    TRACE_FUNC_ARG( ( _L( "reqID %d" ), aRequestId ) )
-
-    if( aRequestId == KPowerKeyReqId )
-        {
-        iPowerKeyCenRep->NotifyCancel( KBTPowerState );
-        }
-    else if( aRequestId == KVisibilityKeyReqId )
-        {
-        iVisiKeyCenRep->NotifyCancel( KBTDiscoverable );
-        }
-    TRACE_FUNC_EXIT 
-    }
 
 // ---------------------------------------------------------------------------
 // From class MBTEngCenRepNotify.
 // Handles error situation by just re-ordering notification from CenRep.
 // ---------------------------------------------------------------------------
 //
-void CBTEngSettingsNotify::HandleError( CBTEngActive* aActive,
+void CBTEngSettingsNotify::HandleError( CBTEngActive* aActive, TInt aId, 
     TInt aError )
     {
-    TRACE_FUNC_ARG( ( _L( "Id(%d), status(%d)" ), aActive->RequestId(), aError ) )
+    TRACE_FUNC_ARG( ( _L( "Id(%d), status(%d)" ), aId, aError ) )
     (void) aError;
-    if( aActive->RequestId() == KPowerKeyReqId )
+    if( aId == KPowerKeyReqId )
         {
         delete iPowerKeyCenRep;
         iPowerKeyCenRep = NULL;
@@ -209,7 +201,7 @@ void CBTEngSettingsNotify::HandleError( CBTEngActive* aActive,
             aActive->GoActive();
             }
         }
-    else if( aActive->RequestId() == KVisibilityKeyReqId )
+    else if( aId == KVisibilityKeyReqId )
         {
         delete iVisiKeyCenRep;
         iVisiKeyCenRep = NULL;

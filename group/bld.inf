@@ -23,7 +23,6 @@ DEFAULT
 #include "../bluetoothengine/group/bld.inf"
 #include "../atcommands/group/bld.inf"
 #include "../cbsatplugin/group/bld.inf"
-#include "../btobexprofiles/group/bld.inf"
 
 PRJ_EXPORTS
 

@@ -98,7 +98,7 @@ void CBTSapSniffHandler::Enable()
     if(iIsLinkAdapterOpen)
         {
         // Start the sniffer timer
-        BTSAP_TRACE_OPT(KBTSAP_TRACE_INFO, BTSapPrintTrace(_L("[BTSap]  CBTSapSniffHandler::Enable: Starting the sniff timer %d microseconds"), KSniffInterval));
+        BTSAP_TRACE_OPT(KBTSAP_TRACE_INFO, BTSapPrintTrace(_L("[BTSap]  CBTSapSniffHandler::Enable: Starting the sniff timer %d µsec"), KSniffInterval));
         Cancel();
         After(KSniffInterval);
 

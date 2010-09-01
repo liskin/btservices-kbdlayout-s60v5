@@ -22,6 +22,7 @@
 #include <e32std.h>
 #include <w32std.h>
 #include <e32event.h>
+#include <aknkeylock.h>
 
 #include "hidinterfaces.h"
 #include "hidkeys.h"
@@ -244,12 +245,18 @@ private:
     void LaunchApplicationL(TInt aAppUid);
 
     // Checks if multimedia-key (play,stop,..) and sends to RemCon
-    TBool HandleMultimediaKeys(TUint16 aScancodeKey, TBool aIsKeyDown,
+    TBool HandleKeyMapping(TDecodedKeyInfo& aKey, TBool aIsKeyDown,
             TUint8 aModifiers);
-    TBool HandleMultimediaKeysForNokia(TUint16 aScancodeKey,
-            TBool aIsKeyDown, TUint8 aModifiers);
-    TBool HandleMultimediaKeysForStandard(TUint16 aScancodeKey,
-            TBool aIsKeyDown, TUint8 aModifiers);
+    TBool HandleKeyMappingUp(TDecodedKeyInfo& aKey, TBool aIsKeyDown,
+            TUint8 aModifiers);
+    TBool HandleKeyMappingDown(TDecodedKeyInfo& aKey, TBool aIsKeyDown,
+            TUint8 aModifiers);
+    TBool HandleKeyMappingLeft(TDecodedKeyInfo& aKey, TBool aIsKeyDown,
+            TUint8 aModifiers);
+    TBool HandleKeyMappingRight(TDecodedKeyInfo& aKey, TBool aIsKeyDown,
+            TUint8 aModifiers);
+    TBool HandleKeyMappingOther(TDecodedKeyInfo& aKey, TBool aIsKeyDown,
+            TUint8 aModifiers);
 
     TInt AppMenuId();
     TInt PhoneAppId();
@@ -260,12 +267,23 @@ private:
     // bitmap for Multimedia key states
     enum TMmKeyDown
         {
-        EVolUp = 1,
-        EVolDown = 2,
-        EPlay = 4,
-        EStop = 8,
-        ENext = 16,
-        EPrev = 32
+        ENone       = 0x00,
+        EVolUp      = 0x01,
+        EVolDown    = 0x02,
+        EPlay       = 0x04,
+        EStop       = 0x08,
+        ENext       = 0x10,
+        EPrev       = 0x20,
+        };
+    
+    // bitmap for navigation keys
+    enum TNavKeyDown
+        {
+        ELsk        = 0x01,
+        ERsk        = 0x02,
+        ESend       = 0x04,
+        EEnd        = 0x08,
+        EEsc        = 0x10
         };
 
     void ResetBitmap(TBool aIsKeyDown, TMmKeyDown aBitmapToReset);
@@ -340,6 +358,9 @@ private:
 
     // This timer stops key repeating after defined time to prevent endless key repeats in error cases. Fix for EMKD-7FBB9H
     CTimeOutTimer* iRepeatEndTimer;
+    
+    TUint8 iNavKeyDown;
+    RAknKeyLock iKeyLock;
     };
 
 // ----------------------------------------------------------------------

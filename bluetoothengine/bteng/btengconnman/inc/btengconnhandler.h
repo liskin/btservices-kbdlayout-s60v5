@@ -146,7 +146,18 @@ public:
      * @since S60 v3.2
      * @return ?description
      */
-    void CancelNotifyConnectionEvents();
+    TInt CancelNotifyConnectionEvents();
+
+    /**
+     * Set a pairing observer in BTEngine.
+     *
+     * @since S60 v3.2
+     * @param aAddr The address of the remote device that is being paired.
+     * @param aActivate If ETrue, the observer will be activated, otherwise
+     *                  the observer will be removed.
+     * @return KErrNone on success, otherwise a system-wide error code.
+     */
+    static TInt SetPairingObserver( const TBTDevAddr& aAddr, TBool aActivate );
 
     /**
      * ?description
@@ -155,6 +166,22 @@ public:
      * @return ?description
      */
     inline TInt PrepareDiscovery();
+
+
+    /**
+     * Pair a device
+     *
+     * @since S60 v5.1
+     * @param aAddr the address of the device to pair with
+     * @param aDeviceClass the device class of the device to pair with
+     * @return KErrNone if this request has been accepted; an error situation otherwise.
+     */
+    TInt StartPairing( const TBTDevAddr& aAddr, const TBTDeviceClass& aDeviceClass );
+
+    /**
+     * cancel the outstanding pairing request.
+     */
+    void CancelPairing();
     
 private:
 // from base class MBTEngActiveObserver
@@ -165,22 +192,15 @@ private:
      *
      * @since S60 v3.2
      */
-    virtual void RequestCompletedL( CBTEngActive* aActive, TInt aStatus );
+    virtual void RequestCompletedL( CBTEngActive* aActive, TInt aId, TInt aStatus );
 
-    /**
-     * Callback for handling cancelation of an outstanding request.
-     *
-     * @param aId The ID that identifies the outstanding request.
-     */
-    virtual void CancelRequest( TInt aRequestId );
-    
     /**
      * From MBTEngActiveObserver.
      * Handles an error during processing of connection status event.
      *
      * @since S60 v3.2
      */
-    virtual void HandleError( CBTEngActive* aActive, TInt aError );
+    virtual void HandleError( CBTEngActive* aActive, TInt aId, TInt aError );
 
 private:
 
@@ -202,6 +222,16 @@ private: // data
      * Client-server package to which the event result is copied.
      */
     TBTEngEventPkg iEventPkg;
+
+    /**
+     * Address of the remote device to pair with.
+     */
+    TBTDevAddrPckgBuf iPairAddr;
+    
+    /**
+     * The CoD of the remote device to pair with.
+     */
+    TUint32 iPairDevCod;
     
     /**
      * Session with BTEng server side.
@@ -213,6 +243,12 @@ private: // data
      * Own.
      */
     CBTEngActive* iConnEventActive;
+
+    /**
+     * The actual active object for pairing a device.
+     * Own.
+     */
+    CBTEngActive* iPairActive;
     
     /**
      * Reference to receiver of connection events.

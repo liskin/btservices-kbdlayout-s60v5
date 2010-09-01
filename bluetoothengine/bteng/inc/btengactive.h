@@ -40,6 +40,7 @@ class CBTEngActive;
  */
 class MBTEngActiveObserver
     {
+
 public:
 
     /**
@@ -47,26 +48,24 @@ public:
      *
      * @since S60 v3.2
      * @param aActive Pointer to the active object that completed.
+     * @param aId The ID that identifies the outstanding request.
      * @param aStatus The status of the completed request.
      */
-    virtual void RequestCompletedL( CBTEngActive* aActive, TInt aStatus ) = 0;
-
-    /**
-     * Callback for handling cancelation of an outstanding request.
-     *
-     * @since Symbian^4
-     * @param aId The ID that identifies the outstanding request.
-     */
-    virtual void CancelRequest( TInt aRequestId ) = 0;
+    virtual void RequestCompletedL( CBTEngActive* aActive, TInt aId, 
+                                    TInt aStatus ) = 0;
 
     /**
      * Callback to notify that an error has occurred in RunL.
      *
      * @param aActive Pointer to the active object that completed.
-     * @param aError The error occurred in RunL.
+     * @param aId The ID that identifies the outstanding request.
+     * @param aStatus The status of the completed request.
      */
-    virtual void HandleError( CBTEngActive* aActive, TInt aError ) = 0;
+    virtual void HandleError( CBTEngActive* aActive, TInt aId, 
+                                    TInt aError ) = 0;
+
     };
+
 
 /**
  *  Class CBTEngActive
@@ -123,6 +122,13 @@ public:
     inline void GoActive();
 
     /**
+     * Cancel an outstanding request.
+     *
+     * @since S60 v3.2
+     */
+    inline void CancelRequest();
+
+    /**
      * Get a reference to the active object request status.
      *
      * @since S60 v3.2
@@ -130,7 +136,6 @@ public:
      */
     TRequestStatus& RequestStatus();
 
-private:
 // from base class CActive
 
     /**

@@ -35,16 +35,6 @@ enum TBTMonoVoiceRecognitionInitiator
     EBTMonoVoiceRecognitionDeactivatedByRemote,
     };
 
-#ifndef NO101APPDEPFIXES
-// Local definition of application-layer PubSub key 
-// (TSINDKeys::ERecognitionState, in KSINDUID = KUidSystemCategoryValue):
-const TInt KBTMonoVoiceRecognitionStateKey = 0;
-
-// Local definition of application-layer key value
-// (TRecognitionStateValues::ERecognitionStarted):
-const TInt KBTMonoVoiceRecognitionStarted = 0;
-#endif  //NO101APPDEPFIXES
-
 enum TBTMonoATPhoneIndicatorId
     {
     EBTMonoATNetworkIndicator = 1,

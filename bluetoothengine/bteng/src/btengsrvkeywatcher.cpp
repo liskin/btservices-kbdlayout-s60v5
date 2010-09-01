@@ -27,6 +27,7 @@
 #include "btengserver.h"
 #include "btengsrvpluginmgr.h"
 #include "btengsrvsettingsmgr.h"
+#include "btengpairman.h"
 #include "btengprivatepskeys.h"
 #include "btengprivatecrkeys.h"
 #include "debug.h"
@@ -47,7 +48,8 @@ const TInt KBTEngEmergencyWatcher = 21;
 const TInt KBTEngSapWatcher = 22;
 /**  Identification for active object */
 const TInt KBTEngAddrWatcher = 23;
-
+/**  Identification for active object */
+const TInt KBTEngRegistryWatcher = 24;
 /**  Identification for active object */
 const TInt KBTEngSspDebugWatcher = 25;
 /**  Buffer size for BT device address as stored in CenRep */
@@ -127,6 +129,16 @@ void CBTEngSrvKeyWatcher::ConstructL()
         iEmergencyCallKey.Subscribe( iEmergencyCallWatcher->RequestStatus() );
         iEmergencyCallWatcher->GoActive();
         }
+
+    err = iBtRegistryKey.Attach( KPropertyUidBluetoothCategory, KPropertyKeyBluetoothGetRegistryTableChange );
+    if( !err )
+        {
+        iBtRegistryWatcher = CBTEngActive::NewL( *this, KBTEngRegistryWatcher, 
+                                                 CActive::EPriorityStandard );
+        iBtRegistryKey.Subscribe( iBtRegistryWatcher->RequestStatus() );
+        iBtRegistryWatcher->GoActive();
+        }
+
     err = iSspDebugModeKey.Attach( KPSUidBluetoothTestingMode, KBTSspDebugmode );
     if( !err )
         {
@@ -180,32 +192,75 @@ CBTEngSrvKeyWatcher* CBTEngSrvKeyWatcher::NewL( CBTEngServer* aServer )
 //
 CBTEngSrvKeyWatcher::~CBTEngSrvKeyWatcher()
     {
+    if( iDutModeKey.Handle() )
+        {
+        iDutModeKey.Cancel();
+        }
     delete iDutModeWatcher;
     iDutModeKey.Close();
 
 #ifdef RD_REMOTELOCK
+    if( iPhoneLockKey.Handle() )
+        {
+        iPhoneLockKey.Cancel();
+        }
     delete iPhoneLockWatcher;
     iPhoneLockKey.Close();
 #endif  //RD_REMOTELOCK
 
+    if( iSystemStateKey.Handle() )
+        {
+        iSystemStateKey.Cancel();
+        }
     delete iSystemStateWatcher;
-    iSystemStateKey.Close();
-
+    iSystemStateKey.Close();    
+     
+    if( iBtConnectionKey.Handle() )
+        {
+        iBtConnectionKey.Cancel();
+        }
     delete iBtConnectionWatcher;
     iBtConnectionKey.Close();
-
+    
+    if( iBtScanningKey.Handle() )
+        {
+        iBtScanningKey.Cancel();
+        }
     delete iBtScanningWatcher;
     iBtScanningKey.Close();
 
+    if( iEmergencyCallKey.Handle() )
+        {
+        iEmergencyCallKey.Cancel();
+        }
     delete iEmergencyCallWatcher;
     iEmergencyCallKey.Close();
-
+    
+    if( iSspDebugModeKey.Handle() )
+        {
+        iSspDebugModeKey.Cancel();
+        }
     delete iSspDebugModeWatcher;
     iSspDebugModeKey.Close();
 
+    if( iBtRegistryKey.Handle() )
+    	{
+    	iBtRegistryKey.Cancel();
+    	}
+    delete iBtRegistryWatcher;
+    iBtRegistryKey.Close();
+
+    if( iSapKeyCenRep )
+        {
+        iSapKeyCenRep->NotifyCancel( KBTSapEnabled );
+        }
     delete iSapModeWatcher;
     delete iSapKeyCenRep;
 
+    if( iBdaddrKey.Handle() )
+        {
+        iBdaddrKey.Cancel();
+        }
     delete iBdaddrWatcher;
     iBdaddrKey.Close();
     }
@@ -216,13 +271,13 @@ CBTEngSrvKeyWatcher::~CBTEngSrvKeyWatcher()
 // Processes a changed key value.
 // ---------------------------------------------------------------------------
 //
-void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, 
+void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive, TInt aId, 
     TInt aStatus )
     {
     TRACE_FUNC_ARG( ( _L( "status %d" ), aStatus ) )
     ASSERT( aStatus != KErrPermissionDenied );
     TInt val = 0;
-    switch( aActive->RequestId() )
+    switch( aId )
         {
         case KBTEngDutWatcher:
             {
@@ -305,6 +360,22 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive,
                 }
             break;
             }
+        case KBTEngRegistryWatcher:
+        	{
+            TRACE_INFO( ( _L( "BT Registry key changed" ) ) )
+            TInt myChangedTable;
+
+			iBtRegistryKey.Subscribe( aActive->RequestStatus() );
+			aActive->GoActive();
+
+            TInt err = iBtRegistryKey.Get( myChangedTable );
+            if( !err && myChangedTable == KRegistryChangeRemoteTable )
+            	{
+            	TRACE_INFO( ( _L("BT Remote registry key changed") ) )
+            	iServer->PairManager()->RemoteRegistryChangeDetected();
+            	}
+        	break;
+        	}    
         case KBTEngSapWatcher:
             {
             TRACE_INFO( ( _L( "SAP mode key changed" ) ) )
@@ -357,7 +428,7 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive,
             break;
         default:
             {
-            TRACE_INFO( ( _L( "[BTENG]\t wrong key notification! id=%d" ), aActive->RequestId() ) )
+            TRACE_INFO( ( _L( "[BTENG]\t wrong key notification! id=%d" ), aId ) )
             }
             break;
 
@@ -365,73 +436,6 @@ void CBTEngSrvKeyWatcher::RequestCompletedL( CBTEngActive* aActive,
     TRACE_FUNC_EXIT
     }
 
-// ---------------------------------------------------------------------------
-// From class MBTEngActiveObserver.
-// Handles cancelation of an outstanding request
-// ---------------------------------------------------------------------------
-//
-void CBTEngSrvKeyWatcher::CancelRequest( TInt aRequestId )
-    {
-    TRACE_FUNC_ARG( ( _L( "reqID %d" ), aRequestId ) )
-    switch( aRequestId )
-        {
-        case KBTEngDutWatcher:
-            {
-            iDutModeKey.Cancel();
-            break;
-            }
-        case KBTEngLockWatcher:
-            {
-            iPhoneLockKey.Cancel();
-            break;
-            }
-        case KBTEngSysWatcher:
-            {
-            iSystemStateKey.Cancel();
-            break;
-            }
-        case KBTEngBtConnectionWatcher:
-            {
-            iBtConnectionKey.Cancel();
-            break;
-            }
-                    
-        case KBTEngScanningWatcher:
-            {
-            iBtScanningKey.Cancel();
-            break;
-            }
-            
-        case KBTEngEmergencyWatcher:
-            {
-            iEmergencyCallKey.Cancel();
-            break;
-            }
-            
-        case KBTEngSspDebugWatcher:
-            {
-            iSspDebugModeKey.Cancel();
-            break;
-            }   
-        case KBTEngSapWatcher:
-            {
-            iSapKeyCenRep->NotifyCancel( KBTSapEnabled );
-            break;
-            }
-            
-        case KBTEngAddrWatcher:
-            {
-            iBdaddrKey.Cancel();
-            break;
-            }
-        default:
-            {
-            TRACE_INFO( ( _L( "[BTENG]\t wrong key notification! id=%d" ), aRequestId ) )
-            break;
-            }
-        }
-    TRACE_FUNC_EXIT 
-    }
 
 // ---------------------------------------------------------------------------
 // From class MBTEngActiveObserver.
@@ -439,14 +443,14 @@ void CBTEngSrvKeyWatcher::CancelRequest( TInt aRequestId )
 // the subscriptions are active.
 // ---------------------------------------------------------------------------
 //
-void CBTEngSrvKeyWatcher::HandleError( CBTEngActive* aActive, 
+void CBTEngSrvKeyWatcher::HandleError( CBTEngActive* aActive, TInt aId, 
     TInt aError )
     {
     TRACE_FUNC_ARG( ( _L( "status %d" ), aError ) )
     (void) aError;
     if( !aActive->IsActive() )
         {
-        switch( aActive->RequestId() )
+        switch( aId )
             {
             case KBTEngDutWatcher:
                 {
@@ -479,7 +483,7 @@ void CBTEngSrvKeyWatcher::HandleError( CBTEngActive* aActive,
                 break;
             default:
                 {
-                TRACE_INFO( ( _L( "[BTENG]\t wrong key notification! id=%d" ), aActive->RequestId() ) )
+                TRACE_INFO( ( _L( "[BTENG]\t wrong key notification! id=%d" ), aId ) )
                 }
                 return; // we don't want to go active without subscribing
             }

@@ -83,6 +83,7 @@ CBTEngConnHandler::~CBTEngConnHandler()
     {
     TRACE_FUNC_ENTRY
     CancelNotifyConnectionEvents();
+    CancelPairing();
     iBTEng.Close();
     }
 
@@ -145,52 +146,128 @@ TInt CBTEngConnHandler::NotifyConnectionEvents( MBTEngConnObserver* aObserver )
 // ?implementation_description
 // ---------------------------------------------------------------------------
 //
-void CBTEngConnHandler::CancelNotifyConnectionEvents()
+TInt CBTEngConnHandler::CancelNotifyConnectionEvents()
     {
     TRACE_FUNC_ENTRY
+    TInt err = KErrNone;
+    if( iConnEventActive && iConnEventActive->IsActive() )
+        {
+        err = iBTEng.CancelNotifyConnectionEvents();
+        iConnEventActive->CancelRequest();
+        }
     delete iConnEventActive;
     iConnEventActive = NULL;
+    return err;
     }
+
+// -----------------------------------------------------------------------------
+// Request server side to activate/deactivate a pair observer
+// -----------------------------------------------------------------------------
+//
+TInt CBTEngConnHandler::SetPairingObserver( const TBTDevAddr& aAddr, 
+    TBool aActivate )
+    {
+    RBTEng bteng;
+    TInt err = bteng.Connect();
+    if ( !err )
+        {
+        err = bteng.SetPairingObserver( aAddr, aActivate );
+        }
+    bteng.Close();
+    return err;
+    }
+
+// ---------------------------------------------------------------------------
+// Request BTEng to pair the device
+// ---------------------------------------------------------------------------
+//
+TInt CBTEngConnHandler::StartPairing( const TBTDevAddr& aAddr, 
+    const TBTDeviceClass& aDeviceClass )
+    {
+    TRACE_FUNC_ENTRY
+    TInt err( KErrNone );
+    if( iPairActive && iPairActive->IsActive() )
+        {
+        err = KErrServerBusy;
+        }
+    
+    if( !iPairActive )
+        {
+            // Use a higher prioritty than normal, because we want 
+            // to be notified fast (e.g. to update the UI).
+        TRAP( err, iPairActive = CBTEngActive::NewL( *this, EPairDeviceId, 
+                                                  CActive::EPriorityUserInput ) );
+        }
+    if ( !err )
+        {
+        iPairAddr() = aAddr;
+        iPairDevCod = aDeviceClass.DeviceClass();
+        iBTEng.PairDevice( iPairAddr, iPairDevCod, iPairActive->RequestStatus() );
+        iPairActive->GoActive();
+        }
+    TRACE_FUNC_EXIT
+    return err;
+    }
+
+// ---------------------------------------------------------------------------
+// Cancel any outstanding operation, free resources.
+// ---------------------------------------------------------------------------
+//
+void CBTEngConnHandler::CancelPairing()
+    {
+    TRACE_FUNC_ENTRY
+    if( iPairActive && iPairActive->IsActive() )
+        {
+        iBTEng.CancelPairDevice();
+        }
+    delete iPairActive;
+    iPairActive = NULL;
+    TRACE_FUNC_EXIT
+    }
+
 
 // ---------------------------------------------------------------------------
 // From class MBTEngActiveObserver.
 // Called by the active object when a change in connection status has occured.
 // ---------------------------------------------------------------------------
 //
-void CBTEngConnHandler::RequestCompletedL( CBTEngActive* aActive, 
+void CBTEngConnHandler::RequestCompletedL( CBTEngActive* aActive, TInt aId, 
     TInt aStatus )
     {
-    TRACE_FUNC_ARG( ( _L( "ID: %d status: %d" ), aActive->RequestId(), aStatus ) )
+    TRACE_FUNC_ARG( ( _L( "ID: %d status: %d" ), aId, aStatus ) )
+
     (void) aActive;
-    ASSERT( aActive->RequestId() == EConnectionEventId );
-    HandleConnectionEvent( aStatus );
+    switch ( aId )
+        {
+        case EConnectionEventId:
+            {
+            HandleConnectionEvent( aStatus );
+            break;
+            }
+        case EPairDeviceId:
+            {
+            if ( iObserver )
+                {
+                iObserver->PairingComplete( iPairAddr(), aStatus );
+                }
+            }
+        }
+
     TRACE_FUNC_EXIT
     }
 
-// ---------------------------------------------------------------------------
-// From class MBTEngActiveObserver.
-// Handles cancelation of an outstanding request
-// ---------------------------------------------------------------------------
-//
-void CBTEngConnHandler::CancelRequest( TInt aRequestId )
-    {
-    TRACE_FUNC_ARG( ( _L( "reqID %d" ), aRequestId ) )
-    ASSERT( aRequestId == EConnectionEventId );
-    ( void ) aRequestId;
-    iBTEng.CancelNotifyConnectionEvents();
-    TRACE_FUNC_EXIT 
-    }
 
 // ---------------------------------------------------------------------------
 // From class MBTEngActiveObserver.
 // Called when RequestCompletedL/RunL leaves.
 // ---------------------------------------------------------------------------
 //
-void CBTEngConnHandler::HandleError( CBTEngActive* aActive, TInt aError )
+void CBTEngConnHandler::HandleError( CBTEngActive* aActive, TInt aId, TInt aError )
     {
     TRACE_FUNC_ARG( ( _L( "error: %d" ), aError ) )
         // Should any info be passed to the client??
     (void) aActive;
+    (void) aId;
     (void) aError;
     }
 

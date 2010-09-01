@@ -37,6 +37,7 @@
 #include "btengsecpolicy.h"
 #include "btengprivatepskeys.h"
 #include "btengplugin.h"
+#include "btengpairman.h"
 #include "debug.h"
 
 /**  Bluetooth Engine server thread name */
@@ -166,7 +167,8 @@ void CBTEngServer::ConstructL()
     iPluginMgr = CBTEngSrvPluginMgr::NewL( this );
     iBBConnMgr = CBTEngSrvBBConnMgr::NewL( this, iSocketServ );
 
-    iSdpDbHandler = NULL;
+    User::LeaveIfError( iBTRegServ.Connect() );
+    iPairMan = CBTEngPairMan::NewL( *this );
 
     TCallBack idleCb( IdleTimerCallBack, this );
     iIdleCallBack.Set( idleCb );
@@ -217,16 +219,15 @@ CBTEngServer::~CBTEngServer()
     RProperty::Delete( KPSUidBluetoothEnginePrivateCategory, KBTTurnBTOffQueryOn );
     RProperty::Delete( KPSUidBluetoothEnginePrivateCategory, KBTNotifierLocks );
     delete iTimer;
-    if ( iSdpDbHandler )
-        {
-        delete iSdpDbHandler;
-        }
+    delete iSdpDbHandler;
     delete iWatcher;
     delete iSettingsMgr;
     delete iPluginMgr;
     delete iBBConnMgr;
     delete iServerState;
+    delete iPairMan;
     iSocketServ.Close();
+    iBTRegServ.Close();
     }
 
 // ---------------------------------------------------------------------------
@@ -314,6 +315,7 @@ void CBTEngServer::RemoveSession( CSession2* aSession, TBool aAutoOff )
 	TRACE_INFO( ( _L( "[CBTEngServer]\t iSessionCount %d"), iSessionCount ))
     iSessionCount--;
 	iSettingsMgr->SessionClosed( aSession );
+	iPairMan->SessionClosed( aSession );
     if( aAutoOff )
         {
         TRAP_IGNORE( SetPowerStateL( EBTOff, ETrue ) );
@@ -600,8 +602,7 @@ TInt CBTEngServer::AutoPowerOffCallBack( TAny* aPtr )
 //
 GLDEF_C TInt E32Main()
     {
-    //TODO uncomment UHEAP macros after orbit memory leaks are resolved till then it should be commented.
-//    __UHEAP_MARK;
+    __UHEAP_MARK;
     TRACE_FUNC_ENTRY
     CTrapCleanup* cleanup = CTrapCleanup::New();
     TInt err = KErrNoMemory;
@@ -610,6 +611,6 @@ GLDEF_C TInt E32Main()
         TRAP( err, RunServerL() );
         delete cleanup;
         }
-//    __UHEAP_MARKEND;
+    __UHEAP_MARKEND;
     return err;
     }

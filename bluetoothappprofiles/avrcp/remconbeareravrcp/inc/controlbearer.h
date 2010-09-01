@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
+// Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
 // All rights reserved.
 // This component and the accompanying materials are made available
 // under the terms of "Eclipse Public License v1.0"
@@ -117,8 +117,6 @@ private: // MRemConBearerInterfaceV3 functions called from RemCon
 	virtual void ControllerFeaturesUpdated(RArray<TUid>& aSupportedInterfaces);
 	
 	virtual TInt SetLocalAddressedClient(TRemConClientId& aId);
-	
-	virtual void TargetFeaturesUpdated(const TRemConClientId& aId, TPlayerType aPlayerType, TPlayerSubType aPlayerSubType, const TDesC8& aName);
 	
 private: // from CRemConBearerPlugin
 	TAny* GetInterface(TUid aUid);

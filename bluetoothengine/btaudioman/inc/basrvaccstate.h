@@ -102,12 +102,7 @@ public:
     * Called when an audio open request comes from Acc FW.
     */
     virtual void OpenAudioL(TAccAudioType aType);
-    
-    /**
-    * Called when the audio open request is to be cancelled.
-    */
-    virtual void CancelOpenAudio();
-    
+
     /**
     * Called when an audio close request comes from Acc FW.
     */

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2010 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -11,7 +11,7 @@
 *
 * Contributors:
 *
-* Description:  Build information file for project bluetoothengine
+* Description:  Build information file for project ?myapp
 *
 */
 
@@ -19,18 +19,15 @@
 PRJ_PLATFORMS
 DEFAULT
 
-// This is to break cyclic building dependency between these logical components.
-// A better source structure will be implemented in future.
 
-#include "../btnotif/btnotifclient/group/bld.inf"
 #include "../bteng/group/bld.inf"
-#include "../btserviceutil/group/bld.inf"
 #include "../btnotif/group/bld.inf"
 #include "../btaudioman/group/bld.inf"
 #include "../btmac/group/bld.inf"
 #include "../btsac/group/bld.inf"
 #include "../btaudiostreamer/group/bld.inf"
 #include "../btsap/group/bld.inf"
+#include "../btui/group/bld.inf"
 #include "../btpbap/group/bld.inf"
 #include "../bthid/group/bld.inf"
 #include "../btctrldcmoadapter/group/bld.inf"
@@ -44,8 +41,3 @@ PRJ_MMPFILES
 PRJ_TESTMMPFILES
 
 PRJ_TESTEXPORTS
-../conf/testframework.ini    /epoc32/WINSCW/C/TestFramework/testframework.ini
-../btserviceutil/tsrc/btserviceutiltest/conf/btserviceutiltest.cfg  /epoc32/winscw/c/TestFramework/btserviceutiltest.cfg
-../btnotif/btnotifclient/tsrc/btnotifclienttest/conf/btnotifclienttest.cfg   /epoc32/WINSCW/C/TestFramework/btnotifclienttest.cfg
-../btnotif/btnotifwrapper/tsrc/btnotifwrappertest/conf/btnotifwrappertest.cfg    /epoc32/WINSCW/C/TestFramework/btnotifwrappertest.cfg
-../btnotif/btnotifsrv/tsrc/btnotifsrvtest/conf/btnotifsrvtest.cfg   /epoc32/WINSCW/C/TestFramework/btnotifsrvtest.cfg

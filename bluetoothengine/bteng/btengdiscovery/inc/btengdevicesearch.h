@@ -89,23 +89,16 @@ public:
      * @since S60 v3.2
      * @param ?arg1 ?description
      */
-    virtual void RequestCompletedL( CBTEngActive* aActive, 
+    virtual void RequestCompletedL( CBTEngActive* aActive, TInt aId, 
                                      TInt aStatus );
-    
-    /**
-     * Callback for handling cancelation of an outstanding request.
-     *
-     * @param aId The ID that identifies the outstanding request.
-     */
-    virtual void CancelRequest( TInt aRequestId );
-    
+
     /**
      * Callback to notify that an error has occurred in RunL.
      *
      * @since S60 v3.2
      * @param ?arg1 ?description
      */
-    virtual void HandleError( CBTEngActive* aActive, TInt aError );
+    virtual void HandleError( CBTEngActive* aActive, TInt aId, TInt aError );
 
 private:
 

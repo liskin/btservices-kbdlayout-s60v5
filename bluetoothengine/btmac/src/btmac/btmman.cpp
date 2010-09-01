@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  CBtmMan definition
-*  Version     : %version: 15.1.8.1.1 %
+*  Version     : %version: 15.1.9 %
 *
 */
 

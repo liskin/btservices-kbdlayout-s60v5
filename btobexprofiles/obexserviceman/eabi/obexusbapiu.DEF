@@ -1,7 +1,0 @@
-EXPORTS
-	_ZN8CObexUSB17ManageUSBServicesEiR14TRequestStatus @ 1 NONAME
-	_ZN8CObexUSB23CancelManageUSBServicesEv @ 2 NONAME
-	_ZN8CObexUSB4NewLEv @ 3 NONAME
-	_ZTI8CObexUSB @ 4 NONAME ; #<TI>#
-	_ZTV8CObexUSB @ 5 NONAME ; #<VT>#
-

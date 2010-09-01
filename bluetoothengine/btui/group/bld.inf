@@ -1,0 +1,60 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This file provides project information required for BTUI.
+*
+*/
+
+
+#include <platform_paths.hrh>
+#include "../devmodel/group/bld.inf"
+
+PRJ_PLATFORMS
+//DEFAULT
+
+PRJ_EXPORTS
+../loc/btui.loc        MW_LAYER_LOC_EXPORT_PATH(btui.loc)
+../rom/btui.iby        CORE_MW_LAYER_IBY_EXPORT_PATH(btui.iby)
+../rom/BtuiResources.iby LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(BtuiResources.iby)
+../inc/BtuiPluginInterface.h |../../inc/BtuiPluginInterface.h
+../inc/BtuiPluginInterface.inl |../../inc/BtuiPluginInterface.inl
+../Ecom/inc/bluetoothuiutil.h   |../../inc/bluetoothuiutil.h
+../Ecom/inc/bluetoothuiutil.inl |../../inc/bluetoothuiutil.inl
+// Help exports
+#include "../help/group/bld.inf"
+
+PRJ_EXTENSIONS
+
+START EXTENSION s60/mifconv
+OPTION TARGETFILE btui.mif
+OPTION HEADERFILE btui.mbg
+OPTION SOURCES \
+             -c8,8 qgn_prop_bt_devices_tab3 -c8,8 qgn_prop_bt_set_tab3 -c8,8 qgn_prop_set_apps_bt \
+		         -c8,8 qgn_prop_bt_blocked_tab3 -c8,8 qgn_prop_set_apps_bt_off -c8,8 qgn_prop_set_apps_bt_on_shown \
+		         -c8,8 qgn_prop_set_apps_bt_on_hidden -c8,8 qgn_prop_set_apps_bt_conn_shown -c8,8 qgn_prop_set_apps_bt_conn_hidden \
+		         -c8,8 qgn_prop_bt_audio_connect -c8,8 qgn_prop_bt_computer_connect -c8,8 qgn_prop_bt_car_kit_connect \
+		         -c8,8 qgn_prop_bt_keyboard_connect -c8,8 qgn_prop_bt_mouse_connect
+END
+
+START EXTENSION s60/mifconv
+OPTION TARGETFILE btui_aif.mif
+OPTION SOURCES -c8,8 qgn_menu_bt
+END
+
+PRJ_MMPFILES
+
+../Ecom/group/BtuiPlugin.mmp	
+../group/BTUI.mmp			
+
+
+//---End of File---  

@@ -5,12 +5,7 @@
       <component id="bteng" filter="s60" name="Bluetooth Engine">
         <unit bldFile="bluetoothengine/bteng/group"/>
       </component>
-      <component id="btserviceutil" filter="s60" name="Bluetooth Service Utility">
-        <unit bldFile="bluetoothengine/btserviceutil/group"/>
-      </component>
       <component id="btnotif" filter="s60" name="Bluetooth Notifier">
-      	<!-- client is separated for breaking cyclic compiling dependencies -->
-        <unit bldFile="bluetoothengine/btnotif/btnotifclient/group"/>
         <unit bldFile="bluetoothengine/btnotif/group"/>
           <!-- is this test needed as unit? -->
         <!-- <unit bldFile="bluetoothengine/btnotif/tsrc/btnotifapitest/group"/> -->
