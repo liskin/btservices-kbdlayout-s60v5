@@ -90,19 +90,19 @@ CBTUserConfNotifier::TNotifierInfo CBTUserConfNotifier::RegisterL()
     }
 
 // ----------------------------------------------------------
-// CBTUserConfNotifier::GetParamsL
+// CBTUserConfNotifier::ProcessStartParamsL
 // Initialize parameters and check if device is already
 // in registry. Jump to RunL as soon as possible.
 // ----------------------------------------------------------
 //
-void CBTUserConfNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, const RMessagePtr2& aMessage)
+void CBTUserConfNotifier::ProcessStartParamsL()
     {
-    FLOG(_L("[BTNOTIF]\t CBTUserConfNotifier::GetParamsL()"));
+    FLOG(_L("[BTNOTIF]\t CBTUserConfNotifier::ProcessStartParamsL()"));
 
-    CBTNPairNotifierBase::GetParamsL( aBuffer, aReplySlot, aMessage );
+    CBTNPairNotifierBase::ProcessStartParamsL();
     
     TBTUserConfirmationParamsPckgCopy pckg;
- 	pckg.Copy(aBuffer);
+ 	pckg.Copy(*iParamBuffer);
  	iBTAddr = pckg().DeviceAddress();
     if ( OtherOutgoPairing( iBTAddr) )
         {
@@ -117,7 +117,7 @@ void CBTUserConfNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, con
 	// base class
 	ProcessParamsGetDeviceL( iBTAddr, pckg().DeviceName() );
 	
-	FLOG(_L("[BTNOTIF]\t CBTUserConfNotifier::GetParamsL() completed"));
+	FLOG(_L("[BTNOTIF]\t CBTUserConfNotifier::ProcessStartParamsL() completed"));
     }
 
 // ----------------------------------------------------------

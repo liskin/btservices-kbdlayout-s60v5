@@ -426,14 +426,6 @@ TKeyResponse CBTUiDeviceContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,
         return EKeyWasConsumed;
         }
 
-    // Show popup commands window if selection or enter key is pressed.
-	// It should not go to here, unless | EAknEnableMSK is not set
-    if ((aKeyEvent.iCode == EKeyDevice3) || (aKeyEvent.iCode == EKeyEnter))
-        {
-        iView->ProcessCommandL(EAknSoftkeyContextOptions);        
-        return EKeyWasConsumed;
-        }
-
     if ((aKeyEvent.iCode != EKeyLeftArrow) && 
         (aKeyEvent.iCode != EKeyRightArrow))
         {

@@ -16,7 +16,7 @@
 RESOURCE REGISTRY_INFO theInfo
 	{
 	// UID for the DLL
-	dll_uid = 0x2002C3BA;//KUidATCFunEcomDll; 
+	dll_uid = 0x2002DCE5;//KUidATCFunEcomDll; 
 	// Declare array of interface info
 	interfaces =
 		{

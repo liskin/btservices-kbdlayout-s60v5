@@ -72,22 +72,16 @@ CBTPwrNotifier::TNotifierInfo CBTPwrNotifier::RegisterL()
     }
 
 // ----------------------------------------------------------
-// CBTPwrNotifier::GetParamsL
+// CBTPwrNotifier::ProcessStartParamsL
 // Initialize parameters. Jump to RunL as soon as possible.
 // ----------------------------------------------------------
 //
-void CBTPwrNotifier::GetParamsL(const TDesC8& /*aBuffer*/, TInt aReplySlot, const RMessagePtr2& aMessage)
+void CBTPwrNotifier::ProcessStartParamsL()
     {
-    FLOG(_L("[BTNOTIF]\t CBTPwrNotifier::GetParamsL()"));
-
-    if( iReplySlot!=NULL || !iMessage.IsNull() )
-        User::Leave(KErrInUse);
-
-    iMessage = aMessage;
-    iReplySlot = aReplySlot;
+    FLOG(_L("[BTNOTIF]\t CBTPwrNotifier::ProcessStartParamsL()"));
 
     ShowNoteAndCompleteMessageL();
-    FLOG(_L("[BTNOTIF]\t CBTPwrNotifier::GetParamsL() completed"));
+    FLOG(_L("[BTNOTIF]\t CBTPwrNotifier::ProcessStartParamsL() completed"));
     }
 
 // ----------------------------------------------------------

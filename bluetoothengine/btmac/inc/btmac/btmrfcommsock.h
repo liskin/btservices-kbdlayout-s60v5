@@ -106,14 +106,6 @@ public:
      * @return the BD address
      */
     const TBTDevAddr& Remote() const; 
-
-    /**
-     * Requests for master role
-     *
-     * @since S60 v3.1
-     * @return the completion error code
-     */
-    TInt RequestMasterRole();
     
     /**
      * Activates the notification of baseband events

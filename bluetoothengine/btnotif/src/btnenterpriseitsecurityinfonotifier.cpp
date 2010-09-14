@@ -94,13 +94,11 @@ TPtrC8 CBTEnterpriseItSecurityInfoNotifier::StartL(const TDesC8& /*aBuffer*/)
     }
 
 // ----------------------------------------------------------
-// CBTEnterpriseItSecurityInfoNotifier::GetParamsL
+// CBTEnterpriseItSecurityInfoNotifier::ProcessStartParamsL
 // Mandatory for BT Notifiers when using asynchronous launch. 
 // ----------------------------------------------------------
 //
-void CBTEnterpriseItSecurityInfoNotifier::GetParamsL(const TDesC8& /*aBuffer*/,
-										 TInt /*aReplySlot*/,
-										 const RMessagePtr2& /*aMessage*/)
+void CBTEnterpriseItSecurityInfoNotifier::ProcessStartParamsL()
     {
     //nothing to do here
     }

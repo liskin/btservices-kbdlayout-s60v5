@@ -70,27 +70,17 @@ CBTNPairNotifierBase::TNotifierInfo CBTNPairNotifierBase::RegisterL()
     }
 
 // ----------------------------------------------------------
-// CBTNPairNotifierBase::GetParamsL
+// CBTNPairNotifierBase::ProcessStartParamsL
 // ----------------------------------------------------------
 //
-void CBTNPairNotifierBase::GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, const RMessagePtr2& aMessage)
+void CBTNPairNotifierBase::ProcessStartParamsL()
     {
-    (void)aBuffer;
-    if( !iMessage.IsNull() )
-        {
-        User::Leave(KErrInUse);
-        }
-
-    iMessage = (RMessage2)aMessage;
-    iReplySlot = aReplySlot;
-
     if ( AutoLockOnL() )
         {
         // The phone is locked, access denied.
         //
         CompleteMessage(KErrCancel);
         }
-
     }
 
 // ----------------------------------------------------------
@@ -125,13 +115,23 @@ TPtrC8 CBTNPairNotifierBase::UpdateL( const TDesC8& aBuffer )
         BtNotifNameUtils::SetDeviceNameL(pckg().DeviceName(), *iDevice);
 
     // Finally show new prompt for dialog if it is still on the screen
-    // and user has not given a alias for device.   
-        if( !iNotifUiUtil->IsQueryReleased() && !iDevice->IsValidFriendlyName() )
+    // and user has not given a alias for device.
+        CBTNotifUIUtil* dialog = NULL;
+        if ( !iNotifUiUtil->IsQueryReleased())
+            {
+            dialog = iNotifUiUtil;
+            }
+        else if ( !iAuthoriseDialog->IsQueryReleased())
+            {
+            dialog = iAuthoriseDialog;
+            }
+                    
+        if( dialog && !iDevice->IsValidFriendlyName() )
             {
             RBuf prompt;
             prompt.CleanupClosePushL();
             GenerateQueryPromptL( prompt );
-            iNotifUiUtil->UpdateQueryDlgL( prompt );
+            dialog->UpdateQueryDlgL( prompt );
             CleanupStack::PopAndDestroy( &prompt );
             }
         }
@@ -213,8 +213,9 @@ TBool CBTNPairNotifierBase::AuthoriseIncomingPairingL()
 
     devName.Zero();
     // Show query for use to accept/reject incoming pairing request
-    TInt keypress = iNotifUiUtil->ShowQueryL( prompt, R_BT_GENERIC_QUERY, 
-             ECmdBTnotifUnavailable, devName, CAknQueryDialog::EConfirmationTone );
+    TInt keypress = iAuthoriseDialog->ShowQueryL( prompt, R_BT_GENERIC_QUERY, 
+             ECmdBTnotifUnavailable, devName, CAknQueryDialog::EConfirmationTone);
+    
     CleanupStack::PopAndDestroy( &prompt );
 
     if( iMessage.IsNull() ) // cancelled by the stack

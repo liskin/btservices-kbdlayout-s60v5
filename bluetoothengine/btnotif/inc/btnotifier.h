@@ -89,16 +89,14 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
         virtual void ConstructL();
 
         /**
-        * Used in asynchronous notifier launch to store received parameters
-        * into members variables and make needed initializations.
-        * @param aBuffer A buffer containing received parameters
-        * @param aReturnVal The return value to be passed back.
-        * @param aMessage Should be completed when the notifier is deactivated.
+        * Used in asynchronous notifier launch to start the actual processing
+        * of parameters received in StartL. StartL just stores a copy of the
+        * parameter buffer, schedules a callback to call this method and returns
+        * ASAP, so the actual work begins here, safely outside of the StartL
+        * context so that waiting dialogs can be freely used if need be.
         * @return None.
         */
-        virtual void GetParamsL(const TDesC8& aBuffer,
-                                TInt aReplySlot,
-                                const RMessagePtr2& aMessage)=0;
+        virtual void ProcessStartParamsL() = 0;
 
         /**
         * A utility function for setting the power status of Bluetooth.
@@ -282,24 +280,28 @@ NONSHARABLE_CLASS(CBTNotifierBase): public CBase, public MEikSrvNotifierBase2, M
          */
         TBool CheckQueryInterval();
 
+        static TInt ProcessStartParamsCallBack(TAny* aNotif);
+
     protected: // Data
 
         RMessagePtr2                iMessage;               // Received message
         TInt                        iReplySlot;             // Reply slot
+        HBufC8*                     iParamBuffer;           // Copy of the param buffer received in StartL
+
+        CAsyncCallBack*             iProcessStartParamsCallBack;
+
         TNotifierInfo               iInfo;                  // Notifier parameters structure
         TBTRegistryQueryState       iBTRegistryQueryState;
         CBTDeviceArray*             iDeviceArray;  // for getting device from registry
         CBTDevice*                  iDevice;                // Current Bluetooth device
         TBTDevAddr                  iBTAddr; // Gotten from PckBuffer, constant no matter how iDevice changes.
         CBTNotifUIUtil*             iNotifUiUtil;           // Utility to show UI notes & queries
+        CBTNotifUIUtil*             iAuthoriseDialog;       // to show Authorisation dialogs
         CBTEngSettings*             iBTEngSettings;
         TBool                       iIsCoverUI;
 
     private:
         CBTEngDevMan*               iDevMan;  // for BT registry manipulation
-
-
-
     };
 
 #endif

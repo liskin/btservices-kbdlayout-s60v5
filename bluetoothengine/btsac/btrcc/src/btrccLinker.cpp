@@ -21,14 +21,12 @@
 #include <btaccObserver.h>
 #include <remconinterfaceselector.h>  
 #include <remconaddress.h> 
-#include <remconcoreapitarget.h>
 #include <apacmdln.h>
 #include <apgcli.h>
 #include "btaudioremconpskeys.h"
 #include "btrccLegacyVolumeLevelController.h"
 #include "btrccAbsoluteVolumeLevelController.h"
 #include "btrccLinker.h"
-#include "btrccplayerstarter.h"
 #include "btrccBrowsingAdapter.h"
 #include "debug.h"
 #include <btnotif.h>
@@ -122,10 +120,6 @@ void CBTRCCLinker::ConstructL()
         // If volume control is not supported, we'll need another interface selector session for disconnecting. 
         iInterfaceSelectorForDisconnectingTargetSession = CRemConInterfaceSelector::NewL(); 
     	}
-    
-    iPlayerStarter = CPlayerStarter::NewL();
-    iCoreTarget = CRemConCoreApiTarget::NewL(*iInterfaceSelector, *iPlayerStarter);
-    iPlayerStarter->SetCoreTarget(*iCoreTarget);
 
     iRemConBatteryTgt = CRemConBatteryApiTarget::NewL(*iInterfaceSelector, *this);
 
@@ -156,7 +150,6 @@ CBTRCCLinker::~CBTRCCLinker()
 	
     delete iAbsoluteVolController;
     delete iLegacyVolController;
-	delete iPlayerStarter;
 	Cancel();
     iStateArray.ResetAndDestroy();
     iStateArray.Close();

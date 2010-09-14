@@ -80,22 +80,14 @@ CBTPBAPPinNotifier::TNotifierInfo CBTPBAPPinNotifier::RegisterL()
     }
 
 // ----------------------------------------------------------
-// CBTPBAPPinNotifier::GetParamsL
+// CBTPBAPPinNotifier::ProcessStartParamsL
 // Initialize parameters. Jump to RunL as soon as possible.
 // ----------------------------------------------------------
 //
-void CBTPBAPPinNotifier::GetParamsL(const TDesC8& /* aBuffer */, TInt aReplySlot, const RMessagePtr2& aMessage)
+void CBTPBAPPinNotifier::ProcessStartParamsL()
     {
-    FLOG(_L("[BTNOTIF]\t CBTPBAPPinNotifier::GetParamsL()"));
+    FLOG(_L("[BTNOTIF]\t CBTPBAPPinNotifier::ProcessStartParamsL()"));
 
-    if( !iMessage.IsNull())
-        {
-        User::Leave(KErrInUse);
-        }
-    
-    iMessage = aMessage;
-    iReplySlot = aReplySlot;
-    
     if ( AutoLockOnL() )
         {
         // The phone is locked, access denied.
@@ -106,7 +98,7 @@ void CBTPBAPPinNotifier::GetParamsL(const TDesC8& /* aBuffer */, TInt aReplySlot
 
     ShowNoteCompleteMessageL();
 
-    FLOG(_L("[BTNOTIF]\t CBTPBAPPinNotifier::GetParamsL() completed"));
+    FLOG(_L("[BTNOTIF]\t CBTPBAPPinNotifier::ProcessStartParamsL() completed"));
     }
 
 // ----------------------------------------------------------

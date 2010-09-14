@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:  Implementation of an accessory management.
-*  Version     : %version:  14.1.11 %
+*  Version     : %version:  14.1.12 %
 *
 */
 
@@ -619,26 +619,22 @@ void CBasrvAccMan::RemoteAudioOpened(const TBTDevAddr& aAddr, TProfiles aProfile
     TInt idx = FindAcc(aAddr);
     if (idx >= 0)
         {
-        // Check if another audio link opened already
-        TInt audiolinks = AudioLinkStatus();
-        
-        if ( ( audiolinks && audiolinks != aProfile) || 
-            ( iAudioRequests.Count() && 
-              iAudioRequests[0].iOngoing && 
-              iAudioRequests[0].iAddr == aAddr) )
+        TInt audiolinks = AudioLinkStatus();        
+        if ( audiolinks && audiolinks != aProfile) 
             {
-            // another audio type is opened while we have an audio link or pending audio request.
-            if (iAudioRequests.Count())
-                {
-                TRACE_INFO((_L(" [audio link check] existing audio link %x, audio request pending ? %d. Audio should be rejected!"),
-                        audiolinks, iAudioRequests[0].iOngoing))
-                }
-            else
-                {
-                TRACE_INFO((_L(" [audio link check] existing audio link %x. Audio should be rejected!"),
+            TRACE_INFO((_L(" [global audio link check] existing audio link %x. Audio should be rejected!"),
                         audiolinks))
-                }
             RejectAudioLink(aAddr, (aProfile == EStereo) ? EAccStereoAudio : EAccMonoAudio);
+            }
+        else if ( iAudioRequests.Count() && 
+                iAudioRequests[0].iReqType == EOpenReqFromAudioPolicy &&
+                iAudioRequests[0].iAudioType == ((aProfile == EStereo) ? EAccStereoAudio : EAccMonoAudio) &&
+                iAudioRequests[0].iOngoing && 
+                iAudioRequests[0].iAddr == aAddr)
+            {
+            TRACE_INFO((_L(" [device-specific audio request check] audio request pending ? %d. Audio request should be cancelled!"),
+                    iAudioRequests[0].iOngoing))
+            iAccs[idx]->CancelOpenAudio();
             }
         else
             {

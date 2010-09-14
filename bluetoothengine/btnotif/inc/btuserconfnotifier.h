@@ -90,15 +90,15 @@ NONSHARABLE_CLASS(CBTUserConfNotifier): public CBTNPairNotifierBase
 
         
         /**
-        * From CBTNotifierBase Used in asynchronous notifier launch to 
-        * store received parameters into members variables and 
-        * make needed initializations.
-        * @param aBuffer A buffer containing received parameters
-        * @param aReturnVal The return value to be passed back.
-        * @param aMessage Should be completed when the notifier is deactivated.
+        * From CBTNotifierBase
+        * Used in asynchronous notifier launch to start the actual processing
+        * of parameters received in StartL. StartL just stores a copy of the
+        * parameter buffer, schedules a callback to call this method and returns
+        * ASAP, so the actual work begins here, safely outside of the StartL
+        * context so that waiting dialogs can be freely used if need be.
         * @return None.
         */
-        void GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, const RMessagePtr2& aMessage); // Get input parameters
+        void ProcessStartParamsL();
                                          
         /**
         * From CBTNotifierBase

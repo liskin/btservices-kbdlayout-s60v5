@@ -170,19 +170,6 @@ const TBTDevAddr& CBtmRfcommSock::Remote() const
     return iRemote;
     }
 
-TInt CBtmRfcommSock::RequestMasterRole()
-    {
-    TRACE_FUNC
-    TRACE_ASSERT(iDataSocket, EBTPanicNullPointer)
-    TUint32 basebandState = 0;
-    TInt err = iDataSocket->PhysicalLinkState( basebandState );
-    if (!err && (basebandState & ENotifySlave))
-        {
-        err = iDataSocket->RequestMasterRole();
-        }
-    return err;
-    }
-
 TBool CBtmRfcommSock::IsInSniff() const
     {
     return iInSniff;
@@ -244,7 +231,8 @@ void CBtmRfcommSock::HandleConnectCompleteL(TInt aErr)
     if (aErr == KErrNone)
         {
         iInData.ReAllocL(256);
-        RequestMasterRole();
+        // Previously a request to become piconet master was made here, for IOP reasons this
+        // was removed (as theoretically being a piconet master is not required for HFP/HSP AG).
         TInt err = iAda.Open(iServer, iRemote);
         TRACE_INFO((_L("ada.Open err %d"), err))
         iDataSocket->ActivateBasebandEventNotifier(ENotifyAnyPowerMode | ENotifyAnyRole | 
@@ -275,7 +263,8 @@ void CBtmRfcommSock::HandleAcceptCompleteL(TInt aErr)
    if (aErr == KErrNone)
         {
         iInData.ReAllocL(256);
-        RequestMasterRole();
+        // Previously a request to become piconet master was made here, for IOP reasons this
+        // was removed (as theoretically being a piconet master is not required for HFP/HSP AG).
         TInt err = iAda.Open(iServer, iRemote);
         TRACE_INFO((_L("ada.Open err %d"), err))
         iDataSocket->ActivateBasebandEventNotifier(ENotifyAnyPowerMode | ENotifyAnyRole |

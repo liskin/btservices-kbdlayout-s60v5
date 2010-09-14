@@ -24,7 +24,6 @@
 #include "cnumcommandhandler.h"
 #include "cfuncommandhandler.h"
 #include "cbccommandhandler.h"
-#ifdef PROTOCOL_TDSCDMA
 #include "hvercommandhandler.h"
 #include "cgsncommandhandler.h"
 #include "cgmrcommandhandler.h"
@@ -35,8 +34,6 @@
 #include "cgmmcommandhandler.h"
 #include "scpbrcommandhandler.h"
 #include "scpbwcommandhandler.h"
-#endif
-
 
 #include "atmisccmdpluginconsts.h"
 #include "cmserror.h"
@@ -86,7 +83,6 @@ CATMiscCmdPlugin::~CATMiscCmdPlugin()
     delete iCNUMHandler;
     delete iCFUNHandler;
     delete iCBCHandler;
-#ifdef PROTOCOL_TDSCDMA
 	delete iHVERHandler;
 	delete iCGSNHandler;
     delete iCGMRHandler;
@@ -95,8 +91,7 @@ CATMiscCmdPlugin::~CATMiscCmdPlugin()
     delete iCMGDHandler;
     delete iCGMMHandler;
 	delete iSCPBRHandler;
-    delete iSCPBWHandler;
-#endif    
+    delete iSCPBWHandler;  
 	
     iPhone.Close();
     iTelServer.Close();
@@ -119,8 +114,6 @@ void CATMiscCmdPlugin::ConstructL()
     iCNUMHandler = CCNUMCommandHandler::NewL(this, iCommandParser, iPhone, iTelServer);
     iCFUNHandler = CCFUNCommandHandler::NewL(this, iCommandParser, iPhone);
     iCBCHandler = CCBCCommandHandler::NewL(this, iCommandParser, iPhone);
-    
-#ifdef PROTOCOL_TDSCDMA
 	iHVERHandler = CHVERCommandHandler::NewL(this, iCommandParser, iPhone);
     iCGSNHandler = CCGSNCommandHandler::NewL(this, iCommandParser, iPhone);
     iCGMRHandler = CCGMRCommandHandler::NewL(this, iCommandParser, iPhone);
@@ -152,7 +145,6 @@ void CATMiscCmdPlugin::ConstructL()
         static_cast<CCGMMCommandHandler*>(iCGMMHandler)->SetTelephonyError(result);
         }
     delete telephonyWrapper;
-#endif    
     
     TRACE_FUNC_EXIT
    	}
@@ -226,7 +218,6 @@ TBool CATMiscCmdPlugin::IsCommandSupported( const TDesC8& aCmd )
             iCurrentHandler = NULL;	
             break;
 			}
-#ifdef PROTOCOL_TDSCDMA
         case (TAtCommandParser::ECmdAtHver):
             {
             iCurrentHandler = iHVERHandler;
@@ -287,7 +278,6 @@ TBool CATMiscCmdPlugin::IsCommandSupported( const TDesC8& aCmd )
             iCurrentHandler = iSCPBWHandler;
             break;
             }
-#endif
         case (TAtCommandParser::EUnknown):
         default:
             {
@@ -314,13 +304,11 @@ void CATMiscCmdPlugin::HandleCommand( const TDesC8& aCmd,
         HandleCMEECommand();
         HandleCommandCompleted( KErrNone, EReplyTypeOk);
 	    }
-#ifdef PROTOCOL_TDSCDMA
 	else if (iCommandParser.Command() == TAtCommandParser::ECmdAtCmgf)
 	    {
         HandleCMGFCommand();
         HandleCommandCompleted( KErrNone, EReplyTypeOk);
 	    }
-#endif
 	else if (iCurrentHandler != NULL)
 	    {
 	    iHcCmd = &aCmd;
@@ -489,11 +477,9 @@ TInt CATMiscCmdPlugin::CreateReplyAndComplete( TATExtensionReplyType aReplyType,
         {
         case EReplyTypeOther:
             break;
-#ifdef PROTOCOL_TDSCDMA
         case EReplyTypeEditor:
             CreateEditModeBuffer( iReplyBuffer );
             break;
-#endif
         case EReplyTypeOk:
             CreateOkOrErrorReply( iReplyBuffer, ETrue );
             break;
@@ -877,7 +863,6 @@ void CATMiscCmdPlugin::HandleCMGFCommand()
     {
     TRACE_FUNC_ENTRY
     
-#ifdef PROTOCOL_TDSCDMA    
     TAtCommandParser::TCommandHandlerType cmdHandlerType = iCommandParser.CommandHandlerType();
     
     if (cmdHandlerType == TAtCommandParser::ECmdHandlerTypeSet)
@@ -889,7 +874,6 @@ void CATMiscCmdPlugin::HandleCMGFCommand()
             static_cast<CCMGWCommandHandler*> (iCMGWHandler)->SetMessageFormat(msgFormat);
             }
         }
-#endif  
     
     TRACE_FUNC_EXIT
     }

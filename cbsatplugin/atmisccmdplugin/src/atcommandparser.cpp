@@ -59,7 +59,6 @@ void TAtCommandParser::ParseAtCommand(const TDesC8& aCmd)
     _LIT8(KAtCusd, "AT+CUSD");
     _LIT8(KAtCnum, "AT+CNUM");
 	_LIT8(KAtCmee, "AT+CMEE");
-#ifdef PROTOCOL_TDSCDMA
     _LIT8(KAtHver, "AT^HVER");
     _LIT8(KAtCgsn, "AT+CGSN");
     _LIT8(KAtCgmr, "AT+CGMR");
@@ -80,7 +79,6 @@ void TAtCommandParser::ParseAtCommand(const TDesC8& aCmd)
 	_LIT8(KAtGmm, "AT+GMM");
 	_LIT8(KAtScpbr, "AT^SCPBR");
 	_LIT8(KAtScpbw, "AT^SCPBW");
-#endif
     
     Trace(KDebugPrintS, "token: ", &token);
     // Determine the AT command type
@@ -116,7 +114,6 @@ void TAtCommandParser::ParseAtCommand(const TDesC8& aCmd)
         {
         iCmdType = ECmdAtCmee;
 		}
-#ifdef PROTOCOL_TDSCDMA
     else if(!token.CompareF(KAtHver))
         {
         iCmdType = ECmdAtHver;
@@ -197,7 +194,6 @@ void TAtCommandParser::ParseAtCommand(const TDesC8& aCmd)
         {
         iCmdType = ECmdAtScpbw;
         }
-#endif    
     else
         {
         iCmdType = EUnknown;
@@ -268,14 +264,12 @@ TPtrC8 TAtCommandParser::NextParam()
     // Extract the token at this point            
     TPtrC8 retVal = iCmd.MarkedToken();
     
-    // Skip the first delimiter and any further space and control chars
-    do
-      {
-      iCmd.Inc();
-      chr = iCmd.Peek();
-      }
-    while(!iCmd.Eos() && (chr.IsSpace() || chr.IsControl()));
-    
+    // Skip comma, space and control chars
+    while(!iCmd.Eos() && (chr == ',' || chr.IsSpace() || chr.IsControl()))
+        {
+        iCmd.Inc();
+        chr = iCmd.Peek();
+        }
     TRACE_FUNC_EXIT
     return retVal;
     }

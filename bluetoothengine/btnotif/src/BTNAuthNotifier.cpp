@@ -107,22 +107,14 @@ CBTAuthNotifier::TNotifierInfo CBTAuthNotifier::RegisterL()
     }
 
 // ----------------------------------------------------------
-// CBTAuthNotifier::GetParamsL
+// CBTAuthNotifier::ProcessStartParamsL
 // Initialize parameters and check if device is already
 // in registry. Jump to RunL as soon as possible.
 // ----------------------------------------------------------
 //
-void CBTAuthNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, const RMessagePtr2& aMessage)
+void CBTAuthNotifier::ProcessStartParamsL()
     {
-    FLOG(_L("[BTNOTIF]\t CBTAuthNotifier::GetParamsL()"));
-
-    if( !iMessage.IsNull())
-        {
-        User::Leave(KErrInUse);
-        }
-
-    iMessage = aMessage;
-    iReplySlot = aReplySlot;
+    FLOG(_L("[BTNOTIF]\t CBTAuthNotifier::ProcessStartParamsL()"));
 
     if ( AutoLockOnL() )
         {
@@ -134,7 +126,7 @@ void CBTAuthNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, const R
     
     TBTAuthorisationParams param;
     TPckgC<TBTAuthorisationParams> pckg(param);
-    pckg.Set(aBuffer);
+    pckg.Set(*iParamBuffer);
 
     iServiceUid = pckg().iUid.iUid;  // Pick up service uid from message
     iBTAddr = pckg().iBDAddr;
@@ -171,13 +163,13 @@ void CBTAuthNotifier::GetParamsL(const TDesC8& aBuffer, TInt aReplySlot, const R
         }
 
 #ifdef _DEBUG
-    FLOG(_L("[BTNOTIF]\t CBTAuthNotifier::GetParamsL() Executing authorisation..."));
+    FLOG(_L("[BTNOTIF]\t CBTAuthNotifier::ProcessStartParamsL() Executing authorisation..."));
     TBuf<12> deviceAddressString;
     pckg().iBDAddr.GetReadable(deviceAddressString);
     FTRACE(FPrint(_L("[BTNOTIF]\t  BT Address: %S"), &deviceAddressString));
-    FTRACE(FPrint(_L("[BTNOTIF]\t CBTAuthNotifier::GetParamsL Service Uid: %d = 0x%X"), iServiceUid, iServiceUid ));
+    FTRACE(FPrint(_L("[BTNOTIF]\t CBTAuthNotifier::ProcessStartParamsL Service Uid: %d = 0x%X"), iServiceUid, iServiceUid ));
 #endif
-    FLOG(_L("[BTNOTIF]\t CBTAuthNotifier::GetParamsL() completed"));
+    FLOG(_L("[BTNOTIF]\t CBTAuthNotifier::ProcessStartParamsL() completed"));
     }
 
 // ----------------------------------------------------------

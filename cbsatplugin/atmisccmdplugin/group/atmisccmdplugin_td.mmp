@@ -19,9 +19,9 @@
 
 CAPABILITY 	    CAP_ECOM_PLUGIN 
 VENDORID        VID_DEFAULT
-TARGET          atmisccmdplugin.dll
+TARGET          atmisccmdplugin_td.dll
 TARGETTYPE	    PLUGIN
-UID             0x10009D8D 0x2002C3BA
+UID             0x10009D8D 0x2002DCE5
 
 SOURCEPATH      ../src
 SOURCE          main.cpp
@@ -57,8 +57,8 @@ USERINCLUDE     ../inc
 MW_LAYER_SYSTEMINCLUDE
 
 // Resources
-START RESOURCE  ../data/2002C3BA.rss
-TARGET          atmisccmdplugin.rsc
+START RESOURCE ../data/2002DCE5_TDSCDMA.rss
+	TARGET atmisccmdplugin_td.rsc
 END
 
 
