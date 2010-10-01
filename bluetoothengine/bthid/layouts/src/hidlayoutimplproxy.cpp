@@ -45,6 +45,7 @@
 #include "unitedstates.h"
 #include "unitedstatesdvorak.h"
 #include "usinternational.h"
+#include "my.h"
 
 // Constants
 //
@@ -65,7 +66,7 @@ const TImplementationProxy KHidKeyboardLayoutProxy[] =
 	IMPLEMENTATION_PROXY_ENTRY( SU8GERMAN_LAYOUT_IMP,	CSu8GermanLayout::NewL ),
 	IMPLEMENTATION_PROXY_ENTRY( SU8RUSSIANINT_LAYOUT_IMP,	CSu8RussianIntLayout::NewL ),
 	IMPLEMENTATION_PROXY_ENTRY( SU8INTUSENGLISH_LAYOUT_IMP,	CSu8IntUsEnglishLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( UK_LAYOUT_IMP,	CUnitedKingdomLayout::NewL ),
+	IMPLEMENTATION_PROXY_ENTRY( UK_LAYOUT_IMP,	CMyLayout::NewL ),
 	IMPLEMENTATION_PROXY_ENTRY( US_LAYOUT_IMP,	CUnitedStatesLayout::NewL ),
 	IMPLEMENTATION_PROXY_ENTRY( USDVORAK_LAYOUT_IMP,	CUnitedStatesDvorakLayout::NewL ),
 	IMPLEMENTATION_PROXY_ENTRY( USINT_LAYOUT_IMP,	CUSInternationalLayout::NewL )
