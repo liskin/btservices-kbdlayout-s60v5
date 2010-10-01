@@ -1,0 +1,17 @@
+#ifndef BLDVARIANT_HRH
+#define BLDVARIANT_HRH
+
+#include "defaultcaps.hrh"
+
+#include "variant/Symbian_OS.hrh"
+//#include "privateruntimeids.hrh"  
+//#include "publicruntimeids.hrh"  
+
+//#include <bldcodeline.hrh>		
+//#include <bldprivate.hrh>
+//#include <bldpublic.hrh>
+//#include <bldregional.hrh> 
+
+//#include "productvariant.hrh" 
+
+#endif

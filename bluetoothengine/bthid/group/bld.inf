@@ -17,14 +17,14 @@
 
 #include <platform_paths.hrh>
 
-#include "../bthidserver/group/bld.inf"
-#include "../bthidclient/group/bld.inf"
-#include "../manager/group/bld.inf"
+//#include "../bthidserver/group/bld.inf"
+//#include "../bthidclient/group/bld.inf"
+//#include "../manager/group/bld.inf"
 #include "../layouts/group/bld.inf"
-#include "../bthidkbdsettings/group/bld.inf"
-#include "../keyboard/group/bld.inf"
-#include "../bthidengplugin/group/bld.inf"
-#include "../mouse/group/bld.inf"
+//#include "../bthidkbdsettings/group/bld.inf"
+//#include "../keyboard/group/bld.inf"
+//#include "../bthidengplugin/group/bld.inf"
+//#include "../mouse/group/bld.inf"
 
 PRJ_EXPORTS
 ../loc/btkeyboard.loc        MW_LAYER_LOC_EXPORT_PATH(btkeyboard.loc)
