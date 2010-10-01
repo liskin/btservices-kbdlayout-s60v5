@@ -91,7 +91,7 @@ const TUint16 CUnitedStatesLayout::KKeyCodes[] =
        ',',    '<',  // 0x36  54  , <
        '.',    '>',  // 0x37  55  . >
        '/',    '?',  // 0x38  56  / ?
-         0,      0,  // 0x39  57  Caps Lock
+    0x001b, 0x001b,  // 0x39  57  Caps Lock (now Escape)
     0xf816, 0xf816,  // 0x3a  58  F1
     0xf817, 0xf817,  // 0x3b  59  F2
     0xf818, 0xf818,  // 0x3c  60  F3
