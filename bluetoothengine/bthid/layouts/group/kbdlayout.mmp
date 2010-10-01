@@ -41,6 +41,7 @@ SOURCE        su8danishnorwegian.cpp
 SOURCE        su8finnishswedish.cpp
 SOURCE        su8german.cpp
 SOURCE        su8intusenglish.cpp unitedkingdom.cpp unitedstates.cpp unitedstatesdvorak.cpp usinternational.cpp su8russianint.cpp
+SOURCE        czech.cpp
 SOURCE        my.cpp
 
 USERINCLUDE   ../inc

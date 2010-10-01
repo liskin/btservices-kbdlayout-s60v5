@@ -8,9 +8,9 @@
 #include "layout.h"
 #include "switchlay.h"
 #include "unitedstates.h"
-#include "unitedkingdom.h"
+#include "czech.h"
 
-class CMyLayout : public CSwitchKeyboardLayout<CUnitedStatesLayout, CUnitedKingdomLayout, EUnitedKingdom>
+class CMyLayout : public CSwitchKeyboardLayout<CUnitedStatesLayout, CCzechLayout, EUnitedKingdom>
 {
 public:
     static CKeyboardLayout* NewL();
