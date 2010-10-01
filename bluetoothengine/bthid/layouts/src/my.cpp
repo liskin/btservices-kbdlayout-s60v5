@@ -93,7 +93,7 @@ const TUint16 CMyLayout::KKeyCodes[] =
        ',',    '<', 0x00e7, 0x00c7,  // 0x36  54  , <
        '.',    '>',      0,      0,  // 0x37  55  . >
        '/',    '?', 0x00bf,      0,  // 0x38  56  / ?
-         0,      0,      0,      0,  // 0x39  57  Caps Lock
+    0x001b, 0x001b,      0,      0,  // 0x39  57  Caps Lock
     0xf816, 0xf816,      0,      0,  // 0x3a  58  F1
     0xf817, 0xf817,      0,      0,  // 0x3b  59  F2
     0xf818, 0xf818,      0,      0,  // 0x3c  60  F3
@@ -255,12 +255,12 @@ const CDeadKeyLayout::TKeyPair CMyLayout::KDeadKeyTilde[] =
 
 const CDeadKeyLayout::TIndexPair CMyLayout::KDeadKeyIndex[] =
     {
+    { 0x0000 }, // end of table
     { 0x005e, KDeadKeyCircumflex },
     { 0x0027, KDeadKeyApostrophe },
     { 0x0022, KDeadKeyQuotationMark },
     { 0x0060, KDeadKeyGrave },
-    { 0x007e, KDeadKeyTilde },
-    { 0x0000 } // end of table
+    { 0x007e, KDeadKeyTilde }
     };
 
 // ----------------------------------------------------------------------
@@ -275,31 +275,6 @@ CMyLayout::CMyLayout()
 TBool CMyLayout::ChangesWithCapsLock(TInt aHidKey,
     THidModifier aModifiers) const
     {
-    if (aModifiers.ControlAlt())
-        {
-        // Allow caps lock to invert the shift state for these ctrl-alt keys:
-        //
-        TBool isAltGrCapsKey = 
-            (aHidKey == 0x04) ||  // a A
-            (aHidKey == 0x07) ||  // d D
-            (aHidKey == 0x08) ||  // e E
-            (aHidKey == 0x0c) ||  // i I
-            (aHidKey == 0x0f) ||  // l L
-            (aHidKey == 0x11) ||  // n N
-            (aHidKey == 0x12) ||  // o O
-            (aHidKey == 0x13) ||  // p P
-            (aHidKey == 0x14) ||  // q Q
-            (aHidKey == 0x17) ||  // t T
-            (aHidKey == 0x18) ||  // u U
-            (aHidKey == 0x1a) ||  // w W
-            (aHidKey == 0x1c) ||  // y Y
-            (aHidKey == 0x1d) ||  // z Z
-            (aHidKey == 0x36);    // , <
-
-        if (isAltGrCapsKey)
-            return ETrue;
-        }
-
     return CDeadKeyLayout::ChangesWithCapsLock(aHidKey, aModifiers);
     }
 

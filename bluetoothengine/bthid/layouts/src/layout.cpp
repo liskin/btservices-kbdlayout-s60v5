@@ -91,7 +91,7 @@ const TInt CKeyboardLayout::KRawCodes[] =
     EStdKeyComma,              // 0x36  54  , <
     EStdKeyFullStop,           // 0x37  55  . >
     EStdKeyForwardSlash,       // 0x38  56  / ?
-    EStdKeyCapsLock,           // 0x39  57  Caps Lock
+    EStdKeyEscape,             // 0x39  57  Caps Lock
     EStdKeyF1,                 // 0x3A  58  F1
     EStdKeyF2,                 // 0x3B  59  F2
     EStdKeyF3,                 // 0x3C  60  F3
