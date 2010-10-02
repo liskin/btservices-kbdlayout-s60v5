@@ -37,6 +37,10 @@ public:
     // Report what layouts are supported:
     virtual TInt LayoutId() const;
 
+    virtual TBool ChangesWithCapsLock(TInt aHidKey, THidModifier aModifiers) const {
+	return EFalse;
+    }
+
 private:
 
     /* C++ constructor */
