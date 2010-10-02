@@ -50,6 +50,7 @@
 
 template <TInt layId> class CMyLayout :
     public CSwitchKeyboardLayout<CUnitedStatesLayout, CCzechLayout, layId>
+    // ^ edit this line to select different layouts
 {};
 
 // Constants
