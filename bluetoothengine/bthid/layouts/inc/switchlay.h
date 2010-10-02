@@ -15,21 +15,26 @@
 /*
  * A combined layout which provides Alt+Shift switching.
  */
-template <class Lay1, class Lay2, TInt LayId>
+template <class Lay1, class Lay2, TInt layId>
 class CSwitchKeyboardLayout : public CKeyboardLayout {
 private:
     const CKeyboardLayout *lay1, *lay2;
     const CKeyboardLayout **cur;
 
-public:
     CSwitchKeyboardLayout() : lay1(Lay1::NewL()), lay2(Lay2::NewL()),
         cur(new (const CKeyboardLayout *)(lay1)) {
     }
 
+public:
     ~CSwitchKeyboardLayout() {
         delete lay1;
         delete lay2;
         delete cur;
+    }
+
+    static CKeyboardLayout* NewL() {
+        CKeyboardLayout* layout = new (ELeave) CSwitchKeyboardLayout<Lay1, Lay2, layId>;
+        return layout;
     }
 
     virtual TUint16 TranslateKey(TInt aHidKey, TInt aUsagePage,
@@ -78,7 +83,7 @@ public:
     }
 
     virtual TInt LayoutId() const {
-        return LayId;
+        return layId;
     }
 };
 

@@ -24,52 +24,57 @@
 
 // User includes
 //
-#include "belgian.h"
-#include "danish.h"
-#include "dutch.h"
-#include "finnishswedish.h"
-#include "french.h"
-#include "german.h"
-#include "italian.h"
-#include "norwegian.h"
-#include "portuguese.h"
-#include "spanish.h"
-#include "su8danishnorwegian.h"
-#include "su8finnishswedish.h"
-#include "su8german.h"
+#include "switchlay.h"
+//#include "belgian.h"
+//#include "danish.h"
+//#include "dutch.h"
+//#include "finnishswedish.h"
+//#include "french.h"
+//#include "german.h"
+//#include "italian.h"
+//#include "norwegian.h"
+//#include "portuguese.h"
+//#include "spanish.h"
+//#include "su8danishnorwegian.h"
+//#include "su8finnishswedish.h"
+//#include "su8german.h"
 //#include "su8russian.h"
-#include "su8russianint.h"
-#include "su8intusenglish.h"
+//#include "su8russianint.h"
+//#include "su8intusenglish.h"
 //#include "su8usenglish.h"
-#include "unitedkingdom.h"
+//#include "unitedkingdom.h"
 #include "unitedstates.h"
-#include "unitedstatesdvorak.h"
-#include "usinternational.h"
-#include "my.h"
+//#include "unitedstatesdvorak.h"
+//#include "usinternational.h"
+#include "czech.h"
+
+template <TInt layId> class CMyLayout :
+    public CSwitchKeyboardLayout<CUnitedStatesLayout, CCzechLayout, layId>
+{};
 
 // Constants
 //
 const TImplementationProxy KHidKeyboardLayoutProxy[] = 
 	{
-	IMPLEMENTATION_PROXY_ENTRY( BELGIAN_LAYOUT_IMP,	CBelgianLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( DANISH_LAYOUT_IMP,	CDanishLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( DUTCH_LAYOUT_IMP,	CDutchLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( FINSWE_LAYOUT_IMP,	CFinnishSwedishLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( FRENCH_LAYOUT_IMP,	CFrenchLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( GERMAN_LAYOUT_IMP,	CGermanLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( ITALIAN_LAYOUT_IMP,	CItalianLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( NORWEGIAN_LAYOUT_IMP,	CNorwegianLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( PORTUGUESE_LAYOUT_IMP,	CPortugueseLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( SPANISH_LAYOUT_IMP,	CSpanishLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( SU8DANNOR_LAYOUT_IMP,	CSu8DanishNorwegianLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( SU8FINSWE_LAYOUT_IMP,	CSu8FinnishSwedishLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( SU8GERMAN_LAYOUT_IMP,	CSu8GermanLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( SU8RUSSIANINT_LAYOUT_IMP,	CSu8RussianIntLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( SU8INTUSENGLISH_LAYOUT_IMP,	CSu8IntUsEnglishLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( UK_LAYOUT_IMP,	CMyLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( US_LAYOUT_IMP,	CUnitedStatesLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( USDVORAK_LAYOUT_IMP,	CUnitedStatesDvorakLayout::NewL ),
-	IMPLEMENTATION_PROXY_ENTRY( USINT_LAYOUT_IMP,	CUSInternationalLayout::NewL )
+	IMPLEMENTATION_PROXY_ENTRY( BELGIAN_LAYOUT_IMP,		(CMyLayout<EBelgian>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( DANISH_LAYOUT_IMP,		(CMyLayout<EDanish>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( DUTCH_LAYOUT_IMP,		(CMyLayout<EDutch>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( FINSWE_LAYOUT_IMP,		(CMyLayout<EFinnishSwedish>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( FRENCH_LAYOUT_IMP,		(CMyLayout<EFrench>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( GERMAN_LAYOUT_IMP,		(CMyLayout<EGerman>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( ITALIAN_LAYOUT_IMP,		(CMyLayout<EItalian>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( NORWEGIAN_LAYOUT_IMP,	(CMyLayout<ENorwegian>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( PORTUGUESE_LAYOUT_IMP,	(CMyLayout<EPortuguese>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( SPANISH_LAYOUT_IMP,		(CMyLayout<ESpanish>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( SU8DANNOR_LAYOUT_IMP,	(CMyLayout<ESu8DanishNorwegian>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( SU8FINSWE_LAYOUT_IMP,	(CMyLayout<ESu8FinnishSwedish>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( SU8GERMAN_LAYOUT_IMP,	(CMyLayout<ESu8German>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( SU8RUSSIANINT_LAYOUT_IMP,	(CMyLayout<ESu8Russian>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( SU8INTUSENGLISH_LAYOUT_IMP,	(CMyLayout<ESu8USEnglish>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( UK_LAYOUT_IMP,		(CMyLayout<EUnitedKingdom>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( US_LAYOUT_IMP,		(CMyLayout<EUnitedStates>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( USDVORAK_LAYOUT_IMP,	(CMyLayout<EUnitedStatesDvorak>::NewL) ),
+	IMPLEMENTATION_PROXY_ENTRY( USINT_LAYOUT_IMP,		(CMyLayout<EUSInternational>::NewL) )
 	};
 
 
