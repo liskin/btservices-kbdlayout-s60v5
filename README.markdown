@@ -65,3 +65,12 @@ for you.
 [sdk]: http://www.forum.nokia.com/info/sw.nokia.com/id/ec866fab-4b76-49f6-b5a5-af0631419e9c/S60_All_in_One_SDKs.html
 [gnupoc]: http://www.martin.st/symbian/
 [su8]: http://europe.nokia.com/support/product-support/nokia-wireless-keyboard-su-8w/software
+
+# Author & Copyright
+
+The original source code is taken from Symbian<sup>3</sup>, that is © Nokia
+Corporation, and it is available under the terms of Eclipse Public License
+v1.0.
+
+The modifications and new layouts have been done by Tomáš Janoušek
+<http://work.lisk.in/> in 2010.
